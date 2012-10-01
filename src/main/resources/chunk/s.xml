@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Separator
+XPath - /xs:schema/xs:complexType[@name="separatorType"] 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+s
+	:	S_START S_ATTR_TYPE? TEXT? S_END 
+	->	^(S_START S_ATTR_TYPE? TEXT?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+s returns [String val]
+	:	^(S_START S_ATTR_TYPE? TEXT?)
+	{
+		$val = "";
+		if($S_ATTR_TYPE != null)
+		{
+			String type = $S_ATTR_TYPE.text;
+			if(type.equals("comma"))
+			{
+				$val = ",";
+			} else if(type.equals("tag question"))
+			{
+				$val = ",,";
+			} else if(type.equals("semicolon"))
+			{
+				$val = ";";
+			} else if(type.equals("colon")) 
+			{
+				$val = ":";
+			} else if(type.equals("clause delimiter"))
+			{
+				$val = "(clause delimiter:" + $TEXT.text + ")";
+			} else if(type.equals("rising to high"))
+			{
+				$val = "0x21D7";
+			} else if(type.equals("rising to mid"))
+			{
+				$val = "0x2197";
+			} else if(type.equals("level"))
+			{
+				$val = "0x2192";
+			} else if(type.equals("falling to mid"))
+			{
+				$val = "0x2198";
+			} else if(type.equals("falling to low"))
+			{
+				$val = "0x21D8";
+			} else if(type.equals("latching"))
+			{
+				$val = "0x2261";
+			}
+		}
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+s
+	:	^(S_START S_ATTR_TYPE? TEXT?)
+	->	template(
+			type={$S_ATTR_TYPE.text},
+			val={$TEXT.text}
+		)
+	"\<s type=\"<type>\"\><val>\</s\>"
+	;
+]]>
+	</buffer>
+    
+</chunk>

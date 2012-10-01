@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Pause
+XPath -	/xs:schema/xs:complexType[@name="pauseType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+pause
+	:	PAUSE_START PAUSE_ATTR_SYMBOLIC_LENGTH? PAUSE_ATTR_LENGTH? PAUSE_END 
+	->	^(PAUSE_START PAUSE_ATTR_SYMBOLIC_LENGTH? PAUSE_ATTR_LENGTH?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+pause returns [String val]
+	:	^(PAUSE_START sl=PAUSE_ATTR_SYMBOLIC_LENGTH? len=PAUSE_ATTR_LENGTH?)
+	{
+		$val = "(pause:";
+		if($len != null) {
+		    $val = "(pause:" + $len.text + ")";
+		} else {
+		    String t = $sl.text;
+		    if(t.equals("simple"))  {
+		        $val = "(.)";
+		    } else if(t.equals("long")) {
+		        $val = "(..)";
+		    } else if(t.equals("very long")) {
+		        $val = "(...)";
+		    }
+		}
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+pause
+	:	^(PAUSE_START PAUSE_ATTR_SYMBOLIC_LENGTH?)
+	->    template( len={$PAUSE_ATTR_SYMBOLIC_LENGTH} )
+	"\<pause symbolic-length=\"<len>\"/\>"
+	;
+]]>
+    </buffer>
+    
+</chunk>

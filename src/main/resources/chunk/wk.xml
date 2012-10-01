@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Wordnet marker
+XPath - 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+wk
+	:	WK_START WK_ATTR_TYPE? WK_END
+	->	^(WK_START WK_ATTR_TYPE?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+wk returns [String val]
+	:	^(WK_START type=WK_ATTR_TYPE?)
+	{
+		// return value based on type
+		if($type != null) {
+			String wkt = $type.text;
+			
+			if(wkt.equals("cmp"))
+				$val = "+";
+			else if(wkt.equals("cli"))
+				$val = "~";
+		} else {
+			$val = "";
+		}
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+wk
+    :    ^(WK_START WK_ATTR_TYPE?)
+    ->    template( type={$WK_ATTR_TYPE.text} )
+    "\<wk type=\"<type>\"/\>"
+    ;
+]]>
+    </buffer>
+    
+</chunk>

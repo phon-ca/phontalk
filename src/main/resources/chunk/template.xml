@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include></include>
+    
+</chunk>

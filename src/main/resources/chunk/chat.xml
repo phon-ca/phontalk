@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Chat Element
+Schema - http://www.talkbank.org/software/talkbank.xsd
+XPath - /xs:schema/xs:element[@name="CHAT"]
+-->
+
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+chat
+	:	CHAT_START chat_attrs* participants? chat_content* CHAT_END 
+	->	^(CHAT_START chat_attrs* participants? chat_content*)
+	;
+	
+chat_content
+	:	comment	
+	|	u
+	|	lazy_gem
+	;
+	
+chat_attrs
+	:	CHAT_ATTR_MEDIA
+	|	CHAT_ATTR_MEDIATYPES
+	|	CHAT_ATTR_LANG
+	|	CHAT_ATTR_CORPUS
+	|	CHAT_ATTR_ID
+	|	CHAT_ATTR_DATE
+	;
+]]>
+    </buffer>
+    
+    <buffer name="ChatTree.g">
+        <![CDATA[
+chat
+	:	^(CHAT_START chat_attrs* participants? chat_content*)
+	;
+	
+chat_content
+	:	comment
+	|	u
+	|	lazy_gem
+	;
+	
+chat_attrs
+	:	CHAT_ATTR_MEDIA
+	{	
+		session.setMediaLocation($CHAT_ATTR_MEDIA.text + 
+			(session.getMediaLocation() != null ? session.getMediaLocation() : ""));
+	}
+	|	CHAT_ATTR_MEDIATYPES
+	{
+		String suffix = ".wav";  // default media type
+		String type = $CHAT_ATTR_MEDIATYPES.text;
+		if(type.equals("aif") || type.equals("aiff"))
+		{
+			suffix = ".aiff";
+		} else if(type.equals("mov") || type.equals("video"))
+		{
+			suffix = ".mov";
+		}
+		session.setMediaLocation(
+			(session.getMediaLocation() != null ? session.getMediaLocation() : "") + suffix);
+	}
+	|	CHAT_ATTR_LANG
+	{
+		session.setLanguage($CHAT_ATTR_LANG.text);
+	}
+	|	CHAT_ATTR_CORPUS
+	{
+		//session.setCorpus($CHAT_ATTR_CORPUS.text);
+	}
+	|	CHAT_ATTR_ID
+	{
+		session.setID($CHAT_ATTR_ID.text);
+	}
+	|	CHAT_ATTR_DATE
+	{
+		PhonDateFormat pdf = new PhonDateFormat(PhonDateFormat.YEAR_LONG);
+		
+		try {
+		Calendar c = (Calendar)pdf.parseObject($CHAT_ATTR_DATE.text);
+		c.setTimeZone(TimeZone.getTimeZone("GMT-0"));
+		session.setDate(c);
+		} catch (ParseException e) {}
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+chat
+	:	^(CHAT_START (attrlist+=chat_attrs)* (partlist=participants)? (contentlist+=chat_content)*)
+	->	template(
+			attrs={$attrlist},
+			parts={$partlist.st},
+			content={$contentlist}
+		)
+	<<\<?xml version="1.0" encoding="UTF-8"?\>
+\<CHAT 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://www.talkbank.org/ns/talkbank"  
+	xsi:schemaLocation="http://www.talkbank.org/ns/talkbank http://talkbank.org/software/talkbank.xsd" 
+	Version="1.9.1"
+	<attrs; separator=""> \>
+	<parts>
+	<content; separator="">
+\</CHAT\> >>
+	;
+
+chat_content
+	:	comment
+	->	template( v={$comment.st} )
+		"<v>"
+	|	u
+	->	template( v={$u.st} )
+		"<v>"
+	|	lazy_gem
+	->	template( v={$lazy_gem.st} )
+		"<v>"
+	;
+	
+chat_attrs
+	:	CHAT_ATTR_MEDIA
+	->	template(media={$CHAT_ATTR_MEDIA.text})
+	<<
+Media="<media>" >>
+	|	CHAT_ATTR_MEDIATYPES
+	->	template(types={$CHAT_ATTR_MEDIATYPES.text})
+	<<
+Mediatypes="<types>" >>
+	|	CHAT_ATTR_LANG
+	->	template(lang={$CHAT_ATTR_LANG.text})
+	<<
+Lang="<lang>" >>
+	|	CHAT_ATTR_CORPUS
+	->	template(corpus={$CHAT_ATTR_CORPUS.text})
+	<<
+Corpus="<corpus>" >>
+	|	CHAT_ATTR_ID
+	->	template(id={$CHAT_ATTR_ID.text})
+	<<
+Id="<id>" >>
+	|	CHAT_ATTR_DATE
+	->	template(date={$CHAT_ATTR_DATE.text})
+	<<
+Date="<date>" >>
+	;
+	
+]]>
+	</buffer>
+    
+    <include>participants.xml</include>
+    <include>comment.xml</include>
+    <include>u.xml</include>
+	<include>lazy-gem.xml</include>
+
+</chunk>

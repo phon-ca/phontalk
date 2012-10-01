@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Phonetic Transcript
+XPath - /xs:schema/xs:complexType[@name="phoType"] 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+pho
+	:	model
+	|	actual
+	;
+
+model
+	:	MODEL_START pw* MODEL_END
+	->	^(MODEL_START  pw*)
+	;
+
+actual
+	:	ACTUAL_START pw* ACTUAL_END
+	->	^(ACTUAL_START pw*)
+	;
+
+pw
+	:	PW_START pwele* PW_END
+	->	^(PW_START pwele*)
+	;
+	
+pwele
+	:	ss
+	|	wk
+	|	ph
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+pho
+scope
+{
+	List<Phone> phones;
+}
+@init
+{
+	$pho::phones = new ArrayList<Phone>();
+}
+	:	model
+	{
+		List<Phone> phones = $pho::phones;
+		
+		// fix phone list if requested or required
+		String txt = "";
+		for(Phone p:$pho::phones) txt += p.getPhoneString();
+
+		List<Phone> testPhones = Phone.toPhoneList(txt);
+		if(testPhones.size() != phones.size() 
+			|| isReparsePhones()) {
+			phones = testPhones;
+		}
+		
+		Syllabifier syllabifier = getSyllabifier();
+		if(syllabifier != null) syllabifier.syllabify(phones);
+
+		if($g.size() == 0) {
+			IPhoneticRep modelRep =
+				$ugrp::w.getPhoneticRepresentation(Form.Target);
+			if(modelRep == null) {
+				modelRep = $ugrp::w.newPhoneticRepresentation();
+				modelRep.setForm(Form.Target);
+			}
+			modelRep.setPhones(phones);
+		} else {
+			// we are inside a global-g element, add to it's list
+			IPhoneticRep tRep = IPhonFactory.getDefaultFactory().createPhoneticRep();
+			tRep.setForm(Form.Target);
+			tRep.setPhones(phones);
+
+			$g::tReps.put($g::pgCount-1, tRep);
+		}
+	}
+	|	actual
+	{
+		List<Phone> phones = $pho::phones;
+		
+		// fix phone list
+		String txt = "";
+		for(Phone p:$pho::phones) txt += p.getPhoneString();
+
+		List<Phone> testPhones = Phone.toPhoneList(txt);
+		
+		if(testPhones.size() != phones.size()
+			|| isReparsePhones()) {
+			phones = testPhones;
+		}
+		
+		Syllabifier syllabifier = getSyllabifier();
+		if(syllabifier != null) syllabifier.syllabify(phones);
+
+		if($g.size() == 0) {
+			IPhoneticRep actualRep =
+				$ugrp::w.getPhoneticRepresentation(Form.Actual);
+			if(actualRep == null) {
+				actualRep = $ugrp::w.newPhoneticRepresentation();
+				actualRep.setForm(Form.Actual);
+			}
+			actualRep.setPhones(phones);
+		} else {
+			IPhoneticRep aRep = IPhonFactory.getDefaultFactory().createPhoneticRep();
+			aRep.setForm(Form.Actual);
+			aRep.setPhones(phones);
+
+			$g::aReps.put($g::pgCount-1, aRep);
+		}
+	}
+	;
+
+model
+	:	^(MODEL_START  pw*)
+	;
+
+actual
+	:	^(ACTUAL_START pw*)
+	;
+
+pw
+@init {
+	if($pho::phones.size() > 0) {
+		Phone wbPhone = new Phone(" ");
+		wbPhone.setScType(SyllableConstituentType.WordBoundaryMarker);
+		$pho::phones.add(wbPhone);
+	}
+}
+	:	^(PW_START pwele*)
+	;
+
+pwele
+	:	ss
+	{
+		Phone ssPhone = new Phone($ss.val);
+		ssPhone.setScType(SyllableConstituentType.SyllableStressMarker);
+		$pho::phones.add(ssPhone);
+	}
+	|	wk
+	{
+		Phone wkPhone = new Phone($wk.val);
+		wkPhone.setScType(SyllableConstituentType.SyllableBoundaryMarker);
+		$pho::phones.add(wkPhone);
+	}
+	|	ph
+	{
+		$pho::phones.add($ph.val);
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+pho
+	:	model
+	->	template( v = {$model.st} )
+	"<v>"
+	|	actual
+	->	template( v = {$actual.st} )
+	"<v>"
+	;
+
+model
+	:	^(MODEL_START  (pws+=pw)*)
+	->	template( content={$pws} )
+	<<\<model\>
+	<content; separator="\n">
+\</model\> >>
+	;
+
+actual
+	:	^(ACTUAL_START (pws+=pw)*)
+	->	template( content={$pws} )
+	<<\<actual\>
+	<content; separator="\n">
+\</actual\> >>
+	;
+
+pw
+	:	^(PW_START (pweles+=pwele)*)
+	->	template( content={$pweles} )
+	<<\<pw\>
+	<content; separator="\n">
+\</pw\> >>
+	;
+
+pwele
+	:	ss
+	->	template( v = {$ss.st} )
+	"<v>"
+	|	wk
+	->	template( v = {$wk.st} )
+	"<v>"
+	|	ph
+	->	template(v = {$ph.st} )
+	"<v>"
+	;
+]]>
+	</buffer>
+
+	<include>ph.xml</include>
+	<include>wk.xml</include>
+	<include>ss.xml</include>
+    
+</chunk>

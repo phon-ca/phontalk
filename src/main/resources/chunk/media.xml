@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Media type
+XPath - /xs:schema/xs:complexType[@name="mediaType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+media
+	:	MEDIA_START media_attr* MEDIA_END
+	->	^(MEDIA_START media_attr*)
+	;
+	
+media_attr
+	:	MEDIA_ATTR_START
+	|	MEDIA_ATTR_END
+	|	MEDIA_ATTR_UNIT
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+media returns [IMedia val]
+scope {
+	IMedia m;
+	boolean hasSetUnit;
+}
+@init {
+	$media::m = phonFactory.createMedia();
+	$media::hasSetUnit = false;
+}
+@after {
+	// convert unit to miliseconds
+	if($media::m.getUnitType() == MediaUnit.Second) {
+		$val = phonFactory.createMedia();
+		$val.setUnitType(MediaUnit.Millisecond);
+		$val.setStartValue($media::m.getStartValue() * 1000);
+		$val.setEndValue($media::m.getEndValue() * 1000);
+	} else {
+		$val = $media::m;
+	}
+}
+	:	^(MEDIA_START media_attr*)
+	;
+	
+media_attr
+	:	MEDIA_ATTR_START
+	{
+		String startText = $MEDIA_ATTR_START.text;
+		Float startVal = Float.parseFloat(startText);
+		$media::m.setStartValue(startVal);
+	}
+	|	MEDIA_ATTR_END
+	{
+		String endText = $MEDIA_ATTR_END.text;
+		Float endVal = Float.parseFloat(endText);
+		$media::m.setEndValue(endVal);
+	}
+	|	MEDIA_ATTR_UNIT
+	{
+		String unitType = $MEDIA_ATTR_UNIT.text;
+		if(unitType.equalsIgnoreCase("s"))
+		{
+			$media::m.setUnitType(MediaUnit.Second);
+		} else if(unitType.equalsIgnoreCase("ms"))
+		{
+			$media::m.setUnitType(MediaUnit.Millisecond);
+		}
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+media
+	:	^(MEDIA_START (attrlist+=media_attr)*)
+	->	template( attrs={$attrlist} )
+	<<\<media <attrs; separator=" ">/\> >>
+	;
+	
+media_attr
+	:	MEDIA_ATTR_START
+	->	template( v={$MEDIA_ATTR_START} )
+	<<start="<v>">>
+	|	MEDIA_ATTR_END
+	->	template( v={$MEDIA_ATTR_END} )
+	<<end="<v>">>
+	|	MEDIA_ATTR_UNIT
+	->	template( v={$MEDIA_ATTR_UNIT} )
+	<<unit="<v>">>
+	;
+]]>
+	</buffer>
+    
+</chunk>

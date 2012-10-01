@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Comment
+Schema - http://www.talkbank.org/software/talkbank
+XPath -	/xs:schema/xs:complexType[@name="commentType"]
+		/xs:schmea/xs:element[@name="comment"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+comment
+	:	COMMENT_START COMMENT_ATTR_TYPE? TEXT? COMMENT_END 
+	->	^(COMMENT_START COMMENT_ATTR_TYPE? TEXT?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+comment
+	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? val=TEXT?)
+	{
+		// if the comment is a date,
+		// set the date in the session (overrides CHAT attribute)
+		if($type != null && $type.text.equals("Date")) {
+			// do nothing
+		} else {
+			IComment c = session.newComment();
+			// create a new comment in the transcript
+			if($val != null)
+			{
+				c.setValue($val.text);
+			}
+
+			if($type != null)
+			{
+				CommentEnum cType =
+					CommentEnum.fromString($type.text);
+				if(cType == null)
+					cType = CommentEnum.Generic;
+				c.setType(cType);
+			}
+		}
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+comment
+	:	^(COMMENT_START ctype=COMMENT_ATTR_TYPE? cval=TEXT?)
+	->	template(
+			type={$ctype.text},
+			val={$cval.text}
+		)
+	<<\<comment type="<type>"\><val>\</comment\> >>
+	;
+]]>
+	</buffer>
+	
+    
+</chunk>

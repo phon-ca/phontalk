@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Lazy-gem
+Markers between utterances
+XPath: /xs:schema/xs:element[@name="lazy-gem"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+lazy_gem
+	:	LAZY_GEM_START LAZY_GEM_ATTR_LABEL? LAZY_GEM_END
+	->	^(LAZY_GEM_START LAZY_GEM_ATTR_LABEL?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+lazy_gem
+	:	^(LAZY_GEM_START label=LAZY_GEM_ATTR_LABEL?)
+	{
+		IComment gem = session.newComment();
+		gem.setType(CommentEnum.fromString("LazyGem"));
+		
+		// create a new 'lazy-gem' comment in Phon
+		if($label != null)
+		{
+			gem.setValue($label.text);
+		}
+	}
+;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+lazy_gem
+	:	^(LAZY_GEM_START LAZY_GEM_ATTR_LABEL?)
+	->    template( label={$LAZY_GEM_ATTR_LABEL.text} )
+	<<\<lazy-gem label="<label>"/\> >>
+	;
+]]>
+    </buffer>
+</chunk>

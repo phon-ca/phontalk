@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Repetition
+XPath - 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+r
+	:	R_START R_ATTR_TIMES? R_END 
+	->	^(R_START R_ATTR_TIMES?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+r returns [String val]
+	:	^(R_START times=R_ATTR_TIMES?)
+	{
+		if($times != null)
+		{
+			$val = $times.text;
+		}
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+r
+	:	^(R_START R_ATTR_TIMES?)
+	->    template( times={$R_ATTR_TIMES.text} )
+	<<\<r times="<times>"/\> >>
+	;
+]]>
+    </buffer>
+    
+</chunk>

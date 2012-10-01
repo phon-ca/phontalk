@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Terminator
+XPath - 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+t
+	:	T_START T_ATTR_TYPE? mor? T_END 
+	->	^(T_START T_ATTR_TYPE? mor?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+t returns [String val]
+	:	^(T_START T_ATTR_TYPE? mor?)
+	{
+		// add terminator to last wordgroup
+		String t = $T_ATTR_TYPE.text;
+		List<IWord> words = $u::utt.getWords();
+		IWordGroup lastGrp = (IWordGroup)words.get(words.size()-1);
+		String append = "";
+		
+		if(t.equals("p")) {
+		   append = ".";
+		} else if(t.equals("q")) {
+		    append = "?";
+		} else if(t.equals("e")) {
+		    append = "!";
+		} else {
+		    // wrap in paren
+		    append = "(t:" + t + ")";
+		}
+		
+		List<String> cws = lastGrp.getWords();
+		cws.add(append);
+		lastGrp.setWords(cws);
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+t
+	:	^(T_START T_ATTR_TYPE? mor?)
+	->    template( type={$T_ATTR_TYPE} )
+	<<\<t type="<type>"/\> >>
+	;
+]]>
+    </buffer>
+	
+	<include>mor.xml</include>
+    
+</chunk>

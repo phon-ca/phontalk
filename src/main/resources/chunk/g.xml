@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Group type
+XPath - /xs:schema/xs:complexType[@name="groupType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+g	
+	:	G_START gele* G_END 
+	->	^(G_START gele*)
+	;
+	
+gele
+	:	w
+	-> {pg_stack != null && !pg_stack.isEmpty() && $pg::inPg}? w
+	-> ^(PG_START w)
+	|	pg
+	|	pause
+	|	r 
+	|	k
+	|	ga
+	|	overlap
+	|	e
+	|	g
+	|	s
+	| 	underline
+	|	error
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+g returns [String val,  Integer phoRepCount, Map<Integer,IPhoneticRep> targetReps, Map<Integer, IPhoneticRep> actReps, Map<Integer, PhoneMap> phoneMaps]
+scope {
+	String buffer;
+	
+	// when g has <pg> children store the
+ 	// phonetic rep objects generated in the
+ 	// pho rule
+ 	Map<Integer, IPhoneticRep> tReps;
+ 	Map<Integer, IPhoneticRep> aReps;
+	Map<Integer, PhoneMap> pMaps;
+ 	
+ 	int pgCount;
+}
+@init {
+	$g::buffer = new String();
+	
+	$g::tReps = new HashMap<Integer, IPhoneticRep>();
+	$g::aReps = new HashMap<Integer, IPhoneticRep>();
+	$g::pMaps = new HashMap<Integer, PhoneMap>();
+	
+	$g::pgCount = 0;
+}
+@after {
+	$val = $g::buffer;
+	
+	$targetReps = $g::tReps;
+	$actReps = $g::aReps;
+	$phoneMaps = $g::pMaps;
+	
+	$phoRepCount = $g::pgCount;
+}
+	:	^(G_START gele*)
+	;
+	
+gele
+	:	w 
+	{	
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $w.val;	
+	}
+	|	pg
+	{
+	 	// enclose the pg data in [] so that we know to break up
+	 	// this into proper word groups in phon later.
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + "[" + $pg.val + "]";
+	}
+	|	pause
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $pause.val;
+	}
+	| 	r 
+	{	
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
+			"(x" + $r.val + ")";	
+	}
+	| 	k
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
+			"(" + $k.val + ")";
+	}
+	|	ga
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$ga.val;
+	}
+	|	overlap
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $overlap.val + ")";
+	}
+	|	e
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$e.val;
+	}
+	|	nestedg=g
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"{]" + $nestedg.val + "}]"; 	
+		
+		Integer[] targetKeys = $nestedg.targetReps.keySet().toArray(new Integer[0]);
+		for(Integer targetKey:targetKeys) {
+			int newKey = targetKey + $g::pgCount;
+			$g::tReps.put(newKey, $nestedg.targetReps.get(targetKey));
+		}
+		
+		Integer[] actualKeys = $nestedg.actReps.keySet().toArray(new Integer[0]);
+		for(Integer actualKey:actualKeys) {
+			int newKey = actualKey + $g::pgCount;
+			$g::aReps.put(newKey, $nestedg.actReps.get(actualKey));
+		}
+		
+		Integer[] pMapKeys = $nestedg.phoneMaps.keySet().toArray(new Integer[0]);
+		for(Integer pmapKey:pMapKeys) {
+			int newKey = pmapKey + $g::pgCount;
+			$g::pMaps.put(pmapKey, $nestedg.phoneMaps.get(pmapKey));
+		}
+
+		$g::pgCount += $nestedg.phoRepCount;
+	}
+	|	s
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$s.val;
+	}
+	|	underline
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$underline.val;
+	}
+	|	error
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$error.val;
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+g	
+	:	^(G_START (contentlist+=gele)*)
+	->	template( content={$contentlist} )
+	<<\<g\><content; separator="">\</g\> >>
+	;
+	
+gele
+	:	w 
+	->	template( v={$w.st} )
+		"<v>"
+	|	pg
+	->	template( v={$pg.st} )
+		"<v>"
+	|	pause
+	->	template( v={$pause.st} )
+		"<v>"
+	|	r 
+	->	template( v={$r.st} )
+		"<v>"
+	|	k
+	->	template( v={$k.st} )
+		"<v>"
+	|	ga
+	->	template( v={$ga.st} )
+		"<v>"
+	|	overlap
+	->	template( v={$overlap.st} )
+		"<v>"
+	|	e
+	->	template( v={$e.st} )
+		"<v>"
+	|	g
+	->	template( v={$g.st} )
+		"<v>"
+	|	s
+	->	template( v={$s.st} )
+		"<v>"
+	|	underline
+	->	template( v={$underline.st} )
+		"<v>"
+	|	error
+	->	template( v={$error.st} )
+		"<v>"
+	;
+]]>
+	</buffer>
+    
+    <!-- Includes -->
+	<include>w.xml</include>
+	<include>pg.xml</include>
+    <include>r.xml</include>
+    <include>k.xml</include>
+	<include>ga.xml</include>
+	<include>overlap.xml</include>
+	<include>e.xml</include>
+	<include>pause.xml</include>
+	<include>s.xml</include>
+	<include>underline.xml</include>
+	<include>error.xml</include>
+
+</chunk>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Shortening
+XPath - 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+shortening
+	:	SHORTENING_START TEXT? SHORTENING_END 
+	->	^(SHORTENING_START TEXT?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+shortening returns [String val]
+	:	^(SHORTENING_START v=TEXT?)
+	{
+		if($v != null) {
+			$val = "<" + $v.text + ">";
+		}
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+shortening
+    :    ^(SHORTENING_START TEXT?)
+    ->    template( v={$TEXT.text} )
+    "\<shortening\><v>\</shortening\>"
+    ;
+]]>
+    </buffer>
+    
+</chunk>

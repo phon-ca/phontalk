@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+    mor data
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+mor
+    :    MOR_START morattr* morchoice* gra? morseq* MOR_END
+    ->    ^(MOR_START morattr* morchoice* gra? morseq*)
+    ;
+    
+morattr
+    :    MOR_ATTR_TYPE
+    |    MOR_ATTR_OMITTED
+    ;
+    
+morchoice
+    :    mw
+    |    mwc
+    |    mt
+    ;
+    
+morseq
+    :    morpre
+    |    morpost
+    |    menx
+    ;
+    
+morpre
+    :    MORPRE_START morattr* morchoice* gra? morseq* MORPRE_END
+    ->    ^(MORPRE_START morattr* morchoice* gra? morseq*)
+    ;
+    
+morpost
+    :    MORPOST_START morattr* morchoice* gra? morseq* MORPOST_END
+    ->    ^(MORPOST_START morattr* morchoice* gra? morseq*)
+    ;
+    
+menx
+    :    MENX_START TEXT MENX_END
+    ;
+    
+gra
+    :    GRA_START GRA_ATTR_TYPE GRA_ATTR_INDEX GRA_ATTR_HEAD GRA_ATTR_RELATION GRA_END
+    ->    ^(GRA_START GRA_ATTR_TYPE GRA_ATTR_INDEX GRA_ATTR_HEAD GRA_ATTR_RELATION)
+    ;
+    
+mw
+    :    MW_START mpfx* pos mwchoice mk* MW_END
+    ->    ^(MW_START mpfx* pos mwchoice mk*)
+    ;
+    
+mwc
+    :    MWC_START mpfx* pos mw mw+ MWC_END
+    ->    ^(MWC_START mpfx* pos mw+)
+    ;
+    
+mt
+    :    MT_START MT_ATTR_TYPE MT_END
+    ->    ^(MT_START MT_ATTR_TYPE)
+    ;
+    
+mpfx
+    :    MPFX_START TEXT MPFX_END
+    ->    ^(MPFX_START TEXT)
+    ;
+   
+pos
+    :    POS_START morposc morposs* POS_END 
+    ->    ^(POS_START morposc morposs*)
+    ;
+    
+morposc
+    :    C_START TEXT C_END
+    ->    ^(C_START TEXT)
+    ;
+    
+morposs
+    :    S_START TEXT S_END
+    ->    ^(S_START TEXT)
+    ;
+    
+mwchoice
+    :    stem
+    |    mortagmarker
+    ;
+    
+stem
+    :    STEM_START TEXT STEM_END
+    ->    ^(STEM_START TEXT);
+    
+mortagmarker
+    :    MORTAGMARKER_START MORTAGMARKER_ATTR_TYPE MORTAGMARKER_END
+    ->    ^(MORTAGMARKER_START MORTAGMARKER_ATTR_TYPE)
+    ;
+    
+mk
+    :    MK_START TEXT MK_END
+    ->    ^(MK_START TEXT)
+    ;
+    
+
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+mor returns [String val]
+scope
+{
+    String morchoicevals;
+}
+@init
+{
+    $mor::morchoicevals = new String();
+}
+    :    ^(MOR_START morattr* morchoice* gra? morseq*)
+    {
+        // for now, ignoring everything but choice values
+        $val = $mor::morchoicevals;
+    }
+    ;
+    
+morattr
+    :    MOR_ATTR_TYPE
+    |    MOR_ATTR_OMITTED
+    ;
+    
+morchoice
+    :    mw
+    {
+        $mor::morchoicevals += ($mor::morchoicevals.length() > 0 ? " " : "") + $mw.val;
+    }
+    |    mwc
+    |    mt
+    ;
+    
+morseq
+    :    morpre
+    |    morpost
+    |    menx
+    ;
+    
+morpre
+    :    ^(MORPRE_START morattr* morchoice* gra? morseq*)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+morpost
+    :    ^(MORPOST_START morattr* morchoice* gra? morseq*)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+menx
+    :    MENX_START TEXT MENX_END
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+gra
+    :    ^(GRA_START GRA_ATTR_TYPE GRA_ATTR_INDEX GRA_ATTR_HEAD GRA_ATTR_RELATION)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+mw returns [String val]
+scope
+{
+    String mkvals;
+}
+@init
+{
+    $mw::mkvals = new String();
+}
+    :    ^(MW_START mpfx* pos mwchoice mk*)
+    {
+        $val = $pos.val + "|" + $mwchoice.val;
+        
+        if($mw::mkvals.length() > 0) {
+            $val += "-" + $mw::mkvals;
+        }
+    }
+    ;
+    
+mwc
+    :    ^(MWC_START mpfx* pos mw+)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+mt
+    :    ^(MT_START MT_ATTR_TYPE)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+mpfx
+    :    ^(MPFX_START TEXT)
+    {
+        unsupportedWarning();
+    }
+    ;
+   
+pos returns [String val]
+scope
+{
+    String svals;
+}
+@init
+{
+    $pos::svals = new String();
+}
+    :    ^(POS_START morposc morposs*)
+    {
+        $val = $morposc.val;
+        if($pos::svals.length() > 0) 
+        {
+            $val += $pos::svals;
+        }
+    }
+    ;
+    
+morposc returns [String val]
+    :    ^(C_START TEXT)
+    {
+        $val = $TEXT.text;
+    }
+    ;
+    
+morposs returns [String val]
+    :    ^(S_START TEXT)
+    {
+        $val = $TEXT.text;
+        
+        $pos::svals += ($pos::svals.length() > 0 ? " " : "") + ":" + $val;
+    }
+    ;
+    
+mwchoice returns [String val]
+    :    stem
+    {
+        $val = $stem.val;
+    }
+    |    mortagmarker
+    ;
+    
+stem returns [String val]
+    :    ^(STEM_START TEXT)
+    {
+        $val = $TEXT.text;
+    }
+    ;
+    
+mortagmarker
+    :    ^(MORTAGMARKER_START MORTAGMARKER_ATTR_TYPE)
+    ;
+    
+mk
+    :    ^(MK_START TEXT)
+    {
+        $mw::mkvals += ($mw::mkvals.length() > 0 ? "-" : "") + $TEXT.text;
+    }
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+mor
+    :    ^(MOR_START morattr* morchoice* gra? morseq*)
+    ;
+    
+morattr
+    :    MOR_ATTR_TYPE
+    |    MOR_ATTR_OMITTED
+    ;
+    
+morchoice
+    :    mw
+    |    mwc
+    |    mt
+    ;
+    
+morseq
+    :    morpre
+    |    morpost
+    |    menx
+    ;
+    
+morpre
+    :    ^(MORPRE_START morattr* morchoice* gra? morseq*)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+morpost
+    :    ^(MORPOST_START morattr* morchoice* gra? morseq*)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+menx
+    :    MENX_START TEXT MENX_END
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+gra
+    :    ^(GRA_START GRA_ATTR_TYPE GRA_ATTR_INDEX GRA_ATTR_HEAD GRA_ATTR_RELATION)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+mw
+    :    ^(MW_START mpfx* pos mwchoice mk*)
+    ;
+    
+mwc
+    :    ^(MWC_START mpfx* pos mw+)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+mt
+    :    ^(MT_START MT_ATTR_TYPE)
+    {
+        unsupportedWarning();
+    }
+    ;
+    
+mpfx
+    :    ^(MPFX_START TEXT)
+    {
+        unsupportedWarning();
+    }
+    ;
+   
+pos
+    :    ^(POS_START morposc morposs*)
+    ;
+    
+morposc
+    :    ^(C_START TEXT)
+    ;
+    
+morposs
+    :    ^(S_START TEXT)
+    ;
+    
+mwchoice
+    :    stem
+    |    mortagmarker
+    ;
+    
+stem
+    :    ^(STEM_START TEXT);
+    
+mortagmarker
+    :    ^(MORTAGMARKER_START MORTAGMARKER_ATTR_TYPE)
+    ;
+    
+mk
+    :    ^(MK_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+</chunk>

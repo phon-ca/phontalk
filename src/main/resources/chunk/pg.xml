@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Phonetic Group
+XPath - /xs:schema/xs:complexType[@name="phoneticGroupType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+pg
+scope {
+	boolean inPg;
+}
+@init {
+	$pg::inPg = true;
+}
+@after {
+	$pg::inPg = false;
+}
+	:	PG_START ( pgele )* ( pho )* align? PG_END
+	->	^(PG_START pgele* pho* align?)
+	;
+	
+pgele
+	:	w
+	|	g
+	|	pause
+	|  	e
+	|	underline
+	|	overlap
+	|	r 
+	|	k
+	|	ga
+	|	s
+	|	error
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+pg returns [String val]
+scope {
+	String buffer;
+	int phoCount;
+}
+@init {
+	$pg::buffer = new String();
+	if($g.size() > 0) {
+		$g::pgCount++;
+	}
+}
+@after {
+	$val = $pg::buffer.toString();
+}
+	:	^(PG_START pgele* pho* align?)
+	;
+	
+pgele returns [String val]
+@init {
+	$val = new String();
+}
+@after {
+	$pg::buffer += ($pg::buffer.length() > 0 ? " " : "") + $val;
+}
+	:	w 
+	{
+		$val = $w.val;
+	}
+	|	g
+	{
+		$val = "{" + $g.val + "}";
+	}
+	|	pause
+	{
+		$val = $pause.val;
+	}
+	|  	e
+	{
+		$val = $e.val;
+	}
+	|	underline
+	{
+		$val = $underline.val;
+	}
+	|	overlap
+	{
+		$val = "(" + $overlap.val + ")";
+	}
+	|	r 
+	{
+		$val = "(x" + $r.val + ")";
+	}
+	|	k
+	{
+		$val = "(" +  $k.val + ")";
+	}
+	|	ga
+	{
+		$val = $ga.val;
+	}
+	|	s
+	{
+		$val = $s.val;
+	}
+	|	error
+	{
+		$val = $error.val;
+	}
+	;
+	
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+pg
+	:	^(PG_START (contentlist+=pgele)* ( phoreps += pho )* align?)
+	->    template(
+	        content={$contentlist},
+	        ipas={$phoreps},
+			alignment={$align.st}
+	      )
+	<<
+\<pg\>
+	<content; separator="">
+	<ipas; separator="\n">
+	<alignment>
+\</pg\> >>
+	;
+	
+pgele
+	:	w 
+	->	template( v={$w.st} )
+		"<v>"
+	|	g
+	->	template( v={$g.st} )
+		"<v>"
+	|	pause
+	->	template( v={$pause.st} )
+		"<v>"
+	|  	e
+	->	template( v={$e.st} )
+		"<v>"
+	|	underline
+	->	template( v={$underline.st} )
+		"<v>"
+	|	overlap
+	->	template( v={$overlap.st} )
+		"<v>"
+	|	r 
+	->	template( v={$r.st} )
+		"<v>"
+	|	k
+	->	template( v={$k.st} )
+		"<v>"
+	|	ga
+	->	template( v={$ga.st} )
+		"<v>"
+	|	s
+	->	template( v={$s.st} )
+		"<v>"
+	|	error
+	->	template( v={$error.st} )
+		"<v>"
+	;
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include>w.xml</include>
+    <include>r.xml</include>
+    <include>k.xml</include>
+	<include>pho.xml</include>
+	<include>align.xml</include>
+	<include>ga.xml</include>
+	<include>overlap.xml</include>
+	<include>e.xml</include>
+	<include>pause.xml</include>
+	<include>s.xml</include>
+	<include>error.xml</include>
+
+</chunk>

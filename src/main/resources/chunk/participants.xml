@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Participants/Participant elements
+Schema - http://www.talkbank.org/software/talkbank.xsd
+XPath -	/xs:schema/xs:element[@name="CHAT"]/xs:complexType/xs:sequence/xs:element[@name="Participants"]
+		/xs:schema/xs:complexType[@name="participantType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+participants 
+	:	PARTICIPANTS_START participant* PARTICIPANTS_END 
+	->	^(PARTICIPANTS_START participant*)
+	;
+	
+participant 
+	:	PARTICIPANT_START part_attr* PARTICIPANT_END 
+	->	^(PARTICIPANT_START part_attr*)
+	;
+	
+part_attr
+	:	PARTICIPANT_ATTR_ID
+	|	PARTICIPANT_ATTR_NAME
+	|	PARTICIPANT_ATTR_ROLE
+	|	PARTICIPANT_ATTR_LANGUAGE
+	|	PARTICIPANT_ATTR_AGE
+	|	PARTICIPANT_ATTR_GROUP
+	|	PARTICIPANT_ATTR_SEX
+	|	PARTICIPANT_ATTR_SES
+	|	PARTICIPANT_ATTR_EDUCATION
+	|	PARTICIPANT_ATTR_FIRST_LANGUAGE
+	|	PARTICIPANT_ATTR_BIRTHPLACE
+	|	PARTICIPANT_ATTR_BIRTHDAY
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+    	<![CDATA[
+participants 
+	:	^(PARTICIPANTS_START participant*)
+	;
+	
+participant
+scope {
+	IParticipant p;
+	boolean bdaySet ;
+}
+@init {
+	$participant::p = session.newParticipant();
+	$participant::bdaySet = false;
+}
+@after {
+	if(!$participant::bdaySet && session.getDate() != null) {
+		$participant::p.setBirthDate(session.getDate());
+	}
+}
+	:	^(PARTICIPANT_START part_attr*)
+	;
+	
+part_attr
+	:	PARTICIPANT_ATTR_ID
+	{	$participant::p.setId($PARTICIPANT_ATTR_ID.text);	}
+	|	PARTICIPANT_ATTR_NAME
+	{	$participant::p.setName($PARTICIPANT_ATTR_NAME.text);	}
+	|	PARTICIPANT_ATTR_ROLE
+	{	$participant::p.setRole($PARTICIPANT_ATTR_ROLE.text);	}
+	|	PARTICIPANT_ATTR_LANGUAGE
+	{	$participant::p.setLanguage($PARTICIPANT_ATTR_LANGUAGE.text);	}
+	|	PARTICIPANT_ATTR_AGE
+	{
+		// only set birthday using age if we don't have a birthday set already
+		// from age we need to calculate birthday, we can only
+		// do that if the session date is set
+		if(!$participant::bdaySet) {
+			if(session.getDate() != null) {
+				Calendar date = session.getDate();
+				PhonDurationFormat pdf = new PhonDurationFormat(PhonDurationFormat.XML_FORMAT);
+				
+				try {
+				PhonDuration age = (PhonDuration)pdf.parseObject($PARTICIPANT_ATTR_AGE.text);
+				Calendar bDay = PhonDuration.getBeforeDate(date, age);
+				bDay.setTimeZone(TimeZone.getTimeZone("GMT-0"));
+				$participant::p.setBirthDate(bDay);
+				
+				$participant::bdaySet = true;
+				} catch (ParseException e) {}
+			}
+		}
+	}
+	|	PARTICIPANT_ATTR_GROUP
+	{	$participant::p.setGroup($PARTICIPANT_ATTR_GROUP.text);		}
+	|	PARTICIPANT_ATTR_SEX
+	{
+		Sex pSex = ($PARTICIPANT_ATTR_SEX.text.equalsIgnoreCase("male") ? Sex.MALE : Sex.FEMALE);
+		$participant::p.setSex(pSex);
+	}
+	|	PARTICIPANT_ATTR_SES
+	{	$participant::p.setSES($PARTICIPANT_ATTR_SES.text);		}
+	|	PARTICIPANT_ATTR_EDUCATION
+	{	$participant::p.setEducation($PARTICIPANT_ATTR_EDUCATION.text);		}
+	|	PARTICIPANT_ATTR_FIRST_LANGUAGE
+	{	
+		PhonLogger.warning("Attribute 'first-language' not supported.");
+	}
+	|	PARTICIPANT_ATTR_BIRTHPLACE
+	{
+		PhonLogger.warning("Attribute 'birthplace' not supported.");
+	}
+	|	PARTICIPANT_ATTR_BIRTHDAY
+	{
+		PhonDateFormat pdf = new PhonDateFormat(PhonDateFormat.YEAR_LONG);
+		try {
+			Calendar cal = (Calendar)pdf.parseObject($PARTICIPANT_ATTR_BIRTHDAY.text);
+			cal.setTimeZone(TimeZone.getTimeZone("GMT-0"));
+			$participant::p.setBirthDate(cal);
+			
+			$participant::bdaySet = true;
+		} catch (ParseException pe) {
+			PhonLogger.warning(pe.toString());
+		}
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+participants 
+	:	^(PARTICIPANTS_START (partlist+=participant)*)
+	->	template(parts={$partlist})
+	<<
+\<Participants\>
+<parts; separator="">
+\</Participants\>
+	>>
+	;
+		
+participant
+	:	^(PARTICIPANT_START (attrlist+=part_attr)*)
+	->	template(
+			attrs={$attrlist}
+		)
+	<<
+\<participant
+	<attrs; separator="\n"> /\>
+	>>
+	;
+	
+part_attr
+	:	PARTICIPANT_ATTR_ID
+	->	template(id={$PARTICIPANT_ATTR_ID.text})
+		"id=\"<id>\""
+	|	PARTICIPANT_ATTR_NAME
+	->	template(name={$PARTICIPANT_ATTR_NAME.text})
+		"name=\"<name>\""
+	|	PARTICIPANT_ATTR_ROLE
+	->	template(role={$PARTICIPANT_ATTR_ROLE.text})
+		"role=\"<role>\""
+	|	PARTICIPANT_ATTR_LANGUAGE
+	->	template(language={$PARTICIPANT_ATTR_LANGUAGE.text})
+		"language=\"<language>\""
+	|	PARTICIPANT_ATTR_AGE
+	->	template(age={$PARTICIPANT_ATTR_AGE.text})
+		"age=\"<age>\""
+	|	PARTICIPANT_ATTR_GROUP
+	->	template(grp={$PARTICIPANT_ATTR_GROUP.text})
+		"group=\"<grp>\""
+	|	PARTICIPANT_ATTR_SEX
+	->	template(sex={$PARTICIPANT_ATTR_SEX.text})
+		"sex=\"<sex>\""
+	|	PARTICIPANT_ATTR_SES
+	->	template(ses={$PARTICIPANT_ATTR_SES.text})
+		"ses=\"<ses>\""
+	|	PARTICIPANT_ATTR_EDUCATION
+	->	template(edu={$PARTICIPANT_ATTR_EDUCATION.text})
+		"education=\"<edu>\""
+	|	PARTICIPANT_ATTR_FIRST_LANGUAGE
+	->	template(flang={$PARTICIPANT_ATTR_FIRST_LANGUAGE.text})
+		"first-language=\"<flang>\""
+	|	PARTICIPANT_ATTR_BIRTHPLACE
+	->	template(birthplace={$PARTICIPANT_ATTR_BIRTHPLACE.text})
+		"birthplace=\"<birthplace>\""
+	|	PARTICIPANT_ATTR_BIRTHDAY
+	->	template(birthday={$PARTICIPANT_ATTR_BIRTHDAY.text})
+		"birthday=\"<birthday>\""
+	;
+]]>
+	</buffer>
+    
+</chunk>

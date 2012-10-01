@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Linker
+XPath: /xs:schema/xs:complexType[@name="linkerType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+linker
+	: 	LINKER_START LINKER_ATTR_TYPE LINKER_END
+	->	^(LINKER_START LINKER_ATTR_TYPE)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+linker returns [String val]
+@init {
+	$val = "(";
+}
+@after {
+	$val += ")";
+}
+	:	^(LINKER_START type=LINKER_ATTR_TYPE)
+	{
+		String lkType = $type.text;
+		if(lkType.equals("quoted utterance next"))
+			$val += "+\"";
+		else if(lkType.equals("quick uptake"))
+			$val += "+^";
+		else if(lkType.equals("lazy overlap mark"))
+			$val += "+<";
+		else if(lkType.equals("self completion"))
+			$val += "+,";
+		else if(lkType.equals("other completion"))
+			$val += "++";
+		else if(lkType.equals("TCU completion"))
+			$val += "+\u224b";
+		else if(lkType.equals("no break completion"))
+			$val += "+\u2248";
+	}
+	;	
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+linker
+	: 	^(LINKER_START LINKER_ATTR_TYPE)
+	->	template( type={$LINKER_ATTR_TYPE.text} )
+	<<\<linker type="<type>"/\> >>
+	;
+]]>
+	</buffer>
+    
+</chunk>

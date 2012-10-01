@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Event
+XPath -	/xs:schema/xs:complexType[@name="eventType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+e
+	:	E_START evtele* E_END 
+	->	^(E_START evtele*)
+	;
+
+evtele
+	:	action
+	|	happening
+	|	ga
+	|	overlap
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+e returns [String val]
+scope {
+	String buffer;
+}
+@init {
+	$e::buffer = new String();
+}
+@after {
+	$val = "*" + $e::buffer + "*";
+}
+	:	^(E_START evtele*)
+	;
+
+evtele
+	:	action
+	{
+		$e::buffer += ($e::buffer.length() > 0 ? " " : "") + "(action:";
+		
+		if($action.val != null)
+		{
+			$e::buffer += $action.val;
+		}
+		$e::buffer += ")";
+	}
+	|	happening
+	{
+		$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+				"(happening:";
+		if($happening.val != null)
+		{
+			$e::buffer += $happening.val;
+		}
+		$e::buffer += ")";
+	}
+	|	ga
+	{
+		if($ga.val != null)
+		{
+			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+				$ga.val;
+		}
+	}	
+	|	overlap
+	{
+		$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+				"(";
+		if($overlap.val != null) {
+			 $e::buffer += $overlap.val;	
+		}
+		$e::buffer += ")";
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+e
+	:	^(E_START (contentlist+=evtele)*)
+	->	template( content={$contentlist} )
+	<<\<e\><content; separator="">\</e\> >>
+	;
+
+evtele
+	:	action
+	->	template( v={$action.st} )
+		"<v>"
+	|	happening
+	->	template( v={$happening.st} )
+		"<v>"
+	|	ga
+	->	template( v={$ga.st} )
+		"<v>"
+	|	overlap
+	->	template( v={$overlap.st} )
+		"<v>"
+	;
+]]>
+	</buffer>
+    
+    <!-- Includes -->
+	<include>action.xml</include>
+	<include>happening.xml</include>
+	<include>ga.xml</include>
+	<include>overlap.xml</include>
+    
+</chunk>

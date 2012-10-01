@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+p
+	:	P_START P_ATTR_TYPE? P_END 
+	->	^(P_START P_ATTR_TYPE?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+p returns [String val]
+	:	^(P_START type=P_ATTR_TYPE?)
+	{
+		if($type != null)
+		{
+			String pt = $type.text;
+			
+			if(pt.equals("stress"))
+				$val = "/";
+			else if(pt.equals("accented nucleus"))
+				$val = "//";
+			else if(pt.equals("contrastive stress"))
+				$val = "///";
+			else if(pt.equals("drawl"))
+				$val = ":";
+			else if(pt.equals("pause"))
+				$val = "^";
+			else if(pt.equals("blocking"))
+				$val = "^";
+		}
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+p
+	:	^(P_START P_ATTR_TYPE?)
+	->	template( type={$P_ATTR_TYPE} )
+	<<\<p type="<type>"/\> >>
+	;
+]]>
+	</buffer>
+
+</chunk>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Happening
+XPath - /xs:schema/xs:complexType[@name="happeningType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+happening
+	:	HAPPENING_START TEXT? HAPPENING_END 
+	->	^(HAPPENING_START TEXT?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+happening returns [String val]
+@init {
+	$val = null;
+}
+	:	^(HAPPENING_START v=TEXT?)
+	{
+		if($v != null) 
+		{
+			$val = $v.text;
+		}
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+happening
+	:	^(HAPPENING_START TEXT?)
+	->    template( v={$TEXT.text} )
+	<<\<happening\><v>\</happening\> >>
+	;
+]]>
+    </buffer>
+    
+</chunk>

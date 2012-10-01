@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Group Annotation
+XPath - /xs:schema/xs:element[@name="ga"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+ga
+	:	GA_START GA_ATTR_TYPE? TEXT? GA_END
+	->	^(GA_START GA_ATTR_TYPE? TEXT?)
+	;
+]]>
+
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+ga returns [String val]
+@init{
+	$val = "";
+}
+	:	^(GA_START type=GA_ATTR_TYPE? v=TEXT?)
+	{
+		$val = "(";
+		if($type != null)
+		{
+		    String t = $type.text;
+		    if(t.equals("actions")) {
+		        $val += "\045act:";
+		    } else if(t.equals("alternative")) {
+		        $val += "=?";
+		    } else if(t.equals("comments")) {
+		        $val += "\045";
+		    } else if(t.equals("explanation")) {
+		        $val += "=";
+		    } else if(t.equals("paralinguistics")) {
+		        $val += "!=";
+		    } else if(t.equals("standard for dialect")) {
+		        $val += "\045sdi:";
+		    } else if(t.equals("standard for child")) {
+		        $val += "\045sch:";
+		    } else if(t.equals("standard for unclear source")) {
+		        $val += "\045xxx:";
+		    }
+		}
+
+		if($v != null)
+		{
+			$val += " " + $v.text;
+		}
+		$val += ")";
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+ga
+	:	^(GA_START GA_ATTR_TYPE? TEXT?)
+	->    template(
+	        type={$GA_ATTR_TYPE.text},
+	        val={$TEXT.text}
+	      )
+	<<\<ga type="<type>"\><val>\</ga\> >>
+	;
+]]>
+
+    </buffer>
+    
+</chunk>

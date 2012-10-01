@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Phone with syllabification type.
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+ph
+	:	PH_START phattr* TEXT PH_END
+	->	^(PH_START phattr* TEXT)
+	;
+	
+phattr
+	:	PH_ATTR_ID
+	|	PH_ATTR_SCTYPE
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+
+ph returns [Phone val]
+scope {
+	SyllableConstituentType sctype;
+	boolean isHiatus;
+}
+@init {
+	$ph::sctype = SyllableConstituentType.Unknown;
+	$ph::isHiatus = false;
+}
+	:	^(PH_START phattr* TEXT)
+	{
+		$val = new Phone($TEXT.text);
+		$val.setScType($ph::sctype);
+		$val.setDiphthongMember(!$ph::isHiatus);
+	}
+	;
+	
+phattr
+	:	PH_ATTR_SCTYPE
+	{
+		SyllableConstituentType scType =
+			SyllableConstituentType.getTypeForIdentifier($PH_ATTR_SCTYPE.text);
+		if(scType != null) {
+			$ph::sctype = scType;
+		} else {
+			PhonLogger.warning("Invalid syllable constituent type '" +
+				$PH_ATTR_SCTYPE.text + "'");
+		}
+	}
+	|	PH_ATTR_ID
+	;
+
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+ph
+	:	^(PH_START (phattrs+=phattr)* TEXT)
+	->	template( attributes = {$phattrs}, v = {$TEXT.text} )
+	<<\<ph <attributes; separator=" ">\><v>\</ph\> >>
+	;
+
+phattr
+	:	PH_ATTR_SCTYPE
+	->	template( v = {$PH_ATTR_SCTYPE.text} )
+	<<sctype="<v>">>
+	|	PH_ATTR_ID
+	->	template( v = {$PH_ATTR_ID.text} )
+	<<id="<v>">>
+	;
+]]>
+    </buffer>
+    
+</chunk>

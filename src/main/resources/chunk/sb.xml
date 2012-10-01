@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Syllabification/List of Phones
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+sb
+	:	SB_START ph* SB_END
+	->	^(SB_START ph*)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+
+sb
+scope {
+	int pIndex;
+}
+@init {
+	$sb::pIndex = 0;
+}
+	:	^(SB_START ph*)
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+sb
+	:	^(SB_START (phs+=ph)*)
+	->	template( phones = {$phs} )
+	<<\<sb\>
+	<phones; separator="\n">
+\</sb\> >>
+	;
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include>ph.xml</include>
+    
+</chunk>

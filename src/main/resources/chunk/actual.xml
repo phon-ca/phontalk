@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Model IPA Form
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+actual
+	:	ACTUAL_START actualvalue sb? ACTUAL_END
+	->	^(ACTUAL_START actualvalue sb?)
+	;
+
+actualvalue
+	:	VALUE_START TEXT VALUE_END
+	->	^(VALUE_START TEXT)
+	;
+]]>
+    </buffer>
+
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+actual
+	:	^(ACTUAL_START actualvalue sb?)
+	;
+
+actualvalue
+	:	^(VALUE_START TEXT)
+	;
+]]>
+    </buffer>
+
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+actual
+	:	^(ACTUAL_START actualvalue sb?)
+	->	template( mv = {$actualvalue.st}, syllb = {$sb.st} )
+	<<\<actual\>
+	<mv>
+	<syllb>
+\</actual\>
+	>>
+	;
+
+actualvalue
+	:	^(VALUE_START TEXT)
+	->	template( v = {$TEXT.text} )
+	<<\<value\><v>\</value\> >>
+	;
+]]>
+    </buffer>
+
+    <!-- Includes -->
+    <include>sb.xml</include>
+
+</chunk>

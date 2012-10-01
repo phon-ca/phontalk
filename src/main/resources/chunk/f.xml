@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Form
+XPath - 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+f
+	:	F_START F_ATTR_TYPE? F_END 
+	->	^(F_START F_ATTR_TYPE?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+f returns [String val]
+	:	^(F_START type=F_ATTR_TYPE?)
+	{
+		if($type != null) 
+		{
+			$val = "(form:" + $type.text + ")";
+		}
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+f
+    :    ^(F_START F_ATTR_TYPE?)
+    ->    template( type={$F_ATTR_TYPE.text} )
+    <<\<f type="<type>"/\> >>
+    ;
+]]>
+    </buffer>
+    
+</chunk>

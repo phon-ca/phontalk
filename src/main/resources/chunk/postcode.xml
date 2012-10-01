@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Postcode
+XPath - /xs:schema/xs:complexType[@name="postcodeType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+postcode
+	:	POSTCODE_START TEXT? POSTCODE_END 
+	->	^(POSTCODE_START TEXT?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+postcode
+	:	^(POSTCODE_START v=TEXT?)
+	{
+		// make a new tier in the session if necessary
+		IDepTierDesc postcodeDesc = null;
+		for(IDepTierDesc tierDesc:session.getDependentTiers())
+		{
+			if(tierDesc.getTierName().equals("Postcode")) {
+				postcodeDesc = tierDesc;
+				break;
+			}
+		}
+		if(postcodeDesc == null) {
+			postcodeDesc = session.newDependentTier();
+			postcodeDesc.setTierName("Postcode");
+			postcodeDesc.setIsGrouped(false);
+		}
+		
+		// get the tier in the current record
+		IDependentTier depTier = 
+			$u::utt.getDependentTier(postcodeDesc.getTierName());
+		if(depTier == null) {
+			depTier = $u::utt.newDependentTier();
+			depTier.setTierValue("");
+			depTier.setTierName(postcodeDesc.getTierName());
+		}
+		depTier.setTierValue(
+			StringUtils.strip(depTier.getTierValue() + " " + $v.text));
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+postcode
+	:	^(POSTCODE_START TEXT?)
+	->	template( v={$TEXT.text} )
+	<<\<postcode\><v>\</postcode\> >>
+	;
+]]>
+	</buffer>
+    
+</chunk>

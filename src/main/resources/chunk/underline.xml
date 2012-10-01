@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Underline
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+underline
+	:	UNDERLINE_START UNDERLINE_ATTR_TYPE UNDERLINE_END
+	->	^(UNDERLINE_START UNDERLINE_ATTR_TYPE)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+underline returns [String val]
+@init {
+$val = "";
+}
+	:	^(UNDERLINE_START type=UNDERLINE_ATTR_TYPE)
+	{
+		String uType = $type.text;
+		$val = "*underline:" + uType + "*";
+	}
+	;	
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+underline
+	:	^(UNDERLINE_START type=UNDERLINE_ATTR_TYPE)
+	->	template( type={$UNDERLINE_ATTR_TYPE} )
+	"\<underline type=\"<type>\"/\>"
+	;	
+]]>
+    </buffer>
+    
+</chunk>

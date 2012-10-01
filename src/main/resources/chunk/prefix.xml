@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+
+    <buffer name="Chat.g">
+        <![CDATA[
+grammar Chat;
+
+options {
+output=AST;
+ASTLabelType=CommonTree;
+}
+
+@header {
+package ca.phon.phontalk.parser;
+
+import ca.phon.system.logger.*;
+}
+
+@members {
+
+/** Override the default getErrorMessage() to 
+ * also output to PhonLogger
+ */
+public String getErrorMessage(RecognitionException re, String[] tokens) {
+	String retVal = super.getErrorMessage(re, tokens);
+	PhonLogger.warning("line " + 
+		re.line + ":" + re.c + " " + retVal);
+		/*
+	ByteArrayOutputStream bout = new ByteArrayOutputStream();
+	PrintWriter writer = new PrintWriter(new OutputStreamWriter(bout));
+	re.printStackTrace(writer);
+	PhonLogger.warning(new String(bout.toByteArray(), "UTF-8"));
+		*/
+	return retVal;
+}
+
+/**
+ * Print out a warning that we are not supporting the
+ * currently active element.
+ */
+public void unsupportedWarning() {
+
+    
+
+}
+
+}
+]]>
+    </buffer>
+
+    <buffer name="ChatTree.g">
+        <![CDATA[
+tree grammar ChatTree;
+
+options
+{
+	ASTLabelType = CommonTree ;
+	tokenVocab = Chat ;
+	output = AST;
+}
+
+@header {
+package ca.phon.phontalk.parser;
+
+import ca.phon.phontalk.*;
+import ca.phon.application.*;
+import ca.phon.application.transcript.*;
+import ca.phon.util.*;
+import ca.phon.phone.*;
+import ca.phon.alignment.*;
+import ca.phon.syllable.*;
+import ca.phon.engines.syllabifier.*;
+import ca.phon.engines.aligner.*;
+import ca.phon.system.logger.PhonLogger;
+
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.text.ParseException;
+import java.util.Map;
+import java.util.HashMap;
+}
+
+@members {
+
+	/** Default IPhonFactory */
+	private IPhonFactory phonFactory = 
+		IPhonFactory.getFactory("PB1.2");
+
+	/** Session */
+	private ITranscript session = 
+		phonFactory.createTranscript();
+		
+	/** The converter 
+	       This should be set BEFORE any walker rules are called */
+	public XmlConverter converter = null;
+	
+	public void setConverter(XmlConverter c) { this.converter = c; };
+
+	public ITranscript getSession() { return session; }
+
+	private Syllabifier getSyllabifier() {
+		Syllabifier syllabifier = null;
+		if(converter != null) {
+			Object syllabifierObj =
+				converter.getProperty(XmlConverter.CONVERTER_PROP_SYLLABIFIER);
+			if(syllabifierObj != null 
+			&& syllabifierObj instanceof Syllabifier) {
+				syllabifier = (Syllabifier)syllabifierObj;
+			}
+		}
+		return syllabifier;
+	}
+	
+	private boolean isReparsePhones() {
+		boolean retVal = false;
+		
+		if(converter != null) {
+			Object reparsePropVal = 
+				converter.getProperty(XmlConverter.CONVERTER_PROP_REPARSE_PHONES);
+			if(reparsePropVal != null && reparsePropVal instanceof Boolean) {
+				retVal = (Boolean)reparsePropVal;
+			}
+		}
+		return retVal;
+	}
+	
+/**
+ * Print out a warning that we are not supporting the
+ * currently active element.
+ */
+public void unsupportedWarning() {
+
+    
+
+}
+	
+	
+	private int uttIndex = 0;
+}
+]]>
+    </buffer>
+
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+tree grammar Phon2XmlWalker;
+
+options
+{
+	ASTLabelType = CommonTree ;
+	tokenVocab = Chat ;
+	output = template;
+}
+
+@header {
+package ca.phon.phontalk.parser;
+
+import ca.phon.system.logger.*;
+}
+
+@members {
+private int uttIndex = 0;
+
+/** Override the default getErrorMessage() to 
+ * also output to PhonLogger
+ */
+public String getErrorMessage(RecognitionException re, String[] tokens) {
+    String retVal = super.getErrorMessage(re, tokens);
+   
+    PhonLogger.severe("Record " + (uttIndex+1) + " (" +
+        re.line + ":" + re.c + ") " + retVal);
+
+    if(re instanceof MismatchedTreeNodeException) {
+    	MismatchedTreeNodeException mte = (MismatchedTreeNodeException)re;
+    	PhonLogger.severe((new ChatTokens()).getTokenName(mte.expecting));
+    }
+        re.printStackTrace();
+    return retVal;
+}
+
+public int getRecordIndex() {
+	return uttIndex+1;
+}
+
+/**
+ * Print out a warning that we are not supporting the
+ * currently active element.
+ */
+public void unsupportedWarning() {
+
+    
+
+}
+
+}
+
+]]>
+    </buffer>
+
+    <!-- The next file(s) to include -->
+    <include>chat.xml</include>
+
+</chunk>

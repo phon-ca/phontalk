@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+langs	
+	:	LANGS_START langsEle LANGS_END
+	->	^(LANGS_START langsEle)
+	;
+	
+langsEle	
+	:	singleLang
+	|	multipleLang
+	|	ambiguousLang
+	;
+	
+singleLang
+	:	SINGLE_START TEXT SINGLE_END
+	->	^(SINGLE_START TEXT)
+	;
+	
+multipleLang
+	:	MULTIPLE_START TEXT MULTIPLE_END
+	->	^(MULTIPLE_START TEXT)
+	;
+	
+ambiguousLang
+	:	AMBIGUOUS_START TEXT AMBIGUOUS_END
+	->	^(AMBIGUOUS_START TEXT)
+	;
+		
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+langs returns [String val]
+scope {
+	String buffer;
+}
+@init {
+	$langs::buffer = new String();
+}
+@after {
+	$val = $langs::buffer.toString();
+}
+	:	^(LANGS_START langsEle)
+	;
+	
+langsEle	
+	:	singleLang
+	|	multipleLang
+	|	ambiguousLang
+	;
+	
+singleLang
+	:	^(SINGLE_START TEXT)
+	{
+		$langs::buffer = "(langs:single," + $TEXT.text + ")";
+	}
+	;
+	
+multipleLang
+	:	^(MULTIPLE_START TEXT)
+	{
+		$langs::buffer = "(langs:multiple," + $TEXT.text + ")";
+	}
+	;
+	
+ambiguousLang
+	:	^(AMBIGUOUS_START TEXT)
+	{
+		$langs::buffer = "(langs:ambiguous," + $TEXT.text + ")";
+	}
+	;
+	
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+langs	
+	:	^(LANGS_START langsEle)
+	->	template( v={$langsEle.st} )
+		"\<langs\><v>\</langs\>"
+	;
+	
+langsEle	
+	:	singleLang
+	->	template( v={$singleLang.st} )
+		"<v>"
+	|	multipleLang
+	->	template( v={$multipleLang.st} )
+		"<v>"
+	|	ambiguousLang
+	->	template( v={$ambiguousLang.st} )
+		"<v>"
+	;
+	
+singleLang
+	:	^(SINGLE_START singt=TEXT)
+	->	template( v={$singt.text} )
+		"\<single\><v>\</single\>"
+	;
+	
+multipleLang
+	:	^(MULTIPLE_START multt=TEXT)
+	->	template( v={$multt.text} )
+		"\<multiple\><v>\</multiple\>"
+	;
+	
+ambiguousLang
+	:	^(AMBIGUOUS_START ambt=TEXT)
+	->	template( v={$ambt.text} )
+		"\<ambiguous\><v>\</ambiguous\>"
+	;
+]]>
+    </buffer>
+    
+    
+</chunk>

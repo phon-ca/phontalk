@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Maker type
+XPath - /xs:schema/xs:complexType[@name="makerType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+k
+	:	K_START K_ATTR_TYPE? K_END 
+	-> 	^(K_START K_ATTR_TYPE?)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+k returns [String val]
+	:	^(K_START type=K_ATTR_TYPE?)
+	{
+		if($type != null)
+		{
+		    String t = $K_ATTR_TYPE.text;
+		    
+		    if(t.equals("stressing")) {
+		        $val = "!";
+		    } else if(t.equals("contrastive stressing")) {
+		        $val = "!!";
+		    } else if(t.equals("best guess")) {
+		        $val = "?";
+		    } else if(t.equals("retracing")) {
+		        $val = "/";
+		    } else if(t.equals("retracing with correction")) {
+		        $val = "//";
+		    } else if(t.equals("retracing reformulation")) {
+		        $val = "///";
+		    } else if(t.equals("retracing unclear")) {
+		        $val = "/?";
+		    } else if(t.equals("false start")) {
+		        $val = "/-";
+		    }
+		}
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+k
+	:    ^(K_START K_ATTR_TYPE?)
+	->    template( type={$K_ATTR_TYPE} )
+	<<\<k type="<type>"/\> >>
+	;
+]]>
+    </buffer>
+    
+</chunk>

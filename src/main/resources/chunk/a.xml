@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Annotation
+XPath - /xs:schema/xs:complexType[@name="annotationType"] 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+a
+	:	A_START a_attr* (aele)* A_END 
+	->	^(A_START a_attr* aele*)
+	;
+
+aele
+	:	TEXT
+	|	media
+	;
+	
+a_attr
+	:	A_ATTR_TYPE
+	|	A_ATTR_FLAVOR
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+a returns [String type, String flavor, String val]
+scope {
+	String t;
+	String f;
+	String buffer;
+}
+@init {
+	$a::t = new String();
+	$a::f = new String();
+	$a::buffer = new String();
+}
+@after {
+	$type = $a::t;
+	$flavor = $a::f;
+	$val = $a::buffer;
+}
+	:	^(A_START a_attr* eles+=aele*)
+	{
+	
+		// change type="extension" flavor="pho" to type="phonetic"
+		//if($a::t.equals("extension") && $a::f.equals("pho")) {
+		//	$a::t = "phonetic";
+		//}
+		
+		// special tiers
+		if(	$a::t.equals("addressee") 
+			|| $a::t.equals("actions") 
+			|| $a::t.equals("situation")
+			|| $a::t.equals("intonation")
+			|| $a::t.equals("explanation")
+			|| $a::t.equals("alternative")
+			|| $a::t.equals("coding") 
+			|| $a::t.equals("cohesion")
+			|| $a::t.equals("english translation")
+			|| $a::t.equals("errcoding")
+			|| $a::t.equals("flow")
+			|| $a::t.equals("facial")
+			|| $a::t.equals("target gloss")
+			|| $a::t.equals("gesture")
+			|| $a::t.equals("language")
+			|| $a::t.equals("paralinguistics")
+			|| $a::t.equals("SALT")
+			|| $a::t.equals("speech act")
+			|| $a::t.equals("time stamp") )
+		{
+			IDepTierDesc tierDesc = null;
+			for(IDepTierDesc current:session.getDependentTiers())
+			{
+				if(!current.isGrouped() && current.getTierName().equals($a::t))
+				{
+					tierDesc = current;
+					break;
+				}
+			}
+			
+			if(tierDesc == null) {
+				// create the new tier
+				tierDesc = session.newDependentTier();
+				tierDesc.setTierName($a::t);
+				tierDesc.setIsGrouped(false);
+			}
+			
+			IDependentTier depTier = $u::utt.newDependentTier();
+			depTier.setTierName($a::t);
+			depTier.setTierValue($a::buffer);
+		}
+		
+		// set notes if type is 'comments'
+		else if($a::t.equals("comments")) 
+		{
+			// set notes in utterance
+			$u::utt.setNotes($a::buffer);
+		}
+		
+		// if type is 'extension' create a new dep tier (if necessary)
+		// and then add the data to the utterance
+		else if($a::t.equals("extension"))
+		{
+			String tierName = $a::f;
+			String tierVal = StringUtils.strip($a::buffer);
+			
+			List<IDepTierDesc> allTiers = new ArrayList<IDepTierDesc>();
+			allTiers.addAll(session.getDependentTiers());
+			allTiers.addAll(session.getWordAlignedTiers());
+			IDepTierDesc tierDesc = null;
+			for(IDepTierDesc current:allTiers)
+			{
+				if(current.getTierName().equals(tierName))
+				{
+					tierDesc = current;
+					break;
+				}
+			}
+			
+			if(tierDesc == null) {
+				// create the new tier
+				tierDesc = session.newDependentTier();
+				tierDesc.setTierName(tierName);
+				
+				boolean isGrouped =
+				 	(tierVal.startsWith("[") && tierVal.endsWith("]"));
+				tierDesc.setIsGrouped(isGrouped);
+			}
+			
+			//IDependentTier tier = $u::utt.newDependentTier();
+			//tier.setTierName(tierName);
+			//tier.setTierValue($a::buffer);
+			try {
+				$u::utt.setTierString(tierName, tierVal);
+			} catch (ca.phon.exceptions.ParserException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// if type is 'phonetic' we have an old-style pho (instead)
+		// of npho) try to import the data as an IPA transcript
+		else if($a::t.equals("phonetic"))
+		{
+			String[] splitVals = $a::buffer.split("\\p{Space}");
+			List<IWord> words = $u::utt.getWords();
+			Syllabifier syllabifier = getSyllabifier();
+			
+			if(splitVals.length != words.size()) {
+				PhonLogger.warning("[Record " + (uttIndex+1) + "] Misaligned \%xpho '" + $a::buffer + "'");
+			}
+			
+			int sIdx = 0;
+			for(int wIdx = 0; wIdx < words.size() && sIdx < splitVals.length; wIdx++) {
+				IWord word = words.get(wIdx);
+				String v = splitVals[sIdx++];
+				
+				IPhoneticRep phoRep =
+					word.getPhoneticRepresentation(Form.Actual);
+				List<Phone> phones = Phone.toPhoneList(v);
+				if(syllabifier != null)
+					syllabifier.syllabify(phones);
+				phoRep.setPhones(phones);
+				phoRep.setForm(Form.Actual);
+			}
+			
+			if(sIdx < splitVals.length) {
+				// add remainder to last word
+				IWord word = words.get(words.size()-1);
+				
+				String remainder = "";
+				do {
+					remainder += (remainder.length() == 0 ? "" : " ") + splitVals[sIdx++];
+				} while(sIdx < splitVals.length);
+				
+				IPhoneticRep phoRep =
+					word.getPhoneticRepresentation(Form.Actual);
+					
+				List<Phone> phones = phoRep.getPhones();
+				List<Phone> newphones = Phone.toPhoneList(
+					(phones.size() == 0 ? "" : " ") + remainder);
+				phones.addAll(newphones);
+				if(syllabifier != null)
+					syllabifier.syllabify(phones);
+				phoRep.setPhones(phones);
+				phoRep.setForm(Form.Actual);
+			}
+		}
+	}
+	;
+	
+aele
+	:	TEXT
+	{
+		$a::buffer += ($a::buffer.length() > 0 ? " " : "") +
+			$TEXT.text;
+	}
+	|	media
+	{
+		IMedia m = $media.val;
+		if(m != null) {
+			String addVal = "(" + 
+				StringUtils.msToDisplayString((long)Math.round(m.getStartValue())) + "-" +
+				StringUtils.msToDisplayString((long)Math.round(m.getEndValue())) + ")";
+			$a::buffer += ($a::buffer.length() > 0 ? " " : "") +
+				addVal;
+		}
+	}
+	;
+
+a_attr
+	:	A_ATTR_TYPE
+	{
+		$a::t = $A_ATTR_TYPE.text;
+	}
+	|	A_ATTR_FLAVOR
+	{ 
+		$a::f = $A_ATTR_FLAVOR.text;
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+a
+	:	^(A_START (attrlist+=a_attr)* (contentlist+=aele)*)
+	->	template(
+			attrs={$attrlist},
+			content={$contentlist}
+		)
+	<<\<a <attrs; separator=" ">\>\<![CDATA[<content; separator="">]]\>\</a\> >>
+	;
+
+aele
+	:	TEXT
+	->	template( v={$TEXT.text} )
+		"<v>"
+	|	media
+	->	template( v={$media.st} )
+		"<v>"
+	;
+	
+a_attr
+	:	A_ATTR_TYPE
+	->	template( v={$A_ATTR_TYPE} )
+	<<type="<v>">>
+	|	A_ATTR_FLAVOR
+	->	template( v={$A_ATTR_FLAVOR} )
+	<<flavor="<v>">>
+	;
+]]>
+	</buffer>
+
+	<include>media.xml</include>
+
+</chunk>

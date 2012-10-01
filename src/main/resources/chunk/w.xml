@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Word
+XPath - /xs:schema/xs:complexType[@name="wordType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+w
+	:	W_START wattr* wele* W_END 
+	->	^(W_START wattr* wele*)
+	;
+	
+wele
+	:	TEXT 
+	|	wk 
+	|	p 
+	|	shortening 
+	|	f 
+	|	replacement
+	|	underline
+	|	langs
+	|	mor
+	;
+	
+wattr
+	:	W_ATTR_FORMTYPE
+	|	W_ATTR_TYPE
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+w returns [String val]
+scope {
+	String buffer;
+	String suffix;
+	String prefix;
+}
+@init {
+	$w::buffer = new String();
+	$w::suffix = "";
+	$w::prefix = "";
+}
+@after {
+	$val = $w::prefix + $w::buffer.toString() + $w::suffix;
+}
+	:	^(W_START wattr* wele*)
+	;
+	
+wele
+	:	TEXT
+	{	
+		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $TEXT.text;	
+	}
+	| 	wk
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $wk.val;
+	}
+	|	p 
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $p.val;
+	}
+	|	shortening
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $shortening.val;
+	}
+	|	f
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $f.val;
+	}
+	|	replacement
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $replacement.val;
+	}
+	|	underline
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $underline.val;
+	}
+	|	langs
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "" ) + $langs.val;
+	}
+	|	mor
+	{
+		// make sure dep tier exists in session
+			IDepTierDesc tierDesc = null;
+			for(IDepTierDesc current:session.getDependentTiers())
+			{
+				if(current.isGrouped() && current.getTierName().equals("Morphology"))
+				{
+					tierDesc = current;
+					break;
+				}
+			}
+			
+			if(tierDesc == null) {
+				// create the new tier
+				tierDesc = session.newDependentTier();
+				tierDesc.setTierName("Morphology");
+				tierDesc.setIsGrouped(true);
+			}
+		
+		// add more data as a dep tier of the current word(group)
+		IDependentTier depTier = $ugrp::w.getDependentTier(tierDesc.getTierName());
+		if(depTier == null) {
+			depTier = $ugrp::w.newDependentTier();
+			depTier.setTierName(tierDesc.getTierName());
+		}
+		depTier.setTierValue($mor.val);
+		
+	}
+	;
+	
+wattr
+	:	W_ATTR_FORMTYPE
+	{
+		$w::suffix = "@";
+		
+		String t = $W_ATTR_FORMTYPE.text;
+		if(t.equals("babbling")) {
+			$w::suffix += "b";
+		} else if(t.equals("child-invented")) {
+			$w::suffix += "c";
+		} else if(t.equals("dialect")) {
+			$w::suffix += "d";
+		} else if(t.equals("family-specific")) {
+			$w::suffix += "f";
+		} else if(t.equals("filled pause")) {
+			$w::suffix += "fp";
+		} else if(t.equals("filler syllable")) {
+			$w::suffix += "fs";
+		} else if(t.equals("generic")) {
+			$w::suffix += "g";
+		} else if(t.equals("interjection")) {
+			$w::suffix += "i";
+		} else if(t.equals("kana")) {
+			$w::suffix += "k";
+		} else if(t.equals("letter")) {
+			$w::suffix += "l";
+		} else if(t.equals("neologism")) {
+			$w::suffix += "n";
+		} else if(t.equals("no voice")) {
+			$w::suffix += "nv";
+		} else if(t.equals("onomatopoeia")) {
+			$w::suffix += "o";
+		} else if(t.equals("phonology consistent")) {
+			$w::suffix += "p";
+		} else if(t.equals("proto-morpheme")) {
+			$w::suffix += "pm";
+		} else if(t.equals("quoted metareference")) {
+			$w::suffix += "q";
+		} else if(t.equals("sign speech")) {
+			$w::suffix += "sas";
+		} else if(t.equals("singing")) {
+			$w::suffix += "si";
+		} else if(t.equals("signed language")) {
+			$w::suffix += "sl";
+		} else if(t.equals("test")) {
+			$w::suffix += "t";
+		} else if(t.equals("UNIBET")) {
+			$w::suffix += "u";
+		} else if(t.equals("words to be excluded")) {
+			$w::suffix += "x";
+		} else if(t.equals("word play")) {
+			$w::suffix += "wp";
+		}
+	}
+	|	W_ATTR_TYPE
+	{
+		String t = $W_ATTR_TYPE.text;
+		if(t.equals("unintelligible-word")) {
+			$w::prefix = "xx";
+		} else if(t.equals("unintelligible")) {
+			$w::prefix = "xxx";
+		} else if(t.equals("unintelligible-word-with-pho")) {
+			$w::prefix = "yy";
+		} else if(t.equals("unintelligible-with-pho")) {
+			$w::prefix = "yyy";
+		} else if(t.equals("untranscribed")) {
+			$w::prefix = "www";
+		} else if(t.equals("action")) {
+			$w::prefix = "0";
+		} else if(t.equals("omission")) { 
+			$w::prefix = "0";
+		} else if(t.equals("ellipsis")) {
+			$w::prefix = "00";
+		} else if(t.equals("fragment")) {
+			$w::prefix = "&";
+		}
+	}
+	;
+]]>
+    </buffer>
+	
+	<buffer name="Phon2XmlWalker.g">
+		<![CDATA[
+w
+	:	^(W_START (wattrlist+=wattr)* (contentlist+=wele)* )
+	->	{$wattrlist != null}? template( content={$contentlist}, wattrs={$wattrlist} )
+		"\<w <wattrs; separator=\"\">\><content; separator=\"\">\</w\>"
+	->	template( content={$contentlist} )
+		"\<w\><content; separator=\"\">\</w\>"
+	;
+	
+wele
+	:	TEXT
+	->	template( v={$TEXT.text} )
+		"<v>"
+	|	wk
+	->	template( v={$wk.st} )
+		"<v>"
+	|	p
+	->	template( v={$p.st} )
+		"<v>"
+	|	shortening
+	->	template( v={$shortening.st} )
+		"<v>"
+	|	f
+	->	template( v={$f.st} )
+		"<v>"
+	|	replacement
+	->	template( v={$replacement.st} )
+		"<v>"
+	|	underline
+	->	template( v={$underline.st} )
+		"<v>"
+	|	langs
+	->	template ( v={$langs.st} )
+		"<v>"
+	|	mor
+	;
+	
+wattr
+	:	W_ATTR_FORMTYPE
+	->	template( v={$W_ATTR_FORMTYPE.text} )
+	<<formType="<v>" >>
+	|	W_ATTR_TYPE
+	->	template( v={$W_ATTR_TYPE.text} )
+	<<type="<v>" >>
+	;
+]]>
+	</buffer>
+	
+    <!-- Includes -->
+    <include>wk.xml</include>
+    <include>p.xml</include>
+    <include>shortening.xml</include>
+    <include>f.xml</include>
+    <include>replacement.xml</include>
+    <include>underline.xml</include>
+    <include>langs.xml</include>
+	<include>mor.xml</include>
+    
+</chunk>

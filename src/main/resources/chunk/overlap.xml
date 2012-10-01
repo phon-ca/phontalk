@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Overlap
+XPath: /xs:schema/xs:complexType[@name="overlapType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+overlap
+	:	OVERLAP_START OVERLAP_ATTR_TYPE? OVERLAP_END?
+	->	^(OVERLAP_START OVERLAP_ATTR_TYPE?)
+	;	
+
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+overlap returns [String val]
+@init {
+	$val = "";
+}
+	:	^(OVERLAP_START type=OVERLAP_ATTR_TYPE?)
+	{
+		if($type != null) 
+		{
+			String ovType = $type.text;
+			if(ovType.equals("overlap follows")) 
+				$val = ">";
+			else if(ovType.equals("overlap precedes"))
+				$val = "<";
+		}
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+overlap
+	:	^(OVERLAP_START OVERLAP_ATTR_TYPE?)
+	->    template( type={$OVERLAP_ATTR_TYPE.text} )
+	<<\<overlap type="<type>"/\> >>
+	;	
+]]>
+    </buffer>
+    
+</chunk>
