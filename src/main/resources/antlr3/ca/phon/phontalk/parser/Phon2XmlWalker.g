@@ -68,7 +68,6 @@ chat
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns="http://www.talkbank.org/ns/talkbank"  
 	xsi:schemaLocation="http://www.talkbank.org/ns/talkbank http://talkbank.org/software/talkbank.xsd" 
-	Version="1.9.1"
 	<attrs; separator=""> \>
 	<parts>
 	<content; separator="">
@@ -96,6 +95,10 @@ Media="<media>" >>
 	->	template(types={$CHAT_ATTR_MEDIATYPES.text})
 	<<
 Mediatypes="<types>" >>
+	|	CHAT_ATTR_VERSION
+	->	template(version={$CHAT_ATTR_VERSION.text})
+	<<
+Version="<version>" >>
 	|	CHAT_ATTR_LANG
 	->	template(lang={$CHAT_ATTR_LANG.text})
 	<<

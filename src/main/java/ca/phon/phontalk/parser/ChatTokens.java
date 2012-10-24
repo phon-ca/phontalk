@@ -34,7 +34,7 @@ public class ChatTokens {
 	
 	public ChatTokens() {
 		super();
-		initTokenMap(getClass().getResource(tokenFile));
+		initTokenMap(getClass().getClassLoader().getResource(tokenFile));
 	}
 	
 	private void initTokenMap(URL url) {

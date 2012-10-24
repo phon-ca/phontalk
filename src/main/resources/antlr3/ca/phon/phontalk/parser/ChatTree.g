@@ -122,6 +122,7 @@ chat_attrs
 		session.setMediaLocation(
 			(session.getMediaLocation() != null ? session.getMediaLocation() : "") + suffix);
 	}
+	|	CHAT_ATTR_VERSION
 	|	CHAT_ATTR_LANG
 	{
 		session.setLanguage($CHAT_ATTR_LANG.text);

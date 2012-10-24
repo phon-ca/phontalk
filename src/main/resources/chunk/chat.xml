@@ -25,6 +25,7 @@ chat_content
 chat_attrs
 	:	CHAT_ATTR_MEDIA
 	|	CHAT_ATTR_MEDIATYPES
+	|	CHAT_ATTR_VERSION
 	|	CHAT_ATTR_LANG
 	|	CHAT_ATTR_CORPUS
 	|	CHAT_ATTR_ID
@@ -65,6 +66,7 @@ chat_attrs
 		session.setMediaLocation(
 			(session.getMediaLocation() != null ? session.getMediaLocation() : "") + suffix);
 	}
+	|	CHAT_ATTR_VERSION
 	|	CHAT_ATTR_LANG
 	{
 		session.setLanguage($CHAT_ATTR_LANG.text);
@@ -105,7 +107,6 @@ chat
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns="http://www.talkbank.org/ns/talkbank"  
 	xsi:schemaLocation="http://www.talkbank.org/ns/talkbank http://talkbank.org/software/talkbank.xsd" 
-	Version="1.9.1"
 	<attrs; separator=""> \>
 	<parts>
 	<content; separator="">
@@ -133,6 +134,10 @@ Media="<media>" >>
 	->	template(types={$CHAT_ATTR_MEDIATYPES.text})
 	<<
 Mediatypes="<types>" >>
+	|	CHAT_ATTR_VERSION
+	->	template(version={$CHAT_ATTR_VERSION.text})
+	<<
+Version="<version>" >>
 	|	CHAT_ATTR_LANG
 	->	template(lang={$CHAT_ATTR_LANG.text})
 	<<

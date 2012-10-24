@@ -40,6 +40,7 @@ import ca.phon.application.transcript.ITranscript;
 import ca.phon.application.transcript.IUtterance;
 import ca.phon.application.transcript.IWord;
 import ca.phon.application.transcript.IWordGroup;
+import ca.phon.application.transcript.Sex;
 import ca.phon.application.transcript.TranscriptElement;
 import ca.phon.phone.Phone;
 import ca.phon.phone.PhoneSequenceMatcher;
@@ -277,6 +278,12 @@ public class PhonTreeBuilder {
 		dateNode.getToken().setText(dString);
 		dateNode.setParent(tree);
 		tree.addChild(dateNode);
+		
+		// version
+		CommonTree vNode = createToken("CHAT_ATTR_VERSION");
+		vNode.getToken().setText("2.0.2");
+		vNode.setParent(tree);
+		tree.addChild(vNode);
 	}
 	
 	/**
@@ -366,7 +373,9 @@ public class PhonTreeBuilder {
 			if(p.getSex() != null) {
 				CommonTree pSex =
 					createToken("PARTICIPANT_ATTR_SEX");
-				pSex.getToken().setText(p.getSex().toString().toLowerCase());
+				String sexType = 
+						(p.getSex() == Sex.MALE ? "male" : "female");
+				pSex.getToken().setText(sexType);
 				pSex.setParent(pNode);
 				pNode.addChild(pSex);
 			}

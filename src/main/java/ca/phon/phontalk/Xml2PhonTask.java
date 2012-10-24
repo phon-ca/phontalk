@@ -80,7 +80,6 @@ public class Xml2PhonTask extends PhonTask {
 				TalkbankConverter converter = new TalkbankConverter();
 				converter.setProperty(XmlConverter.CONVERTER_PROP_SYLLABIFIER, syllabifier);
 				converter.setProperty(XmlConverter.CONVERTER_PROP_REPARSE_PHONES, new Boolean(reparsePhones));
-				//converter.setProperty(XmlConverter.CONVERTER_PROP_CORPUSNAME, corpusName);
 				
 				ITranscript t = converter.convertStream(in);
 
@@ -122,8 +121,10 @@ public class Xml2PhonTask extends PhonTask {
 
 				
 				
-			} catch (IOException e) {
+			} catch (Exception e) {
+				e.printStackTrace();
 				PhonLogger.warning(e.toString());
+				PhonLogger.info("Failed to process '" + f.getPath() + "'");
 			}
 		}
 		
