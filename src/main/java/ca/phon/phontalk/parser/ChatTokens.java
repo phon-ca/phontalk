@@ -88,6 +88,7 @@ public class ChatTokens {
 			String localName =
 				evt.asStartElement().getName().getLocalPart();
 			localName = localName.replaceAll("-", "_");
+			
 			String tokenName = 
 				localName.toUpperCase() + START_SUFFIX;
 			Integer i = tokenMap.get(tokenName);

@@ -20,6 +20,13 @@ t
     <buffer name="ChatTree.g">
         <![CDATA[
 t returns [String val]
+scope {
+ 	IWord w; 	
+}
+@init {
+ 	List<IWord> grps = $u::utt.getWords();
+ 	$t::w = grps.get(grps.size()-1);
+ }
 	:	^(T_START T_ATTR_TYPE? mor?)
 	{
 		// add terminator to last wordgroup

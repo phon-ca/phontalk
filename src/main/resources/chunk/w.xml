@@ -88,32 +88,7 @@ wele
 	}
 	|	mor
 	{
-		// make sure dep tier exists in session
-			IDepTierDesc tierDesc = null;
-			for(IDepTierDesc current:session.getDependentTiers())
-			{
-				if(current.isGrouped() && current.getTierName().equals("Morphology"))
-				{
-					tierDesc = current;
-					break;
-				}
-			}
-			
-			if(tierDesc == null) {
-				// create the new tier
-				tierDesc = session.newDependentTier();
-				tierDesc.setTierName("Morphology");
-				tierDesc.setIsGrouped(true);
-			}
-		
-		// add more data as a dep tier of the current word(group)
-		IDependentTier depTier = $ugrp::w.getDependentTier(tierDesc.getTierName());
-		if(depTier == null) {
-			depTier = $ugrp::w.newDependentTier();
-			depTier.setTierName(tierDesc.getTierName());
-		}
-		depTier.setTierValue($mor.val);
-		
+		// mor is handled as a seperate dependent tier
 	}
 	;
 	

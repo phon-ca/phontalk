@@ -131,11 +131,13 @@ public class Phon2TalkbankWizard extends WizardFrame {
 		outputFolderPanel.add(folderLabel, cc.xy(1,1));
 		outputFolderPanel.add(selectFolderBtn, cc.xy(2,1));
 
+		final JPanel selectorPanel = new JPanel(new BorderLayout());
 		sessionSelector = new SessionSelector(getProject());
 		final JScrollPane sessionScroller = new JScrollPane(sessionSelector);
-		sessionSelector.setBorder(BorderFactory.createTitledBorder("Selection sessions for export:"));
-	
-		wizardPanel.add(sessionScroller, BorderLayout.CENTER);
+		selectorPanel.setBorder(BorderFactory.createTitledBorder("Select sessions for export:"));
+		selectorPanel.add(sessionScroller, BorderLayout.CENTER);
+		
+		wizardPanel.add(selectorPanel, BorderLayout.CENTER);
 		wizardPanel.add(outputFolderPanel, BorderLayout.SOUTH);
 		
 		final DialogHeader header = new DialogHeader("PhonTalk : Export to Talkbank", "Select sessions and output folder.");

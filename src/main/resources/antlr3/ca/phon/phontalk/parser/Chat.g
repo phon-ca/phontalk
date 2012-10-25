@@ -245,13 +245,8 @@ ambiguousLang
 
         
 mor
-    :    MOR_START morattr* morchoice* gra? morseq* MOR_END
-    ->    ^(MOR_START morattr* morchoice* gra? morseq*)
-    ;
-    
-morattr
-    :    MOR_ATTR_TYPE
-    |    MOR_ATTR_OMITTED
+    :    MOR_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice menx* gra* morseq* MOR_END
+    ->    ^(MOR_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice menx* gra* morseq*)
     ;
     
 morchoice
@@ -261,19 +256,18 @@ morchoice
     ;
     
 morseq
-    :    morpre
-    |    morpost
-    |    menx
+    :    mor_pre
+    |    mor_post
     ;
     
-morpre
-    :    MORPRE_START morattr* morchoice* gra? morseq* MORPRE_END
-    ->    ^(MORPRE_START morattr* morchoice* gra? morseq*)
+mor_pre
+    :    MOR_PRE_START morchoice menx* gra* MOR_PRE_END
+    ->    ^(MOR_PRE_START morchoice menx* gra*)
     ;
     
-morpost
-    :    MORPOST_START morattr* morchoice* gra? morseq* MORPOST_END
-    ->    ^(MORPOST_START morattr* morchoice* gra? morseq*)
+mor_post
+    :    MOR_POST_START morchoice menx* gra* MOR_POST_END
+    ->    ^(MOR_POST_START morchoice menx* gra*)
     ;
     
 menx
@@ -281,17 +275,24 @@ menx
     ;
     
 gra
-    :    GRA_START GRA_ATTR_TYPE GRA_ATTR_INDEX GRA_ATTR_HEAD GRA_ATTR_RELATION GRA_END
-    ->    ^(GRA_START GRA_ATTR_TYPE GRA_ATTR_INDEX GRA_ATTR_HEAD GRA_ATTR_RELATION)
+    :    GRA_START graattrs+ GRA_END
+    ->    ^(GRA_START graattrs+)
+    ;
+    
+graattrs
+    :    GRA_ATTR_TYPE
+    |    GRA_ATTR_INDEX
+    |    GRA_ATTR_HEAD
+    |    GRA_ATTR_RELATION
     ;
     
 mw
-    :    MW_START mpfx* pos mwchoice mk* MW_END
-    ->    ^(MW_START mpfx* pos mwchoice mk*)
+    :    MW_START mpfx* pos stem mk* MW_END
+    ->    ^(MW_START mpfx* pos stem mk*)
     ;
     
 mwc
-    :    MWC_START mpfx* pos mw mw+ MWC_END
+    :    MWC_START mpfx* pos mw+ MWC_END
     ->    ^(MWC_START mpfx* pos mw+)
     ;
     
@@ -306,7 +307,7 @@ mpfx
     ;
    
 pos
-    :    POS_START morposc morposs* POS_END 
+    :    POS_START morposc morposs* POS_END
     ->    ^(POS_START morposc morposs*)
     ;
     
@@ -320,23 +321,13 @@ morposs
     ->    ^(S_START TEXT)
     ;
     
-mwchoice
-    :    stem
-    |    mortagmarker
-    ;
-    
 stem
     :    STEM_START TEXT STEM_END
     ->    ^(STEM_START TEXT);
     
-mortagmarker
-    :    MORTAGMARKER_START MORTAGMARKER_ATTR_TYPE MORTAGMARKER_END
-    ->    ^(MORTAGMARKER_START MORTAGMARKER_ATTR_TYPE)
-    ;
-    
 mk
-    :    MK_START TEXT MK_END
-    ->    ^(MK_START TEXT)
+    :    MK_START MK_ATTR_TYPE TEXT MK_END
+    ->    ^(MK_START MK_ATTR_TYPE TEXT)
     ;
     
 

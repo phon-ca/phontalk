@@ -541,32 +541,7 @@ wele
 	}
 	|	mor
 	{
-		// make sure dep tier exists in session
-			IDepTierDesc tierDesc = null;
-			for(IDepTierDesc current:session.getDependentTiers())
-			{
-				if(current.isGrouped() && current.getTierName().equals("Morphology"))
-				{
-					tierDesc = current;
-					break;
-				}
-			}
-			
-			if(tierDesc == null) {
-				// create the new tier
-				tierDesc = session.newDependentTier();
-				tierDesc.setTierName("Morphology");
-				tierDesc.setIsGrouped(true);
-			}
-		
-		// add more data as a dep tier of the current word(group)
-		IDependentTier depTier = $ugrp::w.getDependentTier(tierDesc.getTierName());
-		if(depTier == null) {
-			depTier = $ugrp::w.newDependentTier();
-			depTier.setTierName(tierDesc.getTierName());
-		}
-		depTier.setTierValue($mor.val);
-		
+		// mor is handled as a seperate dependent tier
 	}
 	;
 	
@@ -804,125 +779,285 @@ ambiguousLang
     
 
         
-mor returns [String val]
+mor
 scope
 {
-    String morchoicevals;
+    List<String> morPres;
+    List<String> morPosts;
 }
 @init
 {
-    $mor::morchoicevals = new String();
+    $mor::morPres = new ArrayList<String>();
+    $mor::morPosts = new ArrayList<String>();
 }
-    :    ^(MOR_START morattr* morchoice* gra? morseq*)
+    :    ^(MOR_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice menx* gra* morseq*)
     {
-        // for now, ignoring everything but choice values
-        $val = $mor::morchoicevals;
+        // make sure dep tier exists in session
+		IDepTierDesc tierDesc = null;
+		for(IDepTierDesc current:session.getWordAlignedTiers())
+		{
+			if(current.getTierName().equals("Morphology"))
+			{
+				tierDesc = current;
+				break;
+			}
+		}
+		
+		if(tierDesc == null) {
+			// create the new tier
+			tierDesc = session.newDependentTier();
+			tierDesc.setTierName("Morphology");
+			tierDesc.setIsGrouped(true);
+		}
+		
+		// add mor data as a dep tier of the current word(group)
+		IWord word = ($t.size() > 0 ? $t::w : $ugrp::w);
+		IDependentTier depTier = 
+		    word.getDependentTier(tierDesc.getTierName());
+		if(depTier == null) {
+			depTier = word.newDependentTier();
+			depTier.setTierName(tierDesc.getTierName());
+		}
+		String tierValue = depTier.getTierValue();
+		tierValue += 
+		    (tierValue.length() == 0 ? "" : " ") + $morchoice.val;
+		    
+		for(String morPost:$mor::morPosts) {
+		    tierValue += "~" + morPost;
+		}
+		depTier.setTierValue(tierValue);
     }
     ;
     
 morattr
     :    MOR_ATTR_TYPE
+    {
+        if(!$MOR_ATTR_TYPE.text.equals("mor")) {
+            PhonLogger.warning("Only support <mor> elements with type set to 'mor'.");
+        }
+    }
     |    MOR_ATTR_OMITTED
     ;
     
-morchoice
+morchoice returns [String val]
     :    mw
-    {
-        $mor::morchoicevals += ($mor::morchoicevals.length() > 0 ? " " : "") + $mw.val;
-    }
+    {    $val = $mw.val;    }
     |    mwc
+    {    $val = $mwc.val;    }
     |    mt
+    {    $val = $mt.val;    }
     ;
     
-morseq
-    :    morpre
-    |    morpost
-    |    menx
+morseq returns [String val]
+    :    mor_pre
+    {    $val = $mor_pre.val;    }
+    |    mor_post
+    {    $val = $mor_post.val;    }
     ;
     
-morpre
-    :    ^(MORPRE_START morattr* morchoice* gra? morseq*)
+mor_pre returns [String val]
+    :    ^(MOR_PRE_START morchoice menx* gra*)
     {
-        unsupportedWarning();
+        $val = $morchoice.val;
     }
     ;
     
-morpost
-    :    ^(MORPOST_START morattr* morchoice* gra? morseq*)
+mor_post returns [String val]
+@after
+{
+    $mor::morPosts.add($val);
+}
+    :    ^(MOR_POST_START morchoice menx* gra*)
     {
-        unsupportedWarning();
+        $val = $morchoice.val;
     }
     ;
     
-menx
+menx returns [String val]
     :    MENX_START TEXT MENX_END
     {
-        unsupportedWarning();
+        $val = $TEXT.text;
+    }
+    ;
+
+gra returns [String val]
+scope
+{
+    String type;
+    String index;
+    String head;
+    String relation;
+}
+    :    ^(GRA_START graattrs+)
+    {
+        // make sure dep tier exists in session
+		IDepTierDesc tierDesc = null;
+		for(IDepTierDesc current:session.getWordAlignedTiers())
+		{
+			if(current.getTierName().equals("GRASP"))
+			{
+				tierDesc = current;
+				break;
+			}
+		}
+		
+		if(tierDesc == null) {
+			// create the new tier
+			tierDesc = session.newDependentTier();
+			tierDesc.setTierName("GRASP");
+			tierDesc.setIsGrouped(true);
+		}
+		
+		// value
+		$val = $gra::index + "|" + $gra::head + "|" + $gra::relation;
+		
+		// add mor data as a dep tier of the current word(group)
+		IWord word = ($t.size() > 0 ? $t::w : $ugrp::w);
+		IDependentTier depTier = 
+		    word.getDependentTier(tierDesc.getTierName());
+		if(depTier == null) {
+			depTier = word.newDependentTier();
+			depTier.setTierName(tierDesc.getTierName());
+		}
+		String tierValue = depTier.getTierValue();
+		tierValue += 
+		    (tierValue.length() == 0 ? "" : " ") + $val;
+		depTier.setTierValue(tierValue);
     }
     ;
     
-gra
-    :    ^(GRA_START GRA_ATTR_TYPE GRA_ATTR_INDEX GRA_ATTR_HEAD GRA_ATTR_RELATION)
-    {
-        unsupportedWarning();
-    }
+graattrs
+    :    GRA_ATTR_TYPE
+    {    $gra::type = $GRA_ATTR_TYPE.text;    }
+    |    GRA_ATTR_INDEX
+    {    $gra::index = $GRA_ATTR_INDEX.text;    }
+    |    GRA_ATTR_HEAD
+    {    $gra::head = $GRA_ATTR_HEAD.text;    }
+    |    GRA_ATTR_RELATION
+    {    $gra::relation = $GRA_ATTR_RELATION.text;    }
     ;
     
 mw returns [String val]
 scope
 {
-    String mkvals;
+    List<String> mpfxVals;
+    List<Tuple<String, String>> mkVals;
 }
 @init
 {
-    $mw::mkvals = new String();
+    $mw::mpfxVals = new ArrayList<String>();
+    $mw::mkVals = new ArrayList<Tuple<String, String>>();
 }
-    :    ^(MW_START mpfx* pos mwchoice mk*)
+@after {
+    // add to compound word if we are inside a <mwc> container
+    if($mwc.size() > 0) {
+        $mwc::mwVals.add($val);
+    }
+}
+    :   ^(MW_START mpfx* pos stem mk*)
     {
-        $val = $pos.val + "|" + $mwchoice.val;
+        // simplest case, pos + single choice 
+        $val = $pos.val + "|" + $stem.val;
         
-        if($mw::mkvals.length() > 0) {
-            $val += "-" + $mw::mkvals;
+        // add mpfx vals if any
+        for(String v:$mw::mpfxVals) {
+            $val = v + "#" + $val;
+        }
+        
+        // add mk vals if any
+        for(Tuple<String, String> v:$mw::mkVals) {
+            String suffix = v.getObj1();
+            String type = v.getObj2();
+            
+            String prefix = "";
+            if(type.equals("sfx")) {
+                prefix = "-";
+            } else if(type.equals("sfxf")) {
+                prefix = "&";
+            } else if(type.equals("mc")) {
+                prefix = ":";
+            }
+            
+            $val += prefix + suffix;
         }
     }
     ;
     
-mwc
+mwc returns [String val]
+scope
+{
+    List<String> mwVals;
+    List<String> mpfxVals;
+    boolean inMwc;
+}
+@init
+{
+    $mwc::inMwc = true;
+    $mwc::mpfxVals = new ArrayList<String>();
+    $mwc::mwVals = new ArrayList<String>();
+}
+@after
+{
+    $mwc::inMwc = false;
+}
     :    ^(MWC_START mpfx* pos mw+)
     {
-        unsupportedWarning();
+        $val = $pos.val + "|";
+        for(String v:$mwc::mwVals) {
+            $val += "+" + v;
+        }
+        
+        for(String v:$mwc::mpfxVals) {
+            $val = v + "#" + $val;
+        }
     }
     ;
     
-mt
+mt returns [String val]
     :    ^(MT_START MT_ATTR_TYPE)
     {
-        unsupportedWarning();
+        String t = $MT_ATTR_TYPE.text;
+        if(t.equals("p")) {
+		   $val = ".";
+		} else if(t.equals("q")) {
+		    $val = "?";
+		} else if(t.equals("e")) {
+		    $val = "!";
+		} else {
+		    // wrap in paren
+		    $val = "(mt:" + t + ")";
+		}
     }
     ;
     
-mpfx
+mpfx returns [String val]
+@after {
+    if($mw.size() > 0) {
+        $mw::mpfxVals.add($val);
+    } else if($mwc.size() > 0) {
+        $mwc::mpfxVals.add($val);
+    }
+}
     :    ^(MPFX_START TEXT)
     {
-        unsupportedWarning();
+        $val = $TEXT.text;
     }
     ;
    
 pos returns [String val]
 scope
 {
-    String svals;
+    List<String> sVals;
 }
 @init
 {
-    $pos::svals = new String();
+    $pos::sVals = new ArrayList<String>();
 }
     :    ^(POS_START morposc morposs*)
     {
         $val = $morposc.val;
-        if($pos::svals.length() > 0) 
-        {
-            $val += $pos::svals;
+        for(String s:$pos::sVals) {
+            $val += ":" + s;
         }
     }
     ;
@@ -935,20 +1070,13 @@ morposc returns [String val]
     ;
     
 morposs returns [String val]
+@after {
+    $pos::sVals.add($val);
+}
     :    ^(S_START TEXT)
     {
         $val = $TEXT.text;
-        
-        $pos::svals += ($pos::svals.length() > 0 ? " " : "") + ":" + $val;
     }
-    ;
-    
-mwchoice returns [String val]
-    :    stem
-    {
-        $val = $stem.val;
-    }
-    |    mortagmarker
     ;
     
 stem returns [String val]
@@ -958,14 +1086,16 @@ stem returns [String val]
     }
     ;
     
-mortagmarker
-    :    ^(MORTAGMARKER_START MORTAGMARKER_ATTR_TYPE)
-    ;
-    
-mk
-    :    ^(MK_START TEXT)
+mk returns [String val, String type]
+@after {
+    if($mw.size() > 0) {
+        $mw::mkVals.add(new Tuple<String, String>($val, $type));
+    }
+}
+    :    ^(MK_START MK_ATTR_TYPE TEXT)
     {
-        $mw::mkvals += ($mw::mkvals.length() > 0 ? "-" : "") + $TEXT.text;
+        $val = $TEXT.text;
+        $type = $MK_ATTR_TYPE.text;
     }
     ;
 
@@ -1697,6 +1827,13 @@ gele
 
         
 t returns [String val]
+scope {
+ 	IWord w; 	
+}
+@init {
+ 	List<IWord> grps = $u::utt.getWords();
+ 	$t::w = grps.get(grps.size()-1);
+ }
 	:	^(T_START T_ATTR_TYPE? mor?)
 	{
 		// add terminator to last wordgroup
