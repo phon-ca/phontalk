@@ -784,11 +784,13 @@ scope
 {
     List<String> morPres;
     List<String> morPosts;
+    List<String> menxVals;
 }
 @init
 {
     $mor::morPres = new ArrayList<String>();
     $mor::morPosts = new ArrayList<String>();
+    $mor::menxVals = new ArrayList<String>();
 }
     :    ^(MOR_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice menx* gra* morseq*)
     {
@@ -810,6 +812,17 @@ scope
 			tierDesc.setIsGrouped(true);
 		}
 		
+		String v = $morchoice.val;
+		for(String menxVal:$mor::menxVals) {
+		    v += "=" + menxVal;
+		}
+		for(String morPre:$mor::morPres) {
+		    v = morPre + "$" + v;
+		}
+		for(String morPost:$mor::morPosts) {
+		    v += "~" + morPost;
+		}
+		
 		// add mor data as a dep tier of the current word(group)
 		IWord word = ($t.size() > 0 ? $t::w : $ugrp::w);
 		IDependentTier depTier = 
@@ -820,11 +833,7 @@ scope
 		}
 		String tierValue = depTier.getTierValue();
 		tierValue += 
-		    (tierValue.length() == 0 ? "" : " ") + $morchoice.val;
-		    
-		for(String morPost:$mor::morPosts) {
-		    tierValue += "~" + morPost;
-		}
+		    (tierValue.length() == 0 ? "" : " ") + v;
 		depTier.setTierValue(tierValue);
     }
     ;
@@ -856,13 +865,36 @@ morseq returns [String val]
     ;
     
 mor_pre returns [String val]
+scope
+{
+    List<String> menxVals;
+}
+@init
+{
+    $mor_pre::menxVals = new ArrayList<String>();
+}
+@after
+{
+    $mor::morPres.add($val);
+}
     :    ^(MOR_PRE_START morchoice menx* gra*)
     {
         $val = $morchoice.val;
+        for(String menxVal:$mor_pre::menxVals) {
+            $val += "=" + menxVal;
+        }
     }
     ;
     
 mor_post returns [String val]
+scope
+{
+    List<String> menxVals;
+}
+@init
+{
+    $mor_post::menxVals = new ArrayList<String>();
+}
 @after
 {
     $mor::morPosts.add($val);
@@ -870,10 +902,23 @@ mor_post returns [String val]
     :    ^(MOR_POST_START morchoice menx* gra*)
     {
         $val = $morchoice.val;
+        for(String menxVal:$mor_post::menxVals) {
+            $val += "=" + menxVal;
+        }
     }
     ;
     
 menx returns [String val]
+@after
+{
+    if($mor_pre.size() > 0) {
+        $mor_pre::menxVals.add($val);
+    } else if($mor_post.size() > 0) {
+        $mor_post::menxVals.add($val);
+    } else if($mor.size() > 0) {
+        $mor::menxVals.add($val);
+    }
+}
     :    MENX_START TEXT MENX_END
     {
         $val = $TEXT.text;
