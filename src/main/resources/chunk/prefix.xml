@@ -19,13 +19,23 @@ import ca.phon.system.logger.*;
 
 @members {
 
+private String filename;
+
+public void setFilename(String filename) {
+	this.filename = filename;
+}
+
+public String getFilename() {
+	return this.filename;
+}
+
 /** Override the default getErrorMessage() to 
  * also output to PhonLogger
  */
 public String getErrorMessage(RecognitionException re, String[] tokens) {
 	String retVal = super.getErrorMessage(re, tokens);
-	PhonLogger.warning("line " + 
-		re.line + ":" + re.c + " " + retVal);
+	PhonLogger.warning(getFilename() + "(" + 
+		re.line + ":" + re.c + ") " + retVal);
 		/*
 	ByteArrayOutputStream bout = new ByteArrayOutputStream();
 	PrintWriter writer = new PrintWriter(new OutputStreamWriter(bout));

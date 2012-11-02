@@ -24,6 +24,7 @@ gele
 	|	k
 	|	ga
 	|	overlap
+	|   tagmarker
 	|	e
 	|	g
 	|	s
@@ -105,6 +106,11 @@ gele
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			"(" + $overlap.val + ")";
 	}
+	|	tagmarker
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $tagmarker.val + ")";
+	}
 	|	e
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
@@ -184,6 +190,9 @@ gele
 	|	overlap
 	->	template( v={$overlap.st} )
 		"<v>"
+	|	tagmarker
+	->  template( v={$tagmarker.st} )
+		"<v>"
 	|	e
 	->	template( v={$e.st} )
 		"<v>"
@@ -210,6 +219,7 @@ gele
     <include>k.xml</include>
 	<include>ga.xml</include>
 	<include>overlap.xml</include>
+	<include>tagmarker.xml</include>
 	<include>e.xml</include>
 	<include>pause.xml</include>
 	<include>s.xml</include>

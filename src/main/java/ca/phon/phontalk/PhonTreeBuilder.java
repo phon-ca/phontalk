@@ -667,7 +667,7 @@ public class PhonTreeBuilder {
 				wordList[0] = "0";
 			}
 			
-			// a flag to indicat the next item in the iteration
+			// a flag to indicate the next item in the iteration
 			// should be attached to the last child of nodeStack.peek()
 			boolean attachToLastChild = false;
 			
@@ -678,6 +678,8 @@ public class PhonTreeBuilder {
 //				la1 = wordList[wIndex+1];
 //				la2 = wordList[wIndex+2];
 				
+				
+				// EVENTS
 				if(w.matches("\\*.*\\*")) {
 					// events have 2 formats:
 					//  1) (label:data)*
@@ -735,9 +737,10 @@ public class PhonTreeBuilder {
 						addGa(eNode, "comments", eData);
 					}
 					
-					
+				// anything else
 				} else if(w.matches("\\(.*\\)")) {
 					
+					// COMMENTS - including CHAT coding
 					Pattern commentPattern = Pattern.compile("\\(([^:]+):(.*)\\)");
 					Matcher m = commentPattern.matcher(w);
 					if(m.matches()) {
@@ -796,6 +799,7 @@ public class PhonTreeBuilder {
 					} else {
 						handleParentheticData(nodeStack.peek(), w);
 					}
+				// handle forced creation of Talkbank <g> elements
 				} else if(w.matches("\\{")) {
 					if(wGrp.getWord().indexOf('}') < 0) {
 						// create a super-<g> node
@@ -822,6 +826,7 @@ public class PhonTreeBuilder {
 						// push new group onto stack
 						nodeStack.push(gNode);
 					}
+				// handle end-enclosure for <g> elements
 			    } else if(w.matches("\\}")) {
 //			    	// if we have a super-<g>
 //			    	if(uttNode != realUttNode) {
@@ -839,19 +844,38 @@ public class PhonTreeBuilder {
 			    		uttNode = uttNodeStack.peek();
 			    	}
 			    		nodeStack.pop();
-			    	
+			    // Terminators - should be at end but not checked here
 			    } else if(w.matches("\\.")) {
 			    	termType = "p";
 			    } else if(w.matches("\\?")) {
 				    termType = "q";
 			    } else if(w.matches("!")) { 
 			    	termType = "e";
-			    } else if(w.matches("\\+")) { 
+			    // tagMarkers
+			    } else if(w.matches("[,\u201e\u2021]")) {	
+			    	CommonTree parentNode = nodeStack.peek();
+			    	CommonTree tgTree = createToken("TAGMARKER_START");
+			    	String type = "comma";
+			    	if(w.equals("\u201e")) {
+			    		type = "tag";
+			    	} else if(w.equals("\u2021")) {
+			    		type = "vocative";
+			    	}
+			    	CommonTree tgTypeTree = createToken("TAGMARKER_ATTR_TYPE");
+			    	tgTypeTree.getToken().setText(type);
+			    	tgTree.addChild(tgTypeTree);
+			    	tgTypeTree.setParent(tgTree);
+			    	
+			    	parentNode.addChild(tgTree);
+			    	tgTree.setParent(parentNode);
+			    // compound words
+			    } else if(w.matches("[+~]")) { 
 			    	CommonTree parentNode = nodeStack.peek();
 			    	CommonTree wNode = 
 			    		(CommonTree)parentNode.getChild(parentNode.getChildCount()-1);
-			    	insertWordnet(wNode, "cmp");
+			    	insertWordnet(wNode, w.equals("+") ? "cmp" : "cli");
 			    	attachToLastChild = true;
+			    // 'normal' words - with possible prefix/suffix annotations
 			    } else {
 					CommonTree parentNode = nodeStack.peek();
 					CommonTree wParent = null;

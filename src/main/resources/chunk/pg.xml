@@ -30,6 +30,7 @@ pgele
 	|  	e
 	|	underline
 	|	overlap
+	|	tagmarker
 	|	r 
 	|	k
 	|	ga
@@ -89,6 +90,10 @@ pgele returns [String val]
 	|	overlap
 	{
 		$val = "(" + $overlap.val + ")";
+	}
+	|	tagmarker
+	{
+		$val = $tagmarker.val;
 	}
 	|	r 
 	{
@@ -151,6 +156,9 @@ pgele
 	|	overlap
 	->	template( v={$overlap.st} )
 		"<v>"
+	|	tagmarker
+	->	template( v={$tagmarker.st} )
+		"<v>"
 	|	r 
 	->	template( v={$r.st} )
 		"<v>"
@@ -178,6 +186,7 @@ pgele
 	<include>align.xml</include>
 	<include>ga.xml</include>
 	<include>overlap.xml</include>
+	<include>tagmarker.xml</include>
 	<include>e.xml</include>
 	<include>pause.xml</include>
 	<include>s.xml</include>

@@ -81,7 +81,7 @@ public class Xml2PhonTask extends PhonTask {
 				converter.setProperty(XmlConverter.CONVERTER_PROP_SYLLABIFIER, syllabifier);
 				converter.setProperty(XmlConverter.CONVERTER_PROP_REPARSE_PHONES, new Boolean(reparsePhones));
 				
-				ITranscript t = converter.convertStream(in);
+				ITranscript t = converter.convertStream(f.getName(), in);
 
 				if(t == null) {
 					PhonLogger.severe("Error processing file '" + f.getPath() + "'");

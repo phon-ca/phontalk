@@ -44,7 +44,7 @@ public class TalkbankConverter extends XmlConverter {
 	 * @param file the file to convert
 	 * @param params - unused, can be <code>null</code>
 	 */
-	public ITranscript convertStream(InputStream source) {
+	public ITranscript convertStream(String name, InputStream source) {
 		ITranscript retVal = null;
 		
 		// create token source for stream
@@ -54,6 +54,7 @@ public class TalkbankConverter extends XmlConverter {
 		
 		// parse data into an AST
 		ChatParser parser = new ChatParser(tokenStream);
+		parser.setFilename(name);
 		ChatParser.chat_return parserRet = null;
 		try {
 			parserRet = parser.chat();

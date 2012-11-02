@@ -12,8 +12,8 @@ XPath -	/xs:schema/xs:complexType[@name="commentType"]
     <buffer name="Chat.g">
         <![CDATA[
 comment
-	:	COMMENT_START COMMENT_ATTR_TYPE? TEXT? COMMENT_END 
-	->	^(COMMENT_START COMMENT_ATTR_TYPE? TEXT?)
+	:	COMMENT_START COMMENT_ATTR_TYPE? TEXT* COMMENT_END 
+	->	^(COMMENT_START COMMENT_ATTR_TYPE? TEXT*)
 	;
 ]]>
     </buffer>
@@ -22,7 +22,7 @@ comment
     <buffer name="ChatTree.g">
         <![CDATA[
 comment
-	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? val=TEXT?)
+	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? vals+=TEXT*)
 	{
 		// if the comment is a date,
 		// set the date in the session (overrides CHAT attribute)
@@ -31,10 +31,12 @@ comment
 		} else {
 			IComment c = session.newComment();
 			// create a new comment in the transcript
-			if($val != null)
-			{
-				c.setValue($val.text);
+			String text = "";
+			for(int i = 0; i < $vals.size(); i++) {
+				text += $vals.get(i).toString();
 			}
+			c.setValue(text);
+			
 
 			if($type != null)
 			{

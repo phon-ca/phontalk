@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+    tagMarker
+    XPath - /xs:schema/xs:complexType[@name="tagMarkerType"]
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+tagmarker
+	:	TAGMARKER_START TAGMARKER_ATTR_TYPE mor* TAGMARKER_END
+	->	^(TAGMARKER_START TAGMARKER_ATTR_TYPE mor*)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+tagmarker returns [String val]
+	:	^(TAGMARKER_START TAGMARKER_ATTR_TYPE mor*)
+	{
+	    String tmType = $TAGMARKER_ATTR_TYPE.text;
+	    if(tmType.equals("comma")) {
+	        $val = ",";
+	    } else if(tmType.equals("tag")) {
+	        $val = "\u201E";
+	    } else if(tmType.equals("vocative")) {
+	        $val = "\u2021";
+	    }
+	}
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+tagmarker
+	:	^(TAGMARKER_START TAGMARKER_ATTR_TYPE morlist+=mor*)
+	->    template(  type={$TAGMARKER_ATTR_TYPE.text},
+	                 morcontent={$morlist}
+	              )
+	<<
+\<tagMarker type="<type>"><morcontent; separator="">\</tagMarker\>
+>>
+	;
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include>mor.xml</include>
+    
+</chunk>

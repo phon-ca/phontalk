@@ -35,6 +35,7 @@ uannotation
 	|	pause 
 	|	e
 	|	linker
+	|	tagmarker
 	;
 ]]>
     </buffer>
@@ -258,6 +259,17 @@ uannotation
 			words.get(words.size()-1);
 		lastWord.setWord(lastWord.getWord() + " " + $linker.val);
 	}
+	|	tagmarker
+	{
+		List<IWord> words = $u::utt.getWords();
+		if(words.size() == 0) {
+			words.add($u::utt.newWordGroup());
+			$u::useLastGroup = true;
+		}
+		IWord lastWord = 
+			words.get(words.size()-1);
+		lastWord.setWord(lastWord.getWord() + " " + $tagmarker.val);
+	}
 	;
 ]]>
     </buffer>
@@ -308,6 +320,9 @@ uannotation
 	|	linker
 	->	template( v={$linker.st} )
 		"<v>"
+	|	tagmarker
+	->	template( v={$tagmarker.st} )
+		"<v>"
 	;
 	
 
@@ -338,6 +353,7 @@ ugrp
     <include>a.xml</include>
 	<include>postcode.xml</include>
 	<include>linker.xml</include>
+	<include>tagmarker.xml</include>
 
     
 </chunk>

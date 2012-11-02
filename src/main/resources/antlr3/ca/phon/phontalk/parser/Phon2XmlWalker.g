@@ -240,6 +240,9 @@ uannotation
 	|	linker
 	->	template( v={$linker.st} )
 		"<v>"
+	|	tagmarker
+	->	template( v={$tagmarker.st} )
+		"<v>"
 	;
 	
 
@@ -406,12 +409,7 @@ ambiguousLang
 
         
 mor
-    :    ^(MOR_START morattr* morchoice* gra? morseq*)
-    ;
-    
-morattr
-    :    MOR_ATTR_TYPE
-    |    MOR_ATTR_OMITTED
+    :    ^(MOR_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice* gra? morseq*)
     ;
     
 morchoice
@@ -427,14 +425,14 @@ morseq
     ;
     
 morpre
-    :    ^(MORPRE_START morattr* morchoice* gra? morseq*)
+    :    ^(MORPRE_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice* gra? morseq*)
     {
         unsupportedWarning();
     }
     ;
     
 morpost
-    :    ^(MORPOST_START morattr* morchoice* gra? morseq*)
+    :    ^(MORPOST_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice* gra? morseq*)
     {
         unsupportedWarning();
     }
@@ -543,6 +541,9 @@ pgele
 		"<v>"
 	|	overlap
 	->	template( v={$overlap.st} )
+		"<v>"
+	|	tagmarker
+	->	template( v={$tagmarker.st} )
 		"<v>"
 	|	r 
 	->	template( v={$r.st} )
@@ -716,6 +717,19 @@ overlap
 
     
 
+        
+tagmarker
+	:	^(TAGMARKER_START TAGMARKER_ATTR_TYPE morlist+=mor*)
+	->    template(  type={$TAGMARKER_ATTR_TYPE.text},
+	                 morcontent={$morlist}
+	              )
+	<<
+\<tagMarker type="<type>"><morcontent; separator="">\</tagMarker\>
+>>
+	;
+
+    
+
 		
 e
 	:	^(E_START (contentlist+=evtele)*)
@@ -816,6 +830,9 @@ gele
 		"<v>"
 	|	overlap
 	->	template( v={$overlap.st} )
+		"<v>"
+	|	tagmarker
+	->  template( v={$tagmarker.st} )
 		"<v>"
 	|	e
 	->	template( v={$e.st} )

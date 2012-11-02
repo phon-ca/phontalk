@@ -33,11 +33,11 @@ public abstract class XmlConverter {
 	 * Convert the given file name/URL into a new
 	 * phon session.
 	 * 
-	 * @param file the file to convert
-	 * @param params a list of parameters given to the converter
+	 * @param stream name
+	 * @param file the input stream
 	 * 
 	 */
-	public abstract ITranscript convertStream(InputStream file);
+	public abstract ITranscript convertStream(String name, InputStream stream);
 	
 	/*
 	 * Events 

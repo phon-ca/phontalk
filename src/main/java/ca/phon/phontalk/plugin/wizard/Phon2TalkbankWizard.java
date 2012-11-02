@@ -26,6 +26,8 @@ import ca.phon.gui.CommonModuleFrame;
 import ca.phon.gui.DialogHeader;
 import ca.phon.gui.SessionSelector;
 import ca.phon.gui.action.PhonUIAction;
+import ca.phon.gui.components.FileSelectionField;
+import ca.phon.gui.components.FileSelectionField.SelectionMode;
 import ca.phon.gui.components.PhonLoggerConsole;
 import ca.phon.gui.wizard.WizardFrame;
 import ca.phon.gui.wizard.WizardStep;
@@ -50,13 +52,7 @@ public class Phon2TalkbankWizard extends WizardFrame {
 	/**
 	 * Folder label
 	 */
-	private JLabel folderLabel;
-	
-	/**
-	 * Folder selection button
-	 */
-	private JButton selectFolderBtn;
-	private File outputFolder;
+	private FileSelectionField outputFolderField;
 	
 	/**
 	 * Phon Logger console
@@ -104,33 +100,17 @@ public class Phon2TalkbankWizard extends WizardFrame {
 	 * Selection session and output folder
 	 */
 	private WizardStep createSelectionStep() {
-		// default output folder is Documents
-		final String outputFolderRoot = System.getProperty("user.home");
-		String defaultOutputFolder = outputFolderRoot + File.separator + "Documents";
-		outputFolder = new File(defaultOutputFolder);
-		
-		folderLabel = new JLabel(defaultOutputFolder);
-		
-		final ImageIcon browseIcon = IconManager.getInstance().getIcon("actions/document-open", IconSize.SMALL);
-		final PhonUIAction browseAct = new PhonUIAction(this, "browseForFolder");
-		browseAct.putValue(PhonUIAction.NAME, "");
-		browseAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Browse for output folder...");
-		browseAct.putValue(PhonUIAction.SMALL_ICON, browseIcon);
-		selectFolderBtn = new JButton(browseAct);
-		
+		outputFolderField = new FileSelectionField();
+		outputFolderField.setPrompt("Output folder");
+		outputFolderField.setMode(SelectionMode.FOLDERS);
 		
 		final JPanel wizardPanel = new JPanel(new BorderLayout());
 		
 		final JPanel outputFolderPanel = new JPanel();
 		outputFolderPanel.setBorder(BorderFactory.createTitledBorder("Select output folder:"));
-		final FormLayout outputFolderLayout = new FormLayout(
-				"fill:pref:grow, pref", 
-				"pref");
-		final CellConstraints cc = new CellConstraints();
-		outputFolderPanel.setLayout(outputFolderLayout);
-		outputFolderPanel.add(folderLabel, cc.xy(1,1));
-		outputFolderPanel.add(selectFolderBtn, cc.xy(2,1));
-
+		outputFolderPanel.setLayout(new BorderLayout());
+		outputFolderPanel.add(outputFolderField, BorderLayout.CENTER);
+		
 		final JPanel selectorPanel = new JPanel(new BorderLayout());
 		sessionSelector = new SessionSelector(getProject());
 		final JScrollPane sessionScroller = new JScrollPane(sessionSelector);
@@ -138,7 +118,7 @@ public class Phon2TalkbankWizard extends WizardFrame {
 		selectorPanel.add(sessionScroller, BorderLayout.CENTER);
 		
 		wizardPanel.add(selectorPanel, BorderLayout.CENTER);
-		wizardPanel.add(outputFolderPanel, BorderLayout.SOUTH);
+		wizardPanel.add(outputFolderPanel, BorderLayout.NORTH);
 		
 		final DialogHeader header = new DialogHeader("PhonTalk : Export to Talkbank", "Select sessions and output folder.");
 		final WizardStep retVal = new WizardStep();
@@ -179,18 +159,18 @@ public class Phon2TalkbankWizard extends WizardFrame {
 		return retVal;
 	}
 	
-	/**
-	 * Show browse dialog for output folder.
-	 */
-	public void browseForFolder() {
-		final String selectedFolder = 
-				NativeDialogs.browseForDirectoryBlocking(CommonModuleFrame.getCurrentFrame(),
-						(outputFolder == null ? null : outputFolder.getAbsolutePath()), "Select output folder");
-		if(selectedFolder != null) {
-			outputFolder = new File(selectedFolder);
-			folderLabel.setText(selectedFolder);
-		}
-	}
+//	/**
+//	 * Show browse dialog for output folder.
+//	 */
+//	public void browseForFolder() {
+//		final String selectedFolder = 
+//				NativeDialogs.browseForDirectoryBlocking(CommonModuleFrame.getCurrentFrame(),
+//						(outputFolder == null ? null : outputFolder.getAbsolutePath()), "Select output folder");
+//		if(selectedFolder != null) {
+//			outputFolder = new File(selectedFolder);
+//			folderLabel.setText(selectedFolder);
+//		}
+//	}
 
 	@Override
 	public void next() {
@@ -198,15 +178,15 @@ public class Phon2TalkbankWizard extends WizardFrame {
 			// make sure a valid output folder is selected
 			// and we have some selected sessions
 			final List<SessionLocation> selectedSessions = sessionSelector.getSelectedSessions();
-			final File outputLocation = outputFolder;
+			final File outputLocation = outputFolderField.getSelectedFile();
 			
 			if(outputLocation == null) {
 				NativeDialogs.showMessageDialogBlocking(this, null, "null output folder", "Please select an output folder.");
 				return;
 			}
 			
-			if(!outputFolder.exists()) {
-				if(!outputFolder.mkdirs()) {
+			if(!outputLocation.exists()) {
+				if(!outputLocation.mkdirs()) {
 					NativeDialogs.showMessageDialogBlocking(this, null, "Invalid output folder", "Could not create output folder.");
 					return;
 				}

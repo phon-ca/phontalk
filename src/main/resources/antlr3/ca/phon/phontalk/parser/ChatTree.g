@@ -239,7 +239,7 @@ part_attr
 
         
 comment
-	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? val=TEXT?)
+	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? vals+=TEXT*)
 	{
 		// if the comment is a date,
 		// set the date in the session (overrides CHAT attribute)
@@ -248,10 +248,12 @@ comment
 		} else {
 			IComment c = session.newComment();
 			// create a new comment in the transcript
-			if($val != null)
-			{
-				c.setValue($val.text);
+			String text = "";
+			for(int i = 0; i < $vals.size(); i++) {
+				text += $vals.get(i).toString();
 			}
+			c.setValue(text);
+			
 
 			if($type != null)
 			{
@@ -483,6 +485,17 @@ uannotation
 		IWord lastWord = 
 			words.get(words.size()-1);
 		lastWord.setWord(lastWord.getWord() + " " + $linker.val);
+	}
+	|	tagmarker
+	{
+		List<IWord> words = $u::utt.getWords();
+		if(words.size() == 0) {
+			words.add($u::utt.newWordGroup());
+			$u::useLastGroup = true;
+		}
+		IWord lastWord = 
+			words.get(words.size()-1);
+		lastWord.setWord(lastWord.getWord() + " " + $tagmarker.val);
 	}
 	;
 
@@ -785,20 +798,27 @@ scope
     List<String> morPres;
     List<String> morPosts;
     List<String> menxVals;
+    
+    String morType;
+    Boolean morOmitted;
 }
 @init
 {
     $mor::morPres = new ArrayList<String>();
     $mor::morPosts = new ArrayList<String>();
     $mor::menxVals = new ArrayList<String>();
+    
+    $mor::morType = "mor";
+    $mor::morOmitted = Boolean.FALSE;
 }
-    :    ^(MOR_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice menx* gra* morseq*)
+    :    ^(MOR_START morattr+ morchoice menx* gra* morseq*)
     {
+        String tierName = ($mor::morType.equals("mor") ? "Morphology" : "trn");
         // make sure dep tier exists in session
 		IDepTierDesc tierDesc = null;
 		for(IDepTierDesc current:session.getWordAlignedTiers())
 		{
-			if(current.getTierName().equals("Morphology"))
+			if(current.getTierName().equals(tierName))
 			{
 				tierDesc = current;
 				break;
@@ -808,7 +828,7 @@ scope
 		if(tierDesc == null) {
 			// create the new tier
 			tierDesc = session.newDependentTier();
-			tierDesc.setTierName("Morphology");
+			tierDesc.setTierName(tierName);
 			tierDesc.setIsGrouped(true);
 		}
 		
@@ -824,7 +844,19 @@ scope
 		}
 		
 		// add mor data as a dep tier of the current word(group)
-		IWord word = ($t.size() > 0 ? $t::w : $ugrp::w);
+		IWord word = null;
+		// get the correct word group holder
+		if($t.size() > 0 || $ugrp.size() > 0) {
+		    word = ($t.size() > 0 ? $t::w : $ugrp::w);
+		} else if($u.size() > 0) {
+		    word = $u::utt.getWords().get($u::utt.getWords().size()-1);
+		}
+		
+		// if omitted, add the '0'
+		if($mor::morOmitted) {
+		    v = "0" + v;
+		}
+		
 		IDependentTier depTier = 
 		    word.getDependentTier(tierDesc.getTierName());
 		if(depTier == null) {
@@ -840,12 +872,9 @@ scope
     
 morattr
     :    MOR_ATTR_TYPE
-    {
-        if(!$MOR_ATTR_TYPE.text.equals("mor")) {
-            PhonLogger.warning("Only support <mor> elements with type set to 'mor'.");
-        }
-    }
+    {    $mor::morType = $MOR_ATTR_TYPE.text;    }
     |    MOR_ATTR_OMITTED
+    {    $mor::morOmitted = new Boolean($MOR_ATTR_OMITTED.text);    }
     ;
     
 morchoice returns [String val]
@@ -957,7 +986,14 @@ scope
 		$val = $gra::index + "|" + $gra::head + "|" + $gra::relation;
 		
 		// add mor data as a dep tier of the current word(group)
-		IWord word = ($t.size() > 0 ? $t::w : $ugrp::w);
+		IWord word = null;
+		// get the correct word group holder
+		if($t.size() > 0 || $ugrp.size() > 0) {
+		    word = ($t.size() > 0 ? $t::w : $ugrp::w);
+		} else if($u.size() > 0) {
+		    word = $u::utt.getWords().get($u::utt.getWords().size()-1);
+		}
+		
 		IDependentTier depTier = 
 		    word.getDependentTier(tierDesc.getTierName());
 		if(depTier == null) {
@@ -1194,6 +1230,10 @@ pgele returns [String val]
 	|	overlap
 	{
 		$val = "(" + $overlap.val + ")";
+	}
+	|	tagmarker
+	{
+		$val = $tagmarker.val;
 	}
 	|	r 
 	{
@@ -1583,6 +1623,23 @@ overlap returns [String val]
     
 
         
+tagmarker returns [String val]
+	:	^(TAGMARKER_START TAGMARKER_ATTR_TYPE mor*)
+	{
+	    String tmType = $TAGMARKER_ATTR_TYPE.text;
+	    if(tmType.equals("comma")) {
+	        $val = ",";
+	    } else if(tmType.equals("tag")) {
+	        $val = "\u201E";
+	    } else if(tmType.equals("vocative")) {
+	        $val = "\u2021";
+	    }
+	}
+	;
+
+    
+
+        
 e returns [String val]
 scope {
 	String buffer;
@@ -1820,6 +1877,11 @@ gele
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			"(" + $overlap.val + ")";
+	}
+	|	tagmarker
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $tagmarker.val + ")";
 	}
 	|	e
 	{

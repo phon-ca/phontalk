@@ -19,10 +19,16 @@ public class Xml2PhonStreamTask extends PhonTask {
 	
 	private OutputStream phonStream;
 	
+	private String inStream;
+	private String outStream;
+	
 	public Xml2PhonStreamTask(String inFile, String outFile) {
 		try {
 			tbStream = new FileInputStream(inFile);
 			phonStream = new FileOutputStream(outFile);
+			
+			inStream = inFile;
+			outStream = outFile;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -31,6 +37,9 @@ public class Xml2PhonStreamTask extends PhonTask {
 	public Xml2PhonStreamTask(InputStream inStream, OutputStream outStream) {
 		this.tbStream = inStream;
 		this.phonStream = outStream;
+		
+		this.inStream = "";
+		this.outStream = "";
 	}
 
 	@Override
@@ -40,7 +49,7 @@ public class Xml2PhonStreamTask extends PhonTask {
 //		TalkbankValidator validator = new TalkbankValidator();
 		TalkbankConverter converter = new TalkbankConverter();
 		
-		ITranscript t = converter.convertStream(tbStream);
+		ITranscript t = converter.convertStream(inStream, tbStream);
 		try {
 			t.saveTranscriptData(phonStream);
 		} catch (IOException e) {

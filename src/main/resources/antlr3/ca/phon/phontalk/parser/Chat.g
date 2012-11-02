@@ -16,13 +16,23 @@ import ca.phon.system.logger.*;
 
 @members {
 
+private String filename;
+
+public void setFilename(String filename) {
+	this.filename = filename;
+}
+
+public String getFilename() {
+	return this.filename;
+}
+
 /** Override the default getErrorMessage() to 
  * also output to PhonLogger
  */
 public String getErrorMessage(RecognitionException re, String[] tokens) {
 	String retVal = super.getErrorMessage(re, tokens);
-	PhonLogger.warning("line " + 
-		re.line + ":" + re.c + " " + retVal);
+	PhonLogger.warning(getFilename() + "(" + 
+		re.line + ":" + re.c + ") " + retVal);
 		/*
 	ByteArrayOutputStream bout = new ByteArrayOutputStream();
 	PrintWriter writer = new PrintWriter(new OutputStreamWriter(bout));
@@ -100,8 +110,8 @@ part_attr
 
         
 comment
-	:	COMMENT_START COMMENT_ATTR_TYPE? TEXT? COMMENT_END 
-	->	^(COMMENT_START COMMENT_ATTR_TYPE? TEXT?)
+	:	COMMENT_START COMMENT_ATTR_TYPE? TEXT* COMMENT_END 
+	->	^(COMMENT_START COMMENT_ATTR_TYPE? TEXT*)
 	;
 
     
@@ -132,6 +142,7 @@ uannotation
 	|	pause 
 	|	e
 	|	linker
+	|	tagmarker
 	;
 
     
@@ -245,8 +256,13 @@ ambiguousLang
 
         
 mor
-    :    MOR_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice menx* gra* morseq* MOR_END
-    ->    ^(MOR_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice menx* gra* morseq*)
+    :    MOR_START morattr+ morchoice menx* gra* morseq* MOR_END
+    ->    ^(MOR_START morattr+ morchoice menx* gra* morseq*)
+    ;
+    
+morattr
+    :    MOR_ATTR_TYPE
+    |    MOR_ATTR_OMITTED
     ;
     
 morchoice
@@ -356,6 +372,7 @@ pgele
 	|  	e
 	|	underline
 	|	overlap
+	|	tagmarker
 	|	r 
 	|	k
 	|	ga
@@ -478,6 +495,14 @@ overlap
     
 
         
+tagmarker
+	:	TAGMARKER_START TAGMARKER_ATTR_TYPE mor* TAGMARKER_END
+	->	^(TAGMARKER_START TAGMARKER_ATTR_TYPE mor*)
+	;
+
+    
+
+        
 e
 	:	E_START evtele* E_END 
 	->	^(E_START evtele*)
@@ -548,6 +573,7 @@ gele
 	|	k
 	|	ga
 	|	overlap
+	|   tagmarker
 	|	e
 	|	g
 	|	s
