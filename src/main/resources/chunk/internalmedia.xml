@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+internalmedia
+    :    INTERNALMEDIA_START internalmedia_attr* INTERNALMEDIA_END
+	->	^(INTERNALMEDIA_START internalmedia_attr*)
+	;
+	
+internalmedia_attr
+	:	INTERNALMEDIA_ATTR_START
+	|	INTERNALMEDIA_ATTR_END
+	|	INTERNALMEDIA_ATTR_UNIT
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+internalmedia
+    :   ^(INTERNALMEDIA_START internalmedia_attr*)
+	;
+	
+internalmedia_attr
+	:	INTERNALMEDIA_ATTR_START
+	|	INTERNALMEDIA_ATTR_END
+	|	INTERNALMEDIA_ATTR_UNIT
+	;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+internalmedia
+    :   ^(INTERNALMEDIA_START internalmedia_attr*)
+	;
+	
+internalmedia_attr
+	:	INTERNALMEDIA_ATTR_START
+	|	INTERNALMEDIA_ATTR_END
+	|	INTERNALMEDIA_ATTR_UNIT
+	;
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include></include>
+    
+</chunk>

@@ -10,8 +10,8 @@ XPath - /xs:schema/xs:complexType[@name="groupType"]
     <buffer name="Chat.g">
         <![CDATA[
 g	
-	:	G_START gele* G_END 
-	->	^(G_START gele*)
+	:	G_START gele+ gchoice* G_END 
+	->	^(G_START gele+ gchoice*)
 	;
 	
 gele
@@ -19,17 +19,29 @@ gele
 	-> {pg_stack != null && !pg_stack.isEmpty() && $pg::inPg}? w
 	-> ^(PG_START w)
 	|	pg
+	|	sg
+	|	quotation
+	|	quotation2
 	|	pause
-	|	r 
-	|	k
+	|	internalmedia
+	|	freecode
+	|	e
+	|	s
+	|	tagmarker
+	|	longfeature
+	|	nonvocal
+	|	overlappoint
+	|	underline
+	|	italic
+	;
+	
+gchoice
+	:	k
+	|	error
+	|	r
+	|	duration
 	|	ga
 	|	overlap
-	|   tagmarker
-	|	e
-	|	g
-	|	s
-	| 	underline
-	|	error
 	;
 ]]>
     </buffer>
@@ -68,53 +80,13 @@ scope {
 	
 	$phoRepCount = $g::pgCount;
 }
-	:	^(G_START gele*)
+	:	^(G_START gele+ gchoice)
 	;
 	
 gele
 	:	w 
 	{	
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $w.val;	
-	}
-	|	pg
-	{
-	 	// enclose the pg data in [] so that we know to break up
-	 	// this into proper word groups in phon later.
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + "[" + $pg.val + "]";
-	}
-	|	pause
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $pause.val;
-	}
-	| 	r 
-	{	
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
-			"(x" + $r.val + ")";	
-	}
-	| 	k
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
-			"(" + $k.val + ")";
-	}
-	|	ga
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			$ga.val;
-	}
-	|	overlap
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			"(" + $overlap.val + ")";
-	}
-	|	tagmarker
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			"(" + $tagmarker.val + ")";
-	}
-	|	e
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			$e.val;
 	}
 	|	nestedg=g
 	{
@@ -141,20 +113,74 @@ gele
 
 		$g::pgCount += $nestedg.phoRepCount;
 	}
+	|	pg
+	{
+	 	// enclose the pg data in [] so that we know to break up
+	 	// this into proper word groups in phon later.
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + "[" + $pg.val + "]";
+	}
+	|	sg
+	|	quotation
+	|	quotation2
+	|	pause
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $pause.val;
+	}
+	|	internalmedia
+	|	freecode
+	|	e
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$e.val;
+	}
+	
 	|	s
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			$s.val;
 	}
+	|	tagmarker
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $tagmarker.val + ")";
+	}
+	|	longfeature
+	|	nonvocal
+	|	overlappoint
 	|	underline
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			$underline.val;
 	}
+	|	italic
+	;
+	
+gchoice
+	: 	k
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
+			"(" + $k.val + ")";
+	}
 	|	error
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			$error.val;
+	}
+	| 	r 
+	{	
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
+			"(x" + $r.val + ")";	
+	}
+	|	duration
+	|	ga
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$ga.val;
+	}
+	|	overlap
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $overlap.val + ")";
 	}
 	;
 ]]>
@@ -163,50 +189,63 @@ gele
 	<buffer name="Phon2XmlWalker.g">
 		<![CDATA[
 g	
-	:	^(G_START (contentlist+=gele)*)
-	->	template( content={$contentlist} )
-	<<\<g\><content; separator="">\</g\> >>
+	:	^(G_START (contentlist+=gele)+ (choicelist+=gchoice)*)
+	->	template( content={$contentlist}, choices={$choicelist} )
+	<<\<g\><content; separator=""><choices; separator="">\</g\> >>
 	;
 	
 gele
 	:	w 
 	->	template( v={$w.st} )
 		"<v>"
+	|	g
+	->	template( v={$g.st} )
+		"<v>"
 	|	pg
 	->	template( v={$pg.st} )
 		"<v>"
+	|	sg
+	|	quotation
+	|	quotation2
 	|	pause
 	->	template( v={$pause.st} )
+		"<v>"
+	|	internalmedia
+	|	freecode
+	|	e
+	->	template( v={$e.st} )
+		"<v>"
+	|	s
+	->	template( v={$s.st} )
+		"<v>"
+	|	tagmarker
+	->  template( v={$tagmarker.st} )
+		"<v>"
+	|	longfeature
+	|	nonvocal
+	|	overlappoint
+	|	underline
+	->	template( v={$underline.st} )
+		"<v>"
+	|	italic
+	;
+	
+gchoice
+	:	k
+	->	template( v={$k.st} )
+		"<v>"
+	|	error
+	->	template( v={$error.st} )
 		"<v>"
 	|	r 
 	->	template( v={$r.st} )
 		"<v>"
-	|	k
-	->	template( v={$k.st} )
-		"<v>"
+	|	duration
 	|	ga
 	->	template( v={$ga.st} )
 		"<v>"
 	|	overlap
 	->	template( v={$overlap.st} )
-		"<v>"
-	|	tagmarker
-	->  template( v={$tagmarker.st} )
-		"<v>"
-	|	e
-	->	template( v={$e.st} )
-		"<v>"
-	|	g
-	->	template( v={$g.st} )
-		"<v>"
-	|	s
-	->	template( v={$s.st} )
-		"<v>"
-	|	underline
-	->	template( v={$underline.st} )
-		"<v>"
-	|	error
-	->	template( v={$error.st} )
 		"<v>"
 	;
 ]]>
@@ -214,16 +253,27 @@ gele
     
     <!-- Includes -->
 	<include>w.xml</include>
+	<include>g.xml</include>
 	<include>pg.xml</include>
-    <include>r.xml</include>
-    <include>k.xml</include>
+	<include>sg.xml</include>
+    <include>quotation.xml</include>
+	<include>quotation2.xml</include>
+	<include>pause.xml</include>
+	<include>internal-media.xml</include>
+	<include>freecode.xml</include>
+	<include>e.xml</include>
+	<include>s.xml</include>
+	<include>tagmarker.xml</include>
+	<include>longfeature.xml</include>
+	<include>nonvocal.xml</include>
+	<include>overlappoint.xml</include>
+	<include>underline.xml</include>
+	<include>italic.xml</include>
+	<include>k.xml</include>
+	<include>error.xml</include>
+	<include>r.xml</include>
+	<include>duration.xml</include>
 	<include>ga.xml</include>
 	<include>overlap.xml</include>
-	<include>tagmarker.xml</include>
-	<include>e.xml</include>
-	<include>pause.xml</include>
-	<include>s.xml</include>
-	<include>underline.xml</include>
-	<include>error.xml</include>
-
+	
 </chunk>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  long-feature
+  Long event.
+  
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+longfeature
+    :    LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT LONGFEATURE_END
+    ->    ^(LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+longfeature
+    :    ^(LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+longfeature
+    :    ^(LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT)
+    ;
+]]>
+    </buffer>
+    
+</chunk>

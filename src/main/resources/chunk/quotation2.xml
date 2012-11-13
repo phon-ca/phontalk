@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+ Begin/end quoted material - unsupported
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+quotation2
+    :    QUOTATION2_START QUOTATION2_ATTR_TYPE mor* QUOTATION_END
+    ->    ^(QUOTATION2_START QUOTATION2_ATTR_TYPE mor*)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+quotation2
+    :    ^(QUOTATION2_START QUOTATION2_ATTR_TYPE mor*)
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+quotation2
+    :    ^(QUOTATION2_START QUOTATION2_ATTR_TYPE mor*)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include>mor.xml</include>
+    
+</chunk>

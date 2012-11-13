@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+  duration
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+duration
+    :    DURATION_START TEXT DURATION_END
+    ->    ^(DURATION_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+duration
+    :    DURATION_START TEXT DURATION_END
+    ->    ^(DURATION_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+duration
+    :    ^(DURATION_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+</chunk>

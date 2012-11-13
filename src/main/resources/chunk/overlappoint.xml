@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+  overlap-point
+  CA-stype overlap
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+overlappoint
+    :    OVERLAPPOINT_START overlappointattrs+ OVERLAPPOINT_END
+    ->    ^(OVERLAPPOINT_START overlappointattrs+)
+    ;
+    
+overlappointattrs
+    :    OVERLAPPOINT_ATTR_INDEX
+    |    OVERLAPPOINT_ATTR_STARTEND
+    |    OVERLAPPOINT_ATTR_TOPBOTTOM
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+overlappoint
+    :    ^(OVERLAPPOINT_START overlappointattrs+)
+    ;
+    
+overlappointattrs
+    :    OVERLAPPOINT_ATTR_INDEX
+    |    OVERLAPPOINT_ATTR_STARTEND
+    |    OVERLAPPOINT_ATTR_TOPBOTTOM
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+overlappoint
+    :    ^(OVERLAPPOINT_START overlappointattrs+)
+    ;
+    
+overlappointattrs
+    :    OVERLAPPOINT_ATTR_INDEX
+    |    OVERLAPPOINT_ATTR_STARTEND
+    |    OVERLAPPOINT_ATTR_TOPBOTTOM
+    ;
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include></include>
+    
+</chunk>

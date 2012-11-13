@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+  nonvocal
+  Nonvocal material.
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+nonvocal
+    :    NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT NONVOCAL_END
+    ->    ^(NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+nonvocal
+    :    ^(NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+nonvocal
+    :    ^(NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT)
+    ;
+]]>
+    </buffer>
+    
+</chunk>

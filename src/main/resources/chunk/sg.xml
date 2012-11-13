@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+  Signed word data - unsupported
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+sg
+    :    SG_START sgchoice+ sw+ SG_END
+    ->    ^(SG_START sgchoice+ sw+)
+    ;
+    
+sgchoice
+    :    w
+    |    g
+    |    quotation
+    |    quotation2
+    |    pause
+    |    internal-media
+    |    freecode
+    |    e
+    |    s
+    |    tagmarker
+    |    longfeature
+    |    nonvocal
+    |    overlap-point
+    |    underline
+    |    italic
+    ;
+    
+sw
+    :    SW_START TEXT SW_END
+    ->    ^(SW_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+sg
+    :    ^(SG_START sgchoice+ sw+)
+    ;
+    
+sgchoice
+    :    w
+    |    g
+    |    quotation
+    |    quotation2
+    |    pause
+    |    internal-media
+    |    freecode
+    |    e
+    |    s
+    |    tagmarker
+    |    longfeature
+    |    nonvocal
+    |    overlap-point
+    |    underline
+    |    italic
+    ;
+    
+sw
+    :    ^(SW_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+sg
+    :    ^(SG_START sgchoice+ sw+)
+    ;
+    
+sgchoice
+    :    w
+    |    g
+    |    quotation
+    |    quotation2
+    |    pause
+    |    internal-media
+    |    freecode
+    |    e
+    |    s
+    |    tagmarker
+    |    longfeature
+    |    nonvocal
+    |    overlap-point
+    |    underline
+    |    italic
+    ;
+    
+sw
+    :    ^(SW_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include>w.xml</include>
+    <include>g.xml</include>
+    <include>quotation.xml</include>
+    <include>quotation2.xml</include>
+    <include>pause.xml</include>
+    <include>internal-media.xml</include>
+    <include>freecode.xml</include>
+    <include>e.xml</include>
+    <include>s.xml</include>
+    <include>tagmarker.xml</include>
+    <include>longfeature.xml</include>
+    <include>nonvocal.xml</include>
+    <include>overlappoint.xml</include>
+    <include>underline.xml</include>
+    <include>italic.xml</include>
+    
+</chunk>

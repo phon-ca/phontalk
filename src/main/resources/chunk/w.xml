@@ -10,25 +10,32 @@ XPath - /xs:schema/xs:complexType[@name="wordType"]
     <buffer name="Chat.g">
         <![CDATA[
 w
-	:	W_START wattr* wele* W_END 
-	->	^(W_START wattr* wele*)
+	:	W_START wattr* langs? wele* W_END 
+	->	^(W_START wattr* langs? wele*)
 	;
 	
 wele
 	:	TEXT 
-	|	wk 
-	|	p 
-	|	shortening 
-	|	f 
-	|	replacement
+	|	overlappoint
 	|	underline
-	|	langs
+	|	italic
+	|	shortening
+	|	p
+	|	longfeature
+	|	wk 
+	|	pos
+	|	replacement
 	|	mor
+	|	mk
 	;
 	
 wattr
-	:	W_ATTR_FORMTYPE
+	:	W_ATTR_SEPARATEDPREFIX
+	|	W_ATTR_FORMTYPE
 	|	W_ATTR_TYPE
+	|	W_ATTR_USERSPECIALFORM
+	|	W_ATTR_FORMSUFFIX
+	|	W_ATTR_UNTRANSCRIBED
 	;
 ]]>
     </buffer>
@@ -50,7 +57,12 @@ scope {
 @after {
 	$val = $w::prefix + $w::buffer.toString() + $w::suffix;
 }
-	:	^(W_START wattr* wele*)
+	:	^(W_START wattr* langs? wele*)
+	{
+		if($langs != null) {
+			$w::buffer = $langs.val + $w::buffer;
+		}
+	}
 	;
 	
 wele
@@ -58,42 +70,45 @@ wele
 	{	
 		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $TEXT.text;	
 	}
-	| 	wk
+	|	overlappoint
+	|	underline
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $wk.val;
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $underline.val;
 	}
-	|	p 
+	|	italic
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $p.val;
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $italic.val;
 	}
 	|	shortening
 	{
 		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $shortening.val;
 	}
-	|	f
+	|	p 
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $f.val;
+		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $p.val;
 	}
+	|	longfeature
+	| 	wk
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $wk.val;
+	}
+	|	pos
 	|	replacement
 	{
 		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $replacement.val;
-	}
-	|	underline
-	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $underline.val;
-	}
-	|	langs
-	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "" ) + $langs.val;
 	}
 	|	mor
 	{
 		// mor is handled as a seperate dependent tier
 	}
+	|	mk
+	{
+	}
 	;
 	
 wattr
-	:	W_ATTR_FORMTYPE
+	:	W_ATTR_SEPARATEDPREFIX
+	|	W_ATTR_FORMTYPE
 	{
 		$w::suffix = "@";
 		
@@ -169,6 +184,9 @@ wattr
 			$w::prefix = "&";
 		}
 	}
+	|	W_ATTR_USERSPECIALFORM
+	|	W_ATTR_FORMSUFFIX
+	|	W_ATTR_UNTRANSCRIBED
 	;
 ]]>
     </buffer>
@@ -176,60 +194,87 @@ wattr
 	<buffer name="Phon2XmlWalker.g">
 		<![CDATA[
 w
-	:	^(W_START (wattrlist+=wattr)* (contentlist+=wele)* )
-	->	{$wattrlist != null}? template( content={$contentlist}, wattrs={$wattrlist} )
-		"\<w <wattrs; separator=\"\">\><content; separator=\"\">\</w\>"
-	->	template( content={$contentlist} )
-		"\<w\><content; separator=\"\">\</w\>"
+	:	^(W_START (wattrlist+=wattr)* langs? (contentlist+=wele)* )
+	->	{$wattrlist != null}? template( content={$contentlist}, l={$langs != null ? $langs.st : new String()}, wattrs={$wattrlist} )
+		"\<w <wattrs; separator=\"\">\><l><content; separator=\"\">\</w\>"
+	->	template( l={$langs != null ? $langs.st : new String()}, content={$contentlist} )
+		"\<w\><l><content; separator=\"\">\</w\>"
 	;
 	
 wele
 	:	TEXT
 	->	template( v={$TEXT.text} )
 		"<v>"
-	|	wk
-	->	template( v={$wk.st} )
-		"<v>"
-	|	p
-	->	template( v={$p.st} )
-		"<v>"
-	|	shortening
-	->	template( v={$shortening.st} )
-		"<v>"
-	|	f
-	->	template( v={$f.st} )
-		"<v>"
-	|	replacement
-	->	template( v={$replacement.st} )
+	|	overlappoint
+	->	template( v={$overlappoint.text} )
 		"<v>"
 	|	underline
 	->	template( v={$underline.st} )
 		"<v>"
-	|	langs
-	->	template ( v={$langs.st} )
+	|	italic
+	->	template( v={italic.st} )
+		"<v>"
+	|	shortening
+	->	template( v={$shortening.st} )
+		"<v>"
+	|	p
+	->	template( v={$p.st} )
+		"<v>"
+	|	longfeature
+	->	template( v={$longfeature.st} )
+		"<v>"
+	|	wk
+	->	template( v={$wk.st} )
+		"<v>"
+	|	pos
+	->	template( v={$pos.st} )
+		"<v>"
+	
+	|	replacement
+	->	template( v={$replacement.st} )
 		"<v>"
 	|	mor
+	->	template( v={$mor.st} )
+		"<v>"
+	|	mk
+	->	template( v={$mk.st} )
+		"<v>"
 	;
 	
 wattr
-	:	W_ATTR_FORMTYPE
+	:	W_ATTR_SEPARATEDPREFIX
+	->	template( v={$W_ATTR_SEPARATEDPREFIX.text} )
+	<<separated-prefix="<v>" >>
+	|	W_ATTR_FORMTYPE
 	->	template( v={$W_ATTR_FORMTYPE.text} )
 	<<formType="<v>" >>
 	|	W_ATTR_TYPE
 	->	template( v={$W_ATTR_TYPE.text} )
 	<<type="<v>" >>
+	|	W_ATTR_USERSPECIALFORM
+	->	template( v={$W_ATTR_USERSPECIALFORM.text} )
+	<<user-special-form="<v>" >>
+	|	W_ATTR_FORMSUFFIX
+	->	template( v={$W_ATTR_FORMSUFFIX.text} )
+	<<form-suffix="<v>" >>
+	|	W_ATTR_UNTRANSCRIBED
+	->	template( v={$W_ATTR_UNTRANSCRIBED.text} )
+	<<untranscribed="<v>" >>
 	;
 ]]>
 	</buffer>
 	
     <!-- Includes -->
-    <include>wk.xml</include>
-    <include>p.xml</include>
-    <include>shortening.xml</include>
-    <include>f.xml</include>
-    <include>replacement.xml</include>
+	<include>langs.xml</include>
+    <include>overlappoint.xml</include>
     <include>underline.xml</include>
-    <include>langs.xml</include>
+	<include>italic.xml</include>
+	<include>shortening.xml</include>
+	<include>p.xml</include>
+	<include>longfeature.xml</include>
+	<include>wk.xml</include>
+	<include>pos.xml</include>
+	<include>replacement.xml</include>
 	<include>mor.xml</include>
-    
+	<include>mk.xml</include>
 </chunk>

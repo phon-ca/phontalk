@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+  Freecode
+  Unscoped complex local events in the middle of an utterance.
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+freecode
+    :    FREECODE_START TEXT FREECODE_END
+    ->    ^(FREECODE_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+freecode
+    :    ^(FREECODE_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+freecode
+    :    ^(FREECODE_START TEXT)
+    ;
+]]>
+    </buffer>
+    
+</chunk>

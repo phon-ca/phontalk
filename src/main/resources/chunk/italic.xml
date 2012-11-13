@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+italic
+-->
+<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+italic
+	:	ITALIC_START ITALIC_ATTR_TYPE ITALIC_END
+	->	^(ITALIC_START ITALIC_ATTR_TYPE)
+	;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+italic returns [String val]
+@init {
+$val = "";
+}
+	:	^(ITALIC_START type=ITALIC_ATTR_TYPE)
+	{
+		String uType = $type.text;
+		$val = "*italic:" + uType + "*";
+	}
+	;	
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+italic
+	:	^(ITALIC_START type=ITALIC_ATTR_TYPE)
+	->	template( type={$ITALIC_ATTR_TYPE} )
+	"\<italic type=\"<type>\"/\>"
+	;	
+]]>
+    </buffer>
+    
+</chunk>
