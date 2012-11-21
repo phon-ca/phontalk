@@ -148,7 +148,7 @@ public class TalkbankValidator {
 	private Source loadLocalSchema() {
 		File localSchemaFile = new File(schemaFileName);
 		if(localSchemaFile.exists()) {
-			PhonLogger.info("Loading talkbank schema at " + localSchemaFile.getAbsolutePath());
+			PhonLogger.fine("Loading talkbank schema at " + localSchemaFile.getAbsolutePath());
 
 			Source schemaSource = new StreamSource(localSchemaFile);
 			return schemaSource;
@@ -165,7 +165,7 @@ public class TalkbankValidator {
 	private Source loadEmbeddedSchema() {
 		InputStream schemaURL = getClass().getClassLoader().getResourceAsStream(schemaFileName);
 		if(schemaURL != null) {
-			PhonLogger.info("Loading talkbank schema at " +
+			PhonLogger.fine("Loading talkbank schema at " +
 					getClass().getClassLoader().getResource(schemaFileName));
 
 			Source schemaSource = new StreamSource(schemaURL);

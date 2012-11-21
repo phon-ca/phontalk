@@ -100,10 +100,48 @@ wele
 	|	mor
 	{
 		// mor is handled as a seperate dependent tier
+		String morVal = $mor.val;
+		String tierName = $mor.tierName;
+		
+		// make sure dep tier exists in session
+		IDepTierDesc tierDesc = null;
+		for(IDepTierDesc current:session.getWordAlignedTiers())
+		{
+			if(current.getTierName().equals(tierName))
+			{
+				tierDesc = current;
+				break;
+			}
+		}
+		
+		if(tierDesc == null) {
+			// create the new tier
+			tierDesc = session.newDependentTier();
+			tierDesc.setTierName(tierName);
+			tierDesc.setIsGrouped(true);
+		}
+		
+		// add mor data as a dep tier of the current word(group)
+		IWord word = null;
+		// get the correct word group holder
+		if($t.size() > 0 || $ugrp.size() > 0) {
+		    word = ($t.size() > 0 ? $t::w : $ugrp::w);
+		} else if($u.size() > 0) {
+		    word = $u::utt.getWords().get($u::utt.getWords().size()-1);
+		}
+		
+		IDependentTier depTier = 
+		    word.getDependentTier(tierDesc.getTierName());
+		if(depTier == null) {
+			depTier = word.newDependentTier();
+			depTier.setTierName(tierDesc.getTierName());
+		}
+		String tierValue = depTier.getTierValue();
+		tierValue += 
+		    (tierValue.length() == 0 ? "" : " ") + morVal;
+		depTier.setTierValue(tierValue);
 	}
 	|	mk
-	{
-	}
 	;
 	
 wattr
@@ -195,10 +233,8 @@ wattr
 		<![CDATA[
 w
 	:	^(W_START (wattrlist+=wattr)* langs? (contentlist+=wele)* )
-	->	{$wattrlist != null}? template( content={$contentlist}, l={$langs != null ? $langs.st : new String()}, wattrs={$wattrlist} )
-		"\<w <wattrs; separator=\"\">\><l><content; separator=\"\">\</w\>"
-	->	template( l={$langs != null ? $langs.st : new String()}, content={$contentlist} )
-		"\<w\><l><content; separator=\"\">\</w\>"
+	->	template( content={$contentlist}, l={$langs.st}, wattrs={$wattrlist} )
+		"\<w <if(wattrs)><wattrs; separator=\"\"><endif>\><if(l)><l><endif><content; separator=\"\">\</w\>"
 	;
 	
 wele
@@ -206,13 +242,13 @@ wele
 	->	template( v={$TEXT.text} )
 		"<v>"
 	|	overlappoint
-	->	template( v={$overlappoint.text} )
+	->	template( v={$overlappoint.st} )
 		"<v>"
 	|	underline
 	->	template( v={$underline.st} )
 		"<v>"
 	|	italic
-	->	template( v={italic.st} )
+	->	template( v={$italic.st} )
 		"<v>"
 	|	shortening
 	->	template( v={$shortening.st} )
@@ -273,8 +309,7 @@ wattr
 	<include>p.xml</include>
 	<include>longfeature.xml</include>
 	<include>wk.xml</include>
-	<include>pos.xml</include>
 	<include>replacement.xml</include>
 	<include>mor.xml</include>
-	<include>mk.xml</include>
+	
 </chunk>

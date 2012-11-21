@@ -19,14 +19,14 @@ sgchoice
     |    quotation
     |    quotation2
     |    pause
-    |    internal-media
+    |    internalmedia
     |    freecode
     |    e
     |    s
     |    tagmarker
     |    longfeature
     |    nonvocal
-    |    overlap-point
+    |    overlappoint
     |    underline
     |    italic
     ;
@@ -51,14 +51,14 @@ sgchoice
     |    quotation
     |    quotation2
     |    pause
-    |    internal-media
+    |    internalmedia
     |    freecode
     |    e
     |    s
     |    tagmarker
     |    longfeature
     |    nonvocal
-    |    overlap-point
+    |    overlappoint
     |    underline
     |    italic
     ;
@@ -81,14 +81,14 @@ sgchoice
     |    quotation
     |    quotation2
     |    pause
-    |    internal-media
+    |    internalmedia
     |    freecode
     |    e
     |    s
     |    tagmarker
     |    longfeature
     |    nonvocal
-    |    overlap-point
+    |    overlappoint
     |    underline
     |    italic
     ;
@@ -105,7 +105,7 @@ sw
     <include>quotation.xml</include>
     <include>quotation2.xml</include>
     <include>pause.xml</include>
-    <include>internal-media.xml</include>
+    <include>internalmedia.xml</include>
     <include>freecode.xml</include>
     <include>e.xml</include>
     <include>s.xml</include>

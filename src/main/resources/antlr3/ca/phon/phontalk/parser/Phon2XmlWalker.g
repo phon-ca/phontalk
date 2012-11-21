@@ -262,111 +262,73 @@ ugrp
 
 		
 w
-	:	^(W_START (wattrlist+=wattr)* (contentlist+=wele)* )
-	->	{$wattrlist != null}? template( content={$contentlist}, wattrs={$wattrlist} )
-		"\<w <wattrs; separator=\"\">\><content; separator=\"\">\</w\>"
-	->	template( content={$contentlist} )
-		"\<w\><content; separator=\"\">\</w\>"
+	:	^(W_START (wattrlist+=wattr)* langs? (contentlist+=wele)* )
+	->	template( content={$contentlist}, l={$langs.st}, wattrs={$wattrlist} )
+		"\<w <if(wattrs)><wattrs; separator=\"\"><endif>\><if(l)><l><endif><content; separator=\"\">\</w\>"
 	;
 	
 wele
 	:	TEXT
 	->	template( v={$TEXT.text} )
 		"<v>"
-	|	wk
-	->	template( v={$wk.st} )
-		"<v>"
-	|	p
-	->	template( v={$p.st} )
-		"<v>"
-	|	shortening
-	->	template( v={$shortening.st} )
-		"<v>"
-	|	f
-	->	template( v={$f.st} )
-		"<v>"
-	|	replacement
-	->	template( v={$replacement.st} )
+	|	overlappoint
+	->	template( v={$overlappoint.st} )
 		"<v>"
 	|	underline
 	->	template( v={$underline.st} )
 		"<v>"
-	|	langs
-	->	template ( v={$langs.st} )
+	|	italic
+	->	template( v={$italic.st} )
+		"<v>"
+	|	shortening
+	->	template( v={$shortening.st} )
+		"<v>"
+	|	p
+	->	template( v={$p.st} )
+		"<v>"
+	|	longfeature
+	->	template( v={$longfeature.st} )
+		"<v>"
+	|	wk
+	->	template( v={$wk.st} )
+		"<v>"
+	|	pos
+	->	template( v={$pos.st} )
+		"<v>"
+	
+	|	replacement
+	->	template( v={$replacement.st} )
 		"<v>"
 	|	mor
+	->	template( v={$mor.st} )
+		"<v>"
+	|	mk
+	->	template( v={$mk.st} )
+		"<v>"
 	;
 	
 wattr
-	:	W_ATTR_FORMTYPE
+	:	W_ATTR_SEPARATEDPREFIX
+	->	template( v={$W_ATTR_SEPARATEDPREFIX.text} )
+	<<separated-prefix="<v>" >>
+	|	W_ATTR_FORMTYPE
 	->	template( v={$W_ATTR_FORMTYPE.text} )
 	<<formType="<v>" >>
 	|	W_ATTR_TYPE
 	->	template( v={$W_ATTR_TYPE.text} )
 	<<type="<v>" >>
+	|	W_ATTR_USERSPECIALFORM
+	->	template( v={$W_ATTR_USERSPECIALFORM.text} )
+	<<user-special-form="<v>" >>
+	|	W_ATTR_FORMSUFFIX
+	->	template( v={$W_ATTR_FORMSUFFIX.text} )
+	<<form-suffix="<v>" >>
+	|	W_ATTR_UNTRANSCRIBED
+	->	template( v={$W_ATTR_UNTRANSCRIBED.text} )
+	<<untranscribed="<v>" >>
 	;
 
 	
-
-        
-wk
-    :    ^(WK_START WK_ATTR_TYPE?)
-    ->    template( type={$WK_ATTR_TYPE.text} )
-    "\<wk type=\"<type>\"/\>"
-    ;
-
-    
-
-		
-p
-	:	^(P_START P_ATTR_TYPE?)
-	->	template( type={$P_ATTR_TYPE} )
-	<<\<p type="<type>"/\> >>
-	;
-
-	
-
-        
-shortening
-    :    ^(SHORTENING_START TEXT?)
-    ->    template( v={$TEXT.text} )
-    "\<shortening\><v>\</shortening\>"
-    ;
-
-    
-
-        
-f
-    :    ^(F_START F_ATTR_TYPE?)
-    ->    template( type={$F_ATTR_TYPE.text} )
-    <<\<f type="<type>"/\> >>
-    ;
-
-    
-
-        
-replacement
-    :    ^(REPLACEMENT_START (rcontentlist+=replacementele)*)
-    ->    template( rcontent={$rcontentlist} )
-    "\<replacement\><rcontent; separator=\"\">\</replacement\>"
-    ;
-    
-replacementele
-    :    w
-    ->    template( v={$w.st} )
-	    "<v>"
-    ;
-
-    
-
-        
-underline
-	:	^(UNDERLINE_START type=UNDERLINE_ATTR_TYPE)
-	->	template( type={$UNDERLINE_ATTR_TYPE} )
-	"\<underline type=\"<type>\"/\>"
-	;	
-
-    
 
         
 langs	
@@ -404,6 +366,86 @@ ambiguousLang
 	->	template( v={$ambt.text} )
 		"\<ambiguous\><v>\</ambiguous\>"
 	;
+
+    
+
+        
+overlappoint
+    :    ^(OVERLAPPOINT_START overlappointattrs+)
+    ;
+    
+overlappointattrs
+    :    OVERLAPPOINT_ATTR_INDEX
+    |    OVERLAPPOINT_ATTR_STARTEND
+    |    OVERLAPPOINT_ATTR_TOPBOTTOM
+    ;
+
+    
+
+        
+underline
+	:	^(UNDERLINE_START type=UNDERLINE_ATTR_TYPE)
+	->	template( type={$UNDERLINE_ATTR_TYPE} )
+	"\<underline type=\"<type>\"/\>"
+	;	
+
+    
+
+        
+italic
+	:	^(ITALIC_START type=ITALIC_ATTR_TYPE)
+	->	template( type={$ITALIC_ATTR_TYPE} )
+	"\<italic type=\"<type>\"/\>"
+	;	
+
+    
+
+        
+shortening
+    :    ^(SHORTENING_START TEXT?)
+    ->    template( v={$TEXT.text} )
+    "\<shortening\><v>\</shortening\>"
+    ;
+
+    
+
+		
+p
+	:	^(P_START P_ATTR_TYPE?)
+	->	template( type={$P_ATTR_TYPE} )
+	<<\<p type="<type>"/\> >>
+	;
+
+	
+
+        
+longfeature
+    :    ^(LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT)
+    ;
+
+    
+
+        
+wk
+    :    ^(WK_START WK_ATTR_TYPE?)
+    ->    template( type={$WK_ATTR_TYPE.text} )
+    "\<wk type=\"<type>\"/\>"
+    ;
+
+    
+
+        
+replacement
+    :    ^(REPLACEMENT_START (rcontentlist+=replacementele)*)
+    ->    template( rcontent={$rcontentlist} )
+    "\<replacement\><rcontent; separator=\"\">\</replacement\>"
+    ;
+    
+replacementele
+    :    w
+    ->    template( v={$w.st} )
+	    "<v>"
+    ;
 
     
 
@@ -732,23 +774,41 @@ tagmarker
 
 		
 e
-	:	^(E_START (contentlist+=evtele)*)
-	->	template( content={$contentlist} )
-	<<\<e\><content; separator="">\</e\> >>
+	:	^(E_START req=echoice1 (contentlist+=echoice2)*)
+	->	template( required={$req.st}, content={$contentlist} )
+	<<\<e\><required><if(content)><content; separator=""><endif>\</e\> >>
 	;
 
-evtele
+echoice1
 	:	action
 	->	template( v={$action.st} )
 		"<v>"
 	|	happening
 	->	template( v={$happening.st} )
 		"<v>"
-	|	ga
-	->	template( v={$ga.st} )
+	|	otherspokenevent
+	->	template( v={$otherspokenevent.st} )
+		"<v>"
+	;
+
+echoice2
+	:	k
+	->	template( v={$k.st} )
+		"<v>"
+	|	error
+	->	template( v={$error.st} )
+		"<v>"
+	|	r
+	->	template( v={$r.st} )
 		"<v>"
 	|	overlap
 	->	template( v={$overlap.st} )
+		"<v>"
+	|	ga
+	->	template( v={$ga.st} )
+		"<v>"
+	|	duration
+	->	template( v={$duration.st} )
 		"<v>"
 	;
 
@@ -773,6 +833,33 @@ happening
     
 
         
+
+otherspokenevent
+    :    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO w)
+    ->    template( who={$OTHERSPOKENEVENT_ATTR_WHO.text}, word={$w.st} )
+    <<\<otherSpokenEvent times="<who>"\><word>\</otherSpokenEvent\> >>
+    ;
+
+
+    
+
+        
+error
+	:	^(ERROR_START et=TEXT?)
+	->	template( errtext={$et.text} )
+		"\<error\><errtext>\</error\>"
+	;
+
+    
+
+        
+duration
+    :    ^(DURATION_START TEXT)
+    ;
+
+    
+
+        
 pause
 	:	^(PAUSE_START PAUSE_ATTR_SYMBOLIC_LENGTH?)
 	->    template( len={$PAUSE_ATTR_SYMBOLIC_LENGTH} )
@@ -793,65 +880,139 @@ s
 
 	
 
-        
-error
-	:	^(ERROR_START et=TEXT?)
-	->	template( errtext={$et.text} )
-		"\<error\><errtext>\</error\>"
-	;
-
-    
-
 		
 g	
-	:	^(G_START (contentlist+=gele)*)
-	->	template( content={$contentlist} )
-	<<\<g\><content; separator="">\</g\> >>
+	:	^(G_START (contentlist+=gele)+ (choicelist+=gchoice)*)
+	->	template( content={$contentlist}, choices={$choicelist} )
+	<<\<g\><content; separator=""><if(choices)><choices; separator=""><endif>\</g\> >>
 	;
 	
 gele
 	:	w 
 	->	template( v={$w.st} )
 		"<v>"
+	|	g
+	->	template( v={$g.st} )
+		"<v>"
 	|	pg
 	->	template( v={$pg.st} )
 		"<v>"
+	|	sg
+	|	quotation
+	|	quotation2
 	|	pause
 	->	template( v={$pause.st} )
+		"<v>"
+	|	internalmedia
+	|	freecode
+	|	e
+	->	template( v={$e.st} )
+		"<v>"
+	|	s
+	->	template( v={$s.st} )
+		"<v>"
+	|	tagmarker
+	->  template( v={$tagmarker.st} )
+		"<v>"
+	|	longfeature
+	|	nonvocal
+	|	overlappoint
+	|	underline
+	->	template( v={$underline.st} )
+		"<v>"
+	|	italic
+	;
+	
+gchoice
+	:	k
+	->	template( v={$k.st} )
+		"<v>"
+	|	error
+	->	template( v={$error.st} )
 		"<v>"
 	|	r 
 	->	template( v={$r.st} )
 		"<v>"
-	|	k
-	->	template( v={$k.st} )
-		"<v>"
+	|	duration
 	|	ga
 	->	template( v={$ga.st} )
 		"<v>"
 	|	overlap
 	->	template( v={$overlap.st} )
 		"<v>"
-	|	tagmarker
-	->  template( v={$tagmarker.st} )
-		"<v>"
-	|	e
-	->	template( v={$e.st} )
-		"<v>"
-	|	g
-	->	template( v={$g.st} )
-		"<v>"
-	|	s
-	->	template( v={$s.st} )
-		"<v>"
-	|	underline
-	->	template( v={$underline.st} )
-		"<v>"
-	|	error
-	->	template( v={$error.st} )
-		"<v>"
 	;
 
 	
+
+        
+sg
+    :    ^(SG_START sgchoice+ sw+)
+    ;
+    
+sgchoice
+    :    w
+    |    g
+    |    quotation
+    |    quotation2
+    |    pause
+    |    internalmedia
+    |    freecode
+    |    e
+    |    s
+    |    tagmarker
+    |    longfeature
+    |    nonvocal
+    |    overlappoint
+    |    underline
+    |    italic
+    ;
+    
+sw
+    :    ^(SW_START TEXT)
+    ;
+
+    
+
+        
+quotation
+    :    ^(QUOTATION_START QUOTATION_ATTR_TYPE mor*)
+    ;
+
+    
+
+        
+quotation2
+    :    ^(QUOTATION2_START QUOTATION2_ATTR_TYPE mor*)
+    ;
+
+    
+
+        
+internalmedia
+    :   ^(INTERNALMEDIA_START internalmedia_attr*)
+	;
+	
+internalmedia_attr
+	:	INTERNALMEDIA_ATTR_START
+	|	INTERNALMEDIA_ATTR_END
+	|	INTERNALMEDIA_ATTR_UNIT
+	;
+
+    
+
+        
+freecode
+    :    ^(FREECODE_START TEXT)
+    ;
+
+    
+
+        
+nonvocal
+    :    ^(NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT)
+    ;
+
+    
 
         
 t

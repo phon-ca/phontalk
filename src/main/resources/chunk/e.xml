@@ -10,15 +10,23 @@ XPath -	/xs:schema/xs:complexType[@name="eventType"]
     <buffer name="Chat.g">
         <![CDATA[
 e
-	:	E_START evtele* E_END 
-	->	^(E_START evtele*)
+	:	E_START echoice1 echoice2* E_END 
+	->	^(E_START echoice1 echoice2*)
 	;
-
-evtele
+	
+echoice1
 	:	action
 	|	happening
-	|	ga
+	|	otherspokenevent
+	;
+
+echoice2
+	:	k
+	|	error
+	|	r
 	|	overlap
+	|	ga
+	|	duration
 	;
 ]]>
     </buffer>
@@ -36,10 +44,11 @@ scope {
 @after {
 	$val = "*" + $e::buffer + "*";
 }
-	:	^(E_START evtele*)
+	:	^(E_START echoice1 echoice2*)
 	;
+	
 
-evtele
+echoice1
 	:	action
 	{
 		$e::buffer += ($e::buffer.length() > 0 ? " " : "") + "(action:";
@@ -60,14 +69,31 @@ evtele
 		}
 		$e::buffer += ")";
 	}
-	|	ga
+	|	otherspokenevent
+	;
+
+echoice2
+	:	k
 	{
-		if($ga.val != null)
-		{
+		if($k.val != null) {
 			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
-				$ga.val;
+				$k.val;
 		}
-	}	
+	}
+	|	error
+	{
+		if($error.val != null) {
+			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+					$error.val;
+		}
+	}
+	|	r
+	{
+		if($r.val != null) {
+			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+					"(x" + $r.val + ")";
+		}
+	}
 	|	overlap
 	{
 		$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
@@ -77,6 +103,15 @@ evtele
 		}
 		$e::buffer += ")";
 	}
+	|	ga
+	{
+		if($ga.val != null)
+		{
+			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+				$ga.val;
+		}
+	}
+	|	duration
 	;
 ]]>
     </buffer>
@@ -84,23 +119,41 @@ evtele
 	<buffer name="Phon2XmlWalker.g">
 		<![CDATA[
 e
-	:	^(E_START (contentlist+=evtele)*)
-	->	template( content={$contentlist} )
-	<<\<e\><content; separator="">\</e\> >>
+	:	^(E_START req=echoice1 (contentlist+=echoice2)*)
+	->	template( required={$req.st}, content={$contentlist} )
+	<<\<e\><required><if(content)><content; separator=""><endif>\</e\> >>
 	;
 
-evtele
+echoice1
 	:	action
 	->	template( v={$action.st} )
 		"<v>"
 	|	happening
 	->	template( v={$happening.st} )
 		"<v>"
-	|	ga
-	->	template( v={$ga.st} )
+	|	otherspokenevent
+	->	template( v={$otherspokenevent.st} )
+		"<v>"
+	;
+
+echoice2
+	:	k
+	->	template( v={$k.st} )
+		"<v>"
+	|	error
+	->	template( v={$error.st} )
+		"<v>"
+	|	r
+	->	template( v={$r.st} )
 		"<v>"
 	|	overlap
 	->	template( v={$overlap.st} )
+		"<v>"
+	|	ga
+	->	template( v={$ga.st} )
+		"<v>"
+	|	duration
+	->	template( v={$duration.st} )
 		"<v>"
 	;
 ]]>
@@ -111,5 +164,9 @@ evtele
 	<include>happening.xml</include>
 	<include>ga.xml</include>
 	<include>overlap.xml</include>
+	<include>otherspokenevent.xml</include>
+	<include>k.xml</include>
+	<include>error.xml</include>
+	<include>duration.xml</include>
     
 </chunk>

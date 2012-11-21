@@ -639,30 +639,10 @@ public class PhonTreeBuilder {
 			
 			// break into words
 			List<String> words = wGrp.getWords();
-			/*
-			 * We will be using (up to) 2 look ahead variables.
-			 * Make sure we don't go out of bounds.
-			 */
-//			words.add("");
-//			words.add("");
-//			String la1, la2;
 			String wordList[] = words.toArray(new String[0]);
 			
 			if(wordList.length == 0) {
-				// attach a 'dummy' transcription
-//				CommonTree parent = nodeStack.peek();
-//				
-//				CommonTree wNode = 
-//					createToken("E_START");
-//				wNode.setParent(parent);
-//				parent.addChild(wNode);
-//				
-//				CommonTree typeNode = 
-//					createToken("ACTION_START");
-//				typeNode.setParent(wNode);
-//				wNode.addChild(typeNode);
-//				
-//				addTextNode(typeNode, "");
+				// setup 'empty' transcription
 				wordList = new String[1];
 				wordList[0] = "0";
 			}
@@ -670,73 +650,15 @@ public class PhonTreeBuilder {
 			// a flag to indicate the next item in the iteration
 			// should be attached to the last child of nodeStack.peek()
 			boolean attachToLastChild = false;
-			
 			for(int wIndex = 0; wIndex < wordList.length; wIndex++) {
 				String w = wordList[wIndex];
-
-				
-//				la1 = wordList[wIndex+1];
-//				la2 = wordList[wIndex+2];
-				
 				
 				// EVENTS
 				if(w.matches("\\*.*\\*")) {
-					// events have 2 formats:
-					//  1) (label:data)*
-					//  2) plain text
 					String eData = w.substring(1, w.length()-1);
 					CommonTree parentNode = nodeStack.peek();
 					
-					Pattern evtPattern = Pattern.compile("(\\(.*?\\)\\p{Space}?)+");
-					Matcher evtMatcher = evtPattern.matcher(eData);
-					
-					CommonTree eNode = 
-						createToken("E_START");
-					eNode.setParent(parentNode);
-					parentNode.addChild(eNode);
-					
-					if(evtMatcher.matches()) {
-						// break into (.*) groups
-						Pattern subElePattern = Pattern.compile("(\\(.*?\\))");
-						Matcher subEleMatcher = subElePattern.matcher(eData);
-						
-						while(subEleMatcher.find()) {
-							String subEleData = subEleMatcher.group(1);
-							handleParentheticData(eNode, subEleData);
-//							// break on first ':' and handle accordingly
-//							int cIndex = subEleData.indexOf(':');
-//							if(cIndex > 0) {
-//								String eleName = subEleData.substring(1, cIndex);
-//								String eleData = subEleData.substring(cIndex+1, subEleData.length()-1);
-//								
-//								if(eleName.equalsIgnoreCase("happening")) {
-//									addHappening(eNode, eleData);
-//								} else if(eleName.equalsIgnoreCase("action")) {
-//									addAction(eNode, eleData);
-//								} else if(eleName.equalsIgnoreCase("overlap")) {
-//									addOverlap(eNode, eleData);
-//								} else if(eleName.equalsIgnoreCase("ga")) {
-//									String type = "comments";
-//									if(eleData.startsWith("type=")) {
-//										int comIdx = eleData.indexOf(',');
-//										type = eleData.substring(5, comIdx);
-//										String val = eleData.substring(comIdx+1);
-//										addGa(eNode, type, val);
-//									} else {
-//										addGa(eNode, type, eleData);
-//									}
-//								} else {
-//									PhonLogger.warning("Invalid event child " + eleName);
-//								}
-//							} else {
-//								addGa(eNode, "comments", subEleData.substring(0, subEleData.length()-1));
-//							}
-							
-						}
-					} else {
-						addGa(eNode, "comments", eData);
-					}
-					
+					insertEvent(parentNode, eData);
 				// anything else
 				} else if(w.matches("\\(.*\\)")) {
 					
@@ -1274,6 +1196,58 @@ public class PhonTreeBuilder {
 		
 		tree.addChild(uNode);
 	}
+	
+	private void insertEvent(CommonTree parent, String eData) {
+		// event formats
+		// 1) *something* - action
+		// 2) *=something* - happening 
+		// 3) *PART_ID=something* - otherSpokenEvent
+		//
+		// each of the above can be followed by one or more
+		// or markers, overlaps, repetition, etc.
+		final Pattern subElePattern = Pattern.compile("\\((.*?)\\)");
+		final Matcher subEleMatcher = subElePattern.matcher(eData);
+		
+		int lastIdx = eData.length();
+		final List<String> subData = new ArrayList<String>();
+		while(subEleMatcher.find()) {
+			final String eleData = subEleMatcher.group(1);
+			subData.add(eleData);
+			
+			if(lastIdx > subEleMatcher.start()) {
+				lastIdx = subEleMatcher.start();
+			}
+		}
+		
+		final CommonTree eNode = 
+				createToken("E_START");
+		eNode.setParent(parent);
+		parent.addChild(eNode);
+		
+		final String evtData = eData.substring(0, lastIdx);
+		
+		final Pattern osePattern = Pattern.compile("(.+)=(.+)");
+		final Matcher oseMatcher = osePattern.matcher(evtData);
+		
+		if(oseMatcher.matches()) {
+			final String participantId = oseMatcher.group(1);
+			final String oseWord = oseMatcher.group(2);
+			// TODO insert otherSpokenEvent
+		} else {
+			if(evtData.startsWith("=")) {
+				// insert happening
+				final String htxt = evtData.substring(1);
+				addHappening(eNode, htxt);
+			} else {
+				// insert action
+				addAction(eNode, evtData);
+			}
+		}
+		
+		for(String subEle:subData) {
+			handleParentheticData(eNode, subEle);
+		}
+	}
 
 	/*
 	 * align
@@ -1664,7 +1638,7 @@ public class PhonTreeBuilder {
 		if(data.equals("!")) {
 			type = "stressing";
 		} else if(data.equals("!!")) {
-			type = "contrasive stressing";
+			type = "contrastive stressing";
 		} else if(data.equals("?")) {
 			type = "best guess";
 		} else if(data.equals("/")) {

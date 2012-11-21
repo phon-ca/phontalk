@@ -191,7 +191,7 @@ gchoice
 g	
 	:	^(G_START (contentlist+=gele)+ (choicelist+=gchoice)*)
 	->	template( content={$contentlist}, choices={$choicelist} )
-	<<\<g\><content; separator=""><choices; separator="">\</g\> >>
+	<<\<g\><content; separator=""><if(choices)><choices; separator=""><endif>\</g\> >>
 	;
 	
 gele

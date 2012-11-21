@@ -516,7 +516,12 @@ scope {
 @after {
 	$val = $w::prefix + $w::buffer.toString() + $w::suffix;
 }
-	:	^(W_START wattr* wele*)
+	:	^(W_START wattr* langs? wele*)
+	{
+		if($langs != null) {
+			$w::buffer = $langs.val + $w::buffer;
+		}
+	}
 	;
 	
 wele
@@ -524,42 +529,83 @@ wele
 	{	
 		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $TEXT.text;	
 	}
-	| 	wk
+	|	overlappoint
+	|	underline
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $wk.val;
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $underline.val;
 	}
-	|	p 
+	|	italic
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $p.val;
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $italic.val;
 	}
 	|	shortening
 	{
 		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $shortening.val;
 	}
-	|	f
+	|	p 
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $f.val;
+		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $p.val;
 	}
+	|	longfeature
+	| 	wk
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $wk.val;
+	}
+	|	pos
 	|	replacement
 	{
 		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $replacement.val;
 	}
-	|	underline
-	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $underline.val;
-	}
-	|	langs
-	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "" ) + $langs.val;
-	}
 	|	mor
 	{
 		// mor is handled as a seperate dependent tier
+		String morVal = $mor.val;
+		String tierName = $mor.tierName;
+		
+		// make sure dep tier exists in session
+		IDepTierDesc tierDesc = null;
+		for(IDepTierDesc current:session.getWordAlignedTiers())
+		{
+			if(current.getTierName().equals(tierName))
+			{
+				tierDesc = current;
+				break;
+			}
+		}
+		
+		if(tierDesc == null) {
+			// create the new tier
+			tierDesc = session.newDependentTier();
+			tierDesc.setTierName(tierName);
+			tierDesc.setIsGrouped(true);
+		}
+		
+		// add mor data as a dep tier of the current word(group)
+		IWord word = null;
+		// get the correct word group holder
+		if($t.size() > 0 || $ugrp.size() > 0) {
+		    word = ($t.size() > 0 ? $t::w : $ugrp::w);
+		} else if($u.size() > 0) {
+		    word = $u::utt.getWords().get($u::utt.getWords().size()-1);
+		}
+		
+		IDependentTier depTier = 
+		    word.getDependentTier(tierDesc.getTierName());
+		if(depTier == null) {
+			depTier = word.newDependentTier();
+			depTier.setTierName(tierDesc.getTierName());
+		}
+		String tierValue = depTier.getTierValue();
+		tierValue += 
+		    (tierValue.length() == 0 ? "" : " ") + morVal;
+		depTier.setTierValue(tierValue);
 	}
+	|	mk
 	;
 	
 wattr
-	:	W_ATTR_FORMTYPE
+	:	W_ATTR_SEPARATEDPREFIX
+	|	W_ATTR_FORMTYPE
 	{
 		$w::suffix = "@";
 		
@@ -635,115 +681,10 @@ wattr
 			$w::prefix = "&";
 		}
 	}
+	|	W_ATTR_USERSPECIALFORM
+	|	W_ATTR_FORMSUFFIX
+	|	W_ATTR_UNTRANSCRIBED
 	;
-
-    
-
-        
-wk returns [String val]
-	:	^(WK_START type=WK_ATTR_TYPE?)
-	{
-		// return value based on type
-		if($type != null) {
-			String wkt = $type.text;
-			
-			if(wkt.equals("cmp"))
-				$val = "+";
-			else if(wkt.equals("cli"))
-				$val = "~";
-		} else {
-			$val = "";
-		}
-	}
-	;
-
-    
-
-        
-p returns [String val]
-	:	^(P_START type=P_ATTR_TYPE?)
-	{
-		if($type != null)
-		{
-			String pt = $type.text;
-			
-			if(pt.equals("stress"))
-				$val = "/";
-			else if(pt.equals("accented nucleus"))
-				$val = "//";
-			else if(pt.equals("contrastive stress"))
-				$val = "///";
-			else if(pt.equals("drawl"))
-				$val = ":";
-			else if(pt.equals("pause"))
-				$val = "^";
-			else if(pt.equals("blocking"))
-				$val = "^";
-		}
-	}
-	;
-
-    
-
-        
-shortening returns [String val]
-	:	^(SHORTENING_START v=TEXT?)
-	{
-		if($v != null) {
-			$val = "<" + $v.text + ">";
-		}
-	}
-	;
-
-    
-
-        
-f returns [String val]
-	:	^(F_START type=F_ATTR_TYPE?)
-	{
-		if($type != null) 
-		{
-			$val = "(form:" + $type.text + ")";
-		}
-	}
-	;
-
-    
-
-        
-replacement returns [String val]
-scope {
-    String buffer;
-}
-@init {
-    $replacement::buffer = "";
-}
-@after {
-    $val = "(replacement:" + $replacement::buffer.toString() + ")";
-}
-	:	^(REPLACEMENT_START replacementele*)
-	;
-	
-replacementele
-    :    w
-    {
-        $replacement::buffer += ($replacement::buffer.length() > 0 ? " " : "") + $w.val;
-    }
-    ;
-
-    
-
-        
-underline returns [String val]
-@init {
-$val = "";
-}
-	:	^(UNDERLINE_START type=UNDERLINE_ATTR_TYPE)
-	{
-		String uType = $type.text;
-		$val = "*underline:" + uType + "*";
-	}
-	;	
 
     
 
@@ -792,7 +733,136 @@ ambiguousLang
     
 
         
-mor
+overlappoint
+    :    ^(OVERLAPPOINT_START overlappointattrs+)
+    ;
+    
+overlappointattrs
+    :    OVERLAPPOINT_ATTR_INDEX
+    |    OVERLAPPOINT_ATTR_STARTEND
+    |    OVERLAPPOINT_ATTR_TOPBOTTOM
+    ;
+
+    
+
+        
+underline returns [String val]
+@init {
+$val = "";
+}
+	:	^(UNDERLINE_START type=UNDERLINE_ATTR_TYPE)
+	{
+		String uType = $type.text;
+		$val = "*underline:" + uType + "*";
+	}
+	;	
+
+    
+
+        
+italic returns [String val]
+@init {
+$val = "";
+}
+	:	^(ITALIC_START type=ITALIC_ATTR_TYPE)
+	{
+		String uType = $type.text;
+		$val = "*italic:" + uType + "*";
+	}
+	;	
+
+    
+
+        
+shortening returns [String val]
+	:	^(SHORTENING_START v=TEXT?)
+	{
+		if($v != null) {
+			$val = "<" + $v.text + ">";
+		}
+	}
+	;
+
+    
+
+        
+p returns [String val]
+	:	^(P_START type=P_ATTR_TYPE?)
+	{
+		if($type != null)
+		{
+			String pt = $type.text;
+			
+			if(pt.equals("stress"))
+				$val = "/";
+			else if(pt.equals("accented nucleus"))
+				$val = "//";
+			else if(pt.equals("contrastive stress"))
+				$val = "///";
+			else if(pt.equals("drawl"))
+				$val = ":";
+			else if(pt.equals("pause"))
+				$val = "^";
+			else if(pt.equals("blocking"))
+				$val = "^";
+		}
+	}
+	;
+
+    
+
+        
+longfeature
+    :    ^(LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT)
+    ;
+
+    
+
+        
+wk returns [String val]
+	:	^(WK_START type=WK_ATTR_TYPE?)
+	{
+		// return value based on type
+		if($type != null) {
+			String wkt = $type.text;
+			
+			if(wkt.equals("cmp"))
+				$val = "+";
+			else if(wkt.equals("cli"))
+				$val = "~";
+		} else {
+			$val = "";
+		}
+	}
+	;
+
+    
+
+        
+replacement returns [String val]
+scope {
+    String buffer;
+}
+@init {
+    $replacement::buffer = "";
+}
+@after {
+    $val = "(replacement:" + $replacement::buffer.toString() + ")";
+}
+	:	^(REPLACEMENT_START replacementele*)
+	;
+	
+replacementele
+    :    w
+    {
+        $replacement::buffer += ($replacement::buffer.length() > 0 ? " " : "") + $w.val;
+    }
+    ;
+
+    
+
+        
+mor returns [String tierName, String val]
 scope
 {
     List<String> morPres;
@@ -813,25 +883,9 @@ scope
 }
     :    ^(MOR_START morattr+ morchoice menx* gra* morseq*)
     {
-        String tierName = ($mor::morType.equals("mor") ? "Morphology" : "trn");
-        // make sure dep tier exists in session
-		IDepTierDesc tierDesc = null;
-		for(IDepTierDesc current:session.getWordAlignedTiers())
-		{
-			if(current.getTierName().equals(tierName))
-			{
-				tierDesc = current;
-				break;
-			}
-		}
-		
-		if(tierDesc == null) {
-			// create the new tier
-			tierDesc = session.newDependentTier();
-			tierDesc.setTierName(tierName);
-			tierDesc.setIsGrouped(true);
-		}
-		
+        $tierName = ($mor::morType.equals("mor") ? "Morphology" : "trn");
+ 
+        // build mor-string
 		String v = $morchoice.val;
 		for(String menxVal:$mor::menxVals) {
 		    v += "=" + menxVal;
@@ -843,30 +897,12 @@ scope
 		    v += "~" + morPost;
 		}
 		
-		// add mor data as a dep tier of the current word(group)
-		IWord word = null;
-		// get the correct word group holder
-		if($t.size() > 0 || $ugrp.size() > 0) {
-		    word = ($t.size() > 0 ? $t::w : $ugrp::w);
-		} else if($u.size() > 0) {
-		    word = $u::utt.getWords().get($u::utt.getWords().size()-1);
-		}
-		
 		// if omitted, add the '0'
 		if($mor::morOmitted) {
 		    v = "0" + v;
 		}
 		
-		IDependentTier depTier = 
-		    word.getDependentTier(tierDesc.getTierName());
-		if(depTier == null) {
-			depTier = word.newDependentTier();
-			depTier.setTierName(tierDesc.getTierName());
-		}
-		String tierValue = depTier.getTierValue();
-		tierValue += 
-		    (tierValue.length() == 0 ? "" : " ") + v;
-		depTier.setTierValue(tierValue);
+		$val = v;
     }
     ;
     
@@ -1650,10 +1686,11 @@ scope {
 @after {
 	$val = "*" + $e::buffer + "*";
 }
-	:	^(E_START evtele*)
+	:	^(E_START echoice1 echoice2*)
 	;
+	
 
-evtele
+echoice1
 	:	action
 	{
 		$e::buffer += ($e::buffer.length() > 0 ? " " : "") + "(action:";
@@ -1674,14 +1711,31 @@ evtele
 		}
 		$e::buffer += ")";
 	}
-	|	ga
+	|	otherspokenevent
+	;
+
+echoice2
+	:	k
 	{
-		if($ga.val != null)
-		{
+		if($k.val != null) {
 			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
-				$ga.val;
+				$k.val;
 		}
-	}	
+	}
+	|	error
+	{
+		if($error.val != null) {
+			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+					$error.val;
+		}
+	}
+	|	r
+	{
+		if($r.val != null) {
+			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+					"(x" + $r.val + ")";
+		}
+	}
 	|	overlap
 	{
 		$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
@@ -1691,6 +1745,15 @@ evtele
 		}
 		$e::buffer += ")";
 	}
+	|	ga
+	{
+		if($ga.val != null)
+		{
+			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+				$ga.val;
+		}
+	}
+	|	duration
 	;
 
     
@@ -1724,6 +1787,37 @@ happening returns [String val]
 		}
 	}
 	;
+
+    
+
+        
+
+otherspokenevent returns [String val]
+    :    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO w)
+    {
+        $val = $OTHERSPOKENEVENT_ATTR_WHO.text + "=" + $w.val;
+    }
+    ;
+
+
+    
+
+        
+error returns [String val]
+	:	^(ERROR_START et=TEXT?)
+	{
+		$val = "(error:" + 
+			($et != null ? $et.text : "") + ")";
+	}
+	;
+
+    
+
+        
+duration
+    :    DURATION_START TEXT DURATION_END
+    ->    ^(DURATION_START TEXT)
+    ;
 
     
 
@@ -1798,17 +1892,6 @@ s returns [String val]
     
 
         
-error returns [String val]
-	:	^(ERROR_START et=TEXT?)
-	{
-		$val = "(error:" + 
-			($et != null ? $et.text : "") + ")";
-	}
-	;
-
-    
-
-        
 g returns [String val,  Integer phoRepCount, Map<Integer,IPhoneticRep> targetReps, Map<Integer, IPhoneticRep> actReps, Map<Integer, PhoneMap> phoneMaps]
 scope {
 	String buffer;
@@ -1840,53 +1923,13 @@ scope {
 	
 	$phoRepCount = $g::pgCount;
 }
-	:	^(G_START gele*)
+	:	^(G_START gele+ gchoice)
 	;
 	
 gele
 	:	w 
 	{	
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $w.val;	
-	}
-	|	pg
-	{
-	 	// enclose the pg data in [] so that we know to break up
-	 	// this into proper word groups in phon later.
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + "[" + $pg.val + "]";
-	}
-	|	pause
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $pause.val;
-	}
-	| 	r 
-	{	
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
-			"(x" + $r.val + ")";	
-	}
-	| 	k
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
-			"(" + $k.val + ")";
-	}
-	|	ga
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			$ga.val;
-	}
-	|	overlap
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			"(" + $overlap.val + ")";
-	}
-	|	tagmarker
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			"(" + $tagmarker.val + ")";
-	}
-	|	e
-	{
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			$e.val;
 	}
 	|	nestedg=g
 	{
@@ -1913,22 +1956,146 @@ gele
 
 		$g::pgCount += $nestedg.phoRepCount;
 	}
+	|	pg
+	{
+	 	// enclose the pg data in [] so that we know to break up
+	 	// this into proper word groups in phon later.
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + "[" + $pg.val + "]";
+	}
+	|	sg
+	|	quotation
+	|	quotation2
+	|	pause
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $pause.val;
+	}
+	|	internalmedia
+	|	freecode
+	|	e
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$e.val;
+	}
+	
 	|	s
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			$s.val;
 	}
+	|	tagmarker
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $tagmarker.val + ")";
+	}
+	|	longfeature
+	|	nonvocal
+	|	overlappoint
 	|	underline
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			$underline.val;
+	}
+	|	italic
+	;
+	
+gchoice
+	: 	k
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
+			"(" + $k.val + ")";
 	}
 	|	error
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			$error.val;
 	}
+	| 	r 
+	{	
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
+			"(x" + $r.val + ")";	
+	}
+	|	duration
+	|	ga
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$ga.val;
+	}
+	|	overlap
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $overlap.val + ")";
+	}
 	;
+
+    
+
+        
+sg
+    :    ^(SG_START sgchoice+ sw+)
+    ;
+    
+sgchoice
+    :    w
+    |    g
+    |    quotation
+    |    quotation2
+    |    pause
+    |    internalmedia
+    |    freecode
+    |    e
+    |    s
+    |    tagmarker
+    |    longfeature
+    |    nonvocal
+    |    overlappoint
+    |    underline
+    |    italic
+    ;
+    
+sw
+    :    ^(SW_START TEXT)
+    ;
+
+    
+
+        
+quotation
+    :    ^(QUOTATION_START QUOTATION_ATTR_TYPE mor*)
+    ;
+
+    
+
+        
+quotation2
+    :    ^(QUOTATION2_START QUOTATION2_ATTR_TYPE mor*)
+    ;
+
+    
+
+        
+internalmedia
+    :   ^(INTERNALMEDIA_START internalmedia_attr*)
+	;
+	
+internalmedia_attr
+	:	INTERNALMEDIA_ATTR_START
+	|	INTERNALMEDIA_ATTR_END
+	|	INTERNALMEDIA_ATTR_UNIT
+	;
+
+    
+
+        
+freecode
+    :    ^(FREECODE_START TEXT)
+    ;
+
+    
+
+        
+nonvocal
+    :    ^(NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT)
+    ;
 
     
 

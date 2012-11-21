@@ -13,8 +13,17 @@ import ca.phon.system.logger.PhonLogger;
 
 public class Phon2XmlConverter extends PhonConverter {
 	
+	/**
+	 * Error handler
+	 */
+	private ErrorHandler errorHandler;
+	
 	public Phon2XmlConverter() {
 		super();
+	}
+	
+	public void setErrorHandler(ErrorHandler errHandler) {
+		errorHandler = errHandler;
 	}
 	
 	/**
@@ -30,7 +39,7 @@ public class Phon2XmlConverter extends PhonConverter {
 //		PhonTreeBuilder.printTree(sessionTree, 0);
 		
 		if(sessionTree == null) {
-			PhonLogger.severe("Could not build CHAT tree.");
+			final String message = "Could not build CHAT tree";
 			return "";
 		}
 		CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(sessionTree);

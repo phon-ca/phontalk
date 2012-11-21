@@ -60,7 +60,7 @@ public class TalkbankConverter extends XmlConverter {
 			parserRet = parser.chat();
 		} catch (RecognitionException e1) {
 			PhonLogger.warning(e1.toString());
-			ConverterError err = new ConverterError();
+			PhonTalkError err = new PhonTalkError();
 			err.setLineNumber(e1.line);
 		}
 		

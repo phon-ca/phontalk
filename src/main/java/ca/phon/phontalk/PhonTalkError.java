@@ -3,11 +3,8 @@ package ca.phon.phontalk;
 /**
  * An error during the conversion process.
  */
-public class ConverterError extends Exception {
+public class PhonTalkError extends Exception {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7955358836268036775L;
 	
 	/** The filename */
@@ -32,15 +29,19 @@ public class ConverterError extends Exception {
 		this.lineNumber = lineNumber;
 	}
 
-	public ConverterError() {
+	public PhonTalkError() {
 		this("", "", -1);
 	}
 	
-	public ConverterError(String file) {
-		this("", file, -1);
+	public PhonTalkError(String msg, String file) {
+		this(msg, file, -1);
 	}
 	
-	public ConverterError(String msg, String file, int lineNum) {
+	public PhonTalkError(String msg) {
+		this(msg, null, -1);
+	}
+	
+	public PhonTalkError(String msg, String file, int lineNum) {
 		super(msg);
 		this.filename = file;
 		this.lineNumber = lineNum;

@@ -149,77 +149,32 @@ uannotation
 
         
 w
-	:	W_START wattr* wele* W_END 
-	->	^(W_START wattr* wele*)
+	:	W_START wattr* langs? wele* W_END 
+	->	^(W_START wattr* langs? wele*)
 	;
 	
 wele
 	:	TEXT 
-	|	wk 
-	|	p 
-	|	shortening 
-	|	f 
-	|	replacement
+	|	overlappoint
 	|	underline
-	|	langs
+	|	italic
+	|	shortening
+	|	p
+	|	longfeature
+	|	wk 
+	|	pos
+	|	replacement
 	|	mor
+	|	mk
 	;
 	
 wattr
-	:	W_ATTR_FORMTYPE
+	:	W_ATTR_SEPARATEDPREFIX
+	|	W_ATTR_FORMTYPE
 	|	W_ATTR_TYPE
-	;
-
-    
-
-        
-wk
-	:	WK_START WK_ATTR_TYPE? WK_END
-	->	^(WK_START WK_ATTR_TYPE?)
-	;
-
-    
-
-        
-p
-	:	P_START P_ATTR_TYPE? P_END 
-	->	^(P_START P_ATTR_TYPE?)
-	;
-
-    
-
-        
-shortening
-	:	SHORTENING_START TEXT? SHORTENING_END 
-	->	^(SHORTENING_START TEXT?)
-	;
-
-    
-
-        
-f
-	:	F_START F_ATTR_TYPE? F_END 
-	->	^(F_START F_ATTR_TYPE?)
-	;
-
-    
-
-        
-replacement
-	:	REPLACEMENT_START replacementele* REPLACEMENT_END 
-	->	^(REPLACEMENT_START replacementele*)
-	;
-	
-replacementele
-    :    w
-    ;
-
-    
-
-        
-underline
-	:	UNDERLINE_START UNDERLINE_ATTR_TYPE UNDERLINE_END
-	->	^(UNDERLINE_START UNDERLINE_ATTR_TYPE)
+	|	W_ATTR_USERSPECIALFORM
+	|	W_ATTR_FORMSUFFIX
+	|	W_ATTR_UNTRANSCRIBED
 	;
 
     
@@ -251,6 +206,80 @@ ambiguousLang
 	->	^(AMBIGUOUS_START TEXT)
 	;
 		
+
+    
+
+        
+overlappoint
+    :    OVERLAPPOINT_START overlappointattrs+ OVERLAPPOINT_END
+    ->    ^(OVERLAPPOINT_START overlappointattrs+)
+    ;
+    
+overlappointattrs
+    :    OVERLAPPOINT_ATTR_INDEX
+    |    OVERLAPPOINT_ATTR_STARTEND
+    |    OVERLAPPOINT_ATTR_TOPBOTTOM
+    ;
+
+    
+
+        
+underline
+	:	UNDERLINE_START UNDERLINE_ATTR_TYPE UNDERLINE_END
+	->	^(UNDERLINE_START UNDERLINE_ATTR_TYPE)
+	;
+
+    
+
+        
+italic
+	:	ITALIC_START ITALIC_ATTR_TYPE ITALIC_END
+	->	^(ITALIC_START ITALIC_ATTR_TYPE)
+	;
+
+    
+
+        
+shortening
+	:	SHORTENING_START TEXT? SHORTENING_END 
+	->	^(SHORTENING_START TEXT?)
+	;
+
+    
+
+        
+p
+	:	P_START P_ATTR_TYPE? P_END 
+	->	^(P_START P_ATTR_TYPE?)
+	;
+
+    
+
+        
+longfeature
+    :    LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT LONGFEATURE_END
+    ->    ^(LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT)
+    ;
+
+    
+
+        
+wk
+	:	WK_START WK_ATTR_TYPE? WK_END
+	->	^(WK_START WK_ATTR_TYPE?)
+	;
+
+    
+
+        
+replacement
+	:	REPLACEMENT_START replacementele* REPLACEMENT_END 
+	->	^(REPLACEMENT_START replacementele*)
+	;
+	
+replacementele
+    :    w
+    ;
 
     
 
@@ -504,15 +533,23 @@ tagmarker
 
         
 e
-	:	E_START evtele* E_END 
-	->	^(E_START evtele*)
+	:	E_START echoice1 echoice2* E_END 
+	->	^(E_START echoice1 echoice2*)
 	;
-
-evtele
+	
+echoice1
 	:	action
 	|	happening
-	|	ga
+	|	otherspokenevent
+	;
+
+echoice2
+	:	k
+	|	error
+	|	r
 	|	overlap
+	|	ga
+	|	duration
 	;
 
     
@@ -534,6 +571,32 @@ happening
     
 
         
+
+otherspokenevent
+    :    OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO w OTHERSPOKENEVENT_END
+    ->    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO w)
+    ;
+
+
+    
+
+        
+error
+	:	ERROR_START TEXT? ERROR_END
+	->	^(ERROR_START TEXT?)
+	;
+
+    
+
+        
+duration
+    :    DURATION_START TEXT DURATION_END
+    ->    ^(DURATION_START TEXT)
+    ;
+
+    
+
+        
 pause
 	:	PAUSE_START PAUSE_ATTR_SYMBOLIC_LENGTH? PAUSE_ATTR_LENGTH? PAUSE_END 
 	->	^(PAUSE_START PAUSE_ATTR_SYMBOLIC_LENGTH? PAUSE_ATTR_LENGTH?)
@@ -550,17 +613,9 @@ s
     
 
         
-error
-	:	ERROR_START TEXT? ERROR_END
-	->	^(ERROR_START TEXT?)
-	;
-
-    
-
-        
 g	
-	:	G_START gele* G_END 
-	->	^(G_START gele*)
+	:	G_START gele+ gchoice* G_END 
+	->	^(G_START gele+ gchoice*)
 	;
 	
 gele
@@ -568,18 +623,107 @@ gele
 	-> {pg_stack != null && !pg_stack.isEmpty() && $pg::inPg}? w
 	-> ^(PG_START w)
 	|	pg
+	|	sg
+	|	quotation
+	|	quotation2
 	|	pause
-	|	r 
-	|	k
+	|	internalmedia
+	|	freecode
+	|	e
+	|	s
+	|	tagmarker
+	|	longfeature
+	|	nonvocal
+	|	overlappoint
+	|	underline
+	|	italic
+	;
+	
+gchoice
+	:	k
+	|	error
+	|	r
+	|	duration
 	|	ga
 	|	overlap
-	|   tagmarker
-	|	e
-	|	g
-	|	s
-	| 	underline
-	|	error
 	;
+
+    
+
+        
+sg
+    :    SG_START sgchoice+ sw+ SG_END
+    ->    ^(SG_START sgchoice+ sw+)
+    ;
+    
+sgchoice
+    :    w
+    |    g
+    |    quotation
+    |    quotation2
+    |    pause
+    |    internalmedia
+    |    freecode
+    |    e
+    |    s
+    |    tagmarker
+    |    longfeature
+    |    nonvocal
+    |    overlappoint
+    |    underline
+    |    italic
+    ;
+    
+sw
+    :    SW_START TEXT SW_END
+    ->    ^(SW_START TEXT)
+    ;
+
+    
+
+        
+quotation
+    :    QUOTATION_START QUOTATION_ATTR_TYPE mor* QUOTATION_END
+    ->    ^(QUOTATION_START QUOTATION_ATTR_TYPE mor*)
+    ;
+
+    
+
+        
+quotation2
+    :    QUOTATION2_START QUOTATION2_ATTR_TYPE mor* QUOTATION_END
+    ->    ^(QUOTATION2_START QUOTATION2_ATTR_TYPE mor*)
+    ;
+
+    
+
+        
+internalmedia
+    :    INTERNALMEDIA_START internalmedia_attr* INTERNALMEDIA_END
+	->	^(INTERNALMEDIA_START internalmedia_attr*)
+	;
+	
+internalmedia_attr
+	:	INTERNALMEDIA_ATTR_START
+	|	INTERNALMEDIA_ATTR_END
+	|	INTERNALMEDIA_ATTR_UNIT
+	;
+
+    
+
+        
+freecode
+    :    FREECODE_START TEXT FREECODE_END
+    ->    ^(FREECODE_START TEXT)
+    ;
+
+    
+
+        
+nonvocal
+    :    NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT NONVOCAL_END
+    ->    ^(NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT)
+    ;
 
     
 
