@@ -73,7 +73,7 @@ pgele returns [String val]
 	}
 	|	g
 	{
-		$val = "{" + $g.val + "}";
+		$val = "{" + $g.val + " }";
 	}
 	|	pause
 	{

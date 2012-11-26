@@ -33,7 +33,7 @@ public class Phon2XmlConverter extends PhonConverter {
 	@Override
 	public String convertTranscript(ITranscript t) {
 		// convert the transcript into a CHAT CommonTree
-		PhonTreeBuilder builder = new PhonTreeBuilder();
+		Phon2XmlTreeBuilder builder = new Phon2XmlTreeBuilder();
 		CommonTree sessionTree = builder.buildTree(t);
 		
 //		PhonTreeBuilder.printTree(sessionTree, 0);
@@ -78,7 +78,7 @@ public class Phon2XmlConverter extends PhonConverter {
 			TranscriptUtils.addRecordToTranscript(testTranscript, utt, null);
 
 			// now attept to convert the test Transcript
-			PhonTreeBuilder treeBuilder = new PhonTreeBuilder();
+			Phon2XmlTreeBuilder treeBuilder = new Phon2XmlTreeBuilder();
 			CommonTree tTree = treeBuilder.buildTree(testTranscript);
 
 			CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(tTree);

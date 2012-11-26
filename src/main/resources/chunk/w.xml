@@ -57,10 +57,10 @@ scope {
 @after {
 	$val = $w::prefix + $w::buffer.toString() + $w::suffix;
 }
-	:	^(W_START wattr* langs? wele*)
+	:	^(W_START wattr* ls=langs? wele*)
 	{
-		if($langs != null) {
-			$w::buffer = $langs.val + $w::buffer;
+		if($ls.val != null) {
+			$w::buffer = $ls.val + $w::buffer;
 		}
 	}
 	;

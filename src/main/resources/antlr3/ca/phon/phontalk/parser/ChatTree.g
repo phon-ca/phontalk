@@ -516,10 +516,10 @@ scope {
 @after {
 	$val = $w::prefix + $w::buffer.toString() + $w::suffix;
 }
-	:	^(W_START wattr* langs? wele*)
+	:	^(W_START wattr* ls=langs? wele*)
 	{
-		if($langs != null) {
-			$w::buffer = $langs.val + $w::buffer;
+		if($ls.val != null) {
+			$w::buffer = $ls.val + $w::buffer;
 		}
 	}
 	;
@@ -1249,7 +1249,7 @@ pgele returns [String val]
 	}
 	|	g
 	{
-		$val = "{" + $g.val + "}";
+		$val = "{" + $g.val + " }";
 	}
 	|	pause
 	{
@@ -1923,7 +1923,7 @@ scope {
 	
 	$phoRepCount = $g::pgCount;
 }
-	:	^(G_START gele+ gchoice)
+	:	^(G_START gele+ gchoice*)
 	;
 	
 gele

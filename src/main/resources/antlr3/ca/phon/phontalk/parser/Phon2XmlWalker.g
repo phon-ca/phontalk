@@ -775,8 +775,8 @@ tagmarker
 		
 e
 	:	^(E_START req=echoice1 (contentlist+=echoice2)*)
-	->	template( required={$req.st}, content={$contentlist} )
-	<<\<e\><required><if(content)><content; separator=""><endif>\</e\> >>
+	->	template( required={$req.st}, econtent={$contentlist} )
+	<<\<e\><required><if(econtent)><econtent; separator=""><endif>\</e\> >>
 	;
 
 echoice1

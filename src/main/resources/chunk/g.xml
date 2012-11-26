@@ -16,8 +16,6 @@ g
 	
 gele
 	:	w
-	-> {pg_stack != null && !pg_stack.isEmpty() && $pg::inPg}? w
-	-> ^(PG_START w)
 	|	pg
 	|	sg
 	|	quotation
@@ -80,7 +78,7 @@ scope {
 	
 	$phoRepCount = $g::pgCount;
 }
-	:	^(G_START gele+ gchoice)
+	:	^(G_START gele+ gchoice*)
 	;
 	
 gele

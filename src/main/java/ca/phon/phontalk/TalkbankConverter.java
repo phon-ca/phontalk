@@ -20,7 +20,7 @@ import ca.phon.application.project.IPhonProject;
 import ca.phon.application.transcript.ITranscript;
 import ca.phon.phontalk.parser.ChatParser;
 import ca.phon.phontalk.parser.ChatTokenSource;
-import ca.phon.phontalk.parser.ChatTokens;
+import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.ChatTree;
 import ca.phon.phontalk.parser.Phon2XmlWalker;
 import ca.phon.system.logger.PhonLogger;
@@ -85,7 +85,7 @@ public class TalkbankConverter extends XmlConverter {
 	}
 	
 	private void printTree(CommonTree t, int tabIndex) {
-		ChatTokens tokens = new ChatTokens();
+		AntlrTokens tokens = new AntlrTokens();
 		
 		for(int i = 0; i < tabIndex; i++) {
 			System.out.print("\t");

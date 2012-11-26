@@ -19,20 +19,19 @@ import ca.phon.system.logger.PhonLogger;
  * 
  *
  */
-public class ChatTokens {
+public class AntlrTokens {
 	public static final String TEXT_TOKEN = "TEXT";
 	public static final String END_SUFFIX = "_END";
 	public static final String START_SUFFIX = "_START";
 	public static final String ATTR_TOKEN = "_ATTR_";
 	
 	private static final int UNDEFINED_TYPE = Integer.MAX_VALUE;
-	private static final String tokenFile = "Chat.tokens";
 	
 	/** Token map */
 	private Map<String, Integer> tokenMap =
 		new HashMap<String, Integer>();
 	
-	public ChatTokens() {
+	public AntlrTokens(String tokenFile) {
 		super();
 		initTokenMap(getClass().getClassLoader().getResource(tokenFile));
 	}

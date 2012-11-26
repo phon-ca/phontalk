@@ -620,8 +620,6 @@ g
 	
 gele
 	:	w
-	-> {pg_stack != null && !pg_stack.isEmpty() && $pg::inPg}? w
-	-> ^(PG_START w)
 	|	pg
 	|	sg
 	|	quotation

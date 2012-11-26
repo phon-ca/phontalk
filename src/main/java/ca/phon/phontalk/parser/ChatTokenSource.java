@@ -45,7 +45,7 @@ public class ChatTokenSource implements TokenSource {
 	
 	private Queue<Token> tokenQueue = new Queue<Token>();
 	
-	private ChatTokens tokenMap = new ChatTokens();
+	private AntlrTokens tokenMap = new AntlrTokens("Chat.tokens");
 	
 	
 	/**
@@ -133,7 +133,7 @@ public class ChatTokenSource implements TokenSource {
 							String attrName = 
 								attr.getName().getLocalPart();
 							String tokenName = 
-								localName.toUpperCase().replace("-", "_") + ChatTokens.ATTR_TOKEN + 
+								localName.toUpperCase().replace("-", "_") + AntlrTokens.ATTR_TOKEN + 
 								attrName.replaceAll("-", "_").toUpperCase();
 							Integer type =
 								tokenMap.getTokenType(tokenName);
