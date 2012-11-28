@@ -30,7 +30,7 @@ public String getErrorMessage(RecognitionException re, String[] tokens) {
 
     if(re instanceof MismatchedTreeNodeException) {
     	MismatchedTreeNodeException mte = (MismatchedTreeNodeException)re;
-    	PhonLogger.severe((new ChatTokens()).getTokenName(mte.expecting));
+    	PhonLogger.severe((new AntlrTokens("Chat.tokens")).getTokenName(mte.expecting));
     }
         re.printStackTrace();
     return retVal;
@@ -451,100 +451,133 @@ replacementele
 
         
 mor
-    :    ^(MOR_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice* gra? morseq*)
+    :    ^(MOR_START (attrlist+=morattr)+ morchoice (list1+=menx)* (list2+=gra)* (list3+=morseq)*)
+    ->    template( attrs={$attrlist}, choice={$morchoice.st}, enxlist={$list1},
+            gralist={$list2}, seqlist={$list3} )
+    "\<mor <attrs>\><choice><if(enxlist)><enxlist><endif><if(gralist)><gralist><endif><if(seqlist)><seqlist><endif>\</mor\>"
+    ;
+    
+morattr
+    :    MOR_ATTR_TYPE
+    ->    template ( type={$MOR_ATTR_TYPE.text} )
+    <<type="<type>" >>
+    |    MOR_ATTR_OMITTED
+    ->    template ( om={$MOR_ATTR_OMITTED.text} )
+    <<omitted="<om>" >>
     ;
     
 morchoice
     :    mw
+    ->   template( v={$mw.st} )
+         "<v>"
     |    mwc
+    ->   template( v={$mwc.st} )
+         "<v>"
     |    mt
+    ->   template( v={$mt.st} )
+         "<v>"
     ;
     
 morseq
-    :    morpre
-    |    morpost
-    |    menx
+    :    mor_pre
+    ->   template( v={$mor_pre.st} )
+         "<v>"
+    |    mor_post
+    ->   template( v={$mor_post.st} )
+         "<v>"
     ;
     
-morpre
-    :    ^(MORPRE_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice* gra? morseq*)
-    {
-        unsupportedWarning();
-    }
+mor_pre
+    :    ^(MOR_PRE_START morchoice (list1+=menx)* (list2+=gra)*)
+    ->   template( choice={$morchoice.st}, enxlist={$list1}, gralist={$list2} )
+    "\<mor-pre\><choice><if(enxlist)><enxlist><endif><if(gralist)><gralist><endif>\</mor-pre\>"
     ;
     
-morpost
-    :    ^(MORPOST_START MOR_ATTR_TYPE MOR_ATTR_OMITTED? morchoice* gra? morseq*)
-    {
-        unsupportedWarning();
-    }
+mor_post 
+    :    ^(MOR_POST_START morchoice (list1+=menx)* (list2+=gra)*)
+    ->   template( choice={$morchoice.st}, enxlist={$list1}, gralist={$list2} )
+    "\<mor-post\><choice><if(enxlist)><enxlist><endif><if(gralist)><gralist><endif>\</mor-post\>"
     ;
     
 menx
-    :    MENX_START TEXT MENX_END
-    {
-        unsupportedWarning();
-    }
+    :    ^(MENX_START txt=TEXT)
+    ->    template( v={$txt.text} )
+    "\<menx\><v>\</menx\>"
+    ;
+
+gra
+    :    ^(GRA_START (attrlist+=graattrs)+)
+    ->    template( attrs={$attrlist} )
+    "\<gra <attrs>/\>"
     ;
     
-gra
-    :    ^(GRA_START GRA_ATTR_TYPE GRA_ATTR_INDEX GRA_ATTR_HEAD GRA_ATTR_RELATION)
-    {
-        unsupportedWarning();
-    }
+graattrs
+    :    GRA_ATTR_TYPE
+    ->    template( type={$GRA_ATTR_TYPE.text} )
+    <<type="<type>" >>   
+    |    GRA_ATTR_INDEX
+    ->    template( index={$GRA_ATTR_INDEX.text} )
+    <<index="<index>" >>
+    |    GRA_ATTR_HEAD
+    ->    template( head={$GRA_ATTR_HEAD.text} )
+    <<head="<head>" >>
+    |    GRA_ATTR_RELATION
+    ->    template( rel={$GRA_ATTR_RELATION.text} )
+    <<relation="<rel>" >>
     ;
     
 mw
-    :    ^(MW_START mpfx* pos mwchoice mk*)
+    :   ^(MW_START (list1+=mpfx)* pos stem (list2+=mk)*)
+    ->    template( mpfxlist={$list1}, mwp={$pos.st}, mws={$stem.st}, mklist={$list2} )
+    "\<mw\><if(mpfxlist)><mpfxlist><endif><mwp><mws><if(mklist)><mklist><endif>\</mw\>"
     ;
     
 mwc
-    :    ^(MWC_START mpfx* pos mw+)
-    {
-        unsupportedWarning();
-    }
+    :    ^(MWC_START (list1+=mpfx)* pos (list2+=mw)+)
+    ->    template( mpfxlist={$list1}, mwcp={$pos.st}, mwlist={$list2} )
+    "\<mwc\><if(mpfxlist)><mpfxlist><endif><mwcp><mwlist>\</mwc\>"
     ;
     
 mt
     :    ^(MT_START MT_ATTR_TYPE)
-    {
-        unsupportedWarning();
-    }
+    ->    template( type={$MT_ATTR_TYPE.text} )
+    "\<mt type=\"<type>\"/\>"
     ;
     
 mpfx
     :    ^(MPFX_START TEXT)
-    {
-        unsupportedWarning();
-    }
+    ->    template( v={$TEXT.text} )
+    "\<mpfx\><v>\</mpfx\>"
     ;
    
-pos
-    :    ^(POS_START morposc morposs*)
+pos 
+    :    ^(POS_START morposc (list1+=morposs)*)
+    ->    template( posc={$morposc.st}, slist={$list1} )
+    "\<pos\><posc><if(slist)><slist><endif>\</pos\>"
     ;
     
 morposc
     :    ^(C_START TEXT)
+    ->    template( v={$TEXT.text} )
+    "\<c\><v>\</c\>"
     ;
     
 morposs
     :    ^(S_START TEXT)
-    ;
-    
-mwchoice
-    :    stem
-    |    mortagmarker
+    ->    template( v={$TEXT.text} )
+    "\<s\><v>\</s\>"
     ;
     
 stem
-    :    ^(STEM_START TEXT);
-    
-mortagmarker
-    :    ^(MORTAGMARKER_START MORTAGMARKER_ATTR_TYPE)
+    :    ^(STEM_START TEXT)
+    ->    template( v={$TEXT.text} )
+    "\<stem\><v>\</stem\>"
     ;
     
-mk
-    :    ^(MK_START TEXT)
+mk 
+    :    ^(MK_START MK_ATTR_TYPE TEXT)
+    ->    template( type={$MK_ATTR_TYPE.text}, v={$TEXT.text} )
+    "\<mk type=\"<type>\"\><v>\</mk\>"
     ;
 
     
@@ -761,13 +794,11 @@ overlap
 
         
 tagmarker
-	:	^(TAGMARKER_START TAGMARKER_ATTR_TYPE morlist+=mor*)
+	:	^(TAGMARKER_START TAGMARKER_ATTR_TYPE (morlist+=mor)*)
 	->    template(  type={$TAGMARKER_ATTR_TYPE.text},
 	                 morcontent={$morlist}
 	              )
-	<<
-\<tagMarker type="<type>"><morcontent; separator="">\</tagMarker\>
->>
+	"\<tagMarker type=\"<type>\"\><if(morcontent)><morcontent><endif>\</tagMarker\>"
 	;
 
     
@@ -1016,9 +1047,9 @@ nonvocal
 
         
 t
-	:	^(T_START T_ATTR_TYPE? mor?)
-	->    template( type={$T_ATTR_TYPE} )
-	<<\<t type="<type>"/\> >>
+	:	^(T_START T_ATTR_TYPE? m=mor?)
+	->    template( type={$T_ATTR_TYPE}, morval={$m.st} )
+	<<\<t type="<type>"<if(morval)>\><morval>\</t\><else>/\><endif> >>
 	;
 
     

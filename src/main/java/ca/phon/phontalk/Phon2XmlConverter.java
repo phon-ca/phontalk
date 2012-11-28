@@ -8,6 +8,7 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import ca.phon.application.transcript.ITranscript;
 import ca.phon.application.transcript.IUtterance;
 import ca.phon.application.transcript.TranscriptUtils;
+import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.Phon2XmlWalker;
 import ca.phon.system.logger.PhonLogger;
 
@@ -36,8 +37,6 @@ public class Phon2XmlConverter extends PhonConverter {
 		Phon2XmlTreeBuilder builder = new Phon2XmlTreeBuilder();
 		CommonTree sessionTree = builder.buildTree(t);
 		
-//		PhonTreeBuilder.printTree(sessionTree, 0);
-		
 		if(sessionTree == null) {
 			final String message = "Could not build CHAT tree";
 			return "";
@@ -53,9 +52,25 @@ public class Phon2XmlConverter extends PhonConverter {
 			PhonLogger.warning(e.toString());
 		} catch (StackOverflowError err) {
 			findStackOverflowError(t);
+		} catch (Exception e) {
+			findStackOverflowError(t);
 		}
 		
 		return retVal;
+	}
+	
+	private void printTree(CommonTree tree, int tabidx) {
+		AntlrTokens tokens = new AntlrTokens("Chat.tokens");
+		String tokenName = tokens.getTokenName(tree.getToken().getType());
+		String tokenVal = tree.getToken().getText();
+		
+		for(int i = 0; i < tabidx; i++) System.out.print("\t");
+		System.out.println(tokenName  + (tokenVal == null ? "" : ":" + tokenVal));
+		
+		for(int i = 0; i < tree.getChildCount(); i++) {
+			CommonTree child = (CommonTree)tree.getChild(i);
+			printTree(child, tabidx+1);
+		}
 	}
 
 	/**
@@ -80,6 +95,8 @@ public class Phon2XmlConverter extends PhonConverter {
 			// now attept to convert the test Transcript
 			Phon2XmlTreeBuilder treeBuilder = new Phon2XmlTreeBuilder();
 			CommonTree tTree = treeBuilder.buildTree(testTranscript);
+			
+			printTree(tTree, 0);
 
 			CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(tTree);
 			Phon2XmlWalker walker = new Phon2XmlWalker(nodeStream);
@@ -91,6 +108,10 @@ public class Phon2XmlConverter extends PhonConverter {
 				PhonLogger.warning(e.toString());
 			} catch (StackOverflowError err) {
 				PhonLogger.severe("Error processing record " + (i+1));
+				break;
+			} catch (Exception e) {
+				PhonLogger.severe("Error processing record " + (i+1));
+				e.printStackTrace();
 				break;
 			}
 		}

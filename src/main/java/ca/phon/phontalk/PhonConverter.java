@@ -65,8 +65,8 @@ public abstract class PhonConverter {
 	
 	protected void fireError(PhonTalkError err) {
 		ErrorHandler[] _handlers = handlers.toArray(new ErrorHandler[0]);
-		for(ErrorHandler h:_handlers)
-			h.converterError(err);
+//		for(ErrorHandler h:_handlers)
+//			h.converterError(err);
 	}
 	
 	/**

@@ -83,21 +83,5 @@ public class TalkbankConverter extends XmlConverter {
 		
 		return retVal;
 	}
-	
-	private void printTree(CommonTree t, int tabIndex) {
-		AntlrTokens tokens = new AntlrTokens();
-		
-		for(int i = 0; i < tabIndex; i++) {
-			System.out.print("\t");
-		}
-		
-		Token token = t.getToken();
-		System.out.println(tokens.getTokenName(token.getType()) + " : " + token.getText());
-		for(int i = 0; i < t.getChildCount(); i++) {
-			printTree((CommonTree)t.getChild(i), tabIndex+1);
-		}
-	}
-
-	
 
 }

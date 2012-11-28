@@ -317,6 +317,7 @@ mor_post
     
 menx
     :    MENX_START TEXT MENX_END
+    ->    ^(MENX_START TEXT)
     ;
     
 gra

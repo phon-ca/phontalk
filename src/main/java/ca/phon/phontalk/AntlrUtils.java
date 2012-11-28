@@ -1,5 +1,9 @@
 package ca.phon.phontalk;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
 
@@ -33,4 +37,103 @@ public class AntlrUtils {
 		txtNode.setParent(parent);
 		parent.addChild(txtNode);
 	}
+	
+	/**
+	 * Find all children with the given type in the provided
+	 * tree.  Will only check 1st level children (i.e., this
+	 * method is not recursive.)
+	 * 
+	 * @param tree
+	 * @param type
+	 * @return all children found with the given token type
+	 */
+	public static List<CommonTree> findChildrenWithType(CommonTree tree, int type) {
+		final List<CommonTree> retVal = new ArrayList<CommonTree>();
+		
+		for(int i = 0; i < tree.getChildCount(); i++) {
+			final CommonTree child = (CommonTree)tree.getChild(i);
+			if(child.getToken().getType() == type) {
+				retVal.add(child);
+			}
+		}
+		
+		return retVal;
+	}
+
+	/**
+	 * Find all children with the given type in the provided
+	 * tree.  Will only check 1st level children (i.e., this
+	 * method is not recursive.)
+	 * 
+	 * @param tree
+	 * @param tokens
+	 * @param typeName
+	 * @return all children found with the given token type
+	 */
+	public static List<CommonTree> findChildrenWithType(CommonTree tree, AntlrTokens tokens, String typeName) {
+		return findChildrenWithType(tree, tokens.getTokenType(typeName));
+	}
+	
+	/**
+	 * Find all children and sub-children with the given type.
+	 * This method will recursivly search the children of the
+	 * given tree.
+	 * 
+	 * @param tree
+	 * @param type
+	 * @return the list of children found with the given type
+	 */
+	public static List<CommonTree> findAllChildrenWithType(CommonTree tree, int type) {
+		final List<CommonTree> retVal = new ArrayList<CommonTree>();
+		findAllChildrenRecursive(retVal, tree, Collections.singletonList(type));
+		return retVal;
+	}
+	
+	/**
+	 * Find all children and sub-children with the given type.
+	 * This method will recursively search the children of the
+	 * given tree.
+	 * 
+	 * @param tree
+	 * @param tokens
+	 * @param typeName
+	 * @return the list of children found with the given type
+	 */
+	public static List<CommonTree> findAllChildrenWithType(CommonTree tree, AntlrTokens tokens, String typeName) {
+		return findAllChildrenWithType(tree, tokens.getTokenType(typeName));
+	}
+	
+	/**
+	 * Find all children and sub-children with the given type.
+	 * This method will recursively search the children of the
+	 * given tree.
+	 * 
+	 * @param tree
+	 * @param tokens
+	 * @param typeName
+	 * @return the list of children found with the given type
+	 */
+	public static List<CommonTree> findAllChildrenWithType(CommonTree tree, AntlrTokens tokens, String... typeNames) {
+		final List<Integer> allowedVals = new ArrayList<Integer>();
+		for(String typeName:typeNames) {
+			allowedVals.add(tokens.getTokenType(typeName));
+		}
+		final List<CommonTree> retVal = new ArrayList<CommonTree>();
+		findAllChildrenRecursive(retVal, tree, allowedVals);
+		return retVal;
+	}
+	
+	private static void findAllChildrenRecursive(List<CommonTree> list, CommonTree tree, List<Integer> types) {
+		// add current tree if it has the propert type
+		if(types.contains(tree.getToken().getType())) {
+			list.add(tree);
+		}
+		
+		for(int i = 0; i < tree.getChildCount(); i++) {
+			final CommonTree child = (CommonTree)tree.getChild(i);
+			findAllChildrenRecursive(list, child, types);
+		}
+	}
+	
+	
 }

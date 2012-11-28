@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ import ca.phon.application.transcript.IWord;
 import ca.phon.application.transcript.IWordGroup;
 import ca.phon.application.transcript.Sex;
 import ca.phon.application.transcript.TranscriptElement;
+import ca.phon.application.transcript.TranscriptUtils;
 import ca.phon.phone.Phone;
 import ca.phon.phone.PhoneSequenceMatcher;
 import ca.phon.phontalk.parser.AntlrTokens;
@@ -992,6 +994,7 @@ public class Phon2XmlTreeBuilder {
 		}
 		
 		// process dependent tiers
+		// FLAT TIERS
 		for(IDependentTier depTier:utt.getDependentTiers()) {
 			
 			if(depTier.getTierName().equals("Postcode")) {
@@ -1053,12 +1056,32 @@ public class Phon2XmlTreeBuilder {
 			addTextNode(depTierNode, depTier.getTierValue());
 		}
 		
+		final List<String> grpDepTierNames = utt.getWordAlignedTierNames();
+		if(grpDepTierNames.contains("Morphology")) {
+			try {
+				final List<CommonTree> mortrees = processMorphology(utt, uNode);
+				
+				if(grpDepTierNames.contains("GRASP")) {
+					processGRASP(utt, uNode);
+				}
+			} catch (PhonTalkError e) {
+				e.printStackTrace();
+				System.out.println("Error processing record #" + utt.getID());
+			}
+		}
+		
+		// GROUP TIERS
 		List<String> handeledTiers = new ArrayList<String>();
+		// add mor tiers to already handeled list
+		handeledTiers.add("Morphology");
+		handeledTiers.add("trn");
+		handeledTiers.add("GRASP");
 		for(String grpDepTierName:utt.getWordAlignedTierNames()) {
 			if(handeledTiers.contains(grpDepTierName))
 				continue;
 			
 			handeledTiers.add(grpDepTierName);
+			
 			String grpDepTierVal = 
 				StringUtils.strip(utt.getTierString(grpDepTierName));
 			List<String> grpVals = StringUtils.extractedBracketedStrings(grpDepTierVal);
@@ -1120,6 +1143,108 @@ public class Phon2XmlTreeBuilder {
 		tree.addChild(uNode);
 	}
 	
+	/**
+	 * Process morphology and grasp tiers and add data to the
+	 * given tree.
+	 * 
+	 * @param utt
+	 * @param tree
+	 */
+	private List<CommonTree> processMorphology(IUtterance utt, CommonTree uNode) 
+		throws PhonTalkError {
+		
+		final List<CommonTree> retVal = new ArrayList<CommonTree>();
+		
+		// final all word sub-trees
+		final List<CommonTree> wordTrees =
+				AntlrUtils.findAllChildrenWithType(uNode, chatTokens, "W_START", "TAGMARKER_START", "T_START");
+		
+		// get a listing of all mordata elements
+		final String morphologyTierValue = TranscriptUtils.getTierValue(utt, "Morphology");
+		final List<String> morGrpVals = StringUtils.extractedBracketedStrings(morphologyTierValue);
+		final List<String> morWrdVals = new ArrayList<String>();
+		for(String grpVal:morGrpVals) {
+			// split by space
+			final String[] wrdVals = grpVal.split("\\s+");
+			morWrdVals.addAll(Arrays.asList(wrdVals));
+		}
+		
+		// create a mor tree for each word value and attempt to attach it to
+		// the next available word tree
+		final MorBuilder mb = new MorBuilder();
+		int wordTreeIdx = 0;
+		for(String morWrdVal:morWrdVals) {
+			final CommonTree mortree = mb.buildMorTree(morWrdVal);
+			if(mortree == null) {
+				continue;
+			}
+			final CommonTree morTypeTree = AntlrUtils.createToken(chatTokens, "MOR_ATTR_TYPE");
+			morTypeTree.getToken().setText("mor");
+			morTypeTree.setParent(mortree);
+			mortree.getChildren().add(0, morTypeTree);
+			mortree.freshenParentAndChildIndexes();
+			retVal.add(mortree);
+			
+			final CommonTree wTree = 
+					(wordTreeIdx < wordTrees.size() ? wordTrees.get(wordTreeIdx) : null);
+			wordTreeIdx++;
+			if(wTree == null) {
+				throw new PhonTalkError("one-to-one alignment error");
+			}
+			
+			final List<CommonTree> morOmittedTrees = AntlrUtils.findChildrenWithType(mortree, chatTokens, "MOR_ATTR_OMITTED");
+			final boolean morOmitted = 
+					(morOmittedTrees.size() > 0 && Boolean.parseBoolean(morOmittedTrees.get(0).getToken().getText()));
+			final List<CommonTree> wTypeTrees = AntlrUtils.findAllChildrenWithType(wTree, chatTokens, "W_ATTR_TYPE");
+			final boolean wOmitted = 
+					(wTypeTrees.size() > 0 && wTypeTrees.get(0).getToken().getText().equals("omitted"));
+			
+			if(wOmitted ^ morOmitted) {
+				throw new PhonTalkError("one-to-one alignment error");
+			} else {
+				wTree.addChild(mortree);
+				mortree.setParent(wTree);
+			}
+		}
+		
+		return retVal;
+	}
+	
+	/**
+	 * Process the GRASP tier and attach the generated trees
+	 * to the given mor trees.
+	 * 
+	 * @param utt
+	 * @param mortrees
+	 */
+	private void processGRASP(IUtterance utt, CommonTree uNode) 
+		throws PhonTalkError {
+		final MorBuilder mb = new MorBuilder();
+		final List<CommonTree> mortrees =  
+				AntlrUtils.findAllChildrenWithType(uNode, chatTokens, "MOR_START", "MOR_PRE_START", "MOR_POST_START");
+		final String graTierVal = TranscriptUtils.getTierValue(utt, "GRASP");
+		final List<String> grpTierVals = StringUtils.extractedBracketedStrings(graTierVal);
+		final List<CommonTree> graTrees = new ArrayList<CommonTree>();
+		for(String grpTierVal:grpTierVals) {
+			final String wrdVals[] = grpTierVal.split("\\s+");
+			for(String wrdVal:wrdVals) {
+				final CommonTree graTree = mb.buildGraspTree(wrdVal);
+				graTrees.add(graTree);
+			}
+		}
+		
+		if(mortrees.size() != graTrees.size()) {
+			throw new PhonTalkError("one-to-one alignment error");
+		}
+		
+		for(int i = 0; i < mortrees.size(); i++) {
+			final CommonTree mortree = mortrees.get(i);
+			final CommonTree gratree = graTrees.get(i);
+			
+			mb.attachGrasp(mortree, gratree);
+		}
+	}
+
 	private void insertEvent(CommonTree parent, String eData) {
 		// event formats
 		// 1) *something* - action

@@ -1,6 +1,7 @@
 package ca.phon.phontalk;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +25,84 @@ public class MorBuilder {
 			new AntlrTokens("Chat.tokens");
 	
 	/**
+	 * Attach the given GRASP tree to the 
+	 * given MOR tree.
+	 * 
+	 * @param graspTree
+	 * @param morTree
+	 * @return the reference to the provided 
+	 *  morTree
+	 */
+	@SuppressWarnings("unchecked")
+	public CommonTree attachGrasp(CommonTree morTree, CommonTree graspTree) {
+		final Integer prevTypes[] = 
+			{ 
+				chatTokens.getTokenType("GRA_ATTR_OMITTED"),
+				chatTokens.getTokenType("GRA_ATTR_TYPE"),
+				chatTokens.getTokenType("MW_START"),
+				chatTokens.getTokenType("MWC_START"),
+				chatTokens.getTokenType("MT_START"),
+				chatTokens.getTokenType("MENX_START"),
+				chatTokens.getTokenType("GRA_START")
+			};
+		final List<Integer> checkTypes = Arrays.asList(prevTypes);
+		int insertionPt = -1;
+		for(int i = 0; i < morTree.getChildCount(); i++) {
+			final CommonTree child = (CommonTree)morTree.getChild(i);
+			if(checkTypes.contains(child.getToken().getType())) {
+				insertionPt = i+1;
+			}
+		}
+		if(insertionPt >= 0) {
+			morTree.getChildren().add(insertionPt, graspTree);
+			morTree.freshenParentAndChildIndexes();
+		}
+		return morTree;
+	}
+	
+	/**
+	 * Build a GRASP (%gra) tree to attach to mor.
+	 * 
+	 * 
+	 * @param gra, must be a string of 4 values separated by pipes (i.e., 1|2|3|4)
+	 * @return the grasp tree
+	 */
+	public CommonTree buildGraspTree(String gra) 
+		throws PhonTalkError {
+		
+		final CommonTree graTree = AntlrUtils.createToken(chatTokens, "GRA_START");
+		final CommonTree graTypeTree = AntlrUtils.createToken(chatTokens, "GRA_ATTR_TYPE");
+		graTypeTree.getToken().setText("gra");
+		graTree.addChild(graTypeTree);
+		graTypeTree.setParent(graTree);
+		
+		final String graParts[] = gra.split("\\|");
+		if(graParts.length != 3) {
+			throw new PhonTalkError("Invalid GRASP string '" + gra + "'");
+		}
+		
+		final String idxVal = graParts[0];
+		final CommonTree idxTree = AntlrUtils.createToken(chatTokens, "GRA_ATTR_INDEX");
+		idxTree.getToken().setText(idxVal);
+		idxTree.setParent(graTree);
+		graTree.addChild(idxTree);
+		
+		final String headVal = graParts[1];
+		final CommonTree headTree = AntlrUtils.createToken(chatTokens, "GRA_ATTR_HEAD");
+		headTree.getToken().setText(headVal);
+		headTree.setParent(graTree);
+		graTree.addChild(headTree);
+		
+		final String relVal = graParts[2];
+		final CommonTree relTree = AntlrUtils.createToken(chatTokens, "GRA_ATTR_RELATION");
+		relTree.getToken().setText(relVal);
+		relTree.setParent(graTree);
+		graTree.addChild(relTree);
+		
+		return graTree;
+	}
+	
+	/**
 	 * Build a common tree for the given mor
 	 * string.
 	 * 
@@ -33,6 +112,10 @@ public class MorBuilder {
 	 */
 	public CommonTree buildMorTree(String mor) 
 		throws PhonTalkError {
+		
+		if(mor.length() == 0) {
+			return null;
+		}
 		// create a new string buffer, this buffer
 		// will be modified as pieces of the mor string
 		// are processed
@@ -178,7 +261,11 @@ public class MorBuilder {
 			retVal.addChild(mpfx);
 			mpfx.setParent(retVal);
 		}
-		final CommonTree pos = pos(tree, buffer);
+		
+		final int mwcPosEnd = buffer.indexOf("|");
+		final String mwcPosVal = buffer.substring(0, mwcPosEnd);
+		buffer.delete(0, mwcPosEnd+1);
+		final CommonTree pos = pos(retVal, new StringBuffer(mwcPosVal));
 		pos.setParent(retVal);
 		retVal.addChild(pos);
 		
@@ -230,7 +317,7 @@ public class MorBuilder {
 	}
 	
 	/**
-	 * Buffer should be just the 'pos' portion.  i.e., 'POS_C:POS_S'
+	 * Buffer should be just the 'pos' portion.  i.e., 'POS_C(:POS_S)*'
 	 * @param tree
 	 * @param buffer
 	 * @return

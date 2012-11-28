@@ -984,7 +984,7 @@ menx returns [String val]
         $mor::menxVals.add($val);
     }
 }
-    :    MENX_START TEXT MENX_END
+    :    ^(MENX_START TEXT)
     {
         $val = $TEXT.text;
     }
@@ -1660,7 +1660,10 @@ overlap returns [String val]
 
         
 tagmarker returns [String val]
-	:	^(TAGMARKER_START TAGMARKER_ATTR_TYPE mor*)
+@init {
+	List<Tuple<String, String>> morvals = new ArrayList<Tuple<String, String>>();
+}
+	:	^(TAGMARKER_START TAGMARKER_ATTR_TYPE (mor {morvals.add(new Tuple($mor.tierName, $mor.val));})*)
 	{
 	    String tmType = $TAGMARKER_ATTR_TYPE.text;
 	    if(tmType.equals("comma")) {
@@ -1669,6 +1672,51 @@ tagmarker returns [String val]
 	        $val = "\u201E";
 	    } else if(tmType.equals("vocative")) {
 	        $val = "\u2021";
+	    }
+	    
+	    // add mor to mor tier as necessary
+	    for(Tuple<String, String> morData:morvals) {
+	    	// mor is handled as a seperate dependent tier
+			String morVal = morData.getObj2();
+			String tierName = morData.getObj1();
+			
+			// make sure dep tier exists in session
+			IDepTierDesc tierDesc = null;
+			for(IDepTierDesc current:session.getWordAlignedTiers())
+			{
+				if(current.getTierName().equals(tierName))
+				{
+					tierDesc = current;
+					break;
+				}
+			}
+			
+			if(tierDesc == null) {
+				// create the new tier
+				tierDesc = session.newDependentTier();
+				tierDesc.setTierName(tierName);
+				tierDesc.setIsGrouped(true);
+			}
+			
+			// add mor data as a dep tier of the current word(group)
+			IWord word = null;
+			// get the correct word group holder
+			if($t.size() > 0 || $ugrp.size() > 0) {
+			    word = ($t.size() > 0 ? $t::w : $ugrp::w);
+			} else if($u.size() > 0) {
+			    word = $u::utt.getWords().get($u::utt.getWords().size()-1);
+			}
+			
+			IDependentTier depTier = 
+			    word.getDependentTier(tierDesc.getTierName());
+			if(depTier == null) {
+				depTier = word.newDependentTier();
+				depTier.setTierName(tierDesc.getTierName());
+			}
+			String tierValue = depTier.getTierValue();
+			tierValue += 
+			    (tierValue.length() == 0 ? "" : " ") + morVal;
+			depTier.setTierValue(tierValue);
 	    }
 	}
 	;
@@ -2130,6 +2178,50 @@ scope {
 		List<String> cws = lastGrp.getWords();
 		cws.add(append);
 		lastGrp.setWords(cws);
+		
+		if($mor.val != null) {
+			// mor is handled as a seperate dependent tier
+			String morVal = $mor.val;
+			String tierName = $mor.tierName;
+			
+			// make sure dep tier exists in session
+			IDepTierDesc tierDesc = null;
+			for(IDepTierDesc current:session.getWordAlignedTiers())
+			{
+				if(current.getTierName().equals(tierName))
+				{
+					tierDesc = current;
+					break;
+				}
+			}
+			
+			if(tierDesc == null) {
+				// create the new tier
+				tierDesc = session.newDependentTier();
+				tierDesc.setTierName(tierName);
+				tierDesc.setIsGrouped(true);
+			}
+			
+			// add mor data as a dep tier of the current word(group)
+			IWord word = null;
+			// get the correct word group holder
+			if($t.size() > 0 || $ugrp.size() > 0) {
+			    word = ($t.size() > 0 ? $t::w : $ugrp::w);
+			} else if($u.size() > 0) {
+			    word = $u::utt.getWords().get($u::utt.getWords().size()-1);
+			}
+			
+			IDependentTier depTier = 
+			    word.getDependentTier(tierDesc.getTierName());
+			if(depTier == null) {
+				depTier = word.newDependentTier();
+				depTier.setTierName(tierDesc.getTierName());
+			}
+			String tierValue = depTier.getTierValue();
+			tierValue += 
+			    (tierValue.length() == 0 ? "" : " ") + morVal;
+			depTier.setTierValue(tierValue);
+		}
 	}
 	;
 

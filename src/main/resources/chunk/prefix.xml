@@ -182,7 +182,7 @@ public String getErrorMessage(RecognitionException re, String[] tokens) {
 
     if(re instanceof MismatchedTreeNodeException) {
     	MismatchedTreeNodeException mte = (MismatchedTreeNodeException)re;
-    	PhonLogger.severe((new ChatTokens()).getTokenName(mte.expecting));
+    	PhonLogger.severe((new AntlrTokens("Chat.tokens")).getTokenName(mte.expecting));
     }
         re.printStackTrace();
     return retVal;
