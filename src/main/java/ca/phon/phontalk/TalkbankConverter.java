@@ -1,5 +1,7 @@
 package ca.phon.phontalk;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -29,15 +31,13 @@ import ca.phon.system.logger.PhonLogger;
  * Reads in a talkbank XML file using SAX and
  * JAXB.  Converts the file into a PhonBank v1.1 file.
  * 
- * Current talkbank schema version is 1.4.9 (2010-01-07)
  */
-public class TalkbankConverter extends XmlConverter {
-	
+public class TalkbankConverter {
 	
 	public TalkbankConverter() {
+		super();
 	}
 
-	@Override
 	/**
 	 * Convert the talkbank 1.4.9 file into a PhonBank 1.1 file.
 	 * 
@@ -60,7 +60,7 @@ public class TalkbankConverter extends XmlConverter {
 			parserRet = parser.chat();
 		} catch (RecognitionException e1) {
 			PhonLogger.warning(e1.toString());
-			PhonTalkError err = new PhonTalkError();
+			PhonTalkMessage err = new PhonTalkMessage();
 			err.setLineNumber(e1.line);
 		}
 		

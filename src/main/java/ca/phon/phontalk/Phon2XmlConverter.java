@@ -1,9 +1,20 @@
 package ca.phon.phontalk;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import ca.phon.application.IPhonFactory;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.stringtemplate.NoIndentWriter;
+import org.antlr.stringtemplate.StringTemplateWriter;
 
 import ca.phon.application.transcript.ITranscript;
 import ca.phon.application.transcript.IUtterance;
@@ -12,51 +23,51 @@ import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.Phon2XmlWalker;
 import ca.phon.system.logger.PhonLogger;
 
-public class Phon2XmlConverter extends PhonConverter {
-	
-	/**
-	 * Error handler
-	 */
-	private ErrorHandler errorHandler;
+public class Phon2XmlConverter {
 	
 	public Phon2XmlConverter() {
 		super();
 	}
 	
-	public void setErrorHandler(ErrorHandler errHandler) {
-		errorHandler = errHandler;
+	public void convertFile(File sessionFile, File outputFile) {
+		convertFile(sessionFile, outputFile, null);
 	}
 	
-	/**
-	 * Convert a transcript to an xml String.
-	 * 
-	 */
-	@Override
-	public String convertTranscript(ITranscript t) {
-		// convert the transcript into a CHAT CommonTree
-		Phon2XmlTreeBuilder builder = new Phon2XmlTreeBuilder();
-		CommonTree sessionTree = builder.buildTree(t);
-		
-		if(sessionTree == null) {
-			final String message = "Could not build CHAT tree";
-			return "";
-		}
-		CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(sessionTree);
-		Phon2XmlWalker walker = new Phon2XmlWalker(nodeStream);
-		
-		String retVal = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	public void convertFile(File sessionFile, File outputFile, PhonTalkListener msgListener) {
+		// open phon session, also performs validation of the input file
+		final IPhonFactory factory = IPhonFactory.getDefaultFactory();
+		final ITranscript session = factory.createTranscript();
 		try {
-			Phon2XmlWalker.chat_return v = walker.chat();
-			retVal = v.st.toString();
-		} catch (RecognitionException e) {
-			PhonLogger.warning(e.toString());
-		} catch (StackOverflowError err) {
-			findStackOverflowError(t);
-		} catch (Exception e) {
-			findStackOverflowError(t);
+			session.loadTranscriptFile(sessionFile);
+		} catch (IOException e) {
+			final PhonTalkMessage err = new PhonTalkError(e);
+			e.printStackTrace();
+			if(msgListener != null) {
+				msgListener.message(err);
+			}
+			return;
 		}
 		
-		return retVal;
+		// convert session into a antlr common tree
+		final Phon2XmlTreeBuilder builder = new Phon2XmlTreeBuilder();
+		final CommonTree sessionTree = builder.buildTree(session);
+		if(sessionTree == null) {
+			final PhonTalkMessage err = new PhonTalkMessage("Could not build CHAT tree from session.", sessionFile.getAbsolutePath());
+			errorHandler.error(err);
+			return;
+		}
+		
+		try {
+			final FileOutputStream fout = new FileOutputStream(outputFile);
+			final OutputStreamWriter fwriter = new OutputStreamWriter(fout, "UTF-8");
+			final StringTemplateWriter stWriter = new NoIndentWriter(new PrintWriter(fwriter));
+			
+			
+		} catch (IOException e) {
+			final PhonTalkMessage err = new PhonTalkMessage(e.getMessage(), outputFile.getAbsolutePath());
+			errorHandler.error(err);
+			return;
+		}	
 	}
 	
 	private void printTree(CommonTree tree, int tabidx) {

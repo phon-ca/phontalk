@@ -2,51 +2,28 @@ package ca.phon.phontalk;
 
 /**
  * An error during the conversion process.
+ * 
  */
-public class PhonTalkError extends Exception {
+public class PhonTalkError extends PhonTalkMessage {
 	
-	private static final long serialVersionUID = 7955358836268036775L;
+	private Throwable cause;
 	
-	/** The filename */
-	private String filename;
-	
-	public String getFilename() {
-		return filename;
-	}
-
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-
-	/** Line number, -1 if not known */
-	private int lineNumber = -1;
-	
-	public int getLineNumber() {
-		return lineNumber;
-	}
-
-	public void setLineNumber(int lineNumber) {
-		this.lineNumber = lineNumber;
-	}
-
-	public PhonTalkError() {
-		this("", "", -1);
+	public PhonTalkError(Throwable cause) {
+		this(cause, Severity.SEVERE);
 	}
 	
-	public PhonTalkError(String msg, String file) {
-		this(msg, file, -1);
+	public PhonTalkError(Throwable cause, Severity severity) {
+		super(cause.getMessage(), severity);
+		this.cause = cause;
 	}
 	
-	public PhonTalkError(String msg) {
-		this(msg, null, -1);
+	public Throwable getCause() {
+		return this.cause;
 	}
 	
-	public PhonTalkError(String msg, String file, int lineNum) {
-		super(msg);
-		this.filename = file;
-		this.lineNumber = lineNum;
+	public void setCause(Throwable cause) {
+		this.cause = cause;
+		setMessage((this.cause != null ? this.cause.getMessage() : ""));
 	}
 	
-	
-
 }

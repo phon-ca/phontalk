@@ -129,7 +129,7 @@ chat_attrs
 	}
 	|	CHAT_ATTR_CORPUS
 	{
-		//session.setCorpus($CHAT_ATTR_CORPUS.text);
+		session.setCorpus($CHAT_ATTR_CORPUS.text);
 	}
 	|	CHAT_ATTR_ID
 	{

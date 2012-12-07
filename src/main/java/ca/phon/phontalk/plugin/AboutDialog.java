@@ -3,11 +3,10 @@
  * and open the template in the editor.
  */
 
-package ca.phon.phontalk.ui;
+package ca.phon.phontalk.plugin;
 
 import ca.phon.application.PhonTask;
 import ca.phon.gui.components.ActionLabel;
-import ca.phon.phontalk.PhonTalk;
 import ca.phon.system.logger.PhonLogger;
 import ca.phon.util.OpenFileLauncher;
 import com.jgoodies.forms.factories.ButtonBarFactory;
@@ -63,7 +62,7 @@ public class AboutDialog extends JDialog {
 	private void init() {
 		setLayout(new BorderLayout());
 
-		String lblTxt = "PhonTalk v" + PhonTalk.PHONTALK_VERSION;
+		String lblTxt = "PhonTalk v 1.4";
 
 		JLabel titleLbl = new JLabel(lblTxt);
 		Font titleFont = titleLbl.getFont();
@@ -81,7 +80,7 @@ public class AboutDialog extends JDialog {
 		infoPanel.setLayout(layout);
 
 		infoPanel.add(new JLabel("Build Date:"), cc.xy(1,1));
-		infoPanel.add(new JLabel(PhonTalk.PHONTALK_COMPILE_DATE), cc.xy(3,1));
+//		infoPanel.add(new JLabel(PhonTalk.PHONTALK_COMPILE_DATE), cc.xy(3,1));
 
 		infoPanel.add(new JLabel("Website:"), cc.xy(1,3));
 		JLabel websiteLbl = new JLabel("<html><u>http://phon.ling.mun.ca/</u></html>");

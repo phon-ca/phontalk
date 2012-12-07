@@ -5,7 +5,7 @@
 
 package ca.phon.phontalk.macos;
 
-import ca.phon.phontalk.ui.AboutDialog;
+import ca.phon.phontalk.plugin.AboutDialog;
 
 import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationAdapter;

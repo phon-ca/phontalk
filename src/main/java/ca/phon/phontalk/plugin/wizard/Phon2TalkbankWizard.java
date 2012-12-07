@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.painter.BusyPainter;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -31,7 +32,8 @@ import ca.phon.gui.components.FileSelectionField.SelectionMode;
 import ca.phon.gui.components.PhonLoggerConsole;
 import ca.phon.gui.wizard.WizardFrame;
 import ca.phon.gui.wizard.WizardStep;
-import ca.phon.phontalk.Phon2XmlStreamTask;
+import ca.phon.phontalk.Phon2XmlTask;
+import ca.phon.system.logger.PhonLogger;
 import ca.phon.util.NativeDialogs;
 import ca.phon.util.iconManager.IconManager;
 import ca.phon.util.iconManager.IconSize;
@@ -62,6 +64,7 @@ public class Phon2TalkbankWizard extends WizardFrame {
 	/**
 	 * Busy label
 	 */
+	private JPanel busyLabelPanel;
 	private JXBusyLabel busyLabel;
 	
 	/**
@@ -136,16 +139,16 @@ public class Phon2TalkbankWizard extends WizardFrame {
 	private WizardStep createReportStep() {
 		loggerConsole = new PhonLoggerConsole();
 		
+		busyLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		busyLabel = new JXBusyLabel(new Dimension(16, 16));
 		busyLabel.setBusy(true);
-		
-		final JPanel topPanel = new JPanel(new FlowLayout());
-		topPanel.add(busyLabel);
-		topPanel.add(new JLabel("Exporting files, this may take some time."));
+		busyLabelPanel.add(busyLabel);
+		busyLabelPanel.add(new JLabel("Exporting files, this may take some time."));
+		busyLabelPanel.setVisible(false);
 		
 		final JPanel wizardPanel = new JPanel(new BorderLayout());
 		wizardPanel.setBorder(BorderFactory.createTitledBorder("Converting files:"));
-		wizardPanel.add(topPanel, BorderLayout.NORTH);
+		wizardPanel.add(busyLabelPanel, BorderLayout.NORTH);
 		wizardPanel.add(loggerConsole, BorderLayout.CENTER);
 		
 		final DialogHeader header = new DialogHeader("PhonTalk : Export to Talkbank", "Exporting files.");
@@ -218,8 +221,34 @@ public class Phon2TalkbankWizard extends WizardFrame {
 				}
 				final File outputFile = new File(outputRoot, sessionLocation.getSession() + ".xml");
 				
-				final PhonTask task = new Phon2XmlStreamTask(sessionFile.getAbsolutePath(), outputFile.getAbsolutePath());
+				final Runnable startProgress = new Runnable() {
+					
+					@Override
+					public void run() {
+						busyLabelPanel.setVisible(true);
+						busyLabel.setBusy(true);
+					}
+				};
+				final Runnable endProgress = new Runnable() {
+					
+					@Override
+					public void run() {
+						busyLabel.setBusy(false);
+						busyLabelPanel.setVisible(false);
+					}
+				};
+				
+				final PhonTask task = new Phon2XmlTask(sessionFile.getAbsolutePath(), outputFile.getAbsolutePath());
+				worker.invokeLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						PhonLogger.info("Processing file: " + sessionFile.getAbsolutePath());
+					}
+				});
+				worker.invokeLater(startProgress);
 				worker.invokeLater(task);
+				worker.invokeLater(endProgress);
 			}
 			
 			// reset console

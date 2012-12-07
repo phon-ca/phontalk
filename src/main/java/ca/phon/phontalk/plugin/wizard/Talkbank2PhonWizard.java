@@ -56,7 +56,7 @@ import ca.phon.gui.components.FileSelectionField.SelectionMode;
 import ca.phon.gui.wizard.WizardFrame;
 import ca.phon.gui.wizard.WizardStep;
 import ca.phon.phontalk.TalkbankValidator;
-import ca.phon.phontalk.Xml2PhonStreamTask;
+import ca.phon.phontalk.Xml2PhonTask;
 import ca.phon.system.logger.PhonLogger;
 import ca.phon.util.NativeDialogs;
 
@@ -249,8 +249,15 @@ public class Talkbank2PhonWizard extends WizardFrame {
 					}
 					
 					// import file
-					final Xml2PhonStreamTask importTask = 
-							new Xml2PhonStreamTask(tbFile.getAbsolutePath(), sessionFile.getAbsolutePath());
+					final Xml2PhonTask importTask = 
+							new Xml2PhonTask(tbFile.getAbsolutePath(), sessionFile.getAbsolutePath());
+					worker.invokeLater(new Runnable() {
+						
+						@Override
+						public void run() {
+							PhonLogger.info("Processing file: " + tbFile.getAbsolutePath());
+						}
+					});
 					worker.invokeLater(importTask);
 				}
 			}

@@ -100,7 +100,9 @@ public class Phon2XmlTreeBuilder {
 		"speech act",
 		"time stamp",
 		"translation",
-		"extension"
+		"extension",
+		"GRASP",
+		"Morphology"
 	};
 	
 	public CommonTree buildTree(ITranscript t) {
@@ -1064,7 +1066,7 @@ public class Phon2XmlTreeBuilder {
 				if(grpDepTierNames.contains("GRASP")) {
 					processGRASP(utt, uNode);
 				}
-			} catch (PhonTalkError e) {
+			} catch (PhonTalkMessage e) {
 				e.printStackTrace();
 				System.out.println("Error processing record #" + utt.getID());
 			}
@@ -1151,7 +1153,7 @@ public class Phon2XmlTreeBuilder {
 	 * @param tree
 	 */
 	private List<CommonTree> processMorphology(IUtterance utt, CommonTree uNode) 
-		throws PhonTalkError {
+		throws PhonTalkMessage {
 		
 		final List<CommonTree> retVal = new ArrayList<CommonTree>();
 		
@@ -1189,7 +1191,7 @@ public class Phon2XmlTreeBuilder {
 					(wordTreeIdx < wordTrees.size() ? wordTrees.get(wordTreeIdx) : null);
 			wordTreeIdx++;
 			if(wTree == null) {
-				throw new PhonTalkError("one-to-one alignment error");
+				throw new PhonTalkMessage("one-to-one alignment error");
 			}
 			
 			final List<CommonTree> morOmittedTrees = AntlrUtils.findChildrenWithType(mortree, chatTokens, "MOR_ATTR_OMITTED");
@@ -1200,7 +1202,7 @@ public class Phon2XmlTreeBuilder {
 					(wTypeTrees.size() > 0 && wTypeTrees.get(0).getToken().getText().equals("omitted"));
 			
 			if(wOmitted ^ morOmitted) {
-				throw new PhonTalkError("one-to-one alignment error");
+				throw new PhonTalkMessage("one-to-one alignment error");
 			} else {
 				wTree.addChild(mortree);
 				mortree.setParent(wTree);
@@ -1218,7 +1220,7 @@ public class Phon2XmlTreeBuilder {
 	 * @param mortrees
 	 */
 	private void processGRASP(IUtterance utt, CommonTree uNode) 
-		throws PhonTalkError {
+		throws PhonTalkMessage {
 		final MorBuilder mb = new MorBuilder();
 		final List<CommonTree> mortrees =  
 				AntlrUtils.findAllChildrenWithType(uNode, chatTokens, "MOR_START", "MOR_PRE_START", "MOR_POST_START");
@@ -1234,7 +1236,7 @@ public class Phon2XmlTreeBuilder {
 		}
 		
 		if(mortrees.size() != graTrees.size()) {
-			throw new PhonTalkError("one-to-one alignment error");
+			throw new PhonTalkMessage("one-to-one alignment error");
 		}
 		
 		for(int i = 0; i < mortrees.size(); i++) {
