@@ -149,7 +149,6 @@ scope {
 		{
 			String[] splitVals = $a::buffer.split("\\p{Space}");
 			List<IWord> words = $u::utt.getWords();
-			Syllabifier syllabifier = getSyllabifier();
 			
 			if(splitVals.length != words.size()) {
 				PhonLogger.warning("[Record " + (uttIndex+1) + "] Misaligned \%xpho '" + $a::buffer + "'");
@@ -163,8 +162,6 @@ scope {
 				IPhoneticRep phoRep =
 					word.getPhoneticRepresentation(Form.Actual);
 				List<Phone> phones = Phone.toPhoneList(v);
-				if(syllabifier != null)
-					syllabifier.syllabify(phones);
 				phoRep.setPhones(phones);
 				phoRep.setForm(Form.Actual);
 			}
@@ -185,8 +182,6 @@ scope {
 				List<Phone> newphones = Phone.toPhoneList(
 					(phones.size() == 0 ? "" : " ") + remainder);
 				phones.addAll(newphones);
-				if(syllabifier != null)
-					syllabifier.syllabify(phones);
 				phoRep.setPhones(phones);
 				phoRep.setForm(Form.Actual);
 			}

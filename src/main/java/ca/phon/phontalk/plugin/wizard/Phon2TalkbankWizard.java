@@ -32,6 +32,7 @@ import ca.phon.gui.components.FileSelectionField.SelectionMode;
 import ca.phon.gui.components.PhonLoggerConsole;
 import ca.phon.gui.wizard.WizardFrame;
 import ca.phon.gui.wizard.WizardStep;
+import ca.phon.phontalk.DefaultPhonTalkListener;
 import ca.phon.phontalk.Phon2XmlTask;
 import ca.phon.system.logger.PhonLogger;
 import ca.phon.util.NativeDialogs;
@@ -55,11 +56,6 @@ public class Phon2TalkbankWizard extends WizardFrame {
 	 * Folder label
 	 */
 	private FileSelectionField outputFolderField;
-	
-	/**
-	 * Phon Logger console
-	 */
-	private PhonLoggerConsole loggerConsole;
 	
 	/**
 	 * Busy label
@@ -137,8 +133,6 @@ public class Phon2TalkbankWizard extends WizardFrame {
 	 * Console reporting
 	 */
 	private WizardStep createReportStep() {
-		loggerConsole = new PhonLoggerConsole();
-		
 		busyLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		busyLabel = new JXBusyLabel(new Dimension(16, 16));
 		busyLabel.setBusy(true);
@@ -149,7 +143,6 @@ public class Phon2TalkbankWizard extends WizardFrame {
 		final JPanel wizardPanel = new JPanel(new BorderLayout());
 		wizardPanel.setBorder(BorderFactory.createTitledBorder("Converting files:"));
 		wizardPanel.add(busyLabelPanel, BorderLayout.NORTH);
-		wizardPanel.add(loggerConsole, BorderLayout.CENTER);
 		
 		final DialogHeader header = new DialogHeader("PhonTalk : Export to Talkbank", "Exporting files.");
 		
@@ -238,7 +231,7 @@ public class Phon2TalkbankWizard extends WizardFrame {
 					}
 				};
 				
-				final PhonTask task = new Phon2XmlTask(sessionFile.getAbsolutePath(), outputFile.getAbsolutePath());
+				final PhonTask task = new Phon2XmlTask(sessionFile.getAbsolutePath(), outputFile.getAbsolutePath(), new DefaultPhonTalkListener());
 				worker.invokeLater(new Runnable() {
 					
 					@Override
@@ -250,11 +243,6 @@ public class Phon2TalkbankWizard extends WizardFrame {
 				worker.invokeLater(task);
 				worker.invokeLater(endProgress);
 			}
-			
-			// reset console
-			loggerConsole.clearText();
-			loggerConsole.addReportThread(worker);
-			loggerConsole.startLogging();
 			
 			worker.start();
 		}

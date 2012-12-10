@@ -1,4 +1,4 @@
-package ca.phon.phontalk;
+package ca.phon.phontalk.parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,7 +7,6 @@ import java.util.List;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
 
-import ca.phon.phontalk.parser.AntlrTokens;
 
 /**
  * Utility methods for working with antlr3 {@link CommonTree}s.

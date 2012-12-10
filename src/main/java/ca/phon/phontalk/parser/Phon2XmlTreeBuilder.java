@@ -1,4 +1,4 @@
-package ca.phon.phontalk;
+package ca.phon.phontalk.parser;
 
 import ca.phon.exceptions.ParserException;
 import java.io.BufferedWriter;
@@ -46,7 +46,6 @@ import ca.phon.application.transcript.TranscriptElement;
 import ca.phon.application.transcript.TranscriptUtils;
 import ca.phon.phone.Phone;
 import ca.phon.phone.PhoneSequenceMatcher;
-import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.Phon2XmlWalker;
 import ca.phon.syllable.Syllable;
 import ca.phon.syllable.SyllableConstituentType;
@@ -105,7 +104,8 @@ public class Phon2XmlTreeBuilder {
 		"Morphology"
 	};
 	
-	public CommonTree buildTree(ITranscript t) {
+	public CommonTree buildTree(ITranscript t) 
+		throws TreeBuilderException {
 		CommonTree retVal = AntlrUtils.createToken(chatTokens, "CHAT_START");
 		retVal.setParent(null);
 		
@@ -400,7 +400,8 @@ public class Phon2XmlTreeBuilder {
 	/**
 	 * Handle transcript data
 	 */
-	private void processTranscript(CommonTree tree, ITranscript t) {
+	private void processTranscript(CommonTree tree, ITranscript t) 
+		throws TreeBuilderException {
 		// go through the transcript contents
 		boolean dateCommentInserted = false;
 		for(TranscriptElement<Object> tele:t.getTranscriptElements()) {
@@ -423,7 +424,12 @@ public class Phon2XmlTreeBuilder {
 					dateCommentInserted = true;
 				}
 //				System.out.println("Record: " + uttIdx++);
-				insertRecord(tree, (IUtterance)tele.getValue());
+				try {
+					insertRecord(tree, (IUtterance)tele.getValue());
+				} catch (TreeBuilderException e) {
+					e.setSession(t);
+					throw e;
+				}
 				recordIdx++;
 			}
 			//break; // debug to just get one record
@@ -583,7 +589,8 @@ public class Phon2XmlTreeBuilder {
 	/**
 	 * Insert a record.
 	 */
-	private void insertRecord(CommonTree tree, IUtterance utt) {
+	private void insertRecord(CommonTree tree, IUtterance utt) 
+		throws TreeBuilderException {
 		CommonTree uNode = 
 			AntlrUtils.createToken(chatTokens, "U_START");
 		uNode.setParent(tree);
@@ -1066,9 +1073,10 @@ public class Phon2XmlTreeBuilder {
 				if(grpDepTierNames.contains("GRASP")) {
 					processGRASP(utt, uNode);
 				}
-			} catch (PhonTalkMessage e) {
-				e.printStackTrace();
-				System.out.println("Error processing record #" + utt.getID());
+			} catch (IllegalArgumentException e) {
+				final TreeBuilderException treeBuilderException = new TreeBuilderException(e);
+				treeBuilderException.setUtt(utt);
+				throw treeBuilderException;
 			}
 		}
 		
@@ -1153,7 +1161,7 @@ public class Phon2XmlTreeBuilder {
 	 * @param tree
 	 */
 	private List<CommonTree> processMorphology(IUtterance utt, CommonTree uNode) 
-		throws PhonTalkMessage {
+		throws IllegalArgumentException {
 		
 		final List<CommonTree> retVal = new ArrayList<CommonTree>();
 		
@@ -1191,7 +1199,7 @@ public class Phon2XmlTreeBuilder {
 					(wordTreeIdx < wordTrees.size() ? wordTrees.get(wordTreeIdx) : null);
 			wordTreeIdx++;
 			if(wTree == null) {
-				throw new PhonTalkMessage("one-to-one alignment error");
+				throw new IllegalArgumentException("one-to-one alignment error: mor");
 			}
 			
 			final List<CommonTree> morOmittedTrees = AntlrUtils.findChildrenWithType(mortree, chatTokens, "MOR_ATTR_OMITTED");
@@ -1202,7 +1210,7 @@ public class Phon2XmlTreeBuilder {
 					(wTypeTrees.size() > 0 && wTypeTrees.get(0).getToken().getText().equals("omitted"));
 			
 			if(wOmitted ^ morOmitted) {
-				throw new PhonTalkMessage("one-to-one alignment error");
+				throw new IllegalArgumentException("one-to-one alignment error: mor");
 			} else {
 				wTree.addChild(mortree);
 				mortree.setParent(wTree);
@@ -1220,7 +1228,7 @@ public class Phon2XmlTreeBuilder {
 	 * @param mortrees
 	 */
 	private void processGRASP(IUtterance utt, CommonTree uNode) 
-		throws PhonTalkMessage {
+		throws IllegalArgumentException {
 		final MorBuilder mb = new MorBuilder();
 		final List<CommonTree> mortrees =  
 				AntlrUtils.findAllChildrenWithType(uNode, chatTokens, "MOR_START", "MOR_PRE_START", "MOR_POST_START");
@@ -1236,7 +1244,7 @@ public class Phon2XmlTreeBuilder {
 		}
 		
 		if(mortrees.size() != graTrees.size()) {
-			throw new PhonTalkMessage("one-to-one alignment error");
+			throw new IllegalArgumentException("one-to-one alignment error: gra");
 		}
 		
 		for(int i = 0; i < mortrees.size(); i++) {
@@ -1415,7 +1423,7 @@ public class Phon2XmlTreeBuilder {
 			phonex =
 					PhoneSequenceMatcher.compile("{}:-WordBoundaryMarker*");
 		} catch (ParserException ex) {
-			PhonLogger.warning(ex.toString());
+			ex.printStackTrace(); // sound never occur
 		}
 
 		int phIdx = 0;
@@ -1887,79 +1895,4 @@ public class Phon2XmlTreeBuilder {
 		mediaNode.addChild(endNode);
 	}
 	
-	public static void main(String[] args) throws Exception {
-		
-		IPhonProject project = 
-			PhonProject.fromFile("/Users/ghedlund/Desktop/Ella.phon");
-		ITranscript t =
-			project.getTranscript("Ella", "Ella");
-//		IUtterance utt = t.getUtterances().get(69);
-		Phon2XmlTreeBuilder ptb = new Phon2XmlTreeBuilder();
-		
-		// check the tree for each record
-		for(IUtterance utt:t.getUtterances()) {
-			CommonTree ct = new CommonTree(
-					new CommonToken(chatTokens.getTokenType("CHAT_START")));
-			ptb.setupHeaderData(ct, t);
-			ptb.setupParticipants(ct, t);
-			ptb.insertRecord(ct, utt);
-			
-			// try to convert to a string, on fail print our tree
-			try {
-				CommonTreeNodeStream nodeStream = 
-					new CommonTreeNodeStream(ct);
-				Phon2XmlWalker walker = new Phon2XmlWalker(nodeStream);
-				Phon2XmlWalker.chat_return ret = walker.chat();
-				
-				ret.st.toString();
-			} catch (StackOverflowError err) {
-				System.out.println(utt.getID());
-//				err.printStackTrace();
-
-//				printTree(ct, 0);
-			} catch (IllegalArgumentException e) {
-				System.out.println(utt.getID());
-//				e.printStackTrace();
-//				printTree(ct, 0);
-			}
-			
-			BufferedWriter out;
-			try {
-				out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("tree.txt"), "UTF-8"));
-				
-				printTree(out, ct, 0);
-				out.flush();
-				out.close();
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		}
-		
-	}
-	
-	public static void printTree(Writer writer, CommonTree tree, int tIdx) {
-		String tabString = "  ";
-		
-		String out = chatTokens.getTokenName(tree.getToken().getType()) + ":" + tree.getToken().toString();
-		for(int i = 0; i < tIdx; i++) System.out.print(tabString);
-		try {
-			writer.write("[" + tIdx + "]" + out + "\n");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		for(int cIndex = 0; cIndex < tree.getChildCount(); cIndex++) {
-			printTree(writer, (CommonTree)tree.getChild(cIndex), tIdx+1);
-		}
-	}
 }

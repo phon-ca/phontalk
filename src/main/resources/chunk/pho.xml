@@ -57,15 +57,6 @@ scope
 		String txt = "";
 		for(Phone p:$pho::phones) txt += p.getPhoneString();
 
-		List<Phone> testPhones = Phone.toPhoneList(txt);
-		if(testPhones.size() != phones.size() 
-			|| isReparsePhones()) {
-			phones = testPhones;
-		}
-		
-		Syllabifier syllabifier = getSyllabifier();
-		if(syllabifier != null) syllabifier.syllabify(phones);
-
 		if($g.size() == 0) {
 			IPhoneticRep modelRep =
 				$ugrp::w.getPhoneticRepresentation(Form.Target);
@@ -90,16 +81,6 @@ scope
 		// fix phone list
 		String txt = "";
 		for(Phone p:$pho::phones) txt += p.getPhoneString();
-
-		List<Phone> testPhones = Phone.toPhoneList(txt);
-		
-		if(testPhones.size() != phones.size()
-			|| isReparsePhones()) {
-			phones = testPhones;
-		}
-		
-		Syllabifier syllabifier = getSyllabifier();
-		if(syllabifier != null) syllabifier.syllabify(phones);
 
 		if($g.size() == 0) {
 			IPhoneticRep actualRep =

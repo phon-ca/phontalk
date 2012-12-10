@@ -1,11 +1,13 @@
 package ca.phon.phontalk;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+import ca.phon.application.IPhonFactory;
 import ca.phon.application.PhonTask;
 import ca.phon.application.transcript.ITranscript;
 
@@ -15,50 +17,50 @@ import ca.phon.application.transcript.ITranscript;
  */
 public class Xml2PhonTask extends PhonTask {
 	
-	private InputStream tbStream;
+	/**
+	 * Input file
+	 */
+	private File inputFile;
 	
-	private OutputStream phonStream;
+	/**
+	 * Output file
+	 */
+	private File outputFile;
 	
-	private String inStream;
-	private String outStream;
+	/**
+	 * Message listener
+	 */
+	private PhonTalkListener listener;
 	
-	public Xml2PhonTask(String inFile, String outFile) {
-		try {
-			tbStream = new FileInputStream(inFile);
-			phonStream = new FileOutputStream(outFile);
-			
-			inStream = inFile;
-			outStream = outFile;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public Xml2PhonTask(InputStream inStream, OutputStream outStream) {
-		this.tbStream = inStream;
-		this.phonStream = outStream;
-		
-		this.inStream = "";
-		this.outStream = "";
+	public Xml2PhonTask(String inFile, String outFile, PhonTalkListener listener) {
+		super();
+		this.inputFile = new File(inFile);
+		this.outputFile = new File(outFile);
+		this.listener = listener;
 	}
 
 	@Override
 	public void performTask() {
 		super.setStatus(TaskStatus.RUNNING);
 
-		TalkbankConverter converter = new TalkbankConverter();
+		final Xml2PhonConverter converter = new Xml2PhonConverter();
+		converter.convertFile(inputFile, outputFile, listener);
 		
-		ITranscript t = converter.convertStream(inStream, tbStream);
+		// attempt to load the transcript at outputFile to
+		// ensure session was saved correctly
+		final IPhonFactory factory = IPhonFactory.getDefaultFactory();
+		final ITranscript session = factory.createTranscript();
 		try {
-			t.saveTranscriptData(phonStream);
+			session.loadTranscriptFile(inputFile);
+			super.setStatus(TaskStatus.FINISHED);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
+			final PhonTalkError err = new PhonTalkError(e);
+			err.setFile(outputFile);
+			if(listener != null) listener.message(err);
 			super.err = e;
-			super.setStatus(TaskStatus.ERROR);
-			return;
+			setStatus(TaskStatus.ERROR);
 		}
-		
-		super.setStatus(TaskStatus.FINISHED);
 	}
 
 }

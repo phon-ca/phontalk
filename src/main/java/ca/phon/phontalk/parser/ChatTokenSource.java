@@ -53,7 +53,7 @@ public class ChatTokenSource implements TokenSource {
 	 * 
 	 * @param file the token def file
 	 */
-	public ChatTokenSource(InputStream source, String file) {
+	public ChatTokenSource(InputStream source) {
 		super();
 		
 		// create StAX reader
@@ -61,7 +61,6 @@ public class ChatTokenSource implements TokenSource {
 		try {
 			//BufferedReader in = new BufferedReader(new InputStreamReader(source, "UTF-8"));
 			XMLEventReader xmlReader = factory.createXMLEventReader(source, "UTF-8");
-			
 			reader = factory.createFilteredReader(xmlReader, new XMLWhitespaceFilter());
 		} catch (XMLStreamException e) {
 			PhonLogger.warning(e.toString());
@@ -70,7 +69,6 @@ public class ChatTokenSource implements TokenSource {
 
 	@Override
 	public String getSourceName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

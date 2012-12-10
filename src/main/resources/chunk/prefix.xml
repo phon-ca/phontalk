@@ -9,14 +9,13 @@ grammar Chat;
 options {
 	output=AST;
 	ASTLabelType=CommonTree;
-	superClass=ca.phon.phontalk.parser.PhonTalkParser;
+	superClass=PhonTalkParser;
 }
 
 @header {
 package ca.phon.phontalk.parser;
 
 import ca.phon.system.logger.*;
-}
 
 }
 ]]>
@@ -31,7 +30,7 @@ options
 	ASTLabelType = CommonTree ;
 	tokenVocab = Chat ;
 	output = AST;
-	superClass=ca.phon.phontalk.parser.PhonTalkTreeParser;
+	superClass=PhonTalkTreeParser;
 }
 
 @header {
@@ -81,7 +80,7 @@ options
 	ASTLabelType = CommonTree ;
 	tokenVocab = Chat ;
 	output = template;
-	superClass=ca.phon.phontalk.parser.PhonTalkTreeParser;
+	superClass=PhonTalkTreeParser;
 }
 
 @header {

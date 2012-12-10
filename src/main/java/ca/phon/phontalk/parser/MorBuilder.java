@@ -1,4 +1,4 @@
-package ca.phon.phontalk;
+package ca.phon.phontalk.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.antlr.runtime.tree.CommonTree;
 
-import ca.phon.phontalk.parser.AntlrTokens;
+import ca.phon.phontalk.PhonTalkMessage;
 
 /**
  * Utility class for building morphology trees
@@ -68,7 +68,7 @@ public class MorBuilder {
 	 * @return the grasp tree
 	 */
 	public CommonTree buildGraspTree(String gra) 
-		throws PhonTalkMessage {
+		throws IllegalArgumentException {
 		
 		final CommonTree graTree = AntlrUtils.createToken(chatTokens, "GRA_START");
 		final CommonTree graTypeTree = AntlrUtils.createToken(chatTokens, "GRA_ATTR_TYPE");
@@ -78,7 +78,7 @@ public class MorBuilder {
 		
 		final String graParts[] = gra.split("\\|");
 		if(graParts.length != 3) {
-			throw new PhonTalkMessage("Invalid GRASP string '" + gra + "'");
+			throw new IllegalArgumentException("Invalid GRASP string '" + gra + "'");
 		}
 		
 		final String idxVal = graParts[0];
@@ -111,7 +111,7 @@ public class MorBuilder {
 	 * @throws PhonTalkMessage if the string cannot be parsed
 	 */
 	public CommonTree buildMorTree(String mor) 
-		throws PhonTalkMessage {
+		throws IllegalArgumentException {
 		
 		if(mor.length() == 0) {
 			return null;
@@ -176,7 +176,7 @@ public class MorBuilder {
 	}
 	
 	private List<CommonTree> morpre(CommonTree tree, StringBuffer buffer)
-			throws PhonTalkMessage {
+			throws IllegalArgumentException {
 		final List<CommonTree> retVal = new ArrayList<CommonTree>();
 		final int morStart = buffer.lastIndexOf("$");
 		if(morStart >= 0) {
@@ -195,7 +195,7 @@ public class MorBuilder {
 	}
 	
 	private List<CommonTree> morpost(CommonTree tree, StringBuffer buffer) 
-			throws PhonTalkMessage {
+			throws IllegalArgumentException {
 		final List<CommonTree> retVal = new ArrayList<CommonTree>();
 		final int morEnd = buffer.indexOf("~");
 		if(morEnd >= 0) {

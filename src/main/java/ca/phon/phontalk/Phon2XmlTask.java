@@ -1,5 +1,6 @@
 package ca.phon.phontalk;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +8,8 @@ import java.io.OutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
+
+import javax.management.modelmbean.XMLParseException;
 
 import ca.phon.application.IPhonFactory;
 import ca.phon.application.PhonTask;
@@ -20,62 +23,50 @@ import ca.phon.system.logger.PhonLogger;
  */
 public class Phon2XmlTask extends PhonTask {
 	
-	private InputStream phonStream;
+	private File inputFile;
 	
-	private OutputStream tbStream;
+	private File outputFile;
 	
-	public Phon2XmlTask(String inFile, String outFile) {
-		try {
-			this.phonStream = new FileInputStream(inFile);
-			this.tbStream = new FileOutputStream(outFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+	private PhonTalkListener listener;
 	
-	public Phon2XmlTask(InputStream inStream, OutputStream outStream) {
-		this.phonStream = inStream;
-		this.tbStream = outStream;
+	public Phon2XmlTask(String inFile, String outFile, PhonTalkListener listener) {
+		super();
+		this.inputFile = new File(inFile);
+		this.outputFile = new File(outFile);
+		this.listener = listener;
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public void performTask() {
 		// convert transcript
 		super.setStatus(TaskStatus.RUNNING);
 		
-		ITranscript t = IPhonFactory.getDefaultFactory().createTranscript();
+		// check to make sure the file is a valid phon session
+		final ITranscript t = IPhonFactory.getDefaultFactory().createTranscript();
 		try {
+			final InputStream phonStream = new FileInputStream(inputFile);
 			t.loadTranscriptData(phonStream);
 		} catch (IOException e) {
-			PhonLogger.severe(e.getMessage());
+			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
+			final PhonTalkError err = new PhonTalkError(e);
+			listener.message(err);
 			super.err = e;
 			super.setStatus(TaskStatus.ERROR);
 			return;
 		}
 		
-		Phon2XmlConverter converter = new Phon2XmlConverter();
+		final Phon2XmlConverter converter = new Phon2XmlConverter();
+		converter.convertFile(inputFile, outputFile, listener);
 		
-		String xml = converter.convertTranscript(t);
-		TalkbankValidator validator = new TalkbankValidator();
-		
-		if(validator.validate(xml)) {
-			try {
-				tbStream.write(xml.getBytes("UTF-8"));
-				tbStream.flush();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-				super.err = e;
-				super.setStatus(TaskStatus.ERROR);
-				return;
-			} catch (IOException e) {
-				e.printStackTrace();
-				super.err = e;
-				super.setStatus(TaskStatus.ERROR);
-				return;
-			}
+		final TalkbankValidator validator = new TalkbankValidator();
+		final DefaultErrorHandler errHandler = new DefaultErrorHandler(outputFile, listener);
+		if(!validator.validate(outputFile, errHandler)) {
+			err = new XMLParseException("xml not valid.");
+			super.setStatus(TaskStatus.ERROR);
+		} else {
+			super.setStatus(TaskStatus.FINISHED);
 		}
-		
-		super.setStatus(TaskStatus.FINISHED);
 	}
 
 }

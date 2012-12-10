@@ -55,6 +55,7 @@ import ca.phon.gui.components.PhonLoggerConsole;
 import ca.phon.gui.components.FileSelectionField.SelectionMode;
 import ca.phon.gui.wizard.WizardFrame;
 import ca.phon.gui.wizard.WizardStep;
+import ca.phon.phontalk.DefaultPhonTalkListener;
 import ca.phon.phontalk.TalkbankValidator;
 import ca.phon.phontalk.Xml2PhonTask;
 import ca.phon.system.logger.PhonLogger;
@@ -81,11 +82,6 @@ public class Talkbank2PhonWizard extends WizardFrame {
 	private JXBusyLabel scanBusyLabel;
 	private JPanel exportBusyPanel;
 	private JXBusyLabel exportBusyLabel;
-	
-	/**
-	 * Logger
-	 */
-	private PhonLoggerConsole loggerConsole;
 	
 	/**
 	 * Steps
@@ -170,7 +166,7 @@ public class Talkbank2PhonWizard extends WizardFrame {
 	 * Console reporting
 	 */
 	private WizardStep createReportStep() {
-		loggerConsole = new PhonLoggerConsole();
+//		loggerConsole = new PhonLoggerConsole();
 		
 		exportBusyPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		exportBusyLabel = new JXBusyLabel(new Dimension(16, 16));
@@ -181,7 +177,7 @@ public class Talkbank2PhonWizard extends WizardFrame {
 		final JPanel wizardPanel = new JPanel(new BorderLayout());
 		wizardPanel.setBorder(BorderFactory.createTitledBorder("Converting files:"));
 		wizardPanel.add(exportBusyPanel, BorderLayout.NORTH);
-		wizardPanel.add(loggerConsole, BorderLayout.CENTER);
+//		wizardPanel.add(loggerConsole, BorderLayout.CENTER);
 		
 		final DialogHeader header = new DialogHeader("PhonTalk : Import from Talkbank", "Importing files.");
 		
@@ -250,7 +246,7 @@ public class Talkbank2PhonWizard extends WizardFrame {
 					
 					// import file
 					final Xml2PhonTask importTask = 
-							new Xml2PhonTask(tbFile.getAbsolutePath(), sessionFile.getAbsolutePath());
+							new Xml2PhonTask(tbFile.getAbsolutePath(), sessionFile.getAbsolutePath(), new DefaultPhonTalkListener());
 					worker.invokeLater(new Runnable() {
 						
 						@Override
@@ -263,8 +259,8 @@ public class Talkbank2PhonWizard extends WizardFrame {
 			}
 			worker.invokeLater(endProgress);
 			
-			loggerConsole.addReportThread(worker);
-			loggerConsole.startLogging();
+//			loggerConsole.addReportThread(worker);
+//			loggerConsole.startLogging();
 			
 			worker.setFinishWhenQueueEmpty(true);
 			worker.start();

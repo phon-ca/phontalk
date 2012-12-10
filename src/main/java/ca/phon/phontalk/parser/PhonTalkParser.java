@@ -1,5 +1,7 @@
 package ca.phon.phontalk.parser;
 
+import java.io.File;
+
 import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
@@ -7,6 +9,7 @@ import org.antlr.runtime.TokenStream;
 
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
+import ca.phon.phontalk.PhonTalkUtil;
 
 /**
  * Custom base class for antlr parsers.
@@ -47,22 +50,16 @@ public class PhonTalkParser extends Parser {
 		this.listener = listener;
 	}
 	
-	/**
-	 * Override the default {@link Parser#getErrorMessage(org.antlr.runtime.RecognitionException, String[])}
-	 * method to send a message to the provided listener.
-	 */
 	@Override
-	public String getErrorMessage(RecognitionException re, String[] tokens) {
-		final String retVal = super.getErrorMessage(re, tokens);
+	public void reportError(RecognitionException re) {
+		if(PhonTalkUtil.isVerbose()) re.printStackTrace();
 		final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor();
 		visitor.visit(re);
 		final PhonTalkMessage msg = visitor.getMessage();
-		
+		msg.setFile(new File(this.filename));
 		if(getPhonTalkListener() != null && msg != null) {
 			getPhonTalkListener().message(msg);
 		}
-		
-		return retVal;
 	}
 	
 }
