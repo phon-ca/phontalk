@@ -76,6 +76,11 @@
 			<artifactId>lablib-checkboxtree</artifactId>
 			<version>3.0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>xml-resolver</groupId>
+			<artifactId>xml-resolver</artifactId>
+			<version>1.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>

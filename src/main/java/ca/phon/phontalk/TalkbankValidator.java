@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.ValidationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,6 +20,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.apache.xml.resolver.tools.CatalogResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -84,7 +86,7 @@ public class TalkbankValidator {
 		if(schemaSource != null) {
 			try {
 				SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-//			    schemaFactory.setResourceResolver(getResourceResolver());
+			    schemaFactory.setResourceResolver(getResourceResolver());
 				schema = schemaFactory.newSchema(schemaSource);
 				
 			} catch (SAXException e) {
@@ -98,46 +100,46 @@ public class TalkbankValidator {
 		}
 	}
 	
-//	/**
-//	 * Get the catalog resolver for loading cached files over
-//	 * online resources (i.e., the xml.xsd schema file).
-//	 */
-//	private CatalogResolver getCatalogResolver() {
-//		CatalogResolver entityResolver = new CatalogResolver(true); 
-//		
-//		try {
-//		  entityResolver.getCatalog().parseCatalog(getClass().getClassLoader().getResource("catalog.cat"));
-//		} catch (MalformedURLException e) {
-//		  if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-//		  LOGGER.severe(e.getMessage());
-//		} catch (IOException e) {
-//		  if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-//		  LOGGER.severe(e.getMessage());
-//		}
-//		
-//		return entityResolver;
-//	}
-//	
-//	/**
-//	 * Get the resource resolver based on the catalog resolver.
-//	 * 
-//	 */
-//	public LSResourceResolver getResourceResolver() {
-//		final CatalogResolver entityResolver = getCatalogResolver();
-//		
-//	
-//		LSResourceResolver retVal = new LSResourceResolver() {
-//		    @Override
-//		    public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
-//		      if (publicId == null) {
-//		        publicId = namespaceURI;
-//		      }
-//		      return new InternalLSInputSAXWrapper(entityResolver.resolveEntity(publicId, systemId));
-//		    }
-//		  };
-//				  
-//		return retVal;
-//	}
+	/**
+	 * Get the catalog resolver for loading cached files over
+	 * online resources (i.e., the xml.xsd schema file).
+	 */
+	private CatalogResolver getCatalogResolver() {
+		CatalogResolver entityResolver = new CatalogResolver(true); 
+		
+		try {
+		  entityResolver.getCatalog().parseCatalog(getClass().getClassLoader().getResource("catalog.cat"));
+		} catch (MalformedURLException e) {
+		  if(PhonTalkUtil.isVerbose()) e.printStackTrace();
+		  LOGGER.severe(e.getMessage());
+		} catch (IOException e) {
+		  if(PhonTalkUtil.isVerbose()) e.printStackTrace();
+		  LOGGER.severe(e.getMessage());
+		}
+		
+		return entityResolver;
+	}
+	
+	/**
+	 * Get the resource resolver based on the catalog resolver.
+	 * 
+	 */
+	public LSResourceResolver getResourceResolver() {
+		final CatalogResolver entityResolver = getCatalogResolver();
+		
+	
+		LSResourceResolver retVal = new LSResourceResolver() {
+		    @Override
+		    public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
+		      if (publicId == null) {
+		        publicId = namespaceURI;
+		      }
+		      return new InternalLSInputSAXWrapper(entityResolver.resolveEntity(publicId, systemId));
+		    }
+		  };
+				  
+		return retVal;
+	}
 
 	/**
 	 * Load schema from file at ./talkbank.xsd
@@ -234,22 +236,26 @@ public class TalkbankValidator {
 	/**
 	 * Validate the given DOM doc.
 	 */
-	public boolean validate(Document doc) {
+	public boolean validate(Document doc) 
+			throws ValidationException {
 		return validate(doc, null);
 	}
 	
-	public boolean validate(Document doc, ErrorHandler handler) {
+	public boolean validate(Document doc, ErrorHandler handler) 
+			throws ValidationException {
 		return validate(new DOMSource(doc), handler);
 	}
 	
 	/**
 	 * Validatoe the given file
 	 */
-	public boolean validate(File file) {
+	public boolean validate(File file)
+		throws ValidationException {
 		return validate(file, null);
 	}
 	
-	public boolean validate(File file, ErrorHandler handler) {
+	public boolean validate(File file, ErrorHandler handler) 
+		throws ValidationException {
 		// convert into a DOM tree
 		try {
 			
@@ -260,21 +266,16 @@ public class TalkbankValidator {
 		    
 		    return validate(document, handler);
 		} catch (ParserConfigurationException e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-			LOGGER.severe(e.getMessage());
-			return false;
+			throw new ValidationException(e.getMessage(), e);
 		} catch (SAXException e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-			LOGGER.severe(e.getMessage());
-			return false;
+			throw new ValidationException(e.getMessage(), e);
 		} catch (IOException e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-			LOGGER.severe(e.getMessage());
-			return false;
+			throw new ValidationException(e.getMessage(), e);
 		}
 	}
 
-	public boolean validate(Source src) {
+	public boolean validate(Source src) 
+			throws ValidationException {
 		return validate(src, null);
 	}
 
@@ -282,7 +283,8 @@ public class TalkbankValidator {
 	/**
 	 * Validate the given source.
 	 */
-	public boolean validate(Source src, ErrorHandler handler) {
+	public boolean validate(Source src, ErrorHandler handler) 
+			throws ValidationException {
 		boolean retVal = false;
 		
 		Validator validator = schema.newValidator();
@@ -290,15 +292,13 @@ public class TalkbankValidator {
 		if(handler != null)
 			validator.setErrorHandler(handler);
 		try {
-//			validator.setResourceResolver(getResourceResolver());
+			validator.setResourceResolver(getResourceResolver());
 			validator.validate(src);
 			retVal = true;
 		} catch (SAXException e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-			LOGGER.severe(e.getMessage());
+			throw new ValidationException(e.getMessage(), e);
 		} catch (IOException e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-			LOGGER.severe(e.getMessage());
+			throw new ValidationException(e.getMessage(), e);
 		}
 		
 		return retVal;

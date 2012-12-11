@@ -68,15 +68,6 @@ public class Phon2XmlConverter {
 			return;
 		}
 		
-		if(sessionTree == null) {
-			final PhonTalkMessage err = new PhonTalkMessage("Could not build CHAT tree.", Severity.SEVERE);
-			err.setFile(sessionFile);
-			if(msgListener != null) {
-				msgListener.message(err);
-			}
-			return;
-		}
-		
 		try {
 			final FileOutputStream fout = new FileOutputStream(outputFile);
 			final OutputStreamWriter fwriter = new OutputStreamWriter(fout, "UTF-8");
@@ -84,8 +75,11 @@ public class Phon2XmlConverter {
 			
 			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(sessionTree);
 			final Phon2XmlWalker walker = new Phon2XmlWalker(nodeStream);
+			walker.setFile(outputFile.getAbsolutePath());
 			final Phon2XmlWalker.chat_return ret = walker.chat();
 			ret.st.write(stWriter);
+			fwriter.flush();
+			fwriter.close();
 		} catch (IOException e) {
 			final PhonTalkMessage err = new PhonTalkError(e);
 			err.setFile(outputFile);
@@ -105,7 +99,7 @@ public class Phon2XmlConverter {
 		} catch (Exception e) {
 			// sometime stackoverflow and other runtime errors
 			// can occur during string template output
-			findRecordsWithErrors(session, msgListener);
+			findRecordsWithErrors(sessionFile, session, msgListener);
 		}
 	}
 	
@@ -115,7 +109,7 @@ public class Phon2XmlConverter {
 	 * 
 	 * @param t
 	 */
-	private void findRecordsWithErrors(ITranscript t, PhonTalkListener listener) {
+	private void findRecordsWithErrors(File f, ITranscript t, PhonTalkListener listener) {
 		
 		IPhonFactory factory = IPhonFactory.getFactory(t.getVersion());
 
@@ -149,11 +143,14 @@ public class Phon2XmlConverter {
 				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor();
 				visitor.visit(re);
 				final PhonTalkMessage msg = visitor.getMessage();
+				msg.setMessage("Record #" + (i+1) + " " + msg.getMessage());
+				msg.setFile(f);
 				if(listener != null) {
 					listener.message(msg);
 				}
 			} catch (Exception e) {
-				final PhonTalkError err = new PhonTalkError(e);
+				final PhonTalkError err = new PhonTalkError("Record #" + (i+1) + " " + e.getMessage(), e);
+				err.setFile(f);
 				if(listener != null) {
 					listener.message(err);
 				}

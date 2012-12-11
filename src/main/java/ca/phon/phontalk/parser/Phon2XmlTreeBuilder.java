@@ -427,8 +427,8 @@ public class Phon2XmlTreeBuilder {
 				try {
 					insertRecord(tree, (IUtterance)tele.getValue());
 				} catch (TreeBuilderException e) {
-					e.setSession(t);
-					throw e;
+					throw new TreeBuilderException(
+							"Record #" + (recordIdx+1) + " " + e.getMessage());
 				}
 				recordIdx++;
 			}

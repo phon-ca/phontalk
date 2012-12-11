@@ -8,6 +8,11 @@ public class PhonTalkError extends PhonTalkMessage {
 	
 	private Throwable cause;
 	
+	public PhonTalkError(String msg, Throwable cause) {
+		super(msg, Severity.SEVERE);
+		this.cause = cause;
+	}
+	
 	public PhonTalkError(Throwable cause) {
 		this(cause, Severity.SEVERE);
 	}

@@ -35,6 +35,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXTree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,6 +59,7 @@ import ca.phon.gui.wizard.WizardStep;
 import ca.phon.phontalk.DefaultPhonTalkListener;
 import ca.phon.phontalk.TalkbankValidator;
 import ca.phon.phontalk.Xml2PhonTask;
+import ca.phon.phontalk.plugin.PluginMessageListener;
 import ca.phon.system.logger.PhonLogger;
 import ca.phon.util.NativeDialogs;
 
@@ -74,6 +76,12 @@ public class Talkbank2PhonWizard extends WizardFrame {
 	 * Import tree 
 	 */
 	private CheckboxTree importTree;
+	
+	/**
+	 * Table
+	 */
+	private final PluginMessageListener listener = new PluginMessageListener();
+	private final JXTree errTable = new JXTree(listener);
 	
 	/**
 	 * Busy labels
@@ -178,6 +186,9 @@ public class Talkbank2PhonWizard extends WizardFrame {
 		wizardPanel.setBorder(BorderFactory.createTitledBorder("Converting files:"));
 		wizardPanel.add(exportBusyPanel, BorderLayout.NORTH);
 //		wizardPanel.add(loggerConsole, BorderLayout.CENTER);
+		errTable.setRootVisible(false);
+		final JScrollPane errScroller = new JScrollPane(errTable);
+		wizardPanel.add(errScroller, BorderLayout.CENTER);
 		
 		final DialogHeader header = new DialogHeader("PhonTalk : Import from Talkbank", "Importing files.");
 		
@@ -246,14 +257,8 @@ public class Talkbank2PhonWizard extends WizardFrame {
 					
 					// import file
 					final Xml2PhonTask importTask = 
-							new Xml2PhonTask(tbFile.getAbsolutePath(), sessionFile.getAbsolutePath(), new DefaultPhonTalkListener());
-					worker.invokeLater(new Runnable() {
-						
-						@Override
-						public void run() {
-							PhonLogger.info("Processing file: " + tbFile.getAbsolutePath());
-						}
-					});
+							new Xml2PhonTask(tbFile.getAbsolutePath(), sessionFile.getAbsolutePath(), listener);
+
 					worker.invokeLater(importTask);
 				}
 			}

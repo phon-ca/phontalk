@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -12,8 +13,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.painter.BusyPainter;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -34,6 +41,8 @@ import ca.phon.gui.wizard.WizardFrame;
 import ca.phon.gui.wizard.WizardStep;
 import ca.phon.phontalk.DefaultPhonTalkListener;
 import ca.phon.phontalk.Phon2XmlTask;
+import ca.phon.phontalk.plugin.PTMessageRenderer;
+import ca.phon.phontalk.plugin.PluginMessageListener;
 import ca.phon.system.logger.PhonLogger;
 import ca.phon.util.NativeDialogs;
 import ca.phon.util.iconManager.IconManager;
@@ -46,6 +55,10 @@ import ca.phon.util.iconManager.IconSize;
 public class Phon2TalkbankWizard extends WizardFrame {
 
 	private static final long serialVersionUID = -4135395782785639623L;
+
+	static {
+		System.setProperty("phontalk.verbose", Boolean.TRUE.toString());
+	}
 	
 	/**
 	 * Session selector
@@ -62,6 +75,12 @@ public class Phon2TalkbankWizard extends WizardFrame {
 	 */
 	private JPanel busyLabelPanel;
 	private JXBusyLabel busyLabel;
+	
+	/**
+	 * Table
+	 */
+	private final PluginMessageListener listener = new PluginMessageListener();
+	private final JXTree errTable = new JXTree(listener);
 	
 	/**
 	 * Generated wizard steps
@@ -143,6 +162,45 @@ public class Phon2TalkbankWizard extends WizardFrame {
 		final JPanel wizardPanel = new JPanel(new BorderLayout());
 		wizardPanel.setBorder(BorderFactory.createTitledBorder("Converting files:"));
 		wizardPanel.add(busyLabelPanel, BorderLayout.NORTH);
+		errTable.setRootVisible(false);
+		listener.addTreeModelListener(new TreeModelListener() {
+			
+			@Override
+			public void treeStructureChanged(TreeModelEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void treeNodesRemoved(TreeModelEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void treeNodesInserted(TreeModelEvent arg0) {
+				final TreePath tp = arg0.getTreePath().getParentPath();
+				final Runnable onEDT = new Runnable() {
+					
+					@Override
+					public void run() {
+						if(!errTable.isExpanded(tp)) {
+							errTable.expandPath(tp);
+						}
+					}
+				};
+				SwingUtilities.invokeLater(onEDT);
+			}
+			
+			@Override
+			public void treeNodesChanged(TreeModelEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		errTable.setCellRenderer(new PTMessageRenderer());
+		final JScrollPane errScroller = new JScrollPane(errTable);
+		wizardPanel.add(errScroller, BorderLayout.CENTER);
 		
 		final DialogHeader header = new DialogHeader("PhonTalk : Export to Talkbank", "Exporting files.");
 		
@@ -201,7 +259,7 @@ public class Phon2TalkbankWizard extends WizardFrame {
 			// setup conversion tasks
 			final PhonWorker worker = PhonWorker.createWorker();
 			worker.setFinishWhenQueueEmpty(true);
-			
+			Collections.sort(selectedSessions);
 			for(SessionLocation sessionLocation:selectedSessions) {
 				final String sessionPath = sessionLocation.getCorpus() + File.separator + sessionLocation.getSession() + ".xml";
 				final String projectRoot = getProject().getProjectLocation();
@@ -231,14 +289,8 @@ public class Phon2TalkbankWizard extends WizardFrame {
 					}
 				};
 				
-				final PhonTask task = new Phon2XmlTask(sessionFile.getAbsolutePath(), outputFile.getAbsolutePath(), new DefaultPhonTalkListener());
-				worker.invokeLater(new Runnable() {
-					
-					@Override
-					public void run() {
-						PhonLogger.info("Processing file: " + sessionFile.getAbsolutePath());
-					}
-				});
+				final PhonTask task = new Phon2XmlTask(sessionFile.getAbsolutePath(), outputFile.getAbsolutePath(), listener);
+				
 				worker.invokeLater(startProgress);
 				worker.invokeLater(task);
 				worker.invokeLater(endProgress);

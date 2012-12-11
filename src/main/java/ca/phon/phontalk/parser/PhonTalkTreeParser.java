@@ -50,7 +50,8 @@ public class PhonTalkTreeParser extends TreeParser {
 
 	@Override
 	public void reportError(RecognitionException re) {
-		if(PhonTalkUtil.isVerbose()) re.printStackTrace();
+		super.reportError(re);
+		
 		final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor();
 		visitor.visit(re);
 		final PhonTalkMessage msg = visitor.getMessage();

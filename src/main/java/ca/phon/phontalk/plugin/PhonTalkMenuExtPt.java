@@ -21,7 +21,8 @@ import ca.phon.system.plugin.PhonPlugin;
 		author="Greg J. Hedlund <ghedlund@mun.ca>",
 		name="PhonTalk",
 		version="1.0",
-		comments="PhonTalk plugin menu entries")
+		comments="PhonTalk plug-in",
+		minPhonVersion="1.5.3")
 public class PhonTalkMenuExtPt implements IPluginExtensionPoint<IPluginMenuFilter>, IPluginExtensionFactory<IPluginMenuFilter>, IPluginMenuFilter {
 
 	@Override

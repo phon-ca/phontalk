@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 
 import javax.management.modelmbean.XMLParseException;
+import javax.xml.bind.ValidationException;
 
 import ca.phon.application.IPhonFactory;
 import ca.phon.application.PhonTask;
@@ -61,11 +62,20 @@ public class Phon2XmlTask extends PhonTask {
 		
 		final TalkbankValidator validator = new TalkbankValidator();
 		final DefaultErrorHandler errHandler = new DefaultErrorHandler(outputFile, listener);
-		if(!validator.validate(outputFile, errHandler)) {
-			err = new XMLParseException("xml not valid.");
+		try {
+			if(!validator.validate(outputFile, errHandler)) {
+				err = new Exception("xml not valid");
+				super.setStatus(TaskStatus.ERROR);
+			} else {
+				super.setStatus(TaskStatus.FINISHED);
+			}
+		} catch (ValidationException e) {
+			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
+			final PhonTalkError err = new PhonTalkError(e);
+			err.setFile(outputFile);
+			listener.message(err);
+			super.err = e;
 			super.setStatus(TaskStatus.ERROR);
-		} else {
-			super.setStatus(TaskStatus.FINISHED);
 		}
 	}
 

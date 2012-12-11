@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * An message during the conversion process.
  */
-public class PhonTalkMessage implements Serializable {
+public class PhonTalkMessage implements Serializable, Comparable<PhonTalkMessage> {
 	
 	private static final long serialVersionUID = 7955358836268036775L;
 
@@ -87,6 +87,13 @@ public class PhonTalkMessage implements Serializable {
 
 	public void setColNumber(int colNumber) {
 		this.colNumber = colNumber;
+	}
+
+	@Override
+	public int compareTo(PhonTalkMessage o) {
+		final Integer myVal = getSeverity().ordinal();
+		final Integer oVal = o.getSeverity().ordinal();
+		return myVal.compareTo(oVal);
 	}
 
 }
