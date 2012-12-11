@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.xml.bind.ValidationException;
+
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
@@ -64,7 +66,15 @@ public class Xml2PhonConverter {
 		// first try to validate the input file
 		final TalkbankValidator validator = new TalkbankValidator();
 		final DefaultErrorHandler handler = new DefaultErrorHandler(inputFile, listener);
-		if(!validator.validate(inputFile, handler)) return;
+		try {
+			if(!validator.validate(inputFile, handler)) return;
+		} catch (ValidationException e1) {
+			if(PhonTalkUtil.isVerbose()) e1.printStackTrace();
+			final PhonTalkError err = new PhonTalkError(e1.getMessage(), e1);
+			err.setFile(inputFile);
+			if(listener != null) listener.message(err);
+			return;
+		}
 		
 		// create input token stream
 		TokenStream tokenStream;

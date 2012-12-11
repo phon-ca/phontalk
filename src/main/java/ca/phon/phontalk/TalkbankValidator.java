@@ -149,7 +149,7 @@ public class TalkbankValidator {
 	private Source loadLocalSchema() {
 		File localSchemaFile = new File(schemaFileName);
 		if(localSchemaFile.exists()) {
-			LOGGER.info("Loading talkbank schema at " + localSchemaFile.getAbsolutePath());
+//			LOGGER.info("Loading talkbank schema at " + localSchemaFile.getAbsolutePath());
 
 			Source schemaSource = new StreamSource(localSchemaFile);
 			return schemaSource;
@@ -166,8 +166,8 @@ public class TalkbankValidator {
 	private Source loadEmbeddedSchema() {
 		InputStream schemaURL = getClass().getClassLoader().getResourceAsStream(schemaFileName);
 		if(schemaURL != null) {
-			LOGGER.info("Loading talkbank schema at " +
-					getClass().getClassLoader().getResource(schemaFileName));
+//			LOGGER.info("Loading talkbank schema at " +
+//					getClass().getClassLoader().getResource(schemaFileName));
 
 			Source schemaSource = new StreamSource(schemaURL);
 			return schemaSource;
@@ -189,8 +189,8 @@ public class TalkbankValidator {
 			  connection.setDoOutput(true);
 			  connection.setReadTimeout(10000);
 			if(connection.getResponseCode() == 200) {
-				LOGGER.info("Loading talkbank schema at " +
-						defaultTalkbankSchemaLoc);
+//				LOGGER.info("Loading talkbank schema at " +
+//						defaultTalkbankSchemaLoc);
 				Source schemaSource = new StreamSource(connection.getInputStream());
 				return schemaSource;
 			} else {

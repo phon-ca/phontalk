@@ -51,7 +51,7 @@ public class Xml2PhonTask extends PhonTask {
 		final IPhonFactory factory = IPhonFactory.getDefaultFactory();
 		final ITranscript session = factory.createTranscript();
 		try {
-			session.loadTranscriptFile(inputFile);
+			session.loadTranscriptFile(outputFile);
 			super.setStatus(TaskStatus.FINISHED);
 		} catch (IOException e) {
 			if(PhonTalkUtil.isVerbose()) e.printStackTrace();

@@ -8,6 +8,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import ca.phon.phontalk.PhonTalkMessage;
+import ca.phon.util.PathExpander;
 import ca.phon.util.iconManager.IconManager;
 import ca.phon.util.iconManager.IconSize;
 
@@ -37,6 +38,7 @@ public class PTMessageRenderer extends DefaultTreeCellRenderer {
 		JLabel retVal = (JLabel)super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
 				row, hasFocus);
 		
+		
 		if(value instanceof PhonTalkMessage) {
 			final PhonTalkMessage msg = PhonTalkMessage.class.cast(value);
 			
@@ -65,7 +67,10 @@ public class PTMessageRenderer extends DefaultTreeCellRenderer {
 				break;
 			}
 		} else {
+
+			final PathExpander pe = new PathExpander();
 			retVal.setIcon(fileIcon);
+			retVal.setText(pe.compressPath(retVal.getText()));
 		}
 		
 		return retVal;

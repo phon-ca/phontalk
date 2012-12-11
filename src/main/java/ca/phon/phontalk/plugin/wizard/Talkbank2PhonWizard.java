@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -25,6 +27,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.xml.XMLConstants;
+import javax.xml.bind.ValidationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -59,6 +62,7 @@ import ca.phon.gui.wizard.WizardStep;
 import ca.phon.phontalk.DefaultPhonTalkListener;
 import ca.phon.phontalk.TalkbankValidator;
 import ca.phon.phontalk.Xml2PhonTask;
+import ca.phon.phontalk.plugin.PTMessageRenderer;
 import ca.phon.phontalk.plugin.PluginMessageListener;
 import ca.phon.system.logger.PhonLogger;
 import ca.phon.util.NativeDialogs;
@@ -187,6 +191,7 @@ public class Talkbank2PhonWizard extends WizardFrame {
 		wizardPanel.add(exportBusyPanel, BorderLayout.NORTH);
 //		wizardPanel.add(loggerConsole, BorderLayout.CENTER);
 		errTable.setRootVisible(false);
+		errTable.setCellRenderer(new PTMessageRenderer());
 		final JScrollPane errScroller = new JScrollPane(errTable);
 		wizardPanel.add(errScroller, BorderLayout.CENTER);
 		
@@ -281,44 +286,49 @@ public class Talkbank2PhonWizard extends WizardFrame {
 				if(f.isFile() && f.getName().endsWith(".xml")) {
 					// check for a talkbank file
 					final TalkbankValidator tbValidator = new TalkbankValidator();
-					if(tbValidator.validate(f)) {
-						try {
-							final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-							final DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-							final Document doc = docBuilder.parse(f);
+					try {
+						if(tbValidator.validate(f)) {
+							try {
+								final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+								final DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+								final Document doc = docBuilder.parse(f);
+								
+								// use xpath to grab the corpus and session names
+								final XPathFactory xpathFactory = XPathFactory.newInstance();
+								final XPath xpath = xpathFactory.newXPath();
 							
-							// use xpath to grab the corpus and session names
-							final XPathFactory xpathFactory = XPathFactory.newInstance();
-							final XPath xpath = xpathFactory.newXPath();
-						
-							final XPathExpression corpusExpr = xpath.compile("/CHAT/@Corpus");
-							final XPathExpression sessionExpr = xpath.compile("/CHAT/@Id");
-							
-							final String corpusName = 
-									(String)corpusExpr.evaluate(doc, XPathConstants.STRING);
-							final String sessionName = 
-									(String)sessionExpr.evaluate(doc, XPathConstants.STRING);
-							
-							// add node to import tree using the provided session and corpus names
-							final ImportTreeModel treeModel = 
-									(ImportTreeModel)importTree.getModel();
-							treeModel.addImport(corpusName, sessionName, f);
-						} catch (XPathExpressionException e) {
-							e.printStackTrace();
-							PhonLogger.severe(e.getMessage());
-						} catch (FileNotFoundException e) {
-							e.printStackTrace();
-							PhonLogger.severe(e.getMessage());
-						} catch (ParserConfigurationException e) {
-							e.printStackTrace();
-							PhonLogger.severe(e.getMessage());
-						} catch (SAXException e) {
-							e.printStackTrace();
-							PhonLogger.severe(e.getMessage());
-						} catch (IOException e) {
-							e.printStackTrace();
-							PhonLogger.severe(e.getMessage());
+								final XPathExpression corpusExpr = xpath.compile("/CHAT/@Corpus");
+								final XPathExpression sessionExpr = xpath.compile("/CHAT/@Id");
+								
+								final String corpusName = 
+										(String)corpusExpr.evaluate(doc, XPathConstants.STRING);
+								final String sessionName = 
+										(String)sessionExpr.evaluate(doc, XPathConstants.STRING);
+								
+								// add node to import tree using the provided session and corpus names
+								final ImportTreeModel treeModel = 
+										(ImportTreeModel)importTree.getModel();
+								treeModel.addImport(corpusName, sessionName, f);
+							} catch (XPathExpressionException e) {
+								e.printStackTrace();
+								PhonLogger.severe(e.getMessage());
+							} catch (FileNotFoundException e) {
+								e.printStackTrace();
+								PhonLogger.severe(e.getMessage());
+							} catch (ParserConfigurationException e) {
+								e.printStackTrace();
+								PhonLogger.severe(e.getMessage());
+							} catch (SAXException e) {
+								e.printStackTrace();
+								PhonLogger.severe(e.getMessage());
+							} catch (IOException e) {
+								e.printStackTrace();
+								PhonLogger.severe(e.getMessage());
+							}
 						}
+					} catch (ValidationException e) {
+						e.printStackTrace();
+						PhonLogger.severe(e.getMessage());
 					}
 				} else if(f.isDirectory()) {
 					scanFolder(f);
