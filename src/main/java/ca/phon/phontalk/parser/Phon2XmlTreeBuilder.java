@@ -1207,7 +1207,7 @@ public class Phon2XmlTreeBuilder {
 					(morOmittedTrees.size() > 0 && Boolean.parseBoolean(morOmittedTrees.get(0).getToken().getText()));
 			final List<CommonTree> wTypeTrees = AntlrUtils.findAllChildrenWithType(wTree, chatTokens, "W_ATTR_TYPE");
 			final boolean wOmitted = 
-					(wTypeTrees.size() > 0 && wTypeTrees.get(0).getToken().getText().equals("omitted"));
+					(wTypeTrees.size() > 0 && wTypeTrees.get(0).getToken().getText().equals("omission"));
 			
 			if(wOmitted ^ morOmitted) {
 				throw new IllegalArgumentException("one-to-one alignment error: mor");
