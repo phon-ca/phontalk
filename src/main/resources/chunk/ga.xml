@@ -26,34 +26,36 @@ ga returns [String val]
 }
 	:	^(GA_START type=GA_ATTR_TYPE? v=TEXT?)
 	{
-		$val = "(";
+		final StringBuffer buffer = new StringBuffer();
 		if($type != null)
 		{
 		    String t = $type.text;
 		    if(t.equals("actions")) {
-		        $val += "\045act:";
+		        buffer.append("\045act:");
 		    } else if(t.equals("alternative")) {
-		        $val += "=?";
+		        buffer.append("=?");
 		    } else if(t.equals("comments")) {
-		        $val += "\045";
+		        buffer.append("\045");
 		    } else if(t.equals("explanation")) {
-		        $val += "=";
+		        buffer.append("=");
 		    } else if(t.equals("paralinguistics")) {
-		        $val += "!=";
+		        buffer.append("!=");
 		    } else if(t.equals("standard for dialect")) {
-		        $val += "\045sdi:";
+		        buffer.append("\045sdi:");
 		    } else if(t.equals("standard for child")) {
-		        $val += "\045sch:";
+		        buffer.append("\045sch:");
 		    } else if(t.equals("standard for unclear source")) {
-		        $val += "\045xxx:";
+		        buffer.append("\045xxx:");
 		    }
 		}
 
 		if($v != null)
 		{
-			$val += " " + $v.text;
+			buffer.append(" " + $v.text);
 		}
-		$val += ")";
+		
+		// escape parenthesis
+		$val = "(" + EscapeUtils.escapeParenthesis(buffer.toString()) + ")";
 	}
 	;
 ]]>
@@ -65,7 +67,7 @@ ga
 	:	^(GA_START GA_ATTR_TYPE? TEXT?)
 	->    template(
 	        type={$GA_ATTR_TYPE.text},
-	        val={$TEXT.text}
+	        val={EscapeUtils.unescapeParenthesis($TEXT.text)}
 	      )
 	<<\<ga type="<type>"\><val>\</ga\> >>
 	;
