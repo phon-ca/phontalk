@@ -46,15 +46,28 @@ public class PluginMessageListener extends DefaultPhonTalkListener implements Tr
 			fileList.add(f);
 			
 			final TreeModelEvent evt = new TreeModelEvent(this, new Object[] { this } );
-			fireNodesInserted(evt);
+			fireStructureChanges(evt);
 		}
 		messages.add(msg);
 		
-		final TreeModelEvent evt = new TreeModelEvent(this, new Object[] { this , f} );
+		final TreeModelEvent evt = new TreeModelEvent(this, new Object[] { this , f, msg } );
 		fireNodesInserted(evt);
 	}
 	
 	public void fireNodesInserted(final TreeModelEvent evt) {
+		final Runnable onEDT = new Runnable() {
+			
+			@Override
+			public void run() {
+				for(TreeModelListener listener:listeners) {
+					listener.treeNodesInserted(evt);
+				}
+			}
+		};
+		SwingUtilities.invokeLater(onEDT);
+	}
+	
+	public void fireStructureChanges(final TreeModelEvent evt) {
 		final Runnable onEDT = new Runnable() {
 			
 			@Override
@@ -67,6 +80,17 @@ public class PluginMessageListener extends DefaultPhonTalkListener implements Tr
 		SwingUtilities.invokeLater(onEDT);
 	}
 	
+	public void reset() {
+		synchronized(messageMap) {
+			this.messageMap.clear();
+		}
+		synchronized(fileList) {
+			this.fileList.clear();
+		}
+		final TreeModelEvent evt = new TreeModelEvent(this, new Object[] { this } );
+		fireStructureChanges(evt);
+	}
+	
 	@Override
 	public void addTreeModelListener(TreeModelListener l) {
 		listeners.add(l);
@@ -77,11 +101,15 @@ public class PluginMessageListener extends DefaultPhonTalkListener implements Tr
 		Object retVal = null;
 		
 		if(parent == this) {
-			retVal = fileList.get(i);
+			synchronized(fileList) {
+				retVal = fileList.get(i);
+			}
 		} else if(parent instanceof String) {
-			final List<PhonTalkMessage> messages = 
-					messageMap.get(parent.toString());
-			retVal = messages.get(i);
+			synchronized(messageMap) {
+				final List<PhonTalkMessage> messages = 
+						messageMap.get(parent.toString());
+				retVal = messages.get(i);
+			}
 		}
 		
 		return retVal;
@@ -91,11 +119,15 @@ public class PluginMessageListener extends DefaultPhonTalkListener implements Tr
 	public int getChildCount(Object parent) {
 		int retVal = 0;
 		if(parent == this) {
-			retVal = fileList.size();
+			synchronized (fileList) {
+				retVal = fileList.size();				
+			}
 		} else if(parent instanceof String) {
-			final List<PhonTalkMessage> messages = 
-					messageMap.get(parent.toString());
-			retVal = messages.size();
+			synchronized(messageMap) {
+				final List<PhonTalkMessage> messages = 
+						messageMap.get(parent.toString());
+				retVal = messages.size();
+			}
 		}
 		return retVal;
 	}
@@ -105,11 +137,15 @@ public class PluginMessageListener extends DefaultPhonTalkListener implements Tr
 		int retVal = -1;
 		
 		if(parent == this) {
-			retVal = fileList.indexOf(child);
+			synchronized (fileList) {				
+				retVal = fileList.indexOf(child);
+			}
 		} else if(parent instanceof String) {
-			final List<PhonTalkMessage> messages = 
-					messageMap.get(parent.toString());
-			retVal = messages.indexOf(child);
+			synchronized(messageMap) {
+				final List<PhonTalkMessage> messages = 
+						messageMap.get(parent.toString());
+				retVal = messages.indexOf(child);
+			}
 		}
 		
 		return retVal;
@@ -123,10 +159,15 @@ public class PluginMessageListener extends DefaultPhonTalkListener implements Tr
 
 	@Override
 	public boolean isLeaf(Object node) {
-		boolean retVal = fileList.size() == 0;
-		if(fileList.size() > 0) {
-			retVal = node instanceof PhonTalkMessage;
+		boolean retVal = false;
+		
+		synchronized (fileList) {
+			retVal = fileList.size() == 0;
+			if(fileList.size() > 0) {
+				retVal = node instanceof PhonTalkMessage;
+			}
 		}
+		
 		return retVal;
 	}
 

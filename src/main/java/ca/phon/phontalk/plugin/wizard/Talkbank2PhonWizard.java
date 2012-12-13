@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -65,6 +67,7 @@ import ca.phon.phontalk.Xml2PhonTask;
 import ca.phon.phontalk.plugin.PTMessageRenderer;
 import ca.phon.phontalk.plugin.PluginMessageListener;
 import ca.phon.system.logger.PhonLogger;
+import ca.phon.util.NativeDialogEvent;
 import ca.phon.util.NativeDialogs;
 
 public class Talkbank2PhonWizard extends WizardFrame {
@@ -102,6 +105,12 @@ public class Talkbank2PhonWizard extends WizardFrame {
 	private WizardStep step2;
 	
 	/**
+	 * Current worker
+	 */
+	private PhonWorker worker;
+	private final Lock workerLock = new ReentrantLock();
+	
+	/**
 	 * constructor
 	 */
 	public Talkbank2PhonWizard(IPhonProject project) {
@@ -122,6 +131,7 @@ public class Talkbank2PhonWizard extends WizardFrame {
 		addWizardStep(step2);
 		
 		super.btnFinish.setVisible(false);
+		super.btnCancel.setText("Close");
 	}
 	
 	/**
@@ -206,6 +216,58 @@ public class Talkbank2PhonWizard extends WizardFrame {
 		return retVal;
 	}
 	
+	/**
+	 * Stop the conversion process and reset error table. 
+	 * 
+	 * @param a final task for the worker to complete.
+	 */
+	private void cancelAndReset(Runnable toDo) {
+		workerLock.lock(); {
+			if(worker != null) {
+				if(toDo != null)
+					worker.setFinalTask(toDo);
+				worker.shutdown();
+				
+				worker = null;
+			}
+		}
+		workerLock.unlock();
+		
+		listener.reset();
+	}
+	
+	
+	
+	@Override
+	protected void cancel() {
+		if(worker != null && worker.isAlive()) {
+			final int userChoice = 
+					NativeDialogs.showOkCancelDialogBlocking(this, null, "Cancel import", "Cancel current import and close window?");
+			if(userChoice == NativeDialogEvent.OK_OPTION) {
+				cancelAndReset(null);
+				super.cancel();
+			}
+		} else {
+			super.cancel();
+		}
+	}
+	
+	
+
+	@Override
+	protected void prev() {
+		if(worker != null && worker.isAlive()) {
+			final int userChoice = 
+					NativeDialogs.showOkCancelDialogBlocking(this, null, "Cancel import", "Cancel current import?");
+			if(userChoice == NativeDialogEvent.OK_OPTION) {
+				cancelAndReset(null);
+				super.prev();
+			}
+		} else {
+			super.prev();
+		}
+	}
+
 	@Override
 	public void next() {
 		if(super.getCurrentStep() == step1) {
@@ -224,55 +286,57 @@ public class Talkbank2PhonWizard extends WizardFrame {
 			}
 			
 			// setup import thread
-			final PhonWorker worker = PhonWorker.createWorker();
-			
-			final Runnable startProgress = new Runnable() {
+			workerLock.lock(); {
+				worker = PhonWorker.createWorker();
 				
-				@Override
-				public void run() {
-					exportBusyPanel.setVisible(true);
-					exportBusyLabel.setBusy(true);
-				}
-			};
-			final Runnable endProgress = new Runnable() {
-				
-				@Override
-				public void run() {
-					exportBusyLabel.setBusy(false);
-					exportBusyPanel.setVisible(false);
-				}
-			};
-			
-			worker.invokeLater(startProgress);
-			for(TreePath selection:selectedPaths) {
-				if(selection.getPathCount() == 4) {
-					final DefaultMutableTreeNode fileNode = (DefaultMutableTreeNode)selection.getLastPathComponent();
-					final File tbFile = (File) fileNode.getUserObject();
+				final Runnable startProgress = new Runnable() {
 					
-					final String corpus = ((CheckedTreeNode)selection.getPathComponent(1)).getUserObject().toString();
-					final String session = ((CheckedTreeNode)selection.getPathComponent(2)).getUserObject().toString();
-					
-					final File projectFolder = new File(getProject().getProjectLocation());
-					final File corpusFolder = new File(projectFolder, corpus);
-					final File sessionFile = new File(corpusFolder, session + ".xml");
-					
-					if(!corpusFolder.exists()) {
-						corpusFolder.mkdirs();
+					@Override
+					public void run() {
+						exportBusyPanel.setVisible(true);
+						exportBusyLabel.setBusy(true);
 					}
+				};
+				final Runnable endProgress = new Runnable() {
 					
-					// import file
-					final Xml2PhonTask importTask = 
-							new Xml2PhonTask(tbFile.getAbsolutePath(), sessionFile.getAbsolutePath(), listener);
-
-					worker.invokeLater(importTask);
+					@Override
+					public void run() {
+						exportBusyLabel.setBusy(false);
+						exportBusyPanel.setVisible(false);
+						
+						worker = null;
+					}
+				};
+				
+				worker.invokeLater(startProgress);
+				for(TreePath selection:selectedPaths) {
+					if(selection.getPathCount() == 4) {
+						final DefaultMutableTreeNode fileNode = (DefaultMutableTreeNode)selection.getLastPathComponent();
+						final File tbFile = (File) fileNode.getUserObject();
+						
+						final String corpus = ((CheckedTreeNode)selection.getPathComponent(1)).getUserObject().toString();
+						final String session = ((CheckedTreeNode)selection.getPathComponent(2)).getUserObject().toString();
+						
+						final File projectFolder = new File(getProject().getProjectLocation());
+						final File corpusFolder = new File(projectFolder, corpus);
+						final File sessionFile = new File(corpusFolder, session + ".xml");
+						
+						if(!corpusFolder.exists()) {
+							corpusFolder.mkdirs();
+						}
+						
+						// import file
+						final Xml2PhonTask importTask = 
+								new Xml2PhonTask(tbFile.getAbsolutePath(), sessionFile.getAbsolutePath(), listener);
+	
+						worker.invokeLater(importTask);
+					}
 				}
+				worker.invokeLater(endProgress);
+				
+				worker.setFinishWhenQueueEmpty(true);
 			}
-			worker.invokeLater(endProgress);
-			
-//			loggerConsole.addReportThread(worker);
-//			loggerConsole.startLogging();
-			
-			worker.setFinishWhenQueueEmpty(true);
+			workerLock.unlock();
 			worker.start();
 		}
 		super.next();
