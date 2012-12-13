@@ -68,6 +68,11 @@ public class TalkbankValidator {
 	/** The loaded schema */
 	private Schema schema;
 	
+	static {
+		// turn off warning about missing 'CatalogManager.properties' file
+		System.setProperty("xml.catalog.ignoreMissing", Boolean.TRUE.toString());
+	}
+	
 	/**
 	 * Constructor
 	 * 
