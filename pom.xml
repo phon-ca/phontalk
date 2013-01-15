@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr</artifactId>
-			<version>3.4</version>
+			<version>3.5</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
@@ -115,10 +115,21 @@
 			<plugin>
 				<groupId>ca.phon</groupId>
 				<artifactId>chunker</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>0.0.2-SNAPSHOT</version>
 				<executions>
 					<execution>
-						<id>chunk</id>
+						<id>chunk-tokens</id>
+						<goals>
+							<goal>chunk</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/generated-sources/antlr3</outputDirectory>
+							<libDirectory>src/main/resources/chunk</libDirectory>
+							<startFile>tokens.xml</startFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>chunk-parsers</id>
 						<goals>
 							<goal>chunk</goal>
 						</goals>
@@ -135,7 +146,7 @@
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr3-maven-plugin</artifactId>
-				<version>3.4</version>
+				<version>3.5</version>
 				<executions>
 					<execution>
 						<id>antlr</id>

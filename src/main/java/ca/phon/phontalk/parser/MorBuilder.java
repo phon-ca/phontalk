@@ -54,7 +54,7 @@ public class MorBuilder {
 			}
 		}
 		if(insertionPt >= 0) {
-			morTree.getChildren().add(insertionPt, graspTree);
+			morTree.insertChild(insertionPt, graspTree);
 			morTree.freshenParentAndChildIndexes();
 		}
 		return morTree;

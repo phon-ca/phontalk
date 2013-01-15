@@ -1191,7 +1191,7 @@ public class Phon2XmlTreeBuilder {
 			final CommonTree morTypeTree = AntlrUtils.createToken(chatTokens, "MOR_ATTR_TYPE");
 			morTypeTree.getToken().setText("mor");
 			morTypeTree.setParent(mortree);
-			mortree.getChildren().add(0, morTypeTree);
+			mortree.insertChild(0, morTypeTree);
 			mortree.freshenParentAndChildIndexes();
 			retVal.add(mortree);
 			

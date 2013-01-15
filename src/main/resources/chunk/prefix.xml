@@ -10,6 +10,7 @@ options {
 	output=AST;
 	ASTLabelType=CommonTree;
 	superClass=PhonTalkParser;
+	tokenVocab = Chat ;
 }
 
 @header {

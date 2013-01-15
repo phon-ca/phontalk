@@ -75,7 +75,7 @@ public class ChatTokenSource implements TokenSource {
 	private int tokenIndex = 0;
 	@Override
 	public Token nextToken() {
-		Token retVal = Token.EOF_TOKEN;
+		Token retVal = new CommonToken(Token.EOF);
 		
 		if(!tokenQueue.isEmpty()) {
 			try {
