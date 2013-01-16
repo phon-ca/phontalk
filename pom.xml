@@ -118,21 +118,11 @@
 				<version>0.0.2-SNAPSHOT</version>
 				<executions>
 					<execution>
-						<id>chunk-tokens</id>
-						<goals>
-							<goal>chunk</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target/generated-sources/antlr3</outputDirectory>
-							<libDirectory>src/main/resources/chunk</libDirectory>
-							<startFile>tokens.xml</startFile>
-						</configuration>
-					</execution>
-					<execution>
 						<id>chunk-parsers</id>
 						<goals>
 							<goal>chunk</goal>
 						</goals>
+						<phase>generate-sources</phase>
 						<configuration>
 							<outputDirectory>target/generated-sources/chunker/antlr3/ca/phon/phontalk/parser</outputDirectory>
 							<libDirectory>src/main/resources/chunk</libDirectory>
