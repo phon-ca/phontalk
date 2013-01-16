@@ -87,7 +87,9 @@
   </pluginRepositories>
 
   <modules>
-    <module>core</module>
+	  <module>core</module>
+	  <module>cli</module>
+	  <module>plugin</module>
   </modules>
 
   <build>
