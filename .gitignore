@@ -2,3 +2,4 @@
 .project
 target/
 .settings/
+cli/dependency-reduced-pom.xml
