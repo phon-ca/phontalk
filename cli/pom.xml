@@ -15,8 +15,7 @@
 		<dependency>
 			<groupId>ca.phon</groupId>
 			<artifactId>phontalk-core</artifactId>
-			<classifier>data</classifier>
-			<version>1.5.3</version>
+			<version>${build.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
