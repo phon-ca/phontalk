@@ -28,6 +28,5 @@ public class AntlrExceptionVisitor extends VisitorAdapter<RecognitionException> 
 		message.setLineNumber(obj.line);
 		message.setColNumber(obj.charPositionInLine);
 	}
-
-	// TODO add specific visitors
+	
 }

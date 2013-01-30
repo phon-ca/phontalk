@@ -119,7 +119,7 @@ public class Phon2TalkbankWizard extends WizardFrame {
 		addWizardStep(step2);
 		
 		super.btnFinish.setVisible(false);
-		super.btnBack.setText("Close");
+		super.btnCancel.setText("Close");
 	}
 	
 	/**
