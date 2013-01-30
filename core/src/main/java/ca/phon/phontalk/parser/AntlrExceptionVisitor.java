@@ -24,6 +24,7 @@ public class AntlrExceptionVisitor extends VisitorAdapter<RecognitionException> 
 	@Override
 	public void fallbackVisit(RecognitionException obj) {
 		message = new PhonTalkError(obj);
+		message.setMessage((obj.getMessage() != null ? obj.getMessage() : obj.toString()));
 		message.setLineNumber(obj.line);
 		message.setColNumber(obj.charPositionInLine);
 	}

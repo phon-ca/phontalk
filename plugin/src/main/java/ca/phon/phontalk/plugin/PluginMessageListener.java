@@ -13,6 +13,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import ca.phon.phontalk.DefaultPhonTalkListener;
+import ca.phon.phontalk.PhonTalkError;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
 
@@ -52,6 +53,11 @@ public class PluginMessageListener extends DefaultPhonTalkListener implements Tr
 		
 		final TreeModelEvent evt = new TreeModelEvent(this, new Object[] { this , f, msg } );
 		fireNodesInserted(evt);
+		
+		if(msg instanceof PhonTalkError) {
+			final PhonTalkError err = PhonTalkError.class.cast(msg);
+			err.getCause().printStackTrace();
+		}
 	}
 	
 	public void fireNodesInserted(final TreeModelEvent evt) {
