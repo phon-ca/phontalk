@@ -104,6 +104,13 @@ public class Phon2XmlTreeBuilder {
 		"Morphology"
 	};
 	
+	/**
+	 * Construct the ANTLR Chat tree from the given Phon ITranscript.
+	 * 
+	 * @param t
+	 * @return
+	 * @throws TreeBuilderException
+	 */
 	public CommonTree buildTree(ITranscript t) 
 		throws TreeBuilderException {
 		CommonTree retVal = AntlrUtils.createToken(chatTokens, "CHAT_START");
@@ -1311,179 +1318,22 @@ public class Phon2XmlTreeBuilder {
 	 * align
 	 */
 	private void addAlignment(CommonTree parent, PhoneMap pm) {
-		CommonTree alignNode = AntlrUtils.createToken(chatTokens, "ALIGN_START");
+		final PhoTreeBuilder phoTreeBuilder = new PhoTreeBuilder();
+		final CommonTree alignNode = phoTreeBuilder.buildAlignmentTree(pm);
 		alignNode.setParent(parent);
 		parent.addChild(alignNode);
-
-		List<Phone> targetSoundPhones = new ArrayList<Phone>();
-		for(Phone p:pm.getTargetRep().getPhones()) {
-			boolean addPhone = true;
-
-			if(p.getPhoneString().equals("+")) {
-				addPhone = false;
-			} else if(p.getScType() == SyllableConstituentType.SyllableStressMarker ||
-					p.getScType() == SyllableConstituentType.WordBoundaryMarker ||
-					p.getScType() == SyllableConstituentType.SyllableBoundaryMarker) {
-				addPhone = false;
-			} 
-
-			if(addPhone) targetSoundPhones.add(p);
-		}
-
-		List<Phone> actualSoundPhones = new ArrayList<Phone>();
-		for(Phone p:pm.getActualRep().getPhones()) {
-			boolean addPhone = true;
-
-			if(p.getPhoneString().equals("+")) {
-				addPhone = false;
-			} else if(p.getScType() == SyllableConstituentType.SyllableStressMarker ||
-					p.getScType() == SyllableConstituentType.WordBoundaryMarker ||
-					p.getScType() == SyllableConstituentType.SyllableBoundaryMarker) {
-				addPhone = false;
-			}
-
-			if(addPhone) actualSoundPhones.add(p);
-		}
-
-		// add alignment columns
-		int lastTIdx = 0;
-		int lastAIdx = 0;
-
-		for(int i = 0; i < pm.getAlignmentLength(); i++) {
-			CommonTree colTree = AntlrUtils.createToken(chatTokens, "COL_START");
-			colTree.setParent(alignNode);
-			alignNode.addChild(colTree);
-
-			Phone tP = pm.getTopAlignmentElements().get(i);
-			Phone aP = pm.getBottomAlignmentElements().get(i);
-
-			if(tP != null) {
-
-				int tpIdx = -1;
-				for(int j = lastTIdx; j < targetSoundPhones.size(); j++) {
-					Phone p = targetSoundPhones.get(j);
-					if(p.equals(tP)) {
-						tpIdx = j;
-						break;
-					}
-				}
-
-				if(tpIdx < 0) {
-					PhonLogger.warning("Invalid position ref for phone '" + tP
-							+ "': '" +tpIdx+ "'");
-					break;
-				}
-
-				CommonTree modelTree = AntlrUtils.createToken(chatTokens, "MODELREF_START");
-				String modelRef = "ph" + tpIdx;
-				addTextNode(modelTree, modelRef);
-				modelTree.setParent(colTree);
-				colTree.addChild(modelTree);
-
-				lastTIdx = tpIdx;
-			}
-
-			if(aP != null) {
-
-				int apIdx = -1;
-				for(int j = lastAIdx; j < actualSoundPhones.size(); j++) {
-					Phone p = actualSoundPhones.get(j);
-					if(p.equals(aP)) {
-						apIdx = j;
-						break;
-					}
-				}
-
-				if(apIdx < 0) {
-					PhonLogger.warning("Invalid position ref for phone '" + aP
-							+ "': '" +apIdx+ "'");
-					break;
-				}
-
-				CommonTree actualTree = AntlrUtils.createToken(chatTokens, "ACTUALREF_START");
-				String actualRef = "ph" + apIdx;
-				addTextNode(actualTree, actualRef);
-				actualTree.setParent(colTree);
-				colTree.addChild(actualTree);
-
-				lastAIdx = apIdx;
-			}
-		}
 	}
 
 	/*
 	 * sb
 	 */
 	private void addSyllabification(CommonTree parent, IPhoneticRep phoRep) {
-		List<Phone> phones = phoRep.getPhones();
-
-		// split into words
-		PhoneSequenceMatcher phonex = null;
-		try {
-			phonex =
-					PhoneSequenceMatcher.compile("{}:-WordBoundaryMarker*");
-		} catch (ParserException ex) {
-			ex.printStackTrace(); // sound never occur
-		}
-
-		int phIdx = 0;
-		List<Range> wordRanges = phonex.findRanges(phones);
-		for(Range wordRange:wordRanges) {
-			CommonTree pwTree = AntlrUtils.createToken(chatTokens, "PW_START");
-			pwTree.setParent(parent);
+		final List<Phone> phones = phoRep.getPhones();
+		final PhoTreeBuilder phoTreeBuilder = new PhoTreeBuilder();
+		final List<CommonTree> pwTrees = phoTreeBuilder.buildPwTrees(phones);
+		for(CommonTree pwTree:pwTrees) {
 			parent.addChild(pwTree);
-
-			for(int pIndex:wordRange) {
-				Phone p = phones.get(pIndex);
-
-				if(p.getPhoneString().equals("+")) {
-					// add wk
-					CommonTree wkTree = AntlrUtils.createToken(chatTokens, "WK_START");
-					wkTree.setParent(pwTree);
-					pwTree.addChild(wkTree);
-
-					CommonTree wkTypeTree = AntlrUtils.createToken(chatTokens, "WK_ATTR_TYPE");
-					wkTypeTree.getToken().setText("cmp");
-					wkTypeTree.setParent(wkTree);
-					wkTree.addChild(wkTypeTree);
-				} else if(p.getScType() == SyllableConstituentType.SyllableStressMarker) {
-					// add ss
-					CommonTree ssTree = AntlrUtils.createToken(chatTokens, "SS_START");
-					ssTree.setParent(pwTree);
-					pwTree.addChild(ssTree);
-
-					CommonTree ssTypeTree = AntlrUtils.createToken(chatTokens, "SS_ATTR_TYPE");
-					if(p.getPhoneString().contains(Syllable.PrimaryStressChar+"")) {
-						ssTypeTree.getToken().setText("1");
-					} else if(p.getPhoneString().contains(Syllable.SecondaryStressChar+"")) {
-						ssTypeTree.getToken().setText("2");
-					} else {
-						// something strange is happening...
-						ssTypeTree.getToken().setText("1");
-					}
-					
-					ssTypeTree.setParent(ssTree);
-					ssTree.addChild(ssTypeTree);
-				} else {
-					// add ph
-					String phId = "ph" + (phIdx++);
-					CommonTree phTree = AntlrUtils.createToken(chatTokens, "PH_START");
-					phTree.setParent(pwTree);
-					pwTree.addChild(phTree);
-
-					CommonTree phIdTree = AntlrUtils.createToken(chatTokens, "PH_ATTR_ID");
-					phIdTree.getToken().setText(phId);
-					phIdTree.setParent(phTree);
-					phTree.addChild(phIdTree);
-
-					CommonTree scTree = AntlrUtils.createToken(chatTokens, "PH_ATTR_SCTYPE");
-					scTree.getToken().setText(p.getScType().getIdentifier());
-					scTree.setParent(phTree);
-					phTree.addChild(scTree);
-
-					addTextNode(phTree, p.getPhoneString());
-				}
-			}
+			pwTree.setParent(parent);
 		}
 	}
 	
@@ -1491,12 +1341,6 @@ public class Phon2XmlTreeBuilder {
 	 * wk
 	 */
 	private void insertWordnet(CommonTree parent, String type) {
-//		if(lastEle == null) {
-//			lastEle = new CommonTree(
-//					new CommonToken(tokens.getTokenType("W_START")));
-//			lastEle.setParent(grpNode);
-//			grpNode.addChild(lastEle);
-//		}
 		CommonTree wkNode =
 			AntlrUtils.createToken(chatTokens, "WK_START");
 		wkNode.setParent(parent);
