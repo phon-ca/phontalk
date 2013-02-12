@@ -1335,8 +1335,8 @@ public class Phon2XmlTreeBuilder {
 	 * align
 	 */
 	private void addAlignment(CommonTree parent, PhoneMap pm) {
-		final PhoTreeBuilder phoTreeBuilder = new PhoTreeBuilder();
-		final CommonTree alignNode = phoTreeBuilder.buildAlignmentTree(pm);
+		final AlignTreeBuilder alignTreeBuilder = new AlignTreeBuilder();
+		final CommonTree alignNode = alignTreeBuilder.buildAlignmentTree(pm);
 		alignNode.setParent(parent);
 		parent.addChild(alignNode);
 	}

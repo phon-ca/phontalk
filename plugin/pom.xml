@@ -19,9 +19,9 @@
 		</dependency>
 		<dependency>
 			<groupId>ca.phon</groupId>
-			<artifactId>phon-data</artifactId>
+			<artifactId>phon</artifactId>
 			<classifier>data</classifier>
-			<version>1.5.3</version>
+			<version>1.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.swinglabs</groupId>
