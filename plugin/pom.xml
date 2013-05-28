@@ -5,17 +5,17 @@
 	<parent>
 		<groupId>ca.phon</groupId>
 		<artifactId>phontalk</artifactId>
-		<version>1.4</version>
+		<version>1.5</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>phontalk-plugin</artifactId>
-	<version>1.4</version>
+	<version>1.5</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>ca.phon</groupId>
 			<artifactId>phontalk-core</artifactId>
-			<version>1.4</version>
+			<version>1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>ca.phon</groupId>
