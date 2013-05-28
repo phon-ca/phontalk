@@ -9,13 +9,13 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>phontalk-cli</artifactId>
-	<version>${build.version}</version>
+	<version>1.4</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>ca.phon</groupId>
 			<artifactId>phontalk-core</artifactId>
-			<version>${build.version}</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>

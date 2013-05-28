@@ -32,8 +32,10 @@ comment
 			IComment c = session.newComment();
 			// create a new comment in the transcript
 			String text = "";
-			for(int i = 0; i < $vals.size(); i++) {
-				text += $vals.get(i).toString();
+			if($vals != null) {
+				for(int i = 0; i < $vals.size(); i++) {
+					text += $vals.get(i).toString();
+				}
 			}
 			c.setValue(text);
 			
@@ -55,12 +57,12 @@ comment
 	<buffer name="Phon2XmlWalker.g">
 		<![CDATA[
 comment
-	:	^(COMMENT_START ctype=COMMENT_ATTR_TYPE? cval=TEXT?)
+	:	^(COMMENT_START ctype=COMMENT_ATTR_TYPE? vals+=TEXT*)
 	->	template(
 			type={$ctype.text},
-			val={$cval.text}
+			vals={$vals}
 		)
-	<<\<comment type="<type>"\><val>\</comment\> >>
+	<<\<comment type="<type>"\><vals>\</comment\> >>
 	;
 ]]>
 	</buffer>

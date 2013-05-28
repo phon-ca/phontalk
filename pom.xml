@@ -10,7 +10,7 @@
 
   <groupId>ca.phon</groupId>
   <artifactId>phontalk</artifactId>
-  <version>${build.version}</version>
+  <version>1.4</version>
   <packaging>pom</packaging>
 
   <name>PhonTalk</name>
