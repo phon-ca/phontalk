@@ -9,7 +9,6 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>phontalk-cli</artifactId>
-	<version>1.5</version>
 
 	<dependencies>
 		<dependency>

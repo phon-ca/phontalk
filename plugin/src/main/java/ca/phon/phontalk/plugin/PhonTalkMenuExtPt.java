@@ -73,7 +73,7 @@ public class PhonTalkMenuExtPt implements IPluginExtensionPoint<IPluginMenuFilte
 				pluginsMenu.addSeparator();
 			}
 			
-			final JMenuItem titleItem = new JMenuItem("-- PhonTalk 1.4 --");
+			final JMenuItem titleItem = new JMenuItem("-- PhonTalk 1.5 --");
 			titleItem.setEnabled(false);
 			
 			final Action tbAct = new Phon2TalkbankAction();

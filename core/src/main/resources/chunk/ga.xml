@@ -39,7 +39,7 @@ ga returns [String val]
 		    } else if(t.equals("explanation")) {
 		        buffer.append("=");
 		    } else if(t.equals("paralinguistics")) {
-		        buffer.append("!=");
+		        buffer.append("=!");
 		    } else if(t.equals("standard for dialect")) {
 		        buffer.append("\045sdi:");
 		    } else if(t.equals("standard for child")) {

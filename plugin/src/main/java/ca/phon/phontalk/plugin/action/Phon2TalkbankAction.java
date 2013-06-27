@@ -52,7 +52,6 @@ public class Phon2TalkbankAction extends AbstractAction {
 			final Phon2TalkbankWizard wizard = new Phon2TalkbankWizard(project);
 			wizard.showWizard();
 		}
-		
 	}
 
 }

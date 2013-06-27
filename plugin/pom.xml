@@ -9,7 +9,6 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>phontalk-plugin</artifactId>
-	<version>1.5</version>
 
 	<dependencies>
 		<dependency>

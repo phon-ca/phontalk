@@ -349,7 +349,7 @@ public class Phon2XmlTreeBuilder {
 			
 			String role = "Target_Child";
 			if(p.getRole() != null && p.getRole().length() > 0) {
-				role = p.getRole();
+				role = p.getRole().replaceAll("\\p{Space}", "_");
 			}
 				CommonTree pRole = 
 					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_ROLE");
@@ -575,7 +575,7 @@ public class Phon2XmlTreeBuilder {
 			addGa(tree, "comments", StringUtils.strip(data.substring(1)));
 		} else if(data.startsWith("=")) {
 			addGa(tree, "explanation", StringUtils.strip(data.substring(1)));
-		} else if(data.startsWith("!=")) {
+		} else if(data.startsWith("=!")) {
 			addGa(tree, "paralinguistics", StringUtils.strip(data.substring(2)));
 		} else if(data.startsWith("%sdi:")) {
 			addGa(tree, "standard for dialect", StringUtils.strip(data.substring(5)));
