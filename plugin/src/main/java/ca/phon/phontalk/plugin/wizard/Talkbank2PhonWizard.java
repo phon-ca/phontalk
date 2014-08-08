@@ -61,7 +61,6 @@ import org.jdesktop.swingx.JXTree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.xpath.XPathResult;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

@@ -8,7 +8,7 @@
   targetNamespace="http://www.talkbank.org/ns/talkbank" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
   jaxb:version="2.1" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
   jaxb:extensionBindingPrefixes="xjc" xmlns:xhtml="http://www.w3.org/1999/xhtml"
-  elementFormDefault="qualified" version="2.0.2" id="Talkbank">
+  elementFormDefault="qualified" version="2.0.3" id="Talkbank">
 
   <xs:import namespace="http://www.w3.org/XML/1998/namespace"
     schemaLocation="http://www.w3.org/2001/xml.xsd"/>
@@ -223,6 +223,16 @@
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#ColorWords_Header">CHAT manual
               section on this topic...</a>
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+      <xs:attribute name="PID" type="nonemptyStringType">
+        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+          <xs:documentation> The PID for the document. </xs:documentation>
+          <xs:documentation>
+            <a href="http://childes.psy.cmu.edu/manuals/chat.html#PID_Header">CHAT manual section
+              on this topic...</a>
           </xs:documentation>
         </xs:annotation>
       </xs:attribute>

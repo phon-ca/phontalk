@@ -17,45 +17,25 @@
  */
 package ca.phon.phontalk;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.bind.ValidationException;
 
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
-import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.antlr.stringtemplate.NoIndentWriter;
-import org.antlr.stringtemplate.StringTemplateWriter;
 
-import ca.phon.application.IPhonFactory;
-import ca.phon.application.project.IPhonProject;
 import ca.phon.application.transcript.ITranscript;
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.ChatParser;
 import ca.phon.phontalk.parser.ChatTokenSource;
-import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.ChatTree;
-import ca.phon.phontalk.parser.Phon2XmlWalker;
-import ca.phon.system.logger.PhonLogger;
 
 /**
  * Reads in a talkbank XML file using SAX and
@@ -83,6 +63,8 @@ public class Xml2PhonConverter {
 		// first try to validate the input file
 		final TalkbankValidator validator = new TalkbankValidator();
 		final DefaultErrorHandler handler = new DefaultErrorHandler(inputFile, listener);
+		
+		// turn off validation of hacked version
 		try {
 			if(!validator.validate(inputFile, handler)) return;
 		} catch (ValidationException e1) {

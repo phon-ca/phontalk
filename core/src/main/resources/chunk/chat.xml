@@ -30,6 +30,7 @@ chat_attrs
 	|	CHAT_ATTR_CORPUS
 	|	CHAT_ATTR_ID
 	|	CHAT_ATTR_DATE
+	|	CHAT_ATTR_PID
 	;
 ]]>
     </buffer>
@@ -88,6 +89,12 @@ chat_attrs
 		c.setTimeZone(TimeZone.getTimeZone("GMT-0"));
 		session.setDate(c);
 		} catch (ParseException e) {}
+	}
+	|	CHAT_ATTR_PID
+	{
+		IComment comment = session.newComment();
+		comment.setType(CommentEnum.Code);
+		comment.setValue("pid " + $CHAT_ATTR_PID.text);
 	}
 	;
 ]]>
@@ -154,6 +161,10 @@ Id="<id>" >>
 	->	template(date={$CHAT_ATTR_DATE.text})
 	<<
 Date="<date>" >>
+	|	CHAT_ATTR_PID
+	->	template(pid={$CHAT_ATTR_PID.text})
+	<<
+PID="<pid>" >>
 	;
 	
 ]]>

@@ -90,7 +90,7 @@ public class Phon2XmlTreeBuilder {
 		Pattern.compile("([^@]+)(?:@([^@]+))?");
 	
 	private Pattern langPattern = 
-		Pattern.compile("[a-zA-Z]{3}(-[a-zA-Z0-9]{1,8})*");
+		Pattern.compile("([a-zA-Z]{3}(-[a-zA-Z0-9]{1,8})*\\p{Space}?)+");
 	
 	private int recordIdx = 0;
 	
@@ -359,14 +359,16 @@ public class Phon2XmlTreeBuilder {
 			
 			
 			if(p.getLanguage() != null && p.getLanguage().length() > 0) {
-				
-				Matcher m = langPattern.matcher(p.getLanguage());
+				String langs[] = p.getLanguage().split(",");
+				String langString = "";
+				for(String lang:langs) langString += (langString.length() > 0 ? " " : "") + lang.trim();
+				Matcher m = langPattern.matcher(langString);
 				if(!m.matches()) {
-					PhonLogger.warning("Participant " + partId + " language '" + p.getLanguage() + "' does not match pattern [a-zA-Z]{3}(-[a-zA-Z0-9]{1,8})*");
+					PhonLogger.warning("Participant " + partId + " language '" + langString + "' does not match pattern " + langPattern.pattern());
 				} else {
 					CommonTree pLang = 
 						AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_LANGUAGE");
-					pLang.getToken().setText(p.getLanguage());
+					pLang.getToken().setText(langString);
 					pLang.setParent(pNode);
 					pNode.addChild(pLang);
 				}
@@ -434,20 +436,19 @@ public class Phon2XmlTreeBuilder {
 				IComment comment = (IComment)tele.getValue();
 				if(comment.getType().toString().equalsIgnoreCase("LazyGem")) {
 					insertLazyGem(tree, comment);
-				} else {
-					if(((IComment)tele.getValue()).getType() == CommentEnum.Date) {
-						insertDate(tree, t);
-						dateCommentInserted = true;
-					} else {
-						insertComment(tree, (IComment)tele.getValue());
-					}
+				} else if(comment.getType() == CommentEnum.Date) {
+					insertDate(tree, t);
+					dateCommentInserted = true;
+				} else if(comment.getType() == CommentEnum.Code && comment.getValue().startsWith("pid ")) {
+					insertPid(tree, comment.getValue());
+				} else {					
+					insertComment(tree, (IComment)tele.getValue());
 				}
 			} else if(tele.getValue() instanceof IUtterance) {
 				if(!dateCommentInserted) {
 					insertDate(tree, t);
 					dateCommentInserted = true;
 				}
-//				System.out.println("Record: " + uttIdx++);
 				try {
 					insertRecord(tree, (IUtterance)tele.getValue());
 				} catch (TreeBuilderException e) {
@@ -484,6 +485,22 @@ public class Phon2XmlTreeBuilder {
 		cNode.addChild(textNode);
 		
 		tree.addChild(cNode);
+	}
+	
+	/**
+	 * Insert pid.  This is currently added as a comment to Phon
+	 * sessions.
+	 * 
+	 * @param tree
+	 * @param pid
+	 */
+	private void insertPid(CommonTree parent, String pid) {
+		CommonTree pidAttrNode = 
+				AntlrUtils.createToken(chatTokens, "CHAT_ATTR_PID");
+		pidAttrNode.getToken().setText(pid.substring(4));
+		pidAttrNode.setParent(parent);
+		parent.insertChild(0, pidAttrNode);
+//		parent.addChild(pidAttrNode);
 	}
 	
 	/**
