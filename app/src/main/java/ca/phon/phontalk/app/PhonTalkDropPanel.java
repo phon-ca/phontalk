@@ -156,6 +156,7 @@ public class PhonTalkDropPanel extends JPanel {
 		
 		@Override
 		public void dragEnter(DropTargetDragEvent dtde) {
+			System.out.println(dtde.getCurrentDataFlavors());
 			// check type 
 			if(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
 				try {
