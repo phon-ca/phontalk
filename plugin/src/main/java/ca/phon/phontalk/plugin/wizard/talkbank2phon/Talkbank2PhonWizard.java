@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.phon.phontalk.plugin.wizard;
+package ca.phon.phontalk.plugin.wizard.talkbank2phon;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -117,6 +117,9 @@ public class Talkbank2PhonWizard extends WizardFrame {
 	/**
 	 * Steps
 	 */
+	private NewProjectStep step0;
+	private WizardStep tempStep;
+	
 	private WizardStep step1;
 	private WizardStep step2;
 	
@@ -125,6 +128,10 @@ public class Talkbank2PhonWizard extends WizardFrame {
 	 */
 	private PhonWorker worker;
 	private final Lock workerLock = new ReentrantLock();
+	
+	public Talkbank2PhonWizard() {
+		this(null);
+	}
 	
 	/**
 	 * constructor
@@ -137,14 +144,23 @@ public class Talkbank2PhonWizard extends WizardFrame {
 	}
 	
 	private void init() {
-		step1 = createSelectionStep();
-		step1.setNextStep(1);
+		if(getProject() == null) {
+			step0 = new NewProjectStep();
+			step0.setNextStep(1);
+			
+			tempStep = new WizardStep();
+			addWizardStep(step0);
+			addWizardStep(tempStep);
+		} else {
+			step1 = createSelectionStep();
+			step1.setNextStep(1);
+			
+			step2 = createReportStep();
+			step2.setPrevStep(0);
 		
-		step2 = createReportStep();
-		step2.setPrevStep(0);
-	
-		addWizardStep(step1);
-		addWizardStep(step2);
+			addWizardStep(step1);
+			addWizardStep(step2);
+		}
 		
 		super.btnFinish.setVisible(false);
 		super.btnCancel.setText("Close");
@@ -160,8 +176,8 @@ public class Talkbank2PhonWizard extends WizardFrame {
 		inputFolderField.setPrompt("Input folder");
 		inputFolderField.setMode(SelectionMode.FOLDERS);
 		inputFolderField.addPropertyChangeListener("_selected_file_", inputFolderListener);
-		inputFolderField.setEditable(false);
-		inputFolderField.setFocusable(false);
+//		inputFolderField.setEditable(false);
+//		inputFolderField.setFocusable(false);
 		
 		final JPanel wizardPanel = new JPanel(new BorderLayout());
 		
@@ -286,7 +302,24 @@ public class Talkbank2PhonWizard extends WizardFrame {
 
 	@Override
 	public void next() {
-		if(super.getCurrentStep() == step1) {
+		if(super.getCurrentStep() == step0) {
+			try {
+				project = step0.getProject();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			removeWizardStep(tempStep);
+			
+			step1 = createSelectionStep();
+			step1.setNextStep(2);
+			
+			step2 = createReportStep();
+			step2.setPrevStep(1);
+		
+			addWizardStep(step1);
+			addWizardStep(step2);
+		} else if(super.getCurrentStep() == step1) {
 			// check for a selection
 			final TreePath[] selectedPaths = 
 					importTree.getCheckingPaths();

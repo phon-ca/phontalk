@@ -15,16 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.phon.phontalk.plugin.wizard;
+package ca.phon.phontalk.plugin.wizard.phon2talkbank;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -76,20 +78,6 @@ public class Phon2TalkbankWizard extends WizardFrame {
 
 	private static final long serialVersionUID = -4135395782785639623L;
 
-	static {
-		System.setProperty("phontalk.verbose", Boolean.TRUE.toString());
-	}
-	
-	/**
-	 * Session selector
-	 */
-	private SessionSelector sessionSelector;
-	
-	/**
-	 * Folder label
-	 */
-	private FileSelectionField outputFolderField;
-	
 	/**
 	 * Busy label
 	 */
@@ -105,14 +93,21 @@ public class Phon2TalkbankWizard extends WizardFrame {
 	/**
 	 * Generated wizard steps
 	 */
-	private WizardStep step1;
+	private ProjectSelectionStep step0;
+	private SessionSelectionStep step1;
 	private WizardStep step2;
+	private WizardStep tempStep;
 	
 	/**
 	 * Current worker
 	 */
 	private PhonWorker worker;
 	private final Lock workerLock = new ReentrantLock();
+	
+	
+	public Phon2TalkbankWizard() {
+		this(null);
+	}
 	
 	/**
 	 * Constructor
@@ -125,52 +120,28 @@ public class Phon2TalkbankWizard extends WizardFrame {
 	}
 
 	private void init() {
-		// create wizard steps
-		step1 = createSelectionStep();
-		step1.setNextStep(1);
-		
-		step2 = createReportStep();
-		step2.setPrevStep(0);
-		
-		addWizardStep(step1);
-		addWizardStep(step2);
+		if(getProject() == null) {
+			step0 = new ProjectSelectionStep();
+			step0.setNextStep(1);
+			
+			addWizardStep(step0);
+			tempStep = new WizardStep();
+			addWizardStep(tempStep);
+		} else {
+			// create wizard steps
+			step1 = new SessionSelectionStep(getProject());
+			step1.setNextStep(1);
+			step1.setPrevStep(0);
+			
+			step2 = createReportStep();
+			step2.setPrevStep(0);
+			
+			addWizardStep(step1);
+			addWizardStep(step2);
+		}
 		
 		super.btnFinish.setVisible(false);
 		super.btnCancel.setText("Close");
-	}
-	
-	/**
-	 * Step 1
-	 * 
-	 * Selection session and output folder
-	 */
-	private WizardStep createSelectionStep() {
-		outputFolderField = new FileSelectionField();
-		outputFolderField.setPrompt("Output folder");
-		outputFolderField.setMode(SelectionMode.FOLDERS);
-		
-		final JPanel wizardPanel = new JPanel(new BorderLayout());
-		
-		final JPanel outputFolderPanel = new JPanel();
-		outputFolderPanel.setBorder(BorderFactory.createTitledBorder("Select output folder:"));
-		outputFolderPanel.setLayout(new BorderLayout());
-		outputFolderPanel.add(outputFolderField, BorderLayout.CENTER);
-		
-		final JPanel selectorPanel = new JPanel(new BorderLayout());
-		sessionSelector = new SessionSelector(getProject());
-		final JScrollPane sessionScroller = new JScrollPane(sessionSelector);
-		selectorPanel.setBorder(BorderFactory.createTitledBorder("Select sessions for export:"));
-		selectorPanel.add(sessionScroller, BorderLayout.CENTER);
-		
-		wizardPanel.add(selectorPanel, BorderLayout.CENTER);
-		wizardPanel.add(outputFolderPanel, BorderLayout.NORTH);
-		
-		final DialogHeader header = new DialogHeader("PhonTalk : Export to Talkbank", "Select sessions and output folder.");
-		final WizardStep retVal = new WizardStep();
-		retVal.setLayout(new BorderLayout());
-		retVal.add(header, BorderLayout.NORTH);
-		retVal.add(wizardPanel, BorderLayout.CENTER);
-		return retVal;
 	}
 	
 	/**
@@ -305,11 +276,30 @@ public class Phon2TalkbankWizard extends WizardFrame {
 
 	@Override
 	public void next() {
-		if(super.getCurrentStep() == step1) {
+		if(getProject() == null && super.getCurrentStep() == step0) {
+			try {
+				project = step0.getProject();
+			} catch (IOException e) {
+				
+			}
+			removeWizardStep(tempStep);
+			
+			// create wizard steps
+			step1 = new SessionSelectionStep(getProject());
+			step1.setNextStep(2);
+			
+			step2 = createReportStep();
+			step2.setPrevStep(1);
+			
+			addWizardStep(step1);
+			addWizardStep(step2);
+		} if(super.getCurrentStep() == step1) {
 			// make sure a valid output folder is selected
 			// and we have some selected sessions
-			final List<SessionLocation> selectedSessions = sessionSelector.getSelectedSessions();
-			final File outputLocation = outputFolderField.getSelectedFile();
+			final List<SessionLocation> selectedSessions = 
+					step1.getSessionSelector().getSelectedSessions();
+			final File outputLocation = 
+					step1.getOutputFolderField().getSelectedFile();
 			
 			if(outputLocation == null) {
 				NativeDialogs.showMessageDialogBlocking(this, null, "null output folder", "Please select an output folder.");

@@ -23,7 +23,7 @@ import javax.swing.AbstractAction;
 
 import ca.phon.application.project.IPhonProject;
 import ca.phon.gui.CommonModuleFrame;
-import ca.phon.phontalk.plugin.wizard.Phon2TalkbankWizard;
+import ca.phon.phontalk.plugin.wizard.phon2talkbank.Phon2TalkbankWizard;
 
 /**
  * Action for starting the Phon2Talkbank wizard.
@@ -46,10 +46,13 @@ public class Phon2TalkbankAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		final CommonModuleFrame cmf = CommonModuleFrame.getCurrentFrame();
-		final IPhonProject project = cmf.getProject();
-		if(project != null) {
+		if(cmf != null && cmf.getProject() != null) {
+			final IPhonProject project = cmf.getProject();
 			// init and show the Phon2TalkbankWizard
 			final Phon2TalkbankWizard wizard = new Phon2TalkbankWizard(project);
+			wizard.showWizard();
+		} else {
+			final Phon2TalkbankWizard wizard = new Phon2TalkbankWizard();
 			wizard.showWizard();
 		}
 	}
