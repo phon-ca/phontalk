@@ -12,6 +12,7 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -156,6 +157,18 @@ public class PhonTalkDropPanel extends JPanel {
 		
 		@Override
 		public void dragEnter(DropTargetDragEvent dtde) {
+			for(DataFlavor flavor:dtde.getTransferable().getTransferDataFlavors()) {
+				try {
+					System.out.println(flavor.toString());
+					System.out.println(dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
+				} catch (UnsupportedFlavorException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 			// check type 
 			if(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
 				dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);

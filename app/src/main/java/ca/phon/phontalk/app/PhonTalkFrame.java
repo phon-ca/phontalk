@@ -2,15 +2,20 @@ package ca.phon.phontalk.app;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.xml.bind.ValidationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,11 +37,14 @@ import ca.phon.application.project.IPhonProject;
 import ca.phon.application.project.PhonProject;
 import ca.phon.gui.CommonModuleFrame;
 import ca.phon.gui.DialogHeader;
+import ca.phon.gui.action.PhonUIAction;
 import ca.phon.phontalk.Phon2XmlTask;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
 import ca.phon.phontalk.TalkbankValidator;
 import ca.phon.phontalk.Xml2PhonTask;
+import ca.phon.util.NativeDialogAdapter;
+import ca.phon.util.NativeDialogs;
 
 public class PhonTalkFrame extends CommonModuleFrame {
 
@@ -69,6 +77,7 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		add(header, BorderLayout.NORTH);
 		
 		dropPanel = new PhonTalkDropPanel();
+		dropPanel.setLayout(new BorderLayout());
 		dropPanel.setPhonTalkDropListener(dropListener);
 		dropPanel.setFont(dropPanel.getFont().deriveFont(Font.BOLD));
 		add(dropPanel, BorderLayout.WEST);
@@ -82,7 +91,40 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		textArea.setRows(10);
 		btmPanel.add(textScroller, BorderLayout.CENTER);
 		
+		final PhonUIAction act = new PhonUIAction(this, "onBrowse");
+		act.putValue(PhonUIAction.NAME, "Open...");
+		act.putValue(PhonUIAction.SHORT_DESCRIPTION, "Select folder for conversion");
+		act.putValue(PhonUIAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, 
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		
+		final JButton btn = new JButton(act);
+		dropPanel.add(btn, BorderLayout.NORTH);
+		
+		getJMenuBar().getMenu(0).add(new JMenuItem(act),0);
+		
 		add(btmPanel, BorderLayout.CENTER);
+	}
+	
+	public void onBrowse() {
+		final String selectedFolder = 
+				NativeDialogs.browseForDirectoryBlocking(this, null, "Select folder");
+		if(selectedFolder != null) {
+			final File f = new File(selectedFolder);
+			final File projectFile = new File(f, "project.xml");
+			if(projectFile.exists()) {
+				try {
+					convertPhonProject(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					scanTalkBankFolder(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
