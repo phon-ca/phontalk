@@ -161,7 +161,7 @@ public class PhonTalkDropPanel extends JPanel {
 			if(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
 				try {
 					final List<File> draggedFiles = 
-							(List<File>)dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+							(List<File>)dtde.getTransferable().getTransferData(dtde.getCurrentDataFlavors()[0]);
 					if(draggedFiles.size() > 1) {
 						dtde.rejectDrag();
 					} else {
