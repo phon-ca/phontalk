@@ -156,14 +156,12 @@ public class PhonTalkDropPanel extends JPanel {
 		
 		@Override
 		public void dragEnter(DropTargetDragEvent dtde) {
-			for(DataFlavor f : dtde.getTransferable().getTransferDataFlavors()) {
-	             System.out.println("flavor f:" + f + " type:" + f.getMimeType() + " javaClas:" + f.getDefaultRepresentationClass());  
-	      }
 			// check type 
 			if(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+				dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
 				try {
 					final List<File> draggedFiles = 
-							(List<File>)dtde.getTransferable().getTransferData(dtde.getCurrentDataFlavors()[0]);
+							(List<File>)dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 					if(draggedFiles.size() > 1) {
 						dtde.rejectDrag();
 					} else {
