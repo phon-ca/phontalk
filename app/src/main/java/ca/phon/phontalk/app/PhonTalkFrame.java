@@ -261,6 +261,14 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		
 		@Override
 		public void dropTalkBankFolder(final File file) {
+			final Runnable onEDT = new Runnable() {
+				public void run() {
+//					progressBar.setIndeterminateerminate(true);
+					progressBar.setString("Scanning folder...");
+					progressBar.setStringPainted(true);
+				}
+			};
+			SwingUtilities.invokeLater(onEDT);
 			final Runnable onBgThread = new Runnable() {
 				public void run() {
 					try {
