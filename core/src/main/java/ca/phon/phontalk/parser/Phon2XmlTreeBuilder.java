@@ -622,6 +622,8 @@ public class Phon2XmlTreeBuilder {
 					addError(tree, eleData);
 				} else if(eleName.equals("internal-media")) {
 					addInternalMedia(tree, eleData);
+				} else if(eleName.equals("overlap-point")) {
+					addOverlapPoint(tree, eleData);
 				} else {
 					PhonLogger.warning("Unsupported data " + data);
 				}
@@ -1462,6 +1464,38 @@ public class Phon2XmlTreeBuilder {
 		unitNode.getToken().setText("s");
 		unitNode.setParent(imNode);
 		imNode.addChild(unitNode);
+	}
+	
+	private void addOverlapPoint(CommonTree parent, String data) {
+		CommonTree opNode = 
+				AntlrUtils.createToken(chatTokens, "OVERLAP_POINT_START");
+		opNode.setParent(parent);
+		parent.addChild(opNode);
+		
+		String[] attrs = data.split(",");
+		
+		int atrIdx = 0;
+		if(attrs.length == 3) {
+			CommonTree idxNode = 
+					AntlrUtils.createToken(chatTokens, "OVERLAP_POINT_ATTR_INDEX");
+			idxNode.getToken().setText(attrs[atrIdx++]);
+			idxNode.setParent(opNode);
+			opNode.addChild(idxNode);
+		}
+		
+		if(attrs.length - atrIdx == 2) {
+			CommonTree startEndNode =
+					AntlrUtils.createToken(chatTokens, "OVERLAP_POINT_ATTR_START_END");
+			startEndNode.getToken().setText(attrs[atrIdx++]);
+			startEndNode.setParent(opNode);
+			opNode.addChild(startEndNode);
+			
+			CommonTree topBtmNode =
+					AntlrUtils.createToken(chatTokens, "OVERLAP_POINT_ATTR_TOP_BOTTOM");
+			topBtmNode.getToken().setText(attrs[atrIdx++]);
+			topBtmNode.setParent(opNode);
+			opNode.addChild(topBtmNode);
+		}
 	}
 	
 	/**

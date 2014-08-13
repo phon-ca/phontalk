@@ -16,7 +16,7 @@ w
 	
 wele
 	:	TEXT 
-	|	overlappoint
+	|	overlap_point
 	|	underline
 	|	italic
 	|	shortening
@@ -70,7 +70,10 @@ wele
 	{	
 		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $TEXT.text;	
 	}
-	|	overlappoint
+	|	overlap_point
+	{
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $overlap_point.val;
+	}
 	|	underline
 	{
 		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $underline.val;
@@ -241,8 +244,8 @@ wele
 	:	TEXT
 	->	template( v={$TEXT.text} )
 		"<v>"
-	|	overlappoint
-	->	template( v={$overlappoint.st} )
+	|	overlap_point
+	->	template( v={$overlap_point.st} )
 		"<v>"
 	|	underline
 	->	template( v={$underline.st} )

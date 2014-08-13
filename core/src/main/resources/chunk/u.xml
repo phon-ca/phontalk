@@ -37,6 +37,7 @@ uannotation
 	|	linker
 	|	tagmarker
 	|	internal_media
+	|	overlap_point
 	;
 ]]>
     </buffer>
@@ -282,6 +283,17 @@ uannotation
 			words.get(words.size()-1);
 		lastWord.setWord(lastWord.getWord() + " " + $internal_media.val);
 	}
+	|	overlap_point
+	{
+		List<IWord> words = $u::utt.getWords();
+		if(words.size() == 0) {
+			words.add($u::utt.newWordGroup());
+			$u::useLastGroup = true;
+		}
+		IWord lastWord = 
+			words.get(words.size()-1);
+		lastWord.setWord(lastWord.getWord() + " " + $overlap_point.val);
+	}
 	;
 ]]>
     </buffer>
@@ -338,6 +350,9 @@ uannotation
 	|	internal_media
 	->	template( v={$internal_media.st} )
 		"<v>"
+	|	overlap_point
+	->	template( v={$overlap_point.st} )
+		"<v>"
 	;
 	
 
@@ -365,7 +380,8 @@ ugrp
     <include>e.xml</include>
     <include>t.xml</include>
     <include>media.xml</include>
-	<includue>internalmedia.xml</includue>
+	<include>internalmedia.xml</include>
+	<include>overlappoint.xml</include>
     <include>a.xml</include>
 	<include>postcode.xml</include>
 	<include>linker.xml</include>

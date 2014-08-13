@@ -9,15 +9,15 @@
     <!-- Parser -->
     <buffer name="Chat.g">
         <![CDATA[
-overlappoint
-    :    OVERLAPPOINT_START overlappointattrs+ OVERLAPPOINT_END
-    ->    ^(OVERLAPPOINT_START overlappointattrs+)
+overlap_point
+    :    OVERLAP_POINT_START overlap_pointattrs+ OVERLAP_POINT_END
+    ->    ^(OVERLAP_POINT_START overlap_pointattrs+)
     ;
     
-overlappointattrs
-    :    OVERLAPPOINT_ATTR_INDEX
-    |    OVERLAPPOINT_ATTR_STARTEND
-    |    OVERLAPPOINT_ATTR_TOPBOTTOM
+overlap_pointattrs
+    :    OVERLAP_POINT_ATTR_INDEX
+    |    OVERLAP_POINT_ATTR_START_END
+    |    OVERLAP_POINT_ATTR_TOP_BOTTOM
     ;
 ]]>
     </buffer>
@@ -25,28 +25,69 @@ overlappointattrs
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-overlappoint
-    :    ^(OVERLAPPOINT_START overlappointattrs+)
+overlap_point returns [String val]
+scope {
+    String index;
+    String startEnd;
+    String topBottom;
+}
+@init {
+    $overlap_point::index = null;
+    $overlap_point::startEnd = null;
+    $overlap_point::topBottom = null;
+}
+    :    ^(OVERLAP_POINT_START overlap_pointattrs+)
+    {
+        $val = "(overlap-point:";
+        
+        String attrs = 
+            ($overlap_point::index != null ?  $overlap_point::index : "");
+        attrs += (attrs.length() > 0 ? "," : "") +
+            ($overlap_point::startEnd != null ? $overlap_point::startEnd : "");
+        attrs += (attrs.length() > 0 ? "," : "") + 
+            ($overlap_point::topBottom != null ? $overlap_point::topBottom : "");
+            
+        $val += attrs + ")";
+    }
     ;
     
-overlappointattrs
-    :    OVERLAPPOINT_ATTR_INDEX
-    |    OVERLAPPOINT_ATTR_STARTEND
-    |    OVERLAPPOINT_ATTR_TOPBOTTOM
+overlap_pointattrs
+    :    OVERLAP_POINT_ATTR_INDEX
+    {
+        $overlap_point::index = $OVERLAP_POINT_ATTR_INDEX.text;
+    }
+    |    OVERLAP_POINT_ATTR_START_END
+    {
+        $overlap_point::startEnd = $OVERLAP_POINT_ATTR_START_END.text;
+    }
+    |    OVERLAP_POINT_ATTR_TOP_BOTTOM
+    {
+        $overlap_point::topBottom = $OVERLAP_POINT_ATTR_TOP_BOTTOM.text;
+    }
     ;
 ]]>
     </buffer>
     
     <buffer name="Phon2XmlWalker.g">
         <![CDATA[
-overlappoint
-    :    ^(OVERLAPPOINT_START overlappointattrs+)
+overlap_point
+    :    ^(OVERLAP_POINT_START (attrlist+=overlap_pointattrs)+)
+    ->    template(
+			attrs={$attrlist}
+	)
+    <<\<overlap-point <attrs; separator=" "> /\> >>
     ;
     
-overlappointattrs
-    :    OVERLAPPOINT_ATTR_INDEX
-    |    OVERLAPPOINT_ATTR_STARTEND
-    |    OVERLAPPOINT_ATTR_TOPBOTTOM
+overlap_pointattrs
+    :    OVERLAP_POINT_ATTR_INDEX
+    ->    template(idx={$OVERLAP_POINT_ATTR_INDEX})
+    "index=\"<idx>\""
+    |    OVERLAP_POINT_ATTR_START_END
+    ->    template(startEnd={$OVERLAP_POINT_ATTR_START_END})
+    "start-end=\"<startEnd>\""
+    |    OVERLAP_POINT_ATTR_TOP_BOTTOM
+    ->    template(topBottom={$OVERLAP_POINT_ATTR_TOP_BOTTOM})
+    "top-bottom=\"<topBottom>\""
     ;
 ]]>
     </buffer>

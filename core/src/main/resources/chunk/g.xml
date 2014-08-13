@@ -28,7 +28,7 @@ gele
 	|	tagmarker
 	|	longfeature
 	|	nonvocal
-	|	overlappoint
+	|	overlap_point
 	|	underline
 	|	italic
 	;
@@ -147,7 +147,11 @@ gele
 	}
 	|	longfeature
 	|	nonvocal
-	|	overlappoint
+	|	overlap_point
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			$overlap_point.val;
+	}
 	|	underline
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
@@ -226,7 +230,9 @@ gele
 		"<v>"
 	|	longfeature
 	|	nonvocal
-	|	overlappoint
+	|	overlap_point
+	->	template( v={$overlap_point.st} )
+		"<v>"
 	|	underline
 	->	template( v={$underline.st} )
 		"<v>"
