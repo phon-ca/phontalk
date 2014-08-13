@@ -17,6 +17,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.xml.bind.ValidationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -189,6 +190,7 @@ public class PhonTalkFrame extends CommonModuleFrame {
 								
 								final Xml2PhonTask task = new Xml2PhonTask(f.getAbsolutePath(), sessionAbsPath, phonTalkListener);
 								task.addTaskListener(taskListener);
+								task.setName(f.getName());
 								taskQueue.add(task);
 							} catch (IOException e) {
 								e.printStackTrace();
@@ -217,6 +219,7 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		final File newFile = new File(file.getParentFile(), newName);
 		final Xml2PhonTask task = new Xml2PhonTask(file.getAbsolutePath(), newFile.getAbsolutePath(), phonTalkListener);
 		task.addTaskListener(taskListener);
+		task.setName(file.getName());
 		taskQueue.add(task);
 	}
 	
@@ -227,6 +230,7 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		final File newFile = new File(file.getParentFile(), newName);
 		final Phon2XmlTask task = new Phon2XmlTask(file.getAbsolutePath(), newFile.getAbsolutePath(), phonTalkListener);
 		task.addTaskListener(taskListener);
+		task.setName(file.getName());
 		taskQueue.add(task);
 	}
 	
@@ -247,6 +251,7 @@ public class PhonTalkFrame extends CommonModuleFrame {
 				final Phon2XmlTask task = new Phon2XmlTask(sessionFile.getAbsolutePath(), 
 						outputFile.getAbsolutePath(), phonTalkListener);
 				task.addTaskListener(taskListener);
+				task.setName(sessionFile.getName());
 				taskQueue.add(task);
 			}
 		}
@@ -255,12 +260,17 @@ public class PhonTalkFrame extends CommonModuleFrame {
 	private final PhonTalkDropListener dropListener = new PhonTalkDropListener() {
 		
 		@Override
-		public void dropTalkBankFolder(File file) {
-			try {
-				scanTalkBankFolder(file);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		public void dropTalkBankFolder(final File file) {
+			final Runnable onBgThread = new Runnable() {
+				public void run() {
+					try {
+						scanTalkBankFolder(file);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			worker.invokeLater(onBgThread);
 		}
 		
 		@Override
@@ -292,7 +302,13 @@ public class PhonTalkFrame extends CommonModuleFrame {
 					msg.getFile().getName() + "(" + 
 							msg.getLineNumber() + ":" + msg.getColNumber() + ") " +
 							msg.getMessage();
-			textArea.append(txt + "\n");
+			final Runnable onEDT = new Runnable() {
+				public void run() {
+					textArea.append(txt + "\n");
+					
+				}
+			};
+			SwingUtilities.invokeLater(onEDT);
 		}
 		
 	};
@@ -302,11 +318,21 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		@Override
 		public void statusChanged(PhonTask task, TaskStatus oldStatus,
 				TaskStatus newStatus) {
-			if(newStatus == TaskStatus.RUNNING) {
-				progressBar.setIndeterminate(true);
-			} else {
-				progressBar.setIndeterminate(false);
-			}
+			final String filename = task.getName();
+			final TaskStatus status = newStatus;
+			final Runnable onEDT = new Runnable() {
+				public void run() {
+					if(status == TaskStatus.RUNNING) {
+						progressBar.setIndeterminate(true);
+						progressBar.setStringPainted(true);
+						progressBar.setString(filename);
+					} else {
+						progressBar.setIndeterminate(false);
+						progressBar.setStringPainted(false);
+					}
+				}
+			};
+			SwingUtilities.invokeLater(onEDT);
 		}
 		
 		@Override
