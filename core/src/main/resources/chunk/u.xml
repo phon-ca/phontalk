@@ -36,6 +36,7 @@ uannotation
 	|	e
 	|	linker
 	|	tagmarker
+	|	internal_media
 	;
 ]]>
     </buffer>
@@ -270,6 +271,17 @@ uannotation
 			words.get(words.size()-1);
 		lastWord.setWord(lastWord.getWord() + " " + $tagmarker.val);
 	}
+	|	internal_media
+	{
+		List<IWord> words = $u::utt.getWords();
+		if(words.size() == 0) {
+			words.add($u::utt.newWordGroup());
+			$u::useLastGroup = true;
+		}
+		IWord lastWord = 
+			words.get(words.size()-1);
+		lastWord.setWord(lastWord.getWord() + " " + $internal_media.val);
+	}
 	;
 ]]>
     </buffer>
@@ -323,6 +335,9 @@ uannotation
 	|	tagmarker
 	->	template( v={$tagmarker.st} )
 		"<v>"
+	|	internal_media
+	->	template( v={$internal_media.st} )
+		"<v>"
 	;
 	
 
@@ -350,6 +365,7 @@ ugrp
     <include>e.xml</include>
     <include>t.xml</include>
     <include>media.xml</include>
+	<includue>internalmedia.xml</includue>
     <include>a.xml</include>
 	<include>postcode.xml</include>
 	<include>linker.xml</include>

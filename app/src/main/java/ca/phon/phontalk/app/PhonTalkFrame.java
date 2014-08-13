@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -136,8 +137,12 @@ public class PhonTalkFrame extends CommonModuleFrame {
 	}
 	
 	public void scanTalkBankFolder(File file) throws IOException {
-		final String projectName = file.getName();
-		final File projectFolder = new File(file.getParentFile(), projectName + "-phon");
+		
+		final String projectName = JOptionPane.showInputDialog(this, 
+				"Please enter Phon project name:", file.getName() + "-phon");
+		if(projectName == null) return;
+		
+		final File projectFolder = new File(file.getParentFile(), projectName);
 		final IPhonProject project = PhonProject.newProject(projectFolder.getAbsolutePath());
 		project.setProjectName(projectName);
 		project.save();
@@ -283,7 +288,11 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		
 		@Override
 		public void message(PhonTalkMessage msg) {
-			textArea.append(msg.getMessage());
+			final String txt = 
+					msg.getFile().getName() + "(" + 
+							msg.getLineNumber() + ":" + msg.getColNumber() + ") " +
+							msg.getMessage();
+			textArea.append(txt + "\n");
 		}
 		
 	};

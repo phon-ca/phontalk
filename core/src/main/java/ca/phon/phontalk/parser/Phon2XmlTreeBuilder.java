@@ -620,8 +620,10 @@ public class Phon2XmlTreeBuilder {
 					addAction(tree, eleData);
 				} else if(eleName.equals("error")) {
 					addError(tree, eleData);
+				} else if(eleName.equals("internal-media")) {
+					addInternalMedia(tree, eleData);
 				} else {
-					PhonLogger.warning("Unsupport data " + data);
+					PhonLogger.warning("Unsupported data " + data);
 				}
 			}
 		}
@@ -1433,6 +1435,33 @@ public class Phon2XmlTreeBuilder {
 		parent.addChild(hNode);
 		
 		addTextNode(hNode, data);
+	}
+	
+	private void addInternalMedia(CommonTree parent, String data) {
+		CommonTree imNode =
+				AntlrUtils.createToken(chatTokens, "INTERNAL_MEDIA_START");
+		imNode.setParent(parent);
+		parent.addChild(imNode);
+		
+		String[] range = data.split("-");
+		
+		CommonTree startAttrNode=
+				AntlrUtils.createToken(chatTokens, "INTERNAL_MEDIA_ATTR_START");
+		startAttrNode.getToken().setText(range[0]);
+		imNode.addChild(startAttrNode);
+		startAttrNode.setParent(imNode);
+		
+		CommonTree endAttrNode =
+				AntlrUtils.createToken(chatTokens, "INTERNAL_MEDIA_ATTR_END");
+		endAttrNode.getToken().setText(range[1]);
+		imNode.addChild(endAttrNode);
+		endAttrNode.setParent(imNode);
+		
+		CommonTree unitNode =
+				AntlrUtils.createToken(chatTokens, "INTERNAL_MEDIA_ATTR_UNIT");
+		unitNode.getToken().setText("s");
+		unitNode.setParent(imNode);
+		imNode.addChild(unitNode);
 	}
 	
 	/**

@@ -1,5 +1,8 @@
+*.versionsBackup
+*.depen
 .classpath
 .project
 target/
 .settings/
-cli/dependency-reduced-pom.xml
+dependency-reduced-pom.xml
+*.*\~

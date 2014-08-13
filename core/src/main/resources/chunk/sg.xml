@@ -19,7 +19,7 @@ sgchoice
     |    quotation
     |    quotation2
     |    pause
-    |    internalmedia
+    |    internal_media
     |    freecode
     |    e
     |    s
@@ -51,7 +51,7 @@ sgchoice
     |    quotation
     |    quotation2
     |    pause
-    |    internalmedia
+    |    internal_media
     |    freecode
     |    e
     |    s
@@ -81,7 +81,7 @@ sgchoice
     |    quotation
     |    quotation2
     |    pause
-    |    internalmedia
+    |    internal_media
     |    freecode
     |    e
     |    s

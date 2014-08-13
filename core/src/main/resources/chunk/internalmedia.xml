@@ -7,15 +7,15 @@
     <!-- Parser -->
     <buffer name="Chat.g">
         <![CDATA[
-internalmedia
-    :    INTERNALMEDIA_START internalmedia_attr* INTERNALMEDIA_END
-	->	^(INTERNALMEDIA_START internalmedia_attr*)
+internal_media
+    :    INTERNAL_MEDIA_START internal_media_attr* INTERNAL_MEDIA_END
+	->	^(INTERNAL_MEDIA_START internal_media_attr*)
 	;
 	
-internalmedia_attr
-	:	INTERNALMEDIA_ATTR_START
-	|	INTERNALMEDIA_ATTR_END
-	|	INTERNALMEDIA_ATTR_UNIT
+internal_media_attr
+	:	INTERNAL_MEDIA_ATTR_START
+	|	INTERNAL_MEDIA_ATTR_END
+	|	INTERNAL_MEDIA_ATTR_UNIT
 	;
 ]]>
     </buffer>
@@ -23,28 +23,59 @@ internalmedia_attr
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-internalmedia
-    :   ^(INTERNALMEDIA_START internalmedia_attr*)
+internal_media returns [String val]
+scope {
+	String startAttr;
+	String endAttr;
+}
+@init {
+	$internal_media::startAttr = null;
+	$internal_media::endAttr = null;
+}
+    :   ^(INTERNAL_MEDIA_START internal_media_attr*)
+    {
+    	if($internal_media::startAttr != null && $internal_media::endAttr != null) {
+    		$val = "(internal-media:" + $internal_media::startAttr + "-" + $internal_media::endAttr + ")";
+    	}
+    }
 	;
 	
-internalmedia_attr
-	:	INTERNALMEDIA_ATTR_START
-	|	INTERNALMEDIA_ATTR_END
-	|	INTERNALMEDIA_ATTR_UNIT
+internal_media_attr
+	:	INTERNAL_MEDIA_ATTR_START
+	{
+		$internal_media::startAttr = 
+			$INTERNAL_MEDIA_ATTR_START.text;
+	}
+	|	INTERNAL_MEDIA_ATTR_END
+	{
+		$internal_media::endAttr = 
+			$INTERNAL_MEDIA_ATTR_END.text;
+	}
+	|	INTERNAL_MEDIA_ATTR_UNIT
 	;
 ]]>
     </buffer>
     
     <buffer name="Phon2XmlWalker.g">
         <![CDATA[
-internalmedia
-    :   ^(INTERNALMEDIA_START internalmedia_attr*)
+internal_media
+    :   ^(INTERNAL_MEDIA_START (attrlist+=internal_media_attr)*)
+	->	template(
+			attrs={$attrlist}
+	)
+	<<\<internal-media <attrs; separator=" "> /\> >>
 	;
 	
-internalmedia_attr
-	:	INTERNALMEDIA_ATTR_START
-	|	INTERNALMEDIA_ATTR_END
-	|	INTERNALMEDIA_ATTR_UNIT
+internal_media_attr
+	:	INTERNAL_MEDIA_ATTR_START
+	->	template(start={$INTERNAL_MEDIA_ATTR_START.text})
+		"start=\"<start>\""
+	|	INTERNAL_MEDIA_ATTR_END
+	->	template(end={$INTERNAL_MEDIA_ATTR_END})
+		"end=\"<end>\""
+	|	INTERNAL_MEDIA_ATTR_UNIT
+	->	template(unit={$INTERNAL_MEDIA_ATTR_UNIT})
+		"unit=\"<unit>\""
 	;
 ]]>
     </buffer>

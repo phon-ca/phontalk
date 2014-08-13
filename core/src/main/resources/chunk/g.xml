@@ -21,7 +21,7 @@ gele
 	|	quotation
 	|	quotation2
 	|	pause
-	|	internalmedia
+	|	internal_media
 	|	freecode
 	|	e
 	|	s
@@ -124,7 +124,10 @@ gele
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $pause.val;
 	}
-	|	internalmedia
+	|	internal_media
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $internal_media.val;
+	}
 	|	freecode
 	|	e
 	{
@@ -208,7 +211,9 @@ gele
 	|	pause
 	->	template( v={$pause.st} )
 		"<v>"
-	|	internalmedia
+	|	internal_media
+	->	template( v={$internal_media.st} )
+		"<v>"
 	|	freecode
 	|	e
 	->	template( v={$e.st} )
