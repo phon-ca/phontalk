@@ -11,13 +11,18 @@ XPath -	/xs:schema/xs:complexType[@name="speakerUtteranceType"]
     <buffer name="Chat.g">
         <![CDATA[
 u
-	:	U_START U_ATTR_WHO? ( uele )* t? postcode? media? a* U_END 
-	->	^(U_START U_ATTR_WHO? uele* t? postcode? media? a*)
+	:	U_START u_attrs* ( uele )* t? postcode? media? a* U_END 
+	->	^(U_START u_attrs* uele* t? postcode? media? a*)
 	;
 	catch [RecognitionException re] {
 		consumeUntil(input, U_END);
 		input.consume(); // consume U_END
 	}
+	
+u_attrs
+	:	U_ATTR_WHO
+	|	U_ATTR_LANG
+	;
 	
 uele
 	:	ugrp
@@ -53,10 +58,15 @@ scope {
 	// the first word-group.  This flag tells the next ugrp
 	// element to use the last group instead of making a new one
 	boolean useLastGroup;
+	
+	String who;
+	String uttLang;
 }
 @init {
 	$u::utt = session.newUtterance();
 	$u::useLastGroup = false;
+	$u::who = null;
+	$u::uttLang = null;
 }
 @after {
 
@@ -71,13 +81,13 @@ scope {
 
 	uttIndex++;
 }
-	:	^(U_START who=U_ATTR_WHO? uele* t? postcode? seg=media? a*)
+	:	^(U_START u_attrs* uele* t? postcode? seg=media? a*)
 	{
 		// setup speaker
-		if($who != null) 
+		if($u::who != null) 
 		{
 			// try to find the speaker
-			String partId = $who.text;
+			String partId = $u::who;
 			
 			// by id first
 			for(IParticipant p:session.getParticipants()) {
@@ -94,6 +104,40 @@ scope {
 		{
 			$u::utt.setMedia($seg.val);
 		}
+		
+		if($u::uttLang != null) {
+			// make sure the uttlang tier exists in session
+			IDepTierDesc langTierDesc = null;
+			for(IDepTierDesc depTierDesc:session.getDependentTiers()) {
+				if(depTierDesc.getTierName().equals("uttlan")) {
+					langTierDesc = depTierDesc;
+					break;
+				}
+			}
+			if(langTierDesc == null) {
+				langTierDesc = session.newDependentTier();
+				langTierDesc.setIsGrouped(false);
+				langTierDesc.setTierName("uttlang");
+			}
+			
+			IDependentTier langTier = $u::utt.getDependentTier(langTierDesc.getTierName());
+			if(langTier == null) {
+				langTier = $u::utt.newDependentTier();
+				langTier.setTierName(langTierDesc.getTierName());
+			}
+			langTier.setTierValue($u::uttLang);
+		}
+	}
+	;
+	
+u_attrs
+	:	U_ATTR_WHO
+	{
+		$u::who = $U_ATTR_WHO.text;
+	}
+	|	U_ATTR_LANG
+	{
+		$u::uttLang = $U_ATTR_LANG.text;
 	}
 	;
 
@@ -301,9 +345,9 @@ uannotation
 	<buffer name="Phon2XmlWalker.g">
 		<![CDATA[
 u
-	:	^(U_START U_ATTR_WHO? (contentlist+=uele)* t? postcode? media? (annotationlist+=a)*)
+	:	^(U_START (attrs+=u_attrs)* (contentlist+=uele)* t? postcode? media? (annotationlist+=a)*)
 	->	template(
-			who={$U_ATTR_WHO.text},
+			attrlist={$attrs},
 			ucontent={$contentlist},
 			terminator={$t.st},
 			pc={$postcode.st},
@@ -312,7 +356,7 @@ u
 			uttid={uttIndex++}
 		)
 	<<
-\<u who="<who>" uID="u<uttid>"\>
+\<u <attrlist; separator=" "> uID="u<uttid>"\>
 	<ucontent; separator="">
 	<terminator>
 	<pc>
@@ -320,6 +364,15 @@ u
 	<annotations; separator="">
 \</u\>
 	>>
+	;
+	
+u_attrs
+	:	U_ATTR_WHO
+	->	template(who={$U_ATTR_WHO.text})
+	<<who="<who>" >>
+	|	U_ATTR_LANG
+	->	template(lang={$U_ATTR_LANG.text})
+	<<xml:lang="<lang>" >>
 	;
 	
 uele

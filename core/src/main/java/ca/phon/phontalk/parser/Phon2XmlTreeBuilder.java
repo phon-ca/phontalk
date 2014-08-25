@@ -118,7 +118,8 @@ public class Phon2XmlTreeBuilder {
 		"translation",
 		"extension",
 		"GRASP",
-		"Morphology"
+		"Morphology",
+		"uttlan"
 	};
 	
 	/**
@@ -1041,6 +1042,15 @@ public class Phon2XmlTreeBuilder {
 		if(postcodeTier != null) {
 			addPostcode(uNode, postcodeTier.getTierValue());
 		}
+
+		IDependentTier uttLangTier =
+				utt.getDependentTier("uttlan");
+		if(uttLangTier != null) {
+			CommonTree langAttrTree = AntlrUtils.createToken(chatTokens, "U_ATTR_LANG");
+			langAttrTree.setParent(uNode);
+			uNode.insertChild(0, langAttrTree);
+			langAttrTree.getToken().setText(uttLangTier.getTierValue());
+		}
 		
 		// add media
 		if(utt.getMedia() != null) {
@@ -1052,6 +1062,10 @@ public class Phon2XmlTreeBuilder {
 		for(IDependentTier depTier:utt.getDependentTiers()) {
 			
 			if(depTier.getTierName().equals("Postcode")) {
+				continue;
+			}
+			
+			if(depTier.getTierName().equalsIgnoreCase("uttlan")) {
 				continue;
 			}
 			
