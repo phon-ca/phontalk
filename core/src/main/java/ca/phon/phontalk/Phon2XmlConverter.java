@@ -17,11 +17,14 @@
  */
 package ca.phon.phontalk;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -57,6 +60,38 @@ public class Phon2XmlConverter {
 	}
 	
 	public void convertFile(File sessionFile, File outputFile, PhonTalkListener msgListener) {
+		// HACK fix issues caused by changes in the way Phon 2.0 handles braces in Orthography
+		final StringBuffer sessionBuffer = new StringBuffer();
+		try {
+			final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(sessionFile), "UTF-8"));
+			String line = null;
+			while((line = in.readLine()) != null) {
+				sessionBuffer.append(line).append("\n");
+				
+			}
+			in.close();
+			String sessionData = sessionBuffer.toString();
+			sessionData = sessionData.replaceAll("<p type=\"OPEN_BRACE\">\\{</p>", "<ig type=\"s\"/>");
+			sessionData = sessionData.replaceAll("<p type=\"CLOSE_BRACE\">\\}</p>", "<ig type=\"e\"/>");
+			
+			final File tempFile = File.createTempFile("phontalk", sessionFile.getName());
+			final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile), "UTF-8"));
+			out.write(sessionData);
+			out.flush();
+			out.close();
+			
+			
+			sessionFile = tempFile;
+		} catch (IOException e) {
+			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
+			final PhonTalkMessage err = new PhonTalkError(e);
+			err.setFile(sessionFile);
+			if(msgListener != null) {
+				msgListener.message(err);
+			}
+			return;
+		}
+		
 		// open phon session, also performs validation of the input file
 		final IPhonFactory factory = IPhonFactory.getDefaultFactory();
 		final ITranscript session = factory.createTranscript();
