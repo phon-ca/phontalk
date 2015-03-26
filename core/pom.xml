@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>ca.phon</groupId>
 		<artifactId>phontalk</artifactId>
-		<version>1.5.3</version>
+		<version>1.5.4</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>phontalk-core</artifactId>
@@ -47,17 +47,6 @@
 		</resources>
 
 		<plugins>
-			<!-- Setup target/source settings for Java compilation -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<groupId>ca.phon</groupId>
 				<artifactId>chunker</artifactId>
@@ -82,7 +71,7 @@
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr3-maven-plugin</artifactId>
-				<version>3.5</version>
+				<version>3.5.2</version>
 				<executions>
 					<execution>
 						<id>antlr</id>
@@ -103,20 +92,6 @@
 				<executions>
 					<execution>
 						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
 						<goals>
 							<goal>jar</goal>
 						</goals>

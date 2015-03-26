@@ -138,6 +138,7 @@ public class Phon2XmlConverter {
 			if(msgListener != null) {
 				msgListener.message(err);
 			}
+			findRecordsWithErrors(sessionFile, session, msgListener);
 			return;
 		} catch (RecognitionException re) {
 			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor();
@@ -147,8 +148,9 @@ public class Phon2XmlConverter {
 			if(msgListener != null) {
 				msgListener.message(msg);
 			}
+			findRecordsWithErrors(sessionFile, session, msgListener);
 			return;
-		} catch (Exception e) {
+		} catch (Exception | StackOverflowError e) {
 			// sometime stackoverflow and other runtime errors
 			// can occur during string template output
 			findRecordsWithErrors(sessionFile, session, msgListener);
