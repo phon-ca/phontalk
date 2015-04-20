@@ -78,9 +78,8 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		final DialogHeader header = new DialogHeader("PhonTalk", "");
 		add(header, BorderLayout.NORTH);
 		
-		dropPanel = new PhonTalkDropPanel();
+		dropPanel = new PhonTalkDropPanel(dropListener);
 		dropPanel.setLayout(new BorderLayout());
-		dropPanel.setPhonTalkDropListener(dropListener);
 		dropPanel.setFont(dropPanel.getFont().deriveFont(Font.BOLD));
 		add(dropPanel, BorderLayout.WEST);
 		

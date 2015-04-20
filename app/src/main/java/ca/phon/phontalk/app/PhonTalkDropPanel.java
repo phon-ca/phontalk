@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -20,14 +21,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.cnr.imaa.essi.lablib.gui.checkboxtree.CheckboxTree;
 
 import javax.imageio.ImageIO;
+import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import ca.phon.application.PhonTask;
 
 /**
  * A panel which accepts a folder/.xml file which is drag-ed and drop-ed
@@ -36,6 +43,8 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class PhonTalkDropPanel extends JPanel {
 	
+	private final static Logger LOGGER = Logger.getLogger(PhonTalkDropPanel.class.getName());
+	
 	private final static String DROP_IMG = "drop-img.png";
 	
 	private BufferedImage dropImg;
@@ -43,25 +52,14 @@ public class PhonTalkDropPanel extends JPanel {
 	private static final long serialVersionUID = -626029566860375266L;
 	
 	private String message = "";
-
-	private CheckboxTree tree;
 	
-	private PhonTalkDropListener ptDropListener;
+	private final PhonTalkDropListener listener;
 	
-	public PhonTalkDropPanel() {
+	public PhonTalkDropPanel(PhonTalkDropListener listener) {
 		super();
 		
+		this.listener = listener;
 		init();
-		
-		new DropTarget(this, dropListener);
-	}
-	
-	public void setPhonTalkDropListener(PhonTalkDropListener listener) {
-		this.ptDropListener = listener;
-	}
-	
-	public PhonTalkDropListener getPhonTalkDropListener() {
-		return this.ptDropListener;
 	}
 	
 	@Override
@@ -111,119 +109,47 @@ public class PhonTalkDropPanel extends JPanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		setTransferHandler(dropListener);
 	}
 	
-	private final AtomicReference<File> dropFile = new AtomicReference<File>();
-	private volatile boolean isPhon = false;
-	private final DropTargetListener dropListener = new DropTargetListener() {
+	public PhonTalkDropListener getPhonTalkDropListener() {
+		return listener;
+	}
+	
+	private final FileTransferHandler dropListener = new FileTransferHandler() {
 		
 		@Override
-		public void dropActionChanged(DropTargetDragEvent dtde) {
-		}
-		
-		@Override
-		public void drop(DropTargetDropEvent dtde) {
-			if(dropFile.get() != null) {
-				final File f = dropFile.get();
-				if(f.isDirectory()) {
-					if(!isPhon) {
-						getPhonTalkDropListener().dropTalkBankFolder(f);
-					} else {
-						getPhonTalkDropListener().dropPhonProject(f);
-					}
-				} else {
-					if(isPhon) {
-						getPhonTalkDropListener().dropPhonSession(f);
-					} else {
-						getPhonTalkDropListener().dropTalkBankFile(f);
-					}
-				}
+		public boolean importData(JComponent comp, Transferable t) {
+			try {
+				final List<File> files = getFiles(t);
 				
-			}
-			message = "";
-			repaint();
-		}
-		
-		@Override
-		public void dragOver(DropTargetDragEvent dtde) {
-		}
-		
-		@Override
-		public void dragExit(DropTargetEvent dte) {
-			message = "";
-			dropFile.set(null);
-			repaint();
-		}
-		
-		@Override
-		public void dragEnter(DropTargetDragEvent dtde) {
-			for(DataFlavor flavor:dtde.getTransferable().getTransferDataFlavors()) {
-				try {
-					System.out.println(flavor.toString());
-					System.out.println(dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
-				} catch (UnsupportedFlavorException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-			// check type 
-			if(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-				dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
-				try {
-					final List<File> draggedFiles = 
-							(List<File>)dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-					if(draggedFiles.size() > 1) {
-						dtde.rejectDrag();
-					} else {
-						final File draggedFile = draggedFiles.get(0);
-						
-						// check type of conversion
-						if(draggedFile.isDirectory()) {
-							final File projectFile = new File(draggedFile, "project.xml");
-							if(projectFile.exists()) {
-								message = "Convert Phon project to xml";
-								isPhon = true;
-							} else {
-								message = "Convert TalkBank files to a new Phon project";
-								isPhon = false;
-							}
-							dropFile.set(draggedFile);
-							dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
+				for(File draggedFile:files) {
+					// check type of conversion
+					if(draggedFile.isDirectory()) {
+						final File projectFile = new File(draggedFile, "project.xml");
+						if(projectFile.exists()) {
+							getPhonTalkDropListener().dropPhonProject(draggedFile);
 						} else {
-							// make sure it's and xml file
-							if(!draggedFile.getName().endsWith(".xml")) {
-								dtde.rejectDrag();
-							} else {
-								// get the type of the input file
-								final String rootEleName = getRootElementName(draggedFile);
-								if(rootEleName.equalsIgnoreCase("CHAT")) {
-									message = "Convert TalkBank file to Phon session";
-									dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
-									dropFile.set(draggedFile);
-									isPhon = false;
-								} else if(rootEleName.equalsIgnoreCase("session")) {
-									message = "Convert Phon session to TalkBank";
-									dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
-									dropFile.set(draggedFile);
-									isPhon = true;
-								} else {
-									message = "Unknown file type";
-									dtde.rejectDrag();
-								}
+							getPhonTalkDropListener().dropTalkBankFolder(draggedFile);
+						}
+					} else {
+						// make sure it's an xml file
+						if(draggedFile.getName().endsWith(".xml")) {
+							// get the type of the input file
+							final String rootEleName = getRootElementName(draggedFile);
+							if(rootEleName.equalsIgnoreCase("CHAT")) {
+								getPhonTalkDropListener().dropTalkBankFile(draggedFile);
+							} else if(rootEleName.equalsIgnoreCase("session")) {
+								getPhonTalkDropListener().dropPhonSession(draggedFile);
 							}
 						}
 					}
-				} catch (UnsupportedFlavorException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
-
-			repaint();
+			
+			return true;
 		}
 		
 	};
