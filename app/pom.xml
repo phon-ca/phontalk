@@ -11,7 +11,12 @@
 	<artifactId>phontalk-app</artifactId>
 
 	<dependencies>
-		<dependency>
+	<dependency>
+		<groupId>ca.phon</groupId>
+		<artifactId>native-dialogs</artifactId>
+		<version>6</version>
+	</dependency>
+	<dependency>
 			<groupId>ca.phon</groupId>
 			<artifactId>phontalk-core</artifactId>
 			<version>${project.version}</version>
@@ -46,6 +51,11 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.3</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
@@ -67,6 +77,17 @@
 			                  		<mainClass>ca.phon.phontalk.app.PhonTalkFrame</mainClass>
 			                	</transformer>
 			             	</transformers>
+			             	<filters>
+			             		<filter>
+			             			<artifact>ca.phon:phon</artifact>
+			             			<excludes>
+			             				<exclude>ca/phon/util/NativeDialogs.class</exclude>
+			             				<exclude>ca/phon/util/NativeDialogEvent.class</exclude>
+			             				<exclude>ca/phon/util/NativeDialogListener.class</exclude>
+										<exclude>ca/phon/util/NativeDialogAdapter.class</exclude>
+			             			</excludes>
+			             		</filter>
+			             	</filters>
 				        </configuration>
 		          	</execution>
 		        </executions>
