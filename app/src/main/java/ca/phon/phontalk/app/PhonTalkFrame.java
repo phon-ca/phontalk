@@ -1,20 +1,31 @@
 package ca.phon.phontalk.app;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -28,8 +39,13 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXTable;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 import ca.phon.application.PhonTask;
 import ca.phon.application.PhonTaskListener;
@@ -37,32 +53,44 @@ import ca.phon.application.PhonWorker;
 import ca.phon.application.PhonTask.TaskStatus;
 import ca.phon.application.project.IPhonProject;
 import ca.phon.application.project.PhonProject;
+import ca.phon.engines.search.report.csv.CSVTableDataWriter;
 import ca.phon.gui.CommonModuleFrame;
 import ca.phon.gui.DialogHeader;
+import ca.phon.gui.action.PhonActionEvent;
 import ca.phon.gui.action.PhonUIAction;
+import ca.phon.gui.components.HidablePanel;
 import ca.phon.phontalk.Phon2XmlTask;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
+import ca.phon.phontalk.PhonTalkTask;
 import ca.phon.phontalk.TalkbankValidator;
 import ca.phon.phontalk.Xml2PhonTask;
-import ca.phon.util.NativeDialogAdapter;
-import ca.phon.util.NativeDialogs;
+import ca.phon.ui.nativedialogs.FileFilter;
+import ca.phon.ui.nativedialogs.NativeDialogs;
 
-public class PhonTalkFrame extends CommonModuleFrame {
+public class PhonTalkFrame extends JFrame {
 
 	private static final long serialVersionUID = -4442294523695339523L;
 	
 	private PhonTalkDropPanel dropPanel;
 	
-	private JTextArea textArea;
+	private JXTable taskTable;
+	private PhonTalkTaskTableModel taskTableModel;
 	
-	private JProgressBar progressBar;
+	private JXTable reportTable;
+	private PhonTalkMessageTableModel reportTableModel;
+	
+	private JXBusyLabel busyLabel;
+	
+	private JLabel statusLabel;
 	
 	private PhonWorker worker;
 	
 	private final ConcurrentLinkedQueue<Runnable> taskQueue = 
 			new ConcurrentLinkedQueue<Runnable>();
-
+	
+	private JButton saveAsCSVButton;
+	
 	public PhonTalkFrame() {
 		super("PhonTalk");
 		
@@ -78,20 +106,77 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		final DialogHeader header = new DialogHeader("PhonTalk", "");
 		add(header, BorderLayout.NORTH);
 		
+		final PhonUIAction saveAsCSVAct = new PhonUIAction(this, "saveAsCSV");
+		saveAsCSVAct.putValue(PhonUIAction.NAME, "Save as CSV...");
+		final KeyStroke saveAsKs = KeyStroke.getKeyStroke(KeyEvent.VK_S,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+		saveAsCSVAct.putValue(PhonUIAction.ACCELERATOR_KEY, saveAsKs);
+		
+		final PhonUIAction clearAct = new PhonUIAction(this, "onClear");
+		clearAct.putValue(PhonUIAction.NAME, "Clear tables");
+		final KeyStroke clearKs = KeyStroke.getKeyStroke(KeyEvent.VK_C,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+		clearAct.putValue(PhonUIAction.ACCELERATOR_KEY, clearKs);
+		
+		final PhonUIAction redoAct = new PhonUIAction(this, "onRedo");
+		redoAct.putValue(PhonUIAction.NAME, "Redo");
+		final KeyStroke redoKs = KeyStroke.getKeyStroke(KeyEvent.VK_R, 
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+		redoAct.putValue(PhonUIAction.ACCELERATOR_KEY, redoKs);
+		
+		saveAsCSVButton = new JButton(saveAsCSVAct);
+		
+		taskTableModel = new PhonTalkTaskTableModel();
+		taskTable = new JXTable(taskTableModel);
+		taskTable.setColumnControlVisible(true);
+		taskTable.setOpaque(false);
+		
+		taskTable.getColumnModel().getColumn(0).setPreferredWidth(70);
+		taskTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+		taskTable.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+		
+		JScrollPane taskScroller = new JScrollPane(taskTable);
+		taskScroller.setOpaque(false);
+		
 		dropPanel = new PhonTalkDropPanel(dropListener);
 		dropPanel.setLayout(new BorderLayout());
+		dropPanel.add(taskScroller, BorderLayout.CENTER);
 		dropPanel.setFont(dropPanel.getFont().deriveFont(Font.BOLD));
-		add(dropPanel, BorderLayout.WEST);
 		
-		final JPanel btmPanel = new JPanel(new BorderLayout());
-		progressBar = new JProgressBar();
-		btmPanel.add(progressBar, BorderLayout.NORTH);
-		textArea = new JTextArea();
-		final JScrollPane textScroller = new JScrollPane(textArea);
-		textArea.setEditable(false);
-		textArea.setRows(10);
-		btmPanel.add(textScroller, BorderLayout.CENTER);
+		final HidablePanel msgPanel = new HidablePanel(PhonTalkFrame.class.getName() + ".infoMsg");
+		msgPanel.setTopLabelText("<html>To convert files between Phon and CHAT formats, "
+				+ "drop files onto the panel above or use the Open button "
+				+ "to select a file/folder containing either a Phon project "
+				+ "or Talkbank .xml files.</html>" );
+		dropPanel.add(msgPanel, BorderLayout.SOUTH);
 		
+		
+		statusLabel = new JLabel();
+		busyLabel = new JXBusyLabel(new Dimension(16, 16));
+		
+		JPanel topPanel = new JPanel(
+				new FormLayout("pref, fill:pref:grow, right:pref", "pref"));
+		final CellConstraints cc = new CellConstraints();
+		topPanel.setBackground(Color.white);
+		topPanel.add(busyLabel, cc.xy(1,1));
+		topPanel.add(statusLabel, cc.xy(2,1));
+		topPanel.add(saveAsCSVButton, cc.xy(3,1));
+		
+		reportTableModel = new PhonTalkMessageTableModel();
+		reportTable = new JXTable(reportTableModel);
+		reportTable.setColumnControlVisible(true);
+		
+		reportTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+		reportTable.getColumnModel().getColumn(1).setPreferredWidth(50);
+		reportTable.getColumnModel().getColumn(2).setPreferredWidth(50);
+		reportTable.getColumnModel().getColumn(3).setPreferredWidth(300);
+		reportTable.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+		
+		JScrollPane scroller = new JScrollPane(reportTable);
+		
+		final JPanel rightPanel = new JPanel(new BorderLayout());
+		rightPanel.add(topPanel, BorderLayout.NORTH);
+		rightPanel.add(scroller, BorderLayout.CENTER);
 		final PhonUIAction act = new PhonUIAction(this, "onBrowse");
 		act.putValue(PhonUIAction.NAME, "Open...");
 		act.putValue(PhonUIAction.SHORT_DESCRIPTION, "Select folder for conversion");
@@ -101,9 +186,63 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		final JButton btn = new JButton(act);
 		dropPanel.add(btn, BorderLayout.NORTH);
 		
-		getJMenuBar().getMenu(0).add(new JMenuItem(act),0);
+		final JMenuBar menuBar = new JMenuBar();
+		final JMenu fileMenu = new JMenu("File");
+		menuBar.add(fileMenu);
 		
-		add(btmPanel, BorderLayout.CENTER);
+		fileMenu.add(new JMenuItem(act));
+		fileMenu.addSeparator();
+		fileMenu.add(saveAsCSVAct);
+		fileMenu.addSeparator();
+		final PhonUIAction exitAct = new PhonUIAction(this, "onExit");
+		exitAct.putValue(PhonUIAction.NAME, "Exit");
+		final KeyStroke exitKs = KeyStroke.getKeyStroke(KeyEvent.VK_Q,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+		exitAct.putValue(PhonUIAction.ACCELERATOR_KEY, exitKs);
+		fileMenu.add(exitAct);
+		
+		final JMenu editMenu = new JMenu("Edit");
+		menuBar.add(editMenu);
+		editMenu.add(redoAct);
+		editMenu.addSeparator();
+		editMenu.add(clearAct);
+		
+		setJMenuBar(menuBar);
+		
+		final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, dropPanel, rightPanel);
+		add(splitPane, BorderLayout.CENTER);
+	}
+	
+	public void onRedo() {
+		List<PhonTalkTask> tasks = new ArrayList<>(taskTableModel.getTasks());
+		onClear();
+		for(PhonTalkTask task:tasks) {
+			taskTableModel.addTask(task);
+			taskQueue.add(task);
+		}
+	}
+	
+	public void onClear() {
+		taskTableModel.clear();
+		reportTableModel.clear();
+	}
+	
+	public void onExit() {
+		System.exit(1);
+	}
+	
+	public void saveAsCSV(PhonActionEvent pae) {
+		final String saveTo = NativeDialogs.showSaveFileDialogBlocking(this, null, ".csv", 
+				new FileFilter[] { FileFilter.csvFilter }, "Save as CSV");
+		if(saveTo != null) {
+			final CSVTableDataWriter writer = new CSVTableDataWriter();
+			try {
+				writer.writeTableToFile(reportTable, new File(saveTo));
+			} catch (IOException e) {
+				NativeDialogs.showMessageDialogBlocking(this, null, "Save failed", e.getLocalizedMessage());
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void onBrowse() {
@@ -132,7 +271,6 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		final PhonTalkFrame frame = new PhonTalkFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(1024, 768);
-		frame.centerWindow();
 		frame.setVisible(true);
 	}
 	
@@ -191,6 +329,7 @@ public class PhonTalkFrame extends CommonModuleFrame {
 								task.addTaskListener(taskListener);
 								task.setName(f.getName());
 								taskQueue.add(task);
+								taskTableModel.addTask(task);
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -220,6 +359,7 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		task.addTaskListener(taskListener);
 		task.setName(file.getName());
 		taskQueue.add(task);
+		taskTableModel.addTask(task);
 	}
 	
 	private void convertPhonSession(File file) {
@@ -231,6 +371,7 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		task.addTaskListener(taskListener);
 		task.setName(file.getName());
 		taskQueue.add(task);
+		taskTableModel.addTask(task);
 	}
 	
 	private void convertPhonProject(File file) throws IOException {
@@ -252,6 +393,7 @@ public class PhonTalkFrame extends CommonModuleFrame {
 				task.addTaskListener(taskListener);
 				task.setName(sessionFile.getName());
 				taskQueue.add(task);
+				taskTableModel.addTask(task);
 			}
 		}
 	}
@@ -262,9 +404,8 @@ public class PhonTalkFrame extends CommonModuleFrame {
 		public void dropTalkBankFolder(final File file) {
 			final Runnable onEDT = new Runnable() {
 				public void run() {
-					progressBar.setIndeterminate(true);
-					progressBar.setString("Scanning folder...");
-					progressBar.setStringPainted(true);
+					busyLabel.setBusy(true);
+					statusLabel.setText("Scanning folder...");
 				}
 			};
 			SwingUtilities.invokeLater(onEDT);
@@ -304,15 +445,10 @@ public class PhonTalkFrame extends CommonModuleFrame {
 	private final PhonTalkListener phonTalkListener = new PhonTalkListener() {
 		
 		@Override
-		public void message(PhonTalkMessage msg) {
-			final String txt = 
-					msg.getFile().getName() + "(" + 
-							msg.getLineNumber() + ":" + msg.getColNumber() + ") " +
-							msg.getMessage();
+		public void message(final PhonTalkMessage msg) {
 			final Runnable onEDT = new Runnable() {
 				public void run() {
-					textArea.append(txt + "\n");
-					
+					reportTableModel.addMessage(msg);
 				}
 			};
 			SwingUtilities.invokeLater(onEDT);
@@ -329,13 +465,17 @@ public class PhonTalkFrame extends CommonModuleFrame {
 			final TaskStatus status = newStatus;
 			final Runnable onEDT = new Runnable() {
 				public void run() {
+					int taskRow = taskTableModel.rowForTask((PhonTalkTask)task);
+					if(taskRow >= 0) {
+						taskTableModel.fireTableCellUpdated(taskRow, PhonTalkTaskTableModel.Columns.STATUS.ordinal());
+						taskTable.scrollRowToVisible(taskRow);
+					}
 					if(status == TaskStatus.RUNNING) {
-						progressBar.setIndeterminate(true);
-						progressBar.setStringPainted(true);
-						progressBar.setString(filename);
+						busyLabel.setBusy(true);
+						statusLabel.setText(filename + " (" + ((PhonTalkTask)task).getProcessName() + ")");
 					} else {
-						progressBar.setIndeterminate(false);
-						progressBar.setStringPainted(false);
+						busyLabel.setBusy(false);
+						statusLabel.setText("");
 					}
 				}
 			};
