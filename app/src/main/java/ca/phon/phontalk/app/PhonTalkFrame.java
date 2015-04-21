@@ -150,8 +150,8 @@ public class PhonTalkFrame extends JFrame {
 		dropPanel.setFont(dropPanel.getFont().deriveFont(Font.BOLD));
 		
 		final HidablePanel msgPanel = new HidablePanel(PhonTalkFrame.class.getName() + ".infoMsg");
-		msgPanel.setTopLabelText("<html>To convert files between Phon and CHAT formats, "
-				+ "drop files onto the panel above or use the Open button "
+		msgPanel.setTopLabelText("<html>To convert files between Phon and TalkBank formats, "
+				+ "drop files onto the table above or use the Open button "
 				+ "to select a file/folder containing either a Phon project "
 				+ "or Talkbank .xml files.</html>" );
 		dropPanel.add(msgPanel, BorderLayout.SOUTH);
