@@ -7,8 +7,10 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -22,6 +24,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -29,6 +32,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputAdapter;
 import javax.xml.bind.ValidationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -67,6 +71,7 @@ import ca.phon.phontalk.TalkbankValidator;
 import ca.phon.phontalk.Xml2PhonTask;
 import ca.phon.ui.nativedialogs.FileFilter;
 import ca.phon.ui.nativedialogs.NativeDialogs;
+import ca.phon.util.OpenFileLauncher;
 
 public class PhonTalkFrame extends JFrame {
 
@@ -115,13 +120,13 @@ public class PhonTalkFrame extends JFrame {
 		final PhonUIAction clearAct = new PhonUIAction(this, "onClear");
 		clearAct.putValue(PhonUIAction.NAME, "Clear tables");
 		final KeyStroke clearKs = KeyStroke.getKeyStroke(KeyEvent.VK_C,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | KeyEvent.SHIFT_MASK);
 		clearAct.putValue(PhonUIAction.ACCELERATOR_KEY, clearKs);
 		
 		final PhonUIAction redoAct = new PhonUIAction(this, "onRedo");
 		redoAct.putValue(PhonUIAction.NAME, "Redo");
 		final KeyStroke redoKs = KeyStroke.getKeyStroke(KeyEvent.VK_R, 
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | KeyEvent.SHIFT_MASK);
 		redoAct.putValue(PhonUIAction.ACCELERATOR_KEY, redoKs);
 		
 		saveAsCSVButton = new JButton(saveAsCSVAct);
@@ -130,6 +135,7 @@ public class PhonTalkFrame extends JFrame {
 		taskTable = new JXTable(taskTableModel);
 		taskTable.setColumnControlVisible(true);
 		taskTable.setOpaque(false);
+		taskTable.addMouseListener(taskTableContextListener);
 		
 		taskTable.getColumnModel().getColumn(0).setPreferredWidth(70);
 		taskTable.getColumnModel().getColumn(1).setPreferredWidth(200);
@@ -242,6 +248,14 @@ public class PhonTalkFrame extends JFrame {
 				NativeDialogs.showMessageDialogBlocking(this, null, "Save failed", e.getLocalizedMessage());
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	public void openFile(File file) {
+		try {
+			OpenFileLauncher.launchBrowser(file.toURI().toURL());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -398,6 +412,56 @@ public class PhonTalkFrame extends JFrame {
 		}
 	}
 	
+	private final MouseInputAdapter taskTableContextListener = new MouseInputAdapter() {
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			if(e.isPopupTrigger()) {
+				showContextMenu(e);
+			}
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			if(e.isPopupTrigger()) {
+				showContextMenu(e);
+			}
+		}
+		
+		private void showContextMenu(MouseEvent e) {
+			int row = taskTable.rowAtPoint(e.getPoint());
+			if(row >= 0 && row < taskTableModel.getRowCount()) {
+				taskTable.getSelectionModel().setSelectionInterval(row, row);
+				final PhonTalkTask task = taskTableModel.taskForRow(row);
+				if(task == null) return;
+				
+				final JPopupMenu menu = new JPopupMenu();
+				
+				final JMenuItem processItem = new JMenuItem(
+						task.getInputFile().getName() + " (" + task.getProcessName() + ")");
+				processItem.setEnabled(false);
+				menu.add(processItem);
+				
+				final PhonUIAction openInputAct = new PhonUIAction(PhonTalkFrame.this, "openFile", task.getInputFile());
+				openInputAct.putValue(PhonUIAction.NAME, "Open input file");
+				openInputAct.putValue(PhonUIAction.SHORT_DESCRIPTION, task.getInputFile().getAbsolutePath());
+				menu.add(openInputAct);
+				
+				final PhonUIAction openOuputAct = new PhonUIAction(PhonTalkFrame.this, "openFile", task.getOutputFile());
+				openOuputAct.putValue(PhonUIAction.NAME, "Open output file");
+				openOuputAct.putValue(PhonUIAction.SHORT_DESCRIPTION, task.getOutputFile().getAbsolutePath());
+				menu.add(openOuputAct);
+				
+				final PhonUIAction redoAct = new PhonUIAction(taskQueue, "add", task);
+				redoAct.putValue(PhonUIAction.NAME, "Redo");
+				menu.add(redoAct);
+				
+				menu.show(taskTable, e.getX(), e.getY());
+			}
+		}
+		
+	};
+	
 	private final PhonTalkDropListener dropListener = new PhonTalkDropListener() {
 		
 		@Override
@@ -468,7 +532,9 @@ public class PhonTalkFrame extends JFrame {
 					int taskRow = taskTableModel.rowForTask((PhonTalkTask)task);
 					if(taskRow >= 0) {
 						taskTableModel.fireTableCellUpdated(taskRow, PhonTalkTaskTableModel.Columns.STATUS.ordinal());
-						taskTable.scrollRowToVisible(taskRow);
+						// scroll to current task if no selection
+						if(taskTable.getSelectedRow() < 0)
+							taskTable.scrollRowToVisible(taskRow);
 					}
 					if(status == TaskStatus.RUNNING) {
 						busyLabel.setBusy(true);
