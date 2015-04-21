@@ -39,19 +39,10 @@ import ca.phon.system.logger.PhonLogger;
  *  from phon's format to talkbank
  *
  */
-public class Phon2XmlTask extends PhonTask {
-	
-	private File inputFile;
-	
-	private File outputFile;
-	
-	private PhonTalkListener listener;
+public class Phon2XmlTask extends PhonTalkTask {
 	
 	public Phon2XmlTask(String inFile, String outFile, PhonTalkListener listener) {
-		super();
-		this.inputFile = new File(inFile);
-		this.outputFile = new File(outFile);
-		this.listener = listener;
+		super(new File(inFile), new File(outFile), listener);
 	}
 
 	@Override
@@ -63,24 +54,24 @@ public class Phon2XmlTask extends PhonTask {
 		// check to make sure the file is a valid phon session
 		final ITranscript t = IPhonFactory.getDefaultFactory().createTranscript();
 		try {
-			final InputStream phonStream = new FileInputStream(inputFile);
+			final InputStream phonStream = new FileInputStream(getInputFile());
 			t.loadTranscriptData(phonStream);
 		} catch (IOException e) {
 			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
 			final PhonTalkError err = new PhonTalkError(e);
-			listener.message(err);
+			getListener().message(err);
 			super.err = e;
 			super.setStatus(TaskStatus.ERROR);
 			return;
 		}
 		
 		final Phon2XmlConverter converter = new Phon2XmlConverter();
-		converter.convertFile(inputFile, outputFile, listener);
+		converter.convertFile(getInputFile(), getOutputFile(), getListener());
 		
 		final TalkbankValidator validator = new TalkbankValidator();
-		final DefaultErrorHandler errHandler = new DefaultErrorHandler(outputFile, listener);
+		final DefaultErrorHandler errHandler = new DefaultErrorHandler(getOutputFile(), getListener());
 		try {
-			if(!validator.validate(outputFile, errHandler)) {
+			if(!validator.validate(getOutputFile(), errHandler)) {
 				err = new Exception("xml not valid");
 				super.setStatus(TaskStatus.ERROR);
 			} else {
@@ -89,11 +80,16 @@ public class Phon2XmlTask extends PhonTask {
 		} catch (ValidationException e) {
 			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
 			final PhonTalkError err = new PhonTalkError(e);
-			err.setFile(outputFile);
-			listener.message(err);
+			err.setFile(getOutputFile());
+			getListener().message(err);
 			super.err = e;
 			super.setStatus(TaskStatus.ERROR);
 		}
+	}
+
+	@Override
+	public String getProcessName() {
+		return "Phon -> TalkBank";
 	}
 
 }

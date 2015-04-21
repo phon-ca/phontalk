@@ -32,28 +32,10 @@ import ca.phon.application.transcript.ITranscript;
  * Converts a single stream of tb xml into phon xml
  *
  */
-public class Xml2PhonTask extends PhonTask {
-	
-	/**
-	 * Input file
-	 */
-	private File inputFile;
-	
-	/**
-	 * Output file
-	 */
-	private File outputFile;
-	
-	/**
-	 * Message listener
-	 */
-	private PhonTalkListener listener;
+public class Xml2PhonTask extends PhonTalkTask {
 	
 	public Xml2PhonTask(String inFile, String outFile, PhonTalkListener listener) {
-		super();
-		this.inputFile = new File(inFile);
-		this.outputFile = new File(outFile);
-		this.listener = listener;
+		super(new File(inFile), new File(outFile), listener);
 	}
 
 	@Override
@@ -61,23 +43,28 @@ public class Xml2PhonTask extends PhonTask {
 		super.setStatus(TaskStatus.RUNNING);
 
 		final Xml2PhonConverter converter = new Xml2PhonConverter();
-		converter.convertFile(inputFile, outputFile, listener);
+		converter.convertFile(getInputFile(), getOutputFile(), getListener());
 		
 		// attempt to load the transcript at outputFile to
 		// ensure session was saved correctly
 		final IPhonFactory factory = IPhonFactory.getDefaultFactory();
 		final ITranscript session = factory.createTranscript();
 		try {
-			session.loadTranscriptFile(outputFile);
+			session.loadTranscriptFile(getOutputFile());
 			super.setStatus(TaskStatus.FINISHED);
 		} catch (IOException e) {
 			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
 			final PhonTalkError err = new PhonTalkError(e);
-			err.setFile(outputFile);
-			if(listener != null) listener.message(err);
+			err.setFile(getOutputFile());
+			if(getListener() != null) getListener().message(err);
 			super.err = e;
 			setStatus(TaskStatus.ERROR);
 		}
+	}
+
+	@Override
+	public String getProcessName() {
+		return "TalkBank -> Phon";
 	}
 
 }
