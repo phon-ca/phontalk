@@ -1,9 +1,26 @@
+/*
+ * Phon - An open source tool for research in phonology.
+ * Copyright (C) 2005 - 2015, Gregory Hedlund <ghedlund@mun.ca> and Yvan Rose <yrose@mun.ca>
+ * Dept of Linguistics, Memorial University <https://phon.ca>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ca.phon.phontalk.app;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -18,20 +35,17 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.MouseInputAdapter;
 import javax.xml.bind.ValidationException;
 import javax.xml.parsers.DocumentBuilder;
@@ -48,17 +62,13 @@ import org.jdesktop.swingx.JXTable;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
 import ca.phon.application.PhonTask;
+import ca.phon.application.PhonTask.TaskStatus;
 import ca.phon.application.PhonTaskListener;
 import ca.phon.application.PhonWorker;
-import ca.phon.application.PhonTask.TaskStatus;
 import ca.phon.application.project.IPhonProject;
 import ca.phon.application.project.PhonProject;
 import ca.phon.engines.search.report.csv.CSVTableDataWriter;
-import ca.phon.gui.CommonModuleFrame;
 import ca.phon.gui.DialogHeader;
 import ca.phon.gui.action.PhonActionEvent;
 import ca.phon.gui.action.PhonUIAction;
@@ -72,6 +82,10 @@ import ca.phon.phontalk.Xml2PhonTask;
 import ca.phon.ui.nativedialogs.FileFilter;
 import ca.phon.ui.nativedialogs.NativeDialogs;
 import ca.phon.util.OpenFileLauncher;
+import ca.phon.util.PhonUtilities;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 public class PhonTalkFrame extends JFrame {
 
@@ -282,10 +296,20 @@ public class PhonTalkFrame extends JFrame {
 	}
 	
 	public static void main(String[] args) {
-		final PhonTalkFrame frame = new PhonTalkFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(1024, 768);
-		frame.setVisible(true);
+		SwingUtilities.invokeLater( () -> {
+			if(!PhonUtilities.isMacOs()) {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			final PhonTalkFrame frame = new PhonTalkFrame();
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setSize(1024, 768);
+			frame.setVisible(true);
+		});
 	}
 	
 	public void scanTalkBankFolder(File file) throws IOException {
