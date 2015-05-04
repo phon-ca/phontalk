@@ -18,15 +18,8 @@
  */
 package ca.phon.phontalk.parser;
 
-import ca.phon.exceptions.ParserException;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -41,12 +34,8 @@ import java.util.regex.Pattern;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
 
 import ca.phon.alignment.PhoneMap;
-
-import ca.phon.application.project.IPhonProject;
-import ca.phon.application.project.PhonProject;
 import ca.phon.application.transcript.CommentEnum;
 import ca.phon.application.transcript.Form;
 import ca.phon.application.transcript.IComment;
@@ -63,17 +52,11 @@ import ca.phon.application.transcript.Sex;
 import ca.phon.application.transcript.TranscriptElement;
 import ca.phon.application.transcript.TranscriptUtils;
 import ca.phon.phone.Phone;
-import ca.phon.phone.PhoneSequenceMatcher;
-import ca.phon.phontalk.parser.Phon2XmlWalker;
-import ca.phon.syllable.Syllable;
-import ca.phon.syllable.SyllableConstituentType;
 import ca.phon.system.logger.PhonLogger;
 import ca.phon.util.PhonDateFormat;
 import ca.phon.util.PhonDuration;
 import ca.phon.util.PhonDurationFormat;
-import ca.phon.util.Range;
 import ca.phon.util.StringUtils;
-import java.text.SimpleDateFormat;
 /**
  * This class is responsible for turning Phon sessions
  * into chat ANTLR trees.
@@ -592,10 +575,10 @@ public class Phon2XmlTreeBuilder {
 			addGa(tree, "alternative", StringUtils.strip(data.substring(2)));
 		} else if(data.startsWith("%")) {
 			addGa(tree, "comments", StringUtils.strip(data.substring(1)));
+		}  else if(data.startsWith("=!")) {
+			addGa(tree, "paralinguistics", StringUtils.strip(data.substring(2)));
 		} else if(data.startsWith("=")) {
 			addGa(tree, "explanation", StringUtils.strip(data.substring(1)));
-		} else if(data.startsWith("=!")) {
-			addGa(tree, "paralinguistics", StringUtils.strip(data.substring(2)));
 		} else if(data.startsWith("%sdi:")) {
 			addGa(tree, "standard for dialect", StringUtils.strip(data.substring(5)));
 		} else if(data.startsWith("%sch:")) {
