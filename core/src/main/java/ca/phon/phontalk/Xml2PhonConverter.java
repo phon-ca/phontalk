@@ -34,6 +34,7 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 
 import ca.phon.application.transcript.ITranscript;
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
+import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.ChatParser;
 import ca.phon.phontalk.parser.ChatTokenSource;
 import ca.phon.phontalk.parser.ChatTree;
@@ -99,7 +100,7 @@ public class Xml2PhonConverter {
 			parserRet = parser.chat();
 		} catch (RecognitionException re) {
 			if(PhonTalkUtil.isVerbose()) re.printStackTrace();
-			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor();
+			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("ChatParser.tokens"));
 			visitor.visit(re);
 			final PhonTalkMessage msg = visitor.getMessage();
 			msg.setFile(inputFile);
@@ -108,7 +109,7 @@ public class Xml2PhonConverter {
 		}
 		
 		// walk AST and output using string template
-		ITranscript session;
+		ITranscript session = null;
 		try {
 			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(parserRet.getTree());
 			final ChatTree walker = new ChatTree(nodeStream);
@@ -117,9 +118,25 @@ public class Xml2PhonConverter {
 			
 			walker.chat();
 			session = walker.getSession();
+		} catch (TreeWalkerError e) {
+			if(e.getCause() instanceof RecognitionException) {
+				final RecognitionException re = (RecognitionException)e.getCause();
+				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("ChatTree.tokens"));
+				visitor.visit(re);
+				final PhonTalkMessage msg = visitor.getMessage();
+				msg.setMessage(msg.getMessage());
+				if(listener != null) {
+					listener.message(msg);
+				}
+			} else {
+				final PhonTalkError err = new PhonTalkError(e.getMessage(), e);
+				if(listener != null) {
+					listener.message(err);
+				}
+			}
 		} catch (RecognitionException re) {
 			if(PhonTalkUtil.isVerbose()) re.printStackTrace();
-			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor();
+			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("ChatTree.tokens"));
 			visitor.visit(re);
 			final PhonTalkMessage msg = visitor.getMessage();
 			msg.setFile(inputFile);
@@ -127,16 +144,18 @@ public class Xml2PhonConverter {
 			return;
 		}
 		
-		// save the transcript to the given file (also validates)
-		try {
-			final FileOutputStream fout = new FileOutputStream(outputFile);
-			session.saveTranscriptData(fout);
-		} catch (IOException e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-			final PhonTalkError err = new PhonTalkError(e);
-			err.setFile(outputFile);
-			if(listener != null) listener.message(err);
-			return;
+		if(session != null) {
+			// save the transcript to the given file (also validates)
+			try {
+				final FileOutputStream fout = new FileOutputStream(outputFile);
+				session.saveTranscriptData(fout);
+			} catch (IOException e) {
+				if(PhonTalkUtil.isVerbose()) e.printStackTrace();
+				final PhonTalkError err = new PhonTalkError(e);
+				err.setFile(outputFile);
+				if(listener != null) listener.message(err);
+				return;
+			}
 		}
 	}
 

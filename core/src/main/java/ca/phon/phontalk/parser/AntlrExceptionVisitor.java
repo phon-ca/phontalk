@@ -18,9 +18,11 @@
  */
 package ca.phon.phontalk.parser;
 
+import org.antlr.runtime.MismatchedTreeNodeException;
 import org.antlr.runtime.RecognitionException;
 
 import ca.hedlund.dp.visitor.VisitorAdapter;
+import ca.hedlund.dp.visitor.annotation.Visits;
 import ca.phon.phontalk.PhonTalkError;
 import ca.phon.phontalk.PhonTalkMessage;
 
@@ -35,6 +37,16 @@ public class AntlrExceptionVisitor extends VisitorAdapter<RecognitionException> 
 	 */
 	private PhonTalkMessage message;
 	
+	private AntlrTokens tokens;
+	
+	public AntlrExceptionVisitor() {
+		
+	}
+	
+	public AntlrExceptionVisitor(AntlrTokens tokens) {
+		this.tokens = tokens;
+	}
+	
 	public PhonTalkMessage getMessage() {
 		return this.message;
 	}
@@ -45,6 +57,23 @@ public class AntlrExceptionVisitor extends VisitorAdapter<RecognitionException> 
 		message.setMessage((obj.getMessage() != null ? obj.getMessage() : obj.toString()));
 		message.setLineNumber(obj.line);
 		message.setColNumber(obj.charPositionInLine);
+	}
+	
+	@Visits
+	public void visitMismatchedTokenException(MismatchedTreeNodeException mte) {
+		// convert token ids to names if possible
+		if(tokens != null) {
+			String expectedToken = tokens.getTokenName(mte.expecting);
+			String unexpectedToken = tokens.getTokenName(mte.getUnexpectedType());
+			
+			String msg = (mte.getMessage() != null ? mte.getMessage() : mte.toString()) + " Expecting " + expectedToken + ", Got " + unexpectedToken;
+			message = new PhonTalkError(mte);
+			message.setMessage(msg);
+			message.setLineNumber(mte.line);
+			message.setColNumber(mte.charPositionInLine);
+		} else {
+			fallbackVisit(mte);
+		}
 	}
 	
 }

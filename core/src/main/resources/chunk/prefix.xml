@@ -67,6 +67,10 @@ import java.util.HashMap;
 	public ITranscript getSession() { return session; }
 	
 	private int uttIndex = 0;
+	
+	public void reportError(RecognitionException e) {
+		throw new TreeWalkerError(e);
+	}
 }
 ]]>
     </buffer>
@@ -95,6 +99,11 @@ private int uttIndex = 0;
 public int getRecordIndex() {
 	return uttIndex+1;
 }
+
+public void reportError(RecognitionException e) {
+	throw new TreeWalkerError(e);
+}
+
 }
 
 ]]>

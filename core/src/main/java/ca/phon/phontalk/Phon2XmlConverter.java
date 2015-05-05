@@ -23,32 +23,26 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 
-import ca.phon.application.IPhonFactory;
-
-import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplateWriter;
 
+import ca.phon.application.IPhonFactory;
 import ca.phon.application.transcript.ITranscript;
 import ca.phon.application.transcript.IUtterance;
 import ca.phon.application.transcript.TranscriptUtils;
-import ca.phon.phontalk.PhonTalkMessage.Severity;
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.Phon2XmlTreeBuilder;
 import ca.phon.phontalk.parser.Phon2XmlWalker;
 import ca.phon.phontalk.parser.TreeBuilderException;
-import ca.phon.system.logger.PhonLogger;
 
 public class Phon2XmlConverter {
 	
@@ -194,8 +188,26 @@ public class Phon2XmlConverter {
 			try {
 				Phon2XmlWalker.chat_return v = walker.chat();
 				v.st.toString();
+			} catch (TreeWalkerError e) {
+				if(e.getCause() instanceof RecognitionException) {
+					final RecognitionException re = (RecognitionException)e.getCause();
+					final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("Phon2XmlWalker.tokens"));
+					visitor.visit(re);
+					final PhonTalkMessage msg = visitor.getMessage();
+					msg.setMessage("Record #" + (i+1) + " " + msg.getMessage());
+					msg.setFile(f);
+					if(listener != null) {
+						listener.message(msg);
+					}
+				} else {
+					final PhonTalkError err = new PhonTalkError("Record #" + (i+1) + " " + e.getMessage(), e);
+					err.setFile(f);
+					if(listener != null) {
+						listener.message(err);
+					}
+				}
 			} catch (RecognitionException re) {
-				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor();
+				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("Phon2XmlWalker.tokens"));
 				visitor.visit(re);
 				final PhonTalkMessage msg = visitor.getMessage();
 				msg.setMessage("Record #" + (i+1) + " " + msg.getMessage());
