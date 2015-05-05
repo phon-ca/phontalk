@@ -327,7 +327,7 @@ public class Phon2XmlTreeBuilder {
 			if(p.getName() != null && p.getName().length() > 0) {
 				CommonTree pName = 
 					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_NAME");
-				pName.getToken().setText(p.getName());
+				pName.getToken().setText(p.getName().replaceAll("\\p{Space}", "_"));
 				pName.setParent(pNode);
 				pNode.addChild(pName);
 			}

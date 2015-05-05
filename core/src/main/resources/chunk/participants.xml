@@ -66,7 +66,7 @@ part_attr
 	:	PARTICIPANT_ATTR_ID
 	{	$participant::p.setId($PARTICIPANT_ATTR_ID.text);	}
 	|	PARTICIPANT_ATTR_NAME
-	{	$participant::p.setName($PARTICIPANT_ATTR_NAME.text);	}
+	{	$participant::p.setName($PARTICIPANT_ATTR_NAME.text.replaceAll("_", " "));	}
 	|	PARTICIPANT_ATTR_ROLE
 	{	$participant::p.setRole($PARTICIPANT_ATTR_ROLE.text.replaceAll("_", " "));	}
 	|	PARTICIPANT_ATTR_LANGUAGE
