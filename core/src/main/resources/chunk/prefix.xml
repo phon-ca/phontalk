@@ -90,6 +90,7 @@ options
 @header {
 package ca.phon.phontalk.parser;
 
+import ca.phon.phontalk.*;
 import ca.phon.system.logger.*;
 }
 

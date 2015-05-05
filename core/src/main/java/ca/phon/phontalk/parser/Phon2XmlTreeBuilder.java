@@ -1326,22 +1326,23 @@ public class Phon2XmlTreeBuilder {
 		parent.addChild(eNode);
 		
 		final String evtData = eData.substring(0, lastIdx);
-		
-		final Pattern osePattern = Pattern.compile("(.+)=(.+)");
-		final Matcher oseMatcher = osePattern.matcher(evtData);
-		
-		if(oseMatcher.matches()) {
-			final String participantId = oseMatcher.group(1);
-			final String oseWord = oseMatcher.group(2);
-			// TODO insert otherSpokenEvent
-		} else {
-			if(evtData.startsWith("=")) {
-				// insert happening
-				final String htxt = evtData.substring(1);
-				addHappening(eNode, htxt);
+		if(evtData.length() > 0) {
+			final Pattern osePattern = Pattern.compile("(.+)=(.+)");
+			final Matcher oseMatcher = osePattern.matcher(evtData);
+			
+			if(oseMatcher.matches()) {
+				final String participantId = oseMatcher.group(1);
+				final String oseWord = oseMatcher.group(2);
+				// TODO insert otherSpokenEvent
 			} else {
-				// insert action
-				addAction(eNode, evtData);
+				if(evtData.startsWith("=")) {
+					// insert happening
+					final String htxt = evtData.substring(1);
+					addHappening(eNode, htxt);
+				} else {
+					// insert action
+					addAction(eNode, evtData);
+				}
 			}
 		}
 		
