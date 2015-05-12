@@ -61,15 +61,20 @@ echoice1
 	}
 	|	happening
 	{
-		$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
-				"(happening:";
+		// default event option, no parenthesis needed
+		$e::buffer += ($e::buffer.length() > 0 ? " " : "");
 		if($happening.val != null)
 		{
 			$e::buffer += $happening.val;
 		}
-		$e::buffer += ")";
 	}
 	|	otherspokenevent
+	{
+		$e::buffer += ($e::buffer.length() > 0 ? " " : "");
+		if($otherspokenevent.val != null) {
+			$e::buffer += $otherspokenevent.val;
+		}
+	}
 	;
 
 echoice2

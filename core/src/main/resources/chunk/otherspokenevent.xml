@@ -36,7 +36,7 @@ otherspokenevent returns [String val]
 otherspokenevent
     :    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO w)
     ->    template( who={$OTHERSPOKENEVENT_ATTR_WHO.text}, word={$w.st} )
-    <<\<otherSpokenEvent times="<who>"\><word>\</otherSpokenEvent\> >>
+    <<\<otherSpokenEvent who="<who>"\><word>\</otherSpokenEvent\> >>
     ;
 
 ]]>

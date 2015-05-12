@@ -1333,15 +1333,15 @@ public class Phon2XmlTreeBuilder {
 			if(oseMatcher.matches()) {
 				final String participantId = oseMatcher.group(1);
 				final String oseWord = oseMatcher.group(2);
-				// TODO insert otherSpokenEvent
+				addOtherSpokenEvent(eNode, participantId, oseWord);
 			} else {
+				// everything is a 'happening'
 				if(evtData.startsWith("=")) {
 					// insert happening
 					final String htxt = evtData.substring(1);
 					addHappening(eNode, htxt);
 				} else {
-					// insert action
-					addAction(eNode, evtData);
+					addHappening(eNode, evtData);
 				}
 			}
 		}
@@ -1436,6 +1436,31 @@ public class Phon2XmlTreeBuilder {
 		parent.addChild(hNode);
 		
 		addTextNode(hNode, data);
+	}
+	
+	
+	/**
+	 * Add other spoken event
+	 * 
+	 */
+	private void addOtherSpokenEvent(CommonTree parent, String speaker, String data) {
+		CommonTree oseNode =
+				AntlrUtils.createToken(chatTokens, "OTHERSPOKENEVENT_START");
+		oseNode.setParent(parent);
+		parent.addChild(oseNode);
+		
+		CommonTree whoNode =
+				AntlrUtils.createToken(chatTokens, "OTHERSPOKENEVENT_ATTR_WHO");
+		whoNode.getToken().setText(speaker);
+		whoNode.setParent(oseNode);
+		oseNode.addChild(whoNode);
+		
+		CommonTree wNode =
+				AntlrUtils.createToken(chatTokens, "W_START");
+		wNode.setParent(oseNode);
+		oseNode.addChild(wNode);
+		
+		addTextNode(wNode, data);
 	}
 	
 	private void addInternalMedia(CommonTree parent, String data) {
