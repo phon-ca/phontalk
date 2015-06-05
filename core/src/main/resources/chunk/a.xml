@@ -69,15 +69,19 @@ scope {
 			|| $a::t.equals("target gloss")
 			|| $a::t.equals("gesture")
 			|| $a::t.equals("language")
+			|| $a::t.equals("orthography")
 			|| $a::t.equals("paralinguistics")
 			|| $a::t.equals("SALT")
 			|| $a::t.equals("speech act")
 			|| $a::t.equals("time stamp") )
 		{
+			String tierName = $a::t;
+			if(tierName.equals("orthography")) tierName = "ort"; // change tier name for orthpgraphy to avoid collisions
+			
 			IDepTierDesc tierDesc = null;
 			for(IDepTierDesc current:session.getDependentTiers())
 			{
-				if(!current.isGrouped() && current.getTierName().equals($a::t))
+				if(!current.isGrouped() && current.getTierName().equals(tierName))
 				{
 					tierDesc = current;
 					break;
@@ -87,12 +91,12 @@ scope {
 			if(tierDesc == null) {
 				// create the new tier
 				tierDesc = session.newDependentTier();
-				tierDesc.setTierName($a::t);
+				tierDesc.setTierName(tierName);
 				tierDesc.setIsGrouped(false);
 			}
 			
 			IDependentTier depTier = $u::utt.newDependentTier();
-			depTier.setTierName($a::t);
+			depTier.setTierName(tierName);
 			depTier.setTierValue($a::buffer);
 		}
 		
