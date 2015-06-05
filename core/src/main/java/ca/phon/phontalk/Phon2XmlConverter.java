@@ -113,6 +113,9 @@ public class Phon2XmlConverter {
 			err.setFile(sessionFile);
 			if(msgListener != null) msgListener.message(err);
 			return;
+		} catch (Exception e) {
+			findRecordsWithErrors(sessionFile, session, msgListener);
+			return;
 		}
 		
 		try {
@@ -178,6 +181,10 @@ public class Phon2XmlConverter {
 				tTree = treeBuilder.buildTree(testTranscript);
 			} catch (TreeBuilderException e1) {
 				final PhonTalkError err = new PhonTalkError(e1);
+				if(listener != null) listener.message(err);
+				continue;
+			} catch (Exception e) {
+				final PhonTalkError err = new PhonTalkError(e);
 				if(listener != null) listener.message(err);
 				continue;
 			}
