@@ -1214,8 +1214,23 @@ public class Phon2XmlTreeBuilder {
 		final List<CommonTree> retVal = new ArrayList<CommonTree>();
 		
 		// final all word sub-trees
-		final List<CommonTree> wordTrees =
+		final List<CommonTree> allWordTrees =
 				AntlrUtils.findAllChildrenWithType(uNode, chatTokens, "W_START", "TAGMARKER_START", "T_START");
+		final List<CommonTree> wordTrees = new ArrayList<>();
+		
+		for(CommonTree wordTree:allWordTrees) {
+			// get text node
+			List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT");
+			if(textNodes.size() > 0) {
+				CommonTree textNode = textNodes.get(0);
+				String wordText = textNode.getText();
+				if(wordText.equals("xxx") 
+						|| wordText.matches("\\(\\.+\\)")
+						|| wordText.startsWith("&")
+						|| wordText.startsWith("0")) continue;
+				wordTrees.add(wordTree);
+			}
+		}
 		
 		// get a listing of all mordata elements
 		final String morphologyTierValue = TranscriptUtils.getTierValue(utt, "Morphology");
