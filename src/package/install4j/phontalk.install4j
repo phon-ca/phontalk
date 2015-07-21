@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="6.0.2" transformSequenceNumber="5">
+<install4j version="6.0.3" transformSequenceNumber="5">
   <directoryPresets config="C:/Users/Greg/Documents/Phon/gitprojects/phontalk/app/target/phontalk-app-${compiler:sys.version}.jar" />
-  <application name="PhonTalk" distributionSourceDir="" applicationId="1561-7220-2446-4911" mediaDir="../../../target/media" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="PhonTalk" publisher="Gregory Hedlund" publisherWeb="https://phon.ca" version="1.6.3" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" macVolumeId="4a2ae0f0b28fd36d" javaMinVersion="1.8" javaMaxVersion="1.8" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
+  <application name="PhonTalk" distributionSourceDir="" applicationId="1561-7220-2446-4911" mediaDir="../../../target/media" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="PhonTalk" publisher="Gregory Hedlund" publisherWeb="https://phon.ca" version="1.6.4" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" macVolumeId="4a2ae0f0b28fd36d" javaMinVersion="1.8" javaMaxVersion="1.8" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
       <additionalLanguages />
@@ -367,7 +367,9 @@
     </applications>
   </installerGui>
   <mediaSets>
-    <macosArchive name="Mac OS X Single Bundle Archive" id="26" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" includedJRE="../../../external-resources/jres/jre-8u31-macosx-amd64_unpacked.tar.gz" manualJREEntry="true" appleJre="false" archiveType="dmg" volumeName="${compiler:sys.shortName}" launcherId="23">
+    <macosArchive name="Mac OS X Single Bundle Archive" id="26" customizedId="" mediaFileName="" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="true" includedJRE="../../../external-resources/jres/jre-8u31-macosx-amd64_unpacked.tar.gz" manualJREEntry="true" appleJre="false" archiveType="dmg" volumeName="${compiler:sys.shortName}" launcherId="23">
+      <excludedComponents />
+      <includedDownloadableComponents />
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude />
