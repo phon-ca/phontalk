@@ -63,7 +63,7 @@ tagmarker returns [String val]
 			// get the correct word group holder
 			if($t.size() > 0 || $ugrp.size() > 0) {
 			    word = ($t.size() > 0 ? $t::w : $ugrp::w);
-			} else if($u.size() > 0) {
+			} else if($u::utt.getWords().size() > 0) {
 			    word = $u::utt.getWords().get($u::utt.getWords().size()-1);
 			}
 			
