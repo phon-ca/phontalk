@@ -257,10 +257,11 @@ public class MorBuilder {
 		if(buffer.indexOf("+") >= 0) {
 			// mwc
 			retVal = mwc(tree, buffer);
-		} else if(buffer.length() == 1) {
+		} else if(buffer.length() == 1 || buffer.toString().startsWith("(")) {
 			if(buffer.charAt(0) == '.'
 					|| buffer.charAt(0) == '!'
-					|| buffer.charAt(0) == '?') {
+					|| buffer.charAt(0) == '?'
+					|| buffer.charAt(0) == '(') {
 				retVal = mt(tree, buffer);
 			} else {
 				retVal = mw(tree, buffer);
@@ -433,7 +434,7 @@ public class MorBuilder {
 	private CommonTree mt(CommonTree tree, StringBuffer buffer) {
 		final CommonTree retVal = 
 				AntlrUtils.createToken(chatTokens, "MT_START");
-		String type = "p"; // default
+		String type = "mt"; // default
 		switch(buffer.charAt(0)) {
 		case '!':
 			type = "e";
@@ -443,11 +444,25 @@ public class MorBuilder {
 			type = "q";
 			break;
 			
-		default:
+		case '.':
 			type = "p";
+			break;
+			
+		default:
+			type = "mt";
+			break;
 		}
 		final CommonTree mtType =
 				AntlrUtils.createToken(chatTokens, "MT_ATTR_TYPE");
+		
+		final String txt = buffer.toString();
+		final String typeRegex = "\\(mt:(.+)\\)";
+		final Pattern pattern = Pattern.compile(typeRegex);
+		final Matcher matcher = pattern.matcher(txt);
+		if(type.equals("mt")) {
+			type = (matcher.matches() ? matcher.group(1) : txt);
+		}
+		
 		mtType.getToken().setText(type);
 		mtType.setParent(retVal);
 		retVal.addChild(mtType);

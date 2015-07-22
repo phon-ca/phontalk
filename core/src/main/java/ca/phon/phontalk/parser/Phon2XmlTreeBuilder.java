@@ -1219,15 +1219,19 @@ public class Phon2XmlTreeBuilder {
 		final List<CommonTree> wordTrees = new ArrayList<>();
 		
 		for(CommonTree wordTree:allWordTrees) {
-			// get text node
-			List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT");
-			if(textNodes.size() > 0) {
-				CommonTree textNode = textNodes.get(0);
-				String wordText = textNode.getText();
-				if(wordText.equals("xxx") 
-						|| wordText.matches("\\(\\.+\\)")
-						|| wordText.startsWith("&")
-						|| wordText.startsWith("0")) continue;
+			if(wordTree.getToken().getTokenIndex() == chatTokens.getTokenType("W_START")) {
+				// get text node
+				List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT");
+				if(textNodes.size() > 0) {
+					CommonTree textNode = textNodes.get(0);
+					String wordText = textNode.getText();
+					if(wordText.equals("xxx") 
+							|| wordText.matches("\\(\\.+\\)")
+							|| wordText.startsWith("&")
+							|| wordText.startsWith("0")) continue;
+					wordTrees.add(wordTree);
+				}
+			} else {
 				wordTrees.add(wordTree);
 			}
 		}
@@ -1239,7 +1243,20 @@ public class Phon2XmlTreeBuilder {
 		for(String grpVal:morGrpVals) {
 			// split by space
 			final String[] wrdVals = grpVal.split("\\s+");
-			morWrdVals.addAll(Arrays.asList(wrdVals));
+			
+			String cWrd = null;
+			for(String wrdVal:wrdVals) {
+				if(wrdVal.startsWith("(") && !wrdVal.endsWith(")")) {
+					cWrd = wrdVal;
+				} else if(cWrd != null) {
+					cWrd += " " + wrdVal;
+					if(wrdVal.endsWith(")")) {
+						morWrdVals.add(cWrd);
+					}
+				} else {
+					morWrdVals.add(wrdVal);
+				}
+			}
 		}
 		
 		// create a mor tree for each word value and attempt to attach it to
@@ -1301,6 +1318,7 @@ public class Phon2XmlTreeBuilder {
 		for(String grpTierVal:grpTierVals) {
 			final String wrdVals[] = grpTierVal.split("\\s+");
 			for(String wrdVal:wrdVals) {
+				if(wrdVal.trim().length() == 0) continue;
 				final CommonTree graTree = mb.buildGraspTree(wrdVal);
 				graTrees.add(graTree);
 			}
