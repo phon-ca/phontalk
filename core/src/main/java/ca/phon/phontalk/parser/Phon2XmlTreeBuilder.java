@@ -1214,22 +1214,30 @@ public class Phon2XmlTreeBuilder {
 		final List<CommonTree> retVal = new ArrayList<CommonTree>();
 		
 		// final all word sub-trees
+		// word trees from utterance
 		final List<CommonTree> allWordTrees =
 				AntlrUtils.findAllChildrenWithType(uNode, chatTokens, "W_START", "TAGMARKER_START", "T_START");
 		final List<CommonTree> wordTrees = new ArrayList<>();
-		
+
 		for(CommonTree wordTree:allWordTrees) {
-			if(wordTree.getToken().getTokenIndex() == chatTokens.getTokenType("W_START")) {
-				// get text node
-				List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT");
-				if(textNodes.size() > 0) {
-					CommonTree textNode = textNodes.get(0);
-					String wordText = textNode.getText();
-					if(wordText.equals("xxx") 
-							|| wordText.matches("\\(\\.+\\)")
-							|| wordText.startsWith("&")
-							|| wordText.startsWith("0")) continue;
-					wordTrees.add(wordTree);
+			if(wordTree.getToken().getType() == chatTokens.getTokenType("W_START")) {
+				List<CommonTree> replNodes = 
+						AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "REPLACEMENT_START");
+				if(replNodes.size() > 0) {
+					// don't add this tree
+					continue;
+				} else {
+					// get text node
+					List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT");
+					if(textNodes.size() > 0) {
+						CommonTree textNode = textNodes.get(0);
+						String wordText = textNode.getText();
+						if(wordText.equals("xxx") 
+								|| wordText.matches("\\(\\.+\\)")
+								|| wordText.startsWith("&")
+								|| wordText.startsWith("0")) continue;
+						wordTrees.add(wordTree);
+					}
 				}
 			} else {
 				wordTrees.add(wordTree);
