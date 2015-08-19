@@ -70,6 +70,7 @@ scope {
 			|| $a::t.equals("gesture")
 			|| $a::t.equals("language")
 			|| $a::t.equals("orthography")
+			|| $a::t.equals("ort")
 			|| $a::t.equals("paralinguistics")
 			|| $a::t.equals("SALT")
 			|| $a::t.equals("speech act")
@@ -196,8 +197,7 @@ scope {
 aele
 	:	TEXT
 	{
-		$a::buffer += ($a::buffer.length() > 0 ? " " : "") +
-			$TEXT.text;
+		$a::buffer += $TEXT.text;
 	}
 	|	media
 	{
