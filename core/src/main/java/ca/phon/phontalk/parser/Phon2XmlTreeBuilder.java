@@ -148,11 +148,11 @@ public class Phon2XmlTreeBuilder {
 		
 		// if less than six chars, use the tier name
 		if(isChatTier || tierName.length() <= 6) {
-			if(tierName.equals("ort")) {
-				tierNameMap.put(tierName, "orthography");
-			} else {
+//			if(tierName.equals("ort")) {
+//				tierNameMap.put(tierName, "orthography");
+//			} else {
 				tierNameMap.put(tierName, tierName.toLowerCase());
-			}
+//			}
 		} else {
 			String[] tierWords = tierName.split("\\p{Space}");
 			
