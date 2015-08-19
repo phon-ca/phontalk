@@ -534,7 +534,7 @@ public class Phon2XmlTreeBuilder {
 		// handle special cases
 		
 		// overlaps
-		if(data.equals("<") || data.equals(">")) 
+		if(data.matches("<[0-9]*") || data.matches(">[0-9]*")) 
 		{
 			addOverlap(tree, data);
 		} 
@@ -1757,23 +1757,39 @@ public class Phon2XmlTreeBuilder {
 	/**
 	 * Add an overlap element
 	 */
-	private void addOverlap(CommonTree parent, String ovType) {
+	private void addOverlap(CommonTree parent, String ovdata) {
 		CommonTree ovNode = 
 			AntlrUtils.createToken(chatTokens, "OVERLAP_START");
 		ovNode.setParent(parent);
 		parent.addChild(ovNode);
 		
-		String actualType = "";
-		if(ovType.equals(">")) {
-			actualType = "overlap follows";
-		} else if(ovType.equals("<")) {
-			actualType = "overlap precedes";
+		final Pattern overlapPattern = Pattern.compile("([<>])([0-9]*)");
+		final Matcher matcher = overlapPattern.matcher(ovdata);
+		
+		if(matcher.matches()) {
+			String ovType = matcher.group(1);
+			String actualType = "";
+			if(ovType.equals(">")) {
+				actualType = "overlap follows";
+			} else if(ovType.equals("<")) {
+				actualType = "overlap precedes";
+			}
+			CommonTree typeNode = 
+				AntlrUtils.createToken(chatTokens, "OVERLAP_ATTR_TYPE");
+			typeNode.getToken().setText(actualType);
+			typeNode.setParent(ovNode);
+			ovNode.addChild(typeNode);
+			
+			if(matcher.groupCount() == 2) {
+				String ovIndex = matcher.group(2);
+				
+				CommonTree indexNode =
+					AntlrUtils.createToken(chatTokens, "OVERLAP_ATTR_INDEX");
+				indexNode.getToken().setText(ovIndex);
+				indexNode.setParent(ovNode);
+				ovNode.addChild(indexNode);
+			}
 		}
-		CommonTree typeNode = 
-			AntlrUtils.createToken(chatTokens, "OVERLAP_ATTR_TYPE");
-		typeNode.getToken().setText(actualType);
-		typeNode.setParent(ovNode);
-		ovNode.addChild(typeNode);
 	}
 	
 	/**

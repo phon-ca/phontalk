@@ -10,9 +10,14 @@ XPath: /xs:schema/xs:complexType[@name="overlapType"]
     <buffer name="Chat.g">
         <![CDATA[
 overlap
-	:	OVERLAP_START OVERLAP_ATTR_TYPE? OVERLAP_END?
-	->	^(OVERLAP_START OVERLAP_ATTR_TYPE?)
+	:	OVERLAP_START overlap_attr* OVERLAP_END?
+	->	^(OVERLAP_START overlap_attr*)
 	;	
+	
+overlap_attr
+	:	OVERLAP_ATTR_TYPE
+	|	OVERLAP_ATTR_INDEX
+	;
 
 ]]>
     </buffer>
@@ -21,18 +26,35 @@ overlap
     <buffer name="ChatTree.g">
         <![CDATA[
 overlap returns [String val]
-@init {
-	$val = "";
+scope {
+	String type;
+	String index;
 }
-	:	^(OVERLAP_START type=OVERLAP_ATTR_TYPE?)
+@init {
+	$overlap::type = "";
+	$overlap::index = "";
+}
+@after {
+	$val = $overlap::type + $overlap::index;
+}
+	:	^(OVERLAP_START overlap_attr*)
+	;
+	
+overlap_attr
+	:	type=OVERLAP_ATTR_TYPE
 	{
-		if($type != null) 
-		{
+		if($type != null) {
 			String ovType = $type.text;
 			if(ovType.equals("overlap follows")) 
-				$val = ">";
+				$overlap::type = ">";
 			else if(ovType.equals("overlap precedes"))
-				$val = "<";
+				$overlap::type = "<";
+		}
+	}
+	|	index=OVERLAP_ATTR_INDEX
+	{
+		if($index != null) {
+			$overlap::index = $index.text;
 		}
 	}
 	;
@@ -42,10 +64,19 @@ overlap returns [String val]
     <buffer name="Phon2XmlWalker.g">
         <![CDATA[
 overlap
-	:	^(OVERLAP_START OVERLAP_ATTR_TYPE?)
-	->    template( type={$OVERLAP_ATTR_TYPE.text} )
-	<<\<overlap type="<type>"/\> >>
-	;	
+	:	^(OVERLAP_START (attrlist+=overlap_attr)*)
+	->    template( attrs={$attrlist} )
+	<<\<overlap <attrs; separator=" ">/\> >>
+	;
+	
+overlap_attr
+	:	OVERLAP_ATTR_TYPE
+	->    template( type={$OVERLAP_ATTR_TYPE.text})
+	"type=\"<type>\""
+	|	OVERLAP_ATTR_INDEX
+	->    template( idx={$OVERLAP_ATTR_INDEX.text})
+	"index=\"<idx>\""
+	;
 ]]>
     </buffer>
     
