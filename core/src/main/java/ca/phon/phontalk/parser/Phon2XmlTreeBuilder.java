@@ -647,7 +647,6 @@ public class Phon2XmlTreeBuilder {
 		Stack<CommonTree> uttNodeStack = new Stack<CommonTree>();
 		uttNodeStack.push(uNode);
 		
-		
 		for(IWord wObj:utt.getWords()) {
 			IWordGroup wGrp = (IWordGroup)wObj;
 			
@@ -1228,14 +1227,15 @@ public class Phon2XmlTreeBuilder {
 					continue;
 				} else {
 					// get text node
-					List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT");
+					List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT", "W_ATTR_TYPE");
 					if(textNodes.size() > 0) {
 						CommonTree textNode = textNodes.get(0);
 						String wordText = textNode.getText();
 						if(wordText.equals("xxx") 
+								|| wordText.equals("yyy")
 								|| wordText.matches("\\(\\.+\\)")
-								|| wordText.startsWith("&")
-								|| wordText.startsWith("0")) continue;
+								|| wordText.matches("fragment")) continue;
+						
 						wordTrees.add(wordTree);
 					}
 				}
@@ -1780,7 +1780,7 @@ public class Phon2XmlTreeBuilder {
 			typeNode.setParent(ovNode);
 			ovNode.addChild(typeNode);
 			
-			if(matcher.groupCount() == 2) {
+			if(matcher.group(2) != null) {
 				String ovIndex = matcher.group(2);
 				
 				CommonTree indexNode =
