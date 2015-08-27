@@ -1298,7 +1298,7 @@ public class Phon2XmlTreeBuilder {
 					(wTypeTrees.size() > 0 && wTypeTrees.get(0).getToken().getText().equals("omission"));
 			
 			if(wOmitted ^ morOmitted) {
-				throw new IllegalArgumentException("one-to-one alignment error: mor");
+				throw new IllegalArgumentException("one-to-one alignment error: mor omission mismatch ");
 			} else {
 				wTree.addChild(mortree);
 				mortree.setParent(wTree);
@@ -1780,7 +1780,7 @@ public class Phon2XmlTreeBuilder {
 			typeNode.setParent(ovNode);
 			ovNode.addChild(typeNode);
 			
-			if(matcher.group(2) != null) {
+			if(matcher.group(2) != null && matcher.group(2).length() > 0) {
 				String ovIndex = matcher.group(2);
 				
 				CommonTree indexNode =
