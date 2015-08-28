@@ -66,7 +66,7 @@ overlap_attr
 overlap
 	:	^(OVERLAP_START (attrlist+=overlap_attr)*)
 	->    template( attrs={$attrlist} )
-	<<\<overlap <attrs; separator=" ">/\> >>
+	"\<overlap <attrs; separator=\" \">/\>"
 	;
 	
 overlap_attr
