@@ -1227,14 +1227,22 @@ public class Phon2XmlTreeBuilder {
 					continue;
 				} else {
 					// get text node
-					List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT", "W_ATTR_TYPE");
+					List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT");
 					if(textNodes.size() > 0) {
 						CommonTree textNode = textNodes.get(0);
 						String wordText = textNode.getText();
+						
+						// exclude xxx, yyy, and pauses
 						if(wordText.equals("xxx") 
 								|| wordText.equals("yyy")
-								|| wordText.matches("\\(\\.+\\)")
-								|| wordText.matches("fragment")) continue;
+								|| wordText.matches("\\(\\.+\\)")) continue;
+						
+						// exclude fragments
+						List<CommonTree> typeNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "W_ATTR_TYPE");
+						if(typeNodes.size() > 0) {
+							String typeText = typeNodes.get(0).getText();
+							if(typeText.equals("fragment")) continue;
+						}
 						
 						wordTrees.add(wordTree);
 					}
