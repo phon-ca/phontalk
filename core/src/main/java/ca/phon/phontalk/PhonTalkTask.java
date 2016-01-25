@@ -20,7 +20,7 @@ package ca.phon.phontalk;
 
 import java.io.File;
 
-import ca.phon.application.PhonTask;
+import ca.phon.worker.PhonTask;
 
 public abstract class PhonTalkTask extends PhonTask {
 	

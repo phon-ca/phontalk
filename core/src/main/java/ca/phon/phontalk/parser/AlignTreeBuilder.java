@@ -18,56 +18,29 @@
  */
 package ca.phon.phontalk.parser;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Logger;
 
 import org.antlr.runtime.tree.CommonTree;
 
-import ca.phon.alignment.PhoneMap;
-import ca.phon.phone.Phone;
-import ca.phon.syllable.SyllableConstituentType;
-import ca.phon.system.logger.PhonLogger;
+import ca.phon.ipa.IPAElement;
+import ca.phon.ipa.IPATranscript;
+import ca.phon.ipa.alignment.PhoneMap;
 
 public class AlignTreeBuilder {
+	
+	private final Logger LOGGER = Logger.getLogger(AlignTreeBuilder.class.getName());
 
 	private final AntlrTokens chatTokens = new AntlrTokens("Chat.tokens");
 	
 	/**
-	 * Build the alignment tree for the given phonemap
+	 * Build the alignment tree for the given {@link PhoneMap}
 	 * 
 	 */
 	public CommonTree buildAlignmentTree(PhoneMap pm) {
 		CommonTree alignNode = AntlrUtils.createToken(chatTokens, "ALIGN_START");
 
-		List<Phone> targetSoundPhones = new ArrayList<Phone>();
-		for(Phone p:pm.getTargetRep().getPhones()) {
-			boolean addPhone = true;
-
-			if(p.getPhoneString().equals("+")) {
-				addPhone = false;
-			} else if(p.getScType() == SyllableConstituentType.SyllableStressMarker ||
-					p.getScType() == SyllableConstituentType.WordBoundaryMarker ||
-					p.getScType() == SyllableConstituentType.SyllableBoundaryMarker) {
-				addPhone = false;
-			} 
-
-			if(addPhone) targetSoundPhones.add(p);
-		}
-
-		List<Phone> actualSoundPhones = new ArrayList<Phone>();
-		for(Phone p:pm.getActualRep().getPhones()) {
-			boolean addPhone = true;
-
-			if(p.getPhoneString().equals("+")) {
-				addPhone = false;
-			} else if(p.getScType() == SyllableConstituentType.SyllableStressMarker ||
-					p.getScType() == SyllableConstituentType.WordBoundaryMarker ||
-					p.getScType() == SyllableConstituentType.SyllableBoundaryMarker) {
-				addPhone = false;
-			}
-
-			if(addPhone) actualSoundPhones.add(p);
-		}
+		final IPATranscript targetSoundPhones = pm.getTargetRep().stripDiacritics().audiblePhones();
+		final IPATranscript actualSoundPhones = pm.getActualRep().stripDiacritics().audiblePhones();
 
 		// add alignment columns
 		int lastTIdx = 0;
@@ -78,22 +51,15 @@ public class AlignTreeBuilder {
 			colTree.setParent(alignNode);
 			alignNode.addChild(colTree);
 
-			Phone tP = pm.getTopAlignmentElements().get(i);
-			Phone aP = pm.getBottomAlignmentElements().get(i);
+			final IPAElement tP = pm.getTopAlignmentElements().get(i);
+			final IPAElement aP = pm.getBottomAlignmentElements().get(i);
 
 			if(tP != null) {
 
-				int tpIdx = -1;
-				for(int j = lastTIdx; j < targetSoundPhones.size(); j++) {
-					Phone p = targetSoundPhones.get(j);
-					if(p.equals(tP)) {
-						tpIdx = j;
-						break;
-					}
-				}
+				int tpIdx = targetSoundPhones.indexOf(tP);
 
 				if(tpIdx < 0) {
-					PhonLogger.warning("Invalid position ref for phone '" + tP
+					LOGGER.warning("Invalid position ref for phone '" + tP
 							+ "': '" +tpIdx+ "'");
 					break;
 				}
@@ -109,17 +75,10 @@ public class AlignTreeBuilder {
 
 			if(aP != null) {
 
-				int apIdx = -1;
-				for(int j = lastAIdx; j < actualSoundPhones.size(); j++) {
-					Phone p = actualSoundPhones.get(j);
-					if(p.equals(aP)) {
-						apIdx = j;
-						break;
-					}
-				}
+				int apIdx = actualSoundPhones.indexOf(aP);
 
 				if(apIdx < 0) {
-					PhonLogger.warning("Invalid position ref for phone '" + aP
+					LOGGER.warning("Invalid position ref for phone '" + aP
 							+ "': '" +apIdx+ "'");
 					break;
 				}

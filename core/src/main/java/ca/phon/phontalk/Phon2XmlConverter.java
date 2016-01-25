@@ -31,18 +31,17 @@ import java.io.PrintWriter;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.antlr.stringtemplate.NoIndentWriter;
-import org.antlr.stringtemplate.StringTemplateWriter;
 
-import ca.phon.application.IPhonFactory;
-import ca.phon.application.transcript.ITranscript;
-import ca.phon.application.transcript.IUtterance;
-import ca.phon.application.transcript.TranscriptUtils;
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.Phon2XmlTreeBuilder;
 import ca.phon.phontalk.parser.Phon2XmlWalker;
 import ca.phon.phontalk.parser.TreeBuilderException;
+import ca.phon.session.Record;
+import ca.phon.session.Session;
+import ca.phon.session.SessionFactory;
+import ca.phon.session.io.SessionInputFactory;
+import ca.phon.session.io.SessionReader;
 
 public class Phon2XmlConverter {
 	
@@ -88,10 +87,11 @@ public class Phon2XmlConverter {
 		}
 		
 		// open phon session, also performs validation of the input file
-		final IPhonFactory factory = IPhonFactory.getDefaultFactory();
-		final ITranscript session = factory.createTranscript();
-		try {
-			session.loadTranscriptFile(sessionFile);
+		final SessionInputFactory factory = new SessionInputFactory();
+		final SessionReader reader = factory.createReader("phonbank", "1.2");
+		Session session = null;
+		try(FileInputStream fin = new FileInputStream(sessionFile)) {
+			session = reader.readSession(fin);
 		} catch (IOException e) {
 			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
 			final PhonTalkMessage err = new PhonTalkError(e);
@@ -161,18 +161,16 @@ public class Phon2XmlConverter {
 	 * 
 	 * @param t
 	 */
-	private void findRecordsWithErrors(File f, ITranscript t, PhonTalkListener listener) {
+	private void findRecordsWithErrors(File f, Session session, PhonTalkListener listener) {
 		
-		IPhonFactory factory = IPhonFactory.getFactory(t.getVersion());
-
-		for(int i = 0; i < t.getNumberOfUtterances(); i++) {
-			ITranscript testTranscript = factory.createTranscript();
-
-			// copy session header and participant information
-			TranscriptUtils.copyTranscriptInfo(t, testTranscript);
-
-			IUtterance utt = t.getUtterances().get(i);
-			TranscriptUtils.addRecordToTranscript(testTranscript, utt, null);
+		final SessionFactory factory = SessionFactory.newFactory();
+		
+		for(int i = 0; i < session.getRecordCount(); i++) {
+			Session testSession = factory.createSession();
+			factory.copySessionInformation(session, testSession);
+			
+			Record record = session.getRecord(i);
+			testSession.addRecord(record);
 
 			// now attept to convert the test Transcript
 			Phon2XmlTreeBuilder treeBuilder = new Phon2XmlTreeBuilder();

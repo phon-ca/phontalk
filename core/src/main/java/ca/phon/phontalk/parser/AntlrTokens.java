@@ -19,18 +19,15 @@
 package ca.phon.phontalk.parser;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.xml.stream.events.XMLEvent;
-
-import ca.phon.system.logger.PhonLogger;
 
 /**
  * Handles mapping from String <-> ANTLR Token type
@@ -38,6 +35,9 @@ import ca.phon.system.logger.PhonLogger;
  *
  */
 public class AntlrTokens {
+	
+	private final static Logger LOGGER = Logger.getLogger(AntlrTokens.class.getName());
+	
 	public static final String TEXT_TOKEN = "TEXT";
 	public static final String END_SUFFIX = "_END";
 	public static final String START_SUFFIX = "_START";
@@ -73,7 +73,7 @@ public class AntlrTokens {
 			}
 			in.close();
 		} catch (IOException e) {
-			PhonLogger.warning(e.toString());
+			LOGGER.warning(e.toString());
 		}
 	}
 	

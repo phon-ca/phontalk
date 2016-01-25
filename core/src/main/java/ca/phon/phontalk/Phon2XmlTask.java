@@ -19,21 +19,15 @@
 package ca.phon.phontalk;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.UnsupportedEncodingException;
 
-import javax.management.modelmbean.XMLParseException;
 import javax.xml.bind.ValidationException;
 
-import ca.phon.application.IPhonFactory;
-import ca.phon.application.PhonTask;
-import ca.phon.application.transcript.ITranscript;
-import ca.phon.system.logger.PhonLogger;
+import ca.phon.session.Session;
+import ca.phon.session.io.SessionInputFactory;
+import ca.phon.session.io.SessionReader;
 
 /**
  * Converts a single xml file as a stream
@@ -53,10 +47,11 @@ public class Phon2XmlTask extends PhonTalkTask {
 		super.setStatus(TaskStatus.RUNNING);
 		
 		// check to make sure the file is a valid phon session
-		final ITranscript t = IPhonFactory.getDefaultFactory().createTranscript();
+		final SessionInputFactory inputFactory = new SessionInputFactory();
+		final SessionReader reader = inputFactory.createReader("phonbank", "1.2");
 		try {
 			final InputStream phonStream = new FileInputStream(getInputFile());
-			t.loadTranscriptData(phonStream);
+			reader.readSession(phonStream);
 		} catch (IOException e) {
 			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
 			final PhonTalkError err = new PhonTalkError(e);

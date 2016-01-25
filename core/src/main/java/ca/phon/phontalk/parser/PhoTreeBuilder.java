@@ -23,13 +23,8 @@ import java.util.List;
 
 import org.antlr.runtime.tree.CommonTree;
 
-import ca.phon.alignment.PhoneMap;
-import ca.phon.exceptions.ParserException;
-import ca.phon.phone.Phone;
-import ca.phon.phone.PhoneSequenceMatcher;
-import ca.phon.syllable.Syllable;
+import ca.phon.ipa.IPAElement;
 import ca.phon.syllable.SyllableConstituentType;
-import ca.phon.system.logger.PhonLogger;
 import ca.phon.util.Range;
 
 /**
@@ -46,7 +41,7 @@ public class PhoTreeBuilder {
 	 * @param List<Phone> phones
 	 * @return tree for model pho
 	 */
-	public CommonTree buildModelTree(List<Phone> phones) {
+	public CommonTree buildModelTree(List<IPAElement> phones) {
 		final CommonTree retVal = AntlrUtils.createToken(chatTokens, "MODEL_START");
 		final List<CommonTree> pwTrees = buildPwTrees(phones);
 		for(CommonTree pwTree:pwTrees) {
@@ -62,7 +57,7 @@ public class PhoTreeBuilder {
 	 * @param List<Phone> phones
 	 * @return tree for actual pho
 	 */
-	public CommonTree buildActualTree(List<Phone> phones) {
+	public CommonTree buildActualTree(List<IPAElement> phones) {
 		final CommonTree retVal = AntlrUtils.createToken(chatTokens, "ACTUAL_START");
 		final List<CommonTree> pwTrees = buildPwTrees(phones);
 		for(CommonTree pwTree:pwTrees) {
@@ -79,7 +74,7 @@ public class PhoTreeBuilder {
 	 * @param phones
 	 * @return CommonTree[]
 	 */
-	public List<CommonTree> buildPwTrees(List<Phone> phones) {
+	public List<CommonTree> buildPwTrees(List<IPAElement> phones) {
 		final ArrayList<CommonTree> pwTrees = 
 				new ArrayList<CommonTree>();
 		
