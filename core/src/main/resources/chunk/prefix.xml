@@ -15,8 +15,12 @@ options {
 @header {
 package ca.phon.phontalk.parser;
 
-import ca.phon.system.logger.*;
+import java.util.logging.*;
 
+}
+
+@members {
+private final static Logger LOGGER = Logger.getLogger("ca.phon.phontalk.parser");
 }
 ]]>
     </buffer>
@@ -37,36 +41,42 @@ options
 package ca.phon.phontalk.parser;
 
 import ca.phon.phontalk.*;
-import ca.phon.application.*;
-import ca.phon.application.transcript.*;
 import ca.phon.util.*;
-import ca.phon.phone.*;
-import ca.phon.alignment.*;
-import ca.phon.syllable.*;
-import ca.phon.engines.syllabifier.*;
-import ca.phon.engines.aligner.*;
-import ca.phon.system.logger.PhonLogger;
+import ca.phon.ipa.*;
+import ca.phon.ipa.alignment.*;
+import ca.phon.syllabifier.*;
+import ca.phon.project.*;
+import ca.phon.session.*;
+import ca.phon.extensions.*;
+import ca.phon.formatter.*;
+import ca.phon.visitor.*;
+import ca.phon.worker.*;
+import ca.phon.plugin.*;
 
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.text.ParseException;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.logging.*;
+
+import org.joda.time.*;
 }
 
 @members {
+	private final static Logger LOGGER = Logger.getLogger("ca.phon.phontalk.parser");
 
 	/** Default IPhonFactory */
-	private IPhonFactory phonFactory = 
-		IPhonFactory.getFactory("PB1.2");
+	private SessionFactory sessionFactory = 
+		SessionFactory.newFactory();
 
 	/** Session */
-	private ITranscript session = 
-		phonFactory.createTranscript();
+	private Session session = 
+		sessionFactory.createSession();
 
-	public ITranscript getSession() { return session; }
+	public Session getSession() { return session; }
 	
-	private int uttIndex = 0;
+	private int recordIndex = 0;
 	
 	public void reportError(RecognitionException e) {
 		throw new TreeWalkerError(e);
@@ -91,14 +101,17 @@ options
 package ca.phon.phontalk.parser;
 
 import ca.phon.phontalk.*;
-import ca.phon.system.logger.*;
+
+import java.util.logging.*;
 }
 
 @members {
-private int uttIndex = 0;
+private final static Logger LOGGER = Logger.getLogger("ca.phon.phontalk.parser");
 
-public int getRecordIndex() {
-	return uttIndex+1;
+private int recordIndex = 0;
+
+public int getRecordNumber() {
+	return recordIndex+1;
 }
 
 public void reportError(RecognitionException e) {
