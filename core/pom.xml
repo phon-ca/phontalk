@@ -13,7 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>ca.phon</groupId>
-			<artifactId>phon-app</artifactId>
+			<artifactId>phon-project</artifactId>
 			<version>${ca.phon.version}</version>
 		</dependency>
 		<dependency>

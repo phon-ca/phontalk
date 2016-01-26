@@ -22,6 +22,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>ca.phon</groupId>
+			<artifactId>phon-app</artifactId>
+			<version>${ca.phon.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.swinglabs</groupId>
 			<artifactId>swingx</artifactId>
 			<version>1.6.1</version>
