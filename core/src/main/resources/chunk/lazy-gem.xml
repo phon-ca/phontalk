@@ -5,7 +5,7 @@ Lazy-gem
 Markers between utterances
 XPath: /xs:schema/xs:element[@name="lazy-gem"]
 -->
-<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+<chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
     <buffer name="Chat.g">

@@ -4,7 +4,7 @@
 Phonetic Group
 XPath - /xs:schema/xs:complexType[@name="phoneticGroupType"]
 -->
-<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+<chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
     <buffer name="Chat.g">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<chunk xmlns="http://phon.ling.mun.ca/ns/chunk">
+<chunk xmlns="https://www.phon.ca/ns/chunk">
 
     <buffer name="Chat.g">
         <![CDATA[
