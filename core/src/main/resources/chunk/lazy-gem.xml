@@ -20,17 +20,20 @@ lazy_gem
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-lazy_gem
+lazy_gem returns [Comment lazyGem]
 	:	^(LAZY_GEM_START label=LAZY_GEM_ATTR_LABEL?)
 	{
-		IComment gem = session.newComment();
-		gem.setType(CommentEnum.fromString("LazyGem"));
+		$lazyGem = sessionFactory.newComment();
+		$lazyGem.setType(CommentEnum.fromString("LazyGem"));
 		
 		// create a new 'lazy-gem' comment in Phon
 		if($label != null)
 		{
-			gem.setValue($label.text);
+			$lazyGem.setValue($label.text);
 		}
+		
+		// add comment to last record
+		session.getRecord(session.numberOfRecords()-1).addComment($lazyGem);
 	}
 ;
 ]]>

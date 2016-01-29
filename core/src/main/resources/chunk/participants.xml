@@ -45,19 +45,15 @@ participants
 	:	^(PARTICIPANTS_START participant*)
 	;
 	
-participant
+participant returns [Participant participant]
 scope {
-	IParticipant p;
-	boolean bdaySet ;
+	Participant p;
 }
 @init {
-	$participant::p = session.newParticipant();
-	$participant::bdaySet = false;
+	$participant::p = sessionFactory.createParticipant();
 }
 @after {
-	if(!$participant::bdaySet && session.getDate() != null) {
-		$participant::p.setBirthDate(session.getDate());
-	}
+	$participant.participant = $participant::p;
 }
 	:	^(PARTICIPANT_START part_attr*)
 	;
@@ -68,29 +64,22 @@ part_attr
 	|	PARTICIPANT_ATTR_NAME
 	{	$participant::p.setName($PARTICIPANT_ATTR_NAME.text.replaceAll("_", " "));	}
 	|	PARTICIPANT_ATTR_ROLE
-	{	$participant::p.setRole($PARTICIPANT_ATTR_ROLE.text.replaceAll("_", " "));	}
+	{	$participant::p.setRole(
+			ParticipantRole.fromString($PARTICIPANT_ATTR_ROLE.text.replaceAll("_", " ")));	}
 	|	PARTICIPANT_ATTR_LANGUAGE
 	{	$participant::p.setLanguage($PARTICIPANT_ATTR_LANGUAGE.text);	}
 	|	PARTICIPANT_ATTR_AGE
 	{
-		// only set birthday using age if we don't have a birthday set already
-		// from age we need to calculate birthday, we can only
-		// do that if the session date is set
-		if(!$participant::bdaySet) {
-			if(session.getDate() != null) {
-				Calendar date = session.getDate();
-				PhonDurationFormat pdf = new PhonDurationFormat(PhonDurationFormat.XML_FORMAT);
-				
-				try {
-				PhonDuration age = (PhonDuration)pdf.parseObject($PARTICIPANT_ATTR_AGE.text);
-				Calendar bDay = PhonDuration.getBeforeDate(date, age);
-				bDay.setTimeZone(TimeZone.getTimeZone("GMT-0"));
-				$participant::p.setBirthDate(bDay);
-				
-				$participant::bdaySet = true;
-				} catch (ParseException e) {}
-			}
+		DateTime date = session.getDate();
+		AgeFormatter formatter = new AgeFormatter();
+		
+		try {
+			Period age = formatter.parse($PARTICIPANT_ATTR_AGE.text);
+			$participant::p.setAge(age);
+		} catch (ParseException e) {
+			LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
 		}
+		
 	}
 	|	PARTICIPANT_ATTR_GROUP
 	{	$participant::p.setGroup($PARTICIPANT_ATTR_GROUP.text);		}
@@ -105,23 +94,21 @@ part_attr
 	{	$participant::p.setEducation($PARTICIPANT_ATTR_EDUCATION.text);		}
 	|	PARTICIPANT_ATTR_FIRST_LANGUAGE
 	{	
-		PhonLogger.warning("Attribute 'first-language' not supported.");
+		LOGGER.warning("Attribute 'first-language' not supported.");
 	}
 	|	PARTICIPANT_ATTR_BIRTHPLACE
 	{
-		PhonLogger.warning("Attribute 'birthplace' not supported.");
+		LOGGER.warning("Attribute 'birthplace' not supported.");
 	}
 	|	PARTICIPANT_ATTR_BIRTHDAY
 	{
-		PhonDateFormat pdf = new PhonDateFormat(PhonDateFormat.YEAR_LONG);
+		DateFormatter formatter = new DateFormatter();
+		
 		try {
-			Calendar cal = (Calendar)pdf.parseObject($PARTICIPANT_ATTR_BIRTHDAY.text);
-			cal.setTimeZone(TimeZone.getTimeZone("GMT-0"));
-			$participant::p.setBirthDate(cal);
-			
-			$participant::bdaySet = true;
-		} catch (ParseException pe) {
-			PhonLogger.warning(pe.toString());
+			DateTime bday = formatter.format($PARTICIPANT_ATTR_BIRTHDAY.text);
+			$participant::p.setBirthday(bday);
+		} catch (ParseException e) {
+			LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
 		}
 	}
 	;

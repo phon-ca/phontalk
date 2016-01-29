@@ -47,15 +47,15 @@ gchoice
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-g returns [String val,  Integer phoRepCount, Map<Integer,IPhoneticRep> targetReps, Map<Integer, IPhoneticRep> actReps, Map<Integer, PhoneMap> phoneMaps]
+g returns [String val,  Integer phoRepCount, Map<Integer,IPATranscript> targetReps, Map<Integer, IPATranscript> actReps, Map<Integer, PhoneMap> phoneMaps]
 scope {
 	String buffer;
 	
 	// when g has <pg> children store the
  	// phonetic rep objects generated in the
  	// pho rule
- 	Map<Integer, IPhoneticRep> tReps;
- 	Map<Integer, IPhoneticRep> aReps;
+ 	Map<Integer, IPATranscript> tReps;
+ 	Map<Integer, IPATranscript> aReps;
 	Map<Integer, PhoneMap> pMaps;
  	
  	int pgCount;
@@ -63,8 +63,8 @@ scope {
 @init {
 	$g::buffer = new String();
 	
-	$g::tReps = new HashMap<Integer, IPhoneticRep>();
-	$g::aReps = new HashMap<Integer, IPhoneticRep>();
+	$g::tReps = new HashMap<Integer, IPATranscript>();
+	$g::aReps = new HashMap<Integer, IPATranscript>();
 	$g::pMaps = new HashMap<Integer, PhoneMap>();
 	
 	$g::pgCount = 0;

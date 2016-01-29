@@ -41,10 +41,13 @@ options
 package ca.phon.phontalk.parser;
 
 import ca.phon.phontalk.*;
+import ca.phon.phontalk.parser.*;
+
 import ca.phon.util.*;
 import ca.phon.ipa.*;
 import ca.phon.ipa.alignment.*;
 import ca.phon.syllabifier.*;
+import ca.phon.orthography.*;
 import ca.phon.project.*;
 import ca.phon.session.*;
 import ca.phon.extensions.*;
