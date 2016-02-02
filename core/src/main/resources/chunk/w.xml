@@ -110,7 +110,7 @@ wele
 		TierDescription tierDesc = null;
 		for(TierDescription current:session.getUserTiers())
 		{
-			if(current.getTierName().equals(tierName))
+			if(current.getName().equals(tierName))
 			{
 				tierDesc = current;
 				break;
@@ -119,10 +119,10 @@ wele
 		
 		if(tierDesc == null) {
 			// create the new tier
-			tierDesc = sessionFactory.createTierDescription(tierName, true);
+			tierDesc = sessionFactory.createTierDescription(tierName, true, String.class);
 			session.addUserTier(tierDesc);
 			
-			TierViewItem tvi = sessionFactory.creatTierViewItem(tierName, true, "default");
+			TierViewItem tvi = sessionFactory.createTierViewItem(tierName, true, "default");
 			List<TierViewItem> tierView = session.getTierView();
 			tierView.add(tvi);
 			session.setTierView(tierView);
@@ -138,7 +138,7 @@ wele
 		}
 		
 		String tierValue = 
-			(group.getTier(tierName) != null ? group.getTier(tierName) : "");
+			(group.getTier(tierName) != null ? group.getTier(tierName, String.class) : "");
 		tierValue += 
 		    (tierValue.length() == 0 ? "" : " ") + morVal;
 		group.setTier(tierName, String.class, tierValue);

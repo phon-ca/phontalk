@@ -23,9 +23,9 @@ ss returns [String val]
 			if($type != null)
 			{
 				if($type.text.equals("1"))
-					$val = Syllable.PrimaryStressChar + "";
+					$val = SyllableStress.PrimaryStress.getIpa() + "";
 				else if($type.text.equals("2"))
-					$val = Syllable.SecondaryStressChar + "";
+					$val = SyllableStress.SecondaryStress.getIpa() + "";
 			} else {
 				$val = "";
 			}

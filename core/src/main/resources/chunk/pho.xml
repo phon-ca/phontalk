@@ -40,62 +40,34 @@ pwele
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-pho
+pho returns [IPATranscript ipa]
 scope
 {
-	List<Phone> phones;
+	IPATranscriptBuilder builder;
 }
 @init
 {
-	$pho::phones = new ArrayList<Phone>();
+	$pho::builder = new IPATranscriptBuilder();
+}
+@after {
+	$pho.ipa = $pho::builder.toIPATranscript();
 }
 	:	model
 	{
-		List<Phone> phones = $pho::phones;
-		
-		// fix phone list if requested or required
-		String txt = "";
-		for(Phone p:$pho::phones) txt += p.getPhoneString();
-
+		IPATranscript transcript = $pho::builder.toIPATranscript();
 		if($g.size() == 0) {
-			IPhoneticRep modelRep =
-				$ugrp::w.getPhoneticRepresentation(Form.Target);
-			if(modelRep == null) {
-				modelRep = $ugrp::w.newPhoneticRepresentation();
-				modelRep.setForm(Form.Target);
-			}
-			modelRep.setPhones(phones);
+			$ugrp::g.setIPATarget(transcript);
 		} else {
-			// we are inside a global-g element, add to it's list
-			IPhoneticRep tRep = IPhonFactory.getDefaultFactory().createPhoneticRep();
-			tRep.setForm(Form.Target);
-			tRep.setPhones(phones);
-
-			$g::tReps.put($g::pgCount-1, tRep);
+			$g::tReps.put($g::pgCount-1, transcript);
 		}
 	}
 	|	actual
 	{
-		List<Phone> phones = $pho::phones;
-		
-		// fix phone list
-		String txt = "";
-		for(Phone p:$pho::phones) txt += p.getPhoneString();
-
+		IPATranscript transcript = $pho::builder.toIPATranscript();
 		if($g.size() == 0) {
-			IPhoneticRep actualRep =
-				$ugrp::w.getPhoneticRepresentation(Form.Actual);
-			if(actualRep == null) {
-				actualRep = $ugrp::w.newPhoneticRepresentation();
-				actualRep.setForm(Form.Actual);
-			}
-			actualRep.setPhones(phones);
+			$ugrp::g.setIPAActual(transcript);
 		} else {
-			IPhoneticRep aRep = IPhonFactory.getDefaultFactory().createPhoneticRep();
-			aRep.setForm(Form.Actual);
-			aRep.setPhones(phones);
-
-			$g::aReps.put($g::pgCount-1, aRep);
+			$g::aReps.put($g::pgCount-1, transcript);
 		}
 	}
 	;
@@ -110,10 +82,8 @@ actual
 
 pw
 @init {
-	if($pho::phones.size() > 0) {
-		Phone wbPhone = new Phone(" ");
-		wbPhone.setScType(SyllableConstituentType.WordBoundaryMarker);
-		$pho::phones.add(wbPhone);
+	if($pho::builder.size() > 0) {
+		$pho::builder.appendWordBoundary();
 	}
 }
 	:	^(PW_START pwele*)
@@ -122,19 +92,15 @@ pw
 pwele
 	:	ss
 	{
-		Phone ssPhone = new Phone($ss.val);
-		ssPhone.setScType(SyllableConstituentType.SyllableStressMarker);
-		$pho::phones.add(ssPhone);
+		$pho::builder.append($ss.val);
 	}
 	|	wk
 	{
-		Phone wkPhone = new Phone($wk.val);
-		wkPhone.setScType(SyllableConstituentType.SyllableBoundaryMarker);
-		$pho::phones.add(wkPhone);
+		$pho::builder.append($wk.val);
 	}
 	|	ph
 	{
-		$pho::phones.add($ph.val);
+		$pho::builder.append($ph.val);
 	}
 	;
 ]]>

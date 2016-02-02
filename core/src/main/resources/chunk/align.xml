@@ -37,7 +37,7 @@ actualref
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-align
+align returns [PhoneMap val]
 scope {
 	List<Integer> topAlign;
 	List<Integer> btmAlign;
@@ -48,18 +48,18 @@ scope {
 }
 	:	^(ALIGN_START alignCol*)
 	{
-		IPhoneticRep tRep =
-			$ugrp::w.getPhoneticRepresentation(Form.Target);
-		IPhoneticRep aRep =
-			$ugrp::w.getPhoneticRepresentation(Form.Actual);
+		IPATranscript tRep = $ugrp::g.getIPATarget();
+		IPATranscript aRep = $ugrp::g.getIPAActual();
 
 		if(tRep != null && aRep != null) {
 			PhoneMap pm = new PhoneMap(tRep, aRep);
 			pm.setTopAlignment($align::topAlign.toArray(new Integer[0]));
 			pm.setBottomAlignment($align::btmAlign.toArray(new Integer[0]));
 
-			$ugrp::w.setPhoneAlignment(pm);
+			$ugrp::g.setPhoneAlignment(pm);
+			$align.val = pm;
 		}
+		
 	}
 	;
 

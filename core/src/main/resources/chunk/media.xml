@@ -25,19 +25,19 @@ media_attr
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-media returns [IMedia val]
+media returns [MediaSegment val]
 scope {
-	IMedia m;
+	MediaSegment m;
 	boolean hasSetUnit;
 }
 @init {
-	$media::m = phonFactory.createMedia();
+	$media::m = sessionFactory.createMediaSegment();
 	$media::hasSetUnit = false;
 }
 @after {
 	// convert unit to miliseconds
 	if($media::m.getUnitType() == MediaUnit.Second) {
-		$val = phonFactory.createMedia();
+		$val = sessionFactory.createMediaSegment();
 		$val.setUnitType(MediaUnit.Millisecond);
 		$val.setStartValue($media::m.getStartValue() * 1000);
 		$val.setEndValue($media::m.getEndValue() * 1000);

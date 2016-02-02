@@ -24,20 +24,31 @@ phattr
     <buffer name="ChatTree.g">
         <![CDATA[
 
-ph returns [Phone val]
+ph returns [IPAElement val]
 scope {
+	IPAElementFactory factory;
 	SyllableConstituentType sctype;
 	boolean isHiatus;
 }
 @init {
-	$ph::sctype = SyllableConstituentType.Unknown;
+	$ph::factory = new IPAElementFactory();
+	$ph::sctype = SyllableConstituentType.UNKNOWN;
 	$ph::isHiatus = false;
 }
 	:	^(PH_START phattr* TEXT)
 	{
-		$val = new Phone($TEXT.text);
-		$val.setScType($ph::sctype);
-		$val.setDiphthongMember(!$ph::isHiatus);
+		IPATranscriptBuilder builder = new IPATranscriptBuilder();
+		builder.append($TEXT.text);
+		
+		if(builder.size() != 1) {
+			// TODO throw exception here
+		}
+		
+		$val = builder.toIPATranscript().elementAt(0);
+		
+		SyllabificationInfo info = $val.getExtension(SyllabificationInfo.class);
+		info.setConstituentType($ph::sctype);
+		info.setDiphthongMember(!$ph::isHiatus);
 	}
 	;
 	
@@ -45,11 +56,11 @@ phattr
 	:	PH_ATTR_SCTYPE
 	{
 		SyllableConstituentType scType =
-			SyllableConstituentType.getTypeForIdentifier($PH_ATTR_SCTYPE.text);
+			SyllableConstituentType.fromString($PH_ATTR_SCTYPE.text);
 		if(scType != null) {
 			$ph::sctype = scType;
 		} else {
-			PhonLogger.warning("Invalid syllable constituent type '" +
+			LOGGER.warning("Invalid syllable constituent type '" +
 				$PH_ATTR_SCTYPE.text + "'");
 		}
 	}

@@ -23,30 +23,34 @@ postcode
 	:	^(POSTCODE_START v=TEXT?)
 	{
 		// make a new tier in the session if necessary
-		IDepTierDesc postcodeDesc = null;
-		for(IDepTierDesc tierDesc:session.getDependentTiers())
+		TierDescription postcodeDesc = null;
+		for(TierDescription tierDesc:session.getUserTiers())
 		{
-			if(tierDesc.getTierName().equals("Postcode")) {
+			if(tierDesc.getName().equals("Postcode")) {
 				postcodeDesc = tierDesc;
 				break;
 			}
 		}
 		if(postcodeDesc == null) {
-			postcodeDesc = session.newDependentTier();
-			postcodeDesc.setTierName("Postcode");
-			postcodeDesc.setIsGrouped(false);
+			postcodeDesc = sessionFactory.createTierDescription(
+				"Postcode", false, String.class);
+			session.addUserTier(postcodeDesc);
+			
+			TierViewItem tvi = sessionFactory.createTierViewItem(
+				"Postcode", true, "default");
+			List<TierViewItem> tierView = session.getTierView();
+			tierView.add(tvi);
+			session.setTierView(tierView);
 		}
 		
-		// get the tier in the current record
-		IDependentTier depTier = 
-			$u::utt.getDependentTier(postcodeDesc.getTierName());
-		if(depTier == null) {
-			depTier = $u::utt.newDependentTier();
-			depTier.setTierValue("");
-			depTier.setTierName(postcodeDesc.getTierName());
+		Tier<String> postcodeTier = $u::r.getTier("Postcode", String.class);
+		if(postcodeTier == null) {
+			postcodeTier = sessionFactory.createTier("Postcode", String.class, false);
+			$u::r.putTier(postcodeTier);
 		}
-		depTier.setTierValue(
-			StringUtils.strip(depTier.getTierValue() + " " + $v.text));
+		
+		postcodeTier.setGroup(0,
+			(new String(postcodeTier.getGroup(0) + " " + $v.text)).trim());
 	}
 	;
 ]]>

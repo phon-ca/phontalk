@@ -23,7 +23,7 @@ lazy_gem
 lazy_gem returns [Comment lazyGem]
 	:	^(LAZY_GEM_START label=LAZY_GEM_ATTR_LABEL?)
 	{
-		$lazyGem = sessionFactory.newComment();
+		$lazyGem = sessionFactory.createComment();
 		$lazyGem.setType(CommentEnum.fromString("LazyGem"));
 		
 		// create a new 'lazy-gem' comment in Phon
@@ -33,7 +33,7 @@ lazy_gem returns [Comment lazyGem]
 		}
 		
 		// add comment to last record
-		session.getRecord(session.numberOfRecords()-1).addComment($lazyGem);
+		session.getRecord(session.getRecordCount()-1).addComment($lazyGem);
 	}
 ;
 ]]>

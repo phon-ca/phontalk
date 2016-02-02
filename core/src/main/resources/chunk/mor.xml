@@ -246,10 +246,10 @@ scope
     :    ^(GRA_START graattrs+)
     {
         // make sure dep tier exists in session
-		IDepTierDesc tierDesc = null;
-		for(IDepTierDesc current:session.getWordAlignedTiers())
+		TierDescription tierDesc = null;
+		for(TierDescription current:session.getUserTiers())
 		{
-			if(current.getTierName().equals("GRASP"))
+			if(current.getName().equals("GRASP"))
 			{
 				tierDesc = current;
 				break;
@@ -258,33 +258,32 @@ scope
 		
 		if(tierDesc == null) {
 			// create the new tier
-			tierDesc = session.newDependentTier();
-			tierDesc.setTierName("GRASP");
-			tierDesc.setIsGrouped(true);
+			tierDesc = sessionFactory.createTierDescription("GRASP", true, String.class);
+			session.addUserTier(tierDesc);
+
+            TierViewItem tvi = sessionFactory.createTierViewItem("GRASP", true, "default");
+            List<TierViewItem> tierView = session.getTierView();
+            tierView.add(tvi);
+            session.setTierView(tierView);
 		}
 		
 		// value
 		$val = $gra::index + "|" + $gra::head + "|" + $gra::relation;
 		
 		// add mor data as a dep tier of the current word(group)
-		IWord word = null;
+		Group group = null;
 		// get the correct word group holder
 		if($t.size() > 0 || $ugrp.size() > 0) {
-		    word = ($t.size() > 0 ? $t::w : $ugrp::w);
+		    group = ($t.size() > 0 ? $t::g : $ugrp::g);
 		} else if($u.size() > 0) {
-		    word = $u::utt.getWords().get($u::utt.getWords().size()-1);
+		    group = $u::r.getGroup($u::r.numberOfGroups()-1);
 		}
 		
-		IDependentTier depTier = 
-		    word.getDependentTier(tierDesc.getTierName());
-		if(depTier == null) {
-			depTier = word.newDependentTier();
-			depTier.setTierName(tierDesc.getTierName());
-		}
-		String tierValue = depTier.getTierValue();
+		String tierValue = group.getTier("GRASP", String.class);
+		if(tierValue == null) tierValue = new String();
 		tierValue += 
 		    (tierValue.length() == 0 ? "" : " ") + $val;
-		depTier.setTierValue(tierValue);
+		group.setTier("GRASP", String.class, tierValue);
     }
     ;
     

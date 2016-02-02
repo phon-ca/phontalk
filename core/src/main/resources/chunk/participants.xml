@@ -45,7 +45,7 @@ participants
 	:	^(PARTICIPANTS_START participant*)
 	;
 	
-participant returns [Participant participant]
+participant returns [Participant val]
 scope {
 	Participant p;
 }
@@ -53,7 +53,7 @@ scope {
 	$participant::p = sessionFactory.createParticipant();
 }
 @after {
-	$participant.participant = $participant::p;
+	$val = $participant::p;
 }
 	:	^(PARTICIPANT_START part_attr*)
 	;
@@ -105,8 +105,8 @@ part_attr
 		DateFormatter formatter = new DateFormatter();
 		
 		try {
-			DateTime bday = formatter.format($PARTICIPANT_ATTR_BIRTHDAY.text);
-			$participant::p.setBirthday(bday);
+			DateTime bday = formatter.parse($PARTICIPANT_ATTR_BIRTHDAY.text);
+			$participant::p.setBirthDate(bday);
 		} catch (ParseException e) {
 			LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
 		}

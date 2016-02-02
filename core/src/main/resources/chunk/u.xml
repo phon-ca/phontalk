@@ -93,14 +93,14 @@ scope {
 		// set media if avail
 		if($seg.val != null)
 		{
-			$u::utt.getSegment().setGroup(0, $seg.val);
+			$u::r.getSegment().setGroup(0, $seg.val);
 		}
 		
 		if($u::recordLang != null) {
 			// make sure the uttlang tier exists in session
 			TierDescription langTierDesc = null;
 			for(TierDescription depTierDesc:session.getUserTiers()) {
-				if(depTierDesc.getTierName().equals("uttlan")) {
+				if(depTierDesc.getName().equals("uttlan")) {
 					langTierDesc = depTierDesc;
 					break;
 				}
@@ -109,16 +109,16 @@ scope {
 				langTierDesc = sessionFactory.createTierDescription("uttlang", false);
 				session.addUserTier(langTierDesc);
 				
-				TierViewItem tvi = sessionFactory.createTierViewItem(langTierDesc.getTierName(),
+				TierViewItem tvi = sessionFactory.createTierViewItem(langTierDesc.getName(),
 					true, "default");
-				List<TierViewIte> tierView = session.getTierView();
+				List<TierViewItem> tierView = session.getTierView();
 				tierView.add(tvi);
 				session.setTierView(tierView);
 			}
 			
-			Tier<String> langTier = $u::r.getTier(langTierDesc.getTierName(), String.class);
+			Tier<String> langTier = $u::r.getTier(langTierDesc.getName(), String.class);
 			if(langTier == null) {
-				langTier = sessionFactory.createTier(langTierDesc.getTierName(), String.class);
+				langTier = sessionFactory.createTier(langTierDesc.getName(), String.class, true);
 				$u::r.putTier(langTier);
 			}
 			langTier.setGroup(0, $u::recordLang);
@@ -135,7 +135,7 @@ u_attrs
 	}
 	|	U_ATTR_LANG
 	{
-		$u::uttLang = $U_ATTR_LANG.text;
+		$u::recordLang = $U_ATTR_LANG.text;
 	}
 	;
 
@@ -189,22 +189,22 @@ uele
 				char c = gData.charAt(i);
 				
 				if(c == '[') {
-	                if(StringUtils.strip(currentGrp).length() > 0) {
-	                    grps.add(StringUtils.strip(currentGrp));
+	                if(currentGrp.trim().length() > 0) {
+	                    grps.add(currentGrp.trim());
 	                }
 	                currentGrp = "";
 	            }
 	            currentGrp += c;
 	            if(c == ']') {
-	                if(StringUtils.strip(currentGrp).length() > 0) {
-	                    grps.add(StringUtils.strip(currentGrp));
+	                if(currentGrp.trim().length() > 0) {
+	                    grps.add(currentGrp.trim());
 	                }
 	                currentGrp = "";
 	            }
 					
 			}
-			if(StringUtils.strip(currentGrp).length() > 0) {
-				grps.add(StringUtils.strip(currentGrp));
+			if(currentGrp.trim().length() > 0) {
+				grps.add(currentGrp.trim());
 			}
 			// place only an openeing '{' in our first group
 			// this tells the tree builder   to create this group surrounding the 
@@ -242,7 +242,7 @@ uele
 			}
 			
 			// finish 'global' group
-			Group endGrp = $u::r.newGroup();
+			Group endGrp = $u::r.addGroup();
 			endGrp.setOrthography(
 				(new OrthographyBuilder()).append("}").toOrthography());
 		} else {
@@ -260,8 +260,8 @@ uannotation
 		// add separator to last group
 		Group lastGroup = 
 			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthograpy(
-			(new OrthographyBuilder()).append($u::r.getOrthography())
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($s.val).toOrthography());
 	}
 	|	pause
@@ -269,8 +269,8 @@ uannotation
 		// add pause to last group as a comment
 		Group lastGroup = 
 			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthograpy(
-			(new OrthographyBuilder()).append($u::r.getOrthography())
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($pause.val).toOrthography());
 	}
 	|	e
@@ -279,40 +279,40 @@ uannotation
 		// add pause to last group as a comment
 		Group lastGroup = 
 			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthograpy(
-			(new OrthographyBuilder()).append($u::r.getOrthography())
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($e.val).toOrthography());
 	}
 	|	linker
 	{
 		Group lastGroup = 
 			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthograpy(
-			(new OrthographyBuilder()).append($u::r.getOrthography())
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($linker.val).toOrthography());
 	}
 	|	tagmarker
 	{
 		Group lastGroup = 
 			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthograpy(
-			(new OrthographyBuilder()).append($u::r.getOrthography())
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($tagmarker.val).toOrthography());
 	}
 	|	internal_media
 	{
 		Group lastGroup = 
 			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthograpy(
-			(new OrthographyBuilder()).append($u::r.getOrthography())
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($internal_media.val).toOrthography());
 	}
 	|	overlap_point
 	{
 		Group lastGroup = 
 			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthograpy(
-			(new OrthographyBuilder()).append($u::r.getOrthography())
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($overlap_point.val).toOrthography());
 	}
 	;
@@ -330,7 +330,7 @@ u
 			pc={$postcode.st},
 			segment={$media.st},
 			annotations={$annotationlist},
-			uttid={uttIndex++}
+			uttid={recordIndex++}
 		)
 	<<
 \<u <attrlist; separator=" "> uID="u<uttid>"\>
