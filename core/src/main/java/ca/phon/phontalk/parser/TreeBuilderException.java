@@ -18,17 +18,17 @@
  */
 package ca.phon.phontalk.parser;
 
-import ca.phon.application.transcript.ITranscript;
-import ca.phon.application.transcript.IUtterance;
+import ca.phon.session.Record;
+import ca.phon.session.Session;
 
 public class TreeBuilderException extends Exception {
 	
 	/**
 	 * session/utterance index
 	 */
-	private ITranscript session;
+	private Session session;
 	
-	private IUtterance utt;
+	private Record utt;
 
 	public TreeBuilderException() {
 		super();
@@ -46,19 +46,19 @@ public class TreeBuilderException extends Exception {
 		super(arg0);
 	}
 
-	public ITranscript getSession() {
+	public Session getSession() {
 		return session;
 	}
 
-	public void setSession(ITranscript session) {
+	public void setSession(Session session) {
 		this.session = session;
 	}
 
-	public IUtterance getUtt() {
+	public Record getUtt() {
 		return utt;
 	}
 
-	public void setUtt(IUtterance utt) {
+	public void setUtt(Record utt) {
 		this.utt = utt;
 	}
 
