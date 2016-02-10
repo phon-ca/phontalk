@@ -62,27 +62,29 @@ import org.jdesktop.swingx.JXTable;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import ca.phon.application.PhonTask;
-import ca.phon.application.PhonTask.TaskStatus;
-import ca.phon.application.PhonTaskListener;
-import ca.phon.application.PhonWorker;
-import ca.phon.application.project.IPhonProject;
-import ca.phon.application.project.PhonProject;
-import ca.phon.engines.search.report.csv.CSVTableDataWriter;
-import ca.phon.gui.DialogHeader;
-import ca.phon.gui.action.PhonActionEvent;
-import ca.phon.gui.action.PhonUIAction;
-import ca.phon.gui.components.HidablePanel;
+import ca.phon.app.project.DesktopProjectFactory;
 import ca.phon.phontalk.Phon2XmlTask;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
 import ca.phon.phontalk.PhonTalkTask;
 import ca.phon.phontalk.TalkbankValidator;
 import ca.phon.phontalk.Xml2PhonTask;
+import ca.phon.project.Project;
+import ca.phon.project.ProjectFactory;
+import ca.phon.project.exceptions.ProjectConfigurationException;
+import ca.phon.query.report.csv.CSVTableDataWriter;
+import ca.phon.ui.HidablePanel;
+import ca.phon.ui.action.PhonActionEvent;
+import ca.phon.ui.action.PhonUIAction;
+import ca.phon.ui.decorations.DialogHeader;
 import ca.phon.ui.nativedialogs.FileFilter;
 import ca.phon.ui.nativedialogs.NativeDialogs;
+import ca.phon.util.OSInfo;
 import ca.phon.util.OpenFileLauncher;
-import ca.phon.util.PhonUtilities;
+import ca.phon.worker.PhonTask;
+import ca.phon.worker.PhonTask.TaskStatus;
+import ca.phon.worker.PhonTaskListener;
+import ca.phon.worker.PhonWorker;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -267,7 +269,7 @@ public class PhonTalkFrame extends JFrame {
 	
 	public void openFile(File file) {
 		try {
-			OpenFileLauncher.launchBrowser(file.toURI().toURL());
+			OpenFileLauncher.openURL(file.toURI().toURL());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -282,7 +284,7 @@ public class PhonTalkFrame extends JFrame {
 			if(projectFile.exists()) {
 				try {
 					convertPhonProject(f);
-				} catch (IOException e) {
+				} catch (IOException | ProjectConfigurationException e) {
 					e.printStackTrace();
 				}
 			} else {
@@ -297,7 +299,7 @@ public class PhonTalkFrame extends JFrame {
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater( () -> {
-			if(!PhonUtilities.isMacOs()) {
+			if(!OSInfo.isMacOs()) {
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception e) {
@@ -319,14 +321,14 @@ public class PhonTalkFrame extends JFrame {
 		if(projectName == null) return;
 		
 		final File projectFolder = new File(file.getParentFile(), projectName);
-		final IPhonProject project = PhonProject.newProject(projectFolder.getAbsolutePath());
-		project.setProjectName(projectName);
-		project.save();
+		final ProjectFactory factory = new DesktopProjectFactory();
+		final Project project = factory.createProject(projectFolder);
+		project.setName(projectName);
 		
 		scanTalkBankFolderR(project, file);
 	}
 	
-	private void scanTalkBankFolderR(IPhonProject project, File file) {
+	private void scanTalkBankFolderR(Project project, File file) {
 		if(file.isDirectory()) {
 			// check each file in the folder
 			for(File f:file.listFiles()) {
@@ -355,7 +357,7 @@ public class PhonTalkFrame extends JFrame {
 								final String sessionPath = 
 										corpusName + File.separator + sessionName + ".xml";
 								final String sessionAbsPath = 
-										project.getProjectLocation() + File.separator + sessionPath;
+										project.getLocation() + File.separator + sessionPath;
 								
 								final File sessionFile = new File(sessionAbsPath);
 								final File corpusFile = sessionFile.getParentFile();
@@ -412,9 +414,10 @@ public class PhonTalkFrame extends JFrame {
 		taskTableModel.addTask(task);
 	}
 	
-	private void convertPhonProject(File file) throws IOException {
-		final IPhonProject project = PhonProject.fromFile(file.getAbsolutePath());
-		final File projectFolder = new File(project.getProjectLocation());
+	private void convertPhonProject(File file) throws IOException, ProjectConfigurationException {
+		final ProjectFactory factory = new DesktopProjectFactory();
+		final Project project = factory.openProject(file);
+		final File projectFolder = new File(project.getLocation());
 		final File outputFolder = new File(projectFolder.getParentFile(), projectFolder.getName() + "-xml");
 		outputFolder.mkdirs();
 		
@@ -423,7 +426,7 @@ public class PhonTalkFrame extends JFrame {
 			final File outputCorpusFolder = new File(outputFolder, corpus);
 			outputCorpusFolder.mkdir();
 			
-			for(String sessionName:project.getCorpusTranscripts(corpus)) {
+			for(String sessionName:project.getCorpusSessions(corpus)) {
 				final File sessionFile = new File(corpusFile, sessionName + ".xml");
 				final File outputFile = new File(outputCorpusFolder, sessionName + ".xml");
 				final Phon2XmlTask task = new Phon2XmlTask(sessionFile.getAbsolutePath(), 
@@ -523,7 +526,7 @@ public class PhonTalkFrame extends JFrame {
 		public void dropPhonProject(File file) {
 			try {
 				convertPhonProject(file);
-			} catch (IOException e) {
+			} catch (IOException | ProjectConfigurationException e) {
 				e.printStackTrace();
 			}
 		}
