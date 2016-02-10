@@ -20,12 +20,28 @@ package ca.phon.phontalk.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.antlr.runtime.tree.CommonTree;
 
+import ca.phon.ipa.CompoundWordMarker;
+import ca.phon.ipa.Contraction;
 import ca.phon.ipa.IPAElement;
+import ca.phon.ipa.IPATranscript;
+import ca.phon.ipa.IntonationGroup;
+import ca.phon.ipa.IntraWordPause;
+import ca.phon.ipa.Linker;
+import ca.phon.ipa.Pause;
+import ca.phon.ipa.Phone;
+import ca.phon.ipa.Sandhi;
+import ca.phon.ipa.StressMarker;
+import ca.phon.ipa.StressType;
+import ca.phon.ipa.SyllableBoundary;
 import ca.phon.syllable.SyllableConstituentType;
+import ca.phon.syllable.SyllableStress;
 import ca.phon.util.Range;
+import ca.phon.visitor.VisitorAdapter;
+import ca.phon.visitor.annotation.Visits;
 
 /**
  * Helper class for building CHAT trees for the 'pho' element in
@@ -33,17 +49,13 @@ import ca.phon.util.Range;
  */
 public class PhoTreeBuilder {
 	
+	private final static Logger LOGGER = Logger.getLogger(PhoTreeBuilder.class.getName());
+	
 	private final AntlrTokens chatTokens = new AntlrTokens("Chat.tokens");
 	
-	/**
-	 * Helper method for bulding 'model' trees.
-	 * 
-	 * @param List<Phone> phones
-	 * @return tree for model pho
-	 */
-	public CommonTree buildModelTree(List<IPAElement> phones) {
-		final CommonTree retVal = AntlrUtils.createToken(chatTokens, "MODEL_START");
-		final List<CommonTree> pwTrees = buildPwTrees(phones);
+	public CommonTree buildPhoTree(String eleName, IPATranscript ipa) {
+		final CommonTree retVal = AntlrUtils.createToken(chatTokens, eleName.toUpperCase() + "_START");
+		final List<CommonTree> pwTrees = buildPwTrees(ipa);
 		for(CommonTree pwTree:pwTrees) {
 			retVal.addChild(pwTree);
 			pwTree.setParent(retVal);
@@ -52,19 +64,23 @@ public class PhoTreeBuilder {
 	}
 	
 	/**
-	 * Helper method for bulding 'actual' trees.
+	 * Helper method for building 'model' trees.
+	 * 
+	 * @param List<Phone> phones
+	 * @return tree for model pho
+	 */
+	public CommonTree buildModelTree(IPATranscript ipa) {
+		return buildPhoTree("model", ipa);
+	}
+	
+	/**
+	 * Helper method for building 'actual' trees.
 	 * 
 	 * @param List<Phone> phones
 	 * @return tree for actual pho
 	 */
-	public CommonTree buildActualTree(List<IPAElement> phones) {
-		final CommonTree retVal = AntlrUtils.createToken(chatTokens, "ACTUAL_START");
-		final List<CommonTree> pwTrees = buildPwTrees(phones);
-		for(CommonTree pwTree:pwTrees) {
-			retVal.addChild(pwTree);
-			pwTree.setParent(retVal);
-		}
-		return retVal;
+	public CommonTree buildActualTree(IPATranscript ipa) {
+		return buildPhoTree("actual", ipa);
 	}
 	
 	/**
@@ -74,82 +90,86 @@ public class PhoTreeBuilder {
 	 * @param phones
 	 * @return CommonTree[]
 	 */
-	public List<CommonTree> buildPwTrees(List<IPAElement> phones) {
+	public List<CommonTree> buildPwTrees(IPATranscript ipa) {
 		final ArrayList<CommonTree> pwTrees = 
 				new ArrayList<CommonTree>();
 		
-		// split into 'words' using phonex
-		PhoneSequenceMatcher phonex = null;
-		try {
-			phonex =
-					PhoneSequenceMatcher.compile("{}:-WordBoundaryMarker*");
-		} catch (ParserException ex) {
-			ex.printStackTrace(); // sound never occur
-		}
-		
-		int phIdx = 0;
-		List<Range> wordRanges = phonex.findRanges(phones);
-		for(Range wordRange:wordRanges) {
+		for(IPATranscript word:ipa.words()) {
 			final CommonTree pwTree = AntlrUtils.createToken(chatTokens, "PW_START");
 			pwTrees.add(pwTree);
 			
-			for(int pIndex:wordRange) {
-				Phone p = phones.get(pIndex);
-
-				if(p.getPhoneString().matches("[+~]")) {
-					// add wk
-					CommonTree wkTree = AntlrUtils.createToken(chatTokens, "WK_START");
-					wkTree.setParent(pwTree);
-					pwTree.addChild(wkTree);
-					
-					final String wkType =
-							(p.getPhoneString().equals("+") ? "cmp" : "cli");
-
-					CommonTree wkTypeTree = AntlrUtils.createToken(chatTokens, "WK_ATTR_TYPE");
-					wkTypeTree.getToken().setText(wkType);
-					wkTypeTree.setParent(wkTree);
-					wkTree.addChild(wkTypeTree);
-				} else if(p.getScType() == SyllableConstituentType.SyllableStressMarker) {
-					// add ss
-					CommonTree ssTree = AntlrUtils.createToken(chatTokens, "SS_START");
-					ssTree.setParent(pwTree);
-					pwTree.addChild(ssTree);
-
-					CommonTree ssTypeTree = AntlrUtils.createToken(chatTokens, "SS_ATTR_TYPE");
-					if(p.getPhoneString().contains(Syllable.PrimaryStressChar+"")) {
-						ssTypeTree.getToken().setText("1");
-					} else if(p.getPhoneString().contains(Syllable.SecondaryStressChar+"")) {
-						ssTypeTree.getToken().setText("2");
-					} else {
-						// something strange is happening...
-						ssTypeTree.getToken().setText("1");
-					}
-					
-					ssTypeTree.setParent(ssTree);
-					ssTree.addChild(ssTypeTree);
-				} else {
-					// add ph
-					String phId = "ph" + (phIdx++);
-					CommonTree phTree = AntlrUtils.createToken(chatTokens, "PH_START");
-					phTree.setParent(pwTree);
-					pwTree.addChild(phTree);
-
-					CommonTree phIdTree = AntlrUtils.createToken(chatTokens, "PH_ATTR_ID");
-					phIdTree.getToken().setText(phId);
-					phIdTree.setParent(phTree);
-					phTree.addChild(phIdTree);
-
-					CommonTree scTree = AntlrUtils.createToken(chatTokens, "PH_ATTR_SCTYPE");
-					scTree.getToken().setText(p.getScType().getIdentifier());
-					scTree.setParent(phTree);
-					phTree.addChild(scTree);
-
-					AntlrUtils.addTextNode(phTree, chatTokens, p.getPhoneString());
-				}
-			}
+			word.accept(new ElementVisitor(pwTree));
 		}
 		
 		return pwTrees;
+	}
+	
+	class ElementVisitor extends VisitorAdapter<IPAElement> {
+		
+		CommonTree pwTree;
+		
+		private int phIdx = 0;
+		
+		public ElementVisitor(CommonTree tree) {
+			pwTree = tree;
+		}
+
+		@Override
+		public void fallbackVisit(IPAElement p) {
+			// add ph
+			String phId = "ph" + (phIdx++);
+			CommonTree phTree = AntlrUtils.createToken(chatTokens, "PH_START");
+			phTree.setParent(pwTree);
+			pwTree.addChild(phTree);
+
+			CommonTree phIdTree = AntlrUtils.createToken(chatTokens, "PH_ATTR_ID");
+			phIdTree.getToken().setText(phId);
+			phIdTree.setParent(phTree);
+			phTree.addChild(phIdTree);
+
+			CommonTree scTree = AntlrUtils.createToken(chatTokens, "PH_ATTR_SCTYPE");
+			scTree.getToken().setText(p.getScType().getIdentifier());
+			scTree.setParent(phTree);
+			phTree.addChild(scTree);
+
+			AntlrUtils.addTextNode(phTree, chatTokens, p.getText());
+		}
+		
+		@Visits
+		public void visitCompoundWordMarker(CompoundWordMarker cm) {
+			// add wk
+			CommonTree wkTree = AntlrUtils.createToken(chatTokens, "WK_START");
+			wkTree.setParent(pwTree);
+			pwTree.addChild(wkTree);
+			
+			final String wkType = "cmp";
+			CommonTree wkTypeTree = AntlrUtils.createToken(chatTokens, "WK_ATTR_TYPE");
+			wkTypeTree.getToken().setText(wkType);
+			wkTypeTree.setParent(wkTree);
+			wkTree.addChild(wkTypeTree);
+		}
+		
+		@Visits
+		public void visitStressMarker(StressMarker ss) {
+			// add ss
+			CommonTree ssTree = AntlrUtils.createToken(chatTokens, "SS_START");
+			ssTree.setParent(pwTree);
+			pwTree.addChild(ssTree);
+
+			CommonTree ssTypeTree = AntlrUtils.createToken(chatTokens, "SS_ATTR_TYPE");
+			if(ss.getType() == StressType.PRIMARY) {
+				ssTypeTree.getToken().setText("1");
+			} else if(ss.getType() == StressType.SECONDARY) {
+				ssTypeTree.getToken().setText("2");
+			} else {
+				// something strange is happening...
+				ssTypeTree.getToken().setText("1");
+			}
+			
+			ssTypeTree.setParent(ssTree);
+			ssTree.addChild(ssTypeTree);
+		}
+		
 	}
 	
 }

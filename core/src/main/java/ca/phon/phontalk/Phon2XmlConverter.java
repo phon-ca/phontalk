@@ -31,6 +31,8 @@ import java.io.PrintWriter;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.stringtemplate.NoIndentWriter;
+import org.antlr.stringtemplate.StringTemplateWriter;
 
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.AntlrTokens;
@@ -176,7 +178,7 @@ public class Phon2XmlConverter {
 			Phon2XmlTreeBuilder treeBuilder = new Phon2XmlTreeBuilder();
 			CommonTree tTree;
 			try {
-				tTree = treeBuilder.buildTree(testTranscript);
+				tTree = treeBuilder.buildTree(testSession);
 			} catch (TreeBuilderException e1) {
 				final PhonTalkError err = new PhonTalkError(e1);
 				if(listener != null) listener.message(err);

@@ -82,7 +82,8 @@ chat_attrs
 	}
 	|	CHAT_ATTR_DATE
 	{
-		// TODO parse xml date format into joda DateTime
+		LocalDate date = DateFormatter.stringToDateTime($CHAT_ATTR_DATE.text);
+		session.setDate(date);
 	}
 	|	CHAT_ATTR_PID
 	{

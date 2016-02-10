@@ -32,12 +32,14 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 
-import ca.phon.application.transcript.ITranscript;
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.ChatParser;
 import ca.phon.phontalk.parser.ChatTokenSource;
 import ca.phon.phontalk.parser.ChatTree;
+import ca.phon.session.Session;
+import ca.phon.session.io.SessionOutputFactory;
+import ca.phon.session.io.SessionWriter;
 
 /**
  * Reads in a talkbank XML file using SAX and
@@ -109,7 +111,7 @@ public class Xml2PhonConverter {
 		}
 		
 		// walk AST and output using string template
-		ITranscript session = null;
+		Session session = null;
 		try {
 			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(parserRet.getTree());
 			final ChatTree walker = new ChatTree(nodeStream);
@@ -146,9 +148,12 @@ public class Xml2PhonConverter {
 		
 		if(session != null) {
 			// save the transcript to the given file (also validates)
-			try {
-				final FileOutputStream fout = new FileOutputStream(outputFile);
-				session.saveTranscriptData(fout);
+			try (FileOutputStream fout = new FileOutputStream(outputFile)) {
+				final SessionOutputFactory sessionOutputFactory =
+						new SessionOutputFactory();
+				final SessionWriter writer = sessionOutputFactory.createWriter();
+				
+				writer.writeSession(session, fout);
 			} catch (IOException e) {
 				if(PhonTalkUtil.isVerbose()) e.printStackTrace();
 				final PhonTalkError err = new PhonTalkError(e);

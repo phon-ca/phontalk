@@ -70,7 +70,7 @@ part_attr
 	{	$participant::p.setLanguage($PARTICIPANT_ATTR_LANGUAGE.text);	}
 	|	PARTICIPANT_ATTR_AGE
 	{
-		DateTime date = session.getDate();
+		LocalDate date = session.getDate();
 		AgeFormatter formatter = new AgeFormatter();
 		
 		try {
@@ -105,7 +105,7 @@ part_attr
 		DateFormatter formatter = new DateFormatter();
 		
 		try {
-			DateTime bday = formatter.parse($PARTICIPANT_ATTR_BIRTHDAY.text);
+			LocalDate bday = formatter.parse($PARTICIPANT_ATTR_BIRTHDAY.text);
 			$participant::p.setBirthDate(bday);
 		} catch (ParseException e) {
 			LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
