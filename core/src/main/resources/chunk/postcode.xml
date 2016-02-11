@@ -23,26 +23,7 @@ postcode
 	:	^(POSTCODE_START v=TEXT?)
 	{
 		// make a new tier in the session if necessary
-		TierDescription postcodeDesc = null;
-		for(TierDescription tierDesc:session.getUserTiers())
-		{
-			if(tierDesc.getName().equals("Postcode")) {
-				postcodeDesc = tierDesc;
-				break;
-			}
-		}
-		if(postcodeDesc == null) {
-			postcodeDesc = sessionFactory.createTierDescription(
-				"Postcode", false, String.class);
-			session.addUserTier(postcodeDesc);
-			
-			TierViewItem tvi = sessionFactory.createTierViewItem(
-				"Postcode", true, "default");
-			List<TierViewItem> tierView = session.getTierView();
-			tierView.add(tvi);
-			session.setTierView(tierView);
-		}
-		
+		TierDescription postcodeDesc = ensureTierExists("Postcode", false);
 		Tier<String> postcodeTier = $u::r.getTier("Postcode", String.class);
 		if(postcodeTier == null) {
 			postcodeTier = sessionFactory.createTier("Postcode", String.class, false);

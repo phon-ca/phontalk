@@ -43,31 +43,32 @@ pwele
 pho returns [IPATranscript ipa]
 scope
 {
-	IPATranscriptBuilder builder;
+	StringBuffer buffer;
 }
 @init
 {
-	$pho::builder = new IPATranscriptBuilder();
-}
-@after {
-	$pho.ipa = $pho::builder.toIPATranscript();
+	$pho::buffer = new StringBuffer();
 }
 	:	model
 	{
-		IPATranscript transcript = $pho::builder.toIPATranscript();
+		$pho.ipa = ($pho::buffer.length() > 0 
+					?	(new IPATranscriptBuilder()).append($pho::buffer.toString()).toIPATranscript()
+					:	new IPATranscript());
 		if($g.size() == 0) {
-			$ugrp::g.setIPATarget(transcript);
+			$ugrp::g.setIPATarget($pho.ipa);
 		} else {
-			$g::tReps.put($g::pgCount-1, transcript);
+			$g::tReps.put($g::pgCount-1, $pho.ipa);
 		}
 	}
 	|	actual
 	{
-		IPATranscript transcript = $pho::builder.toIPATranscript();
+		$pho.ipa = ($pho::buffer.length() > 0
+					?	(new IPATranscriptBuilder()).append($pho::buffer.toString()).toIPATranscript()
+					:	new IPATranscript());
 		if($g.size() == 0) {
-			$ugrp::g.setIPAActual(transcript);
+			$ugrp::g.setIPAActual($pho.ipa);
 		} else {
-			$g::aReps.put($g::pgCount-1, transcript);
+			$g::aReps.put($g::pgCount-1, $pho.ipa);
 		}
 	}
 	;
@@ -82,8 +83,8 @@ actual
 
 pw
 @init {
-	if($pho::builder.size() > 0) {
-		$pho::builder.appendWordBoundary();
+	if($pho::buffer.length() > 0) {
+		$pho::buffer.append(" ");
 	}
 }
 	:	^(PW_START pwele*)
@@ -92,15 +93,16 @@ pw
 pwele
 	:	ss
 	{
-		$pho::builder.append($ss.val);
+		$pho::buffer.append($ss.val);
 	}
 	|	wk
 	{
-		$pho::builder.append($wk.val);
+		$pho::buffer.append($wk.val);
 	}
 	|	ph
 	{
-		$pho::builder.append($ph.val);
+		if($ph.val != null)
+			$pho::buffer.append($ph.val);
 	}
 	;
 ]]>

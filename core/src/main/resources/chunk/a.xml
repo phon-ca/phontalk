@@ -74,27 +74,7 @@ scope {
 			String tierName = $a::t;
 			if(tierName.equals("orthography")) tierName = "ort"; // change tier name for orthpgraphy to avoid collisions
 			
-			TierDescription tierDesc = null;
-			for(TierDescription current:session.getUserTiers())
-			{
-				if(!current.isGrouped() && current.getName().equals(tierName))
-				{
-					tierDesc = current;
-					break;
-				}
-			}
-			
-			if(tierDesc == null) {
-				// create the new tier
-				tierDesc = sessionFactory.createTierDescription(tierName, false, String.class);
-				session.addUserTier(tierDesc);
-				
-				TierViewItem tvi = sessionFactory.createTierViewItem(tierName, true, "default");
-				List<TierViewItem> tierView = session.getTierView();
-				tierView.add(tvi);
-				session.setTierView(tierView);
-			}
-			
+			TierDescription tierDesc = ensureTierExists(tierName, false);
 			Tier<String> userTier = $u::r.getTier(tierName, String.class);
 			if(userTier == null) {
 				userTier = sessionFactory.createTier(tierName, String.class, false);
@@ -116,28 +96,9 @@ scope {
 		{
 			String tierName = $a::f;
 			
-			TierDescription tierDesc = null;
-			for(TierDescription current:session.getUserTiers())
-			{
-				if(current.getName().equals(tierName))
-				{
-					tierDesc = current;
-					break;
-				}
-			}
-			
 			boolean isGrouped =
 			 	(tierVal.startsWith("[") && tierVal.endsWith("]"));
-			if(tierDesc == null) {
-				// create the new tier
-				tierDesc = sessionFactory.createTierDescription(tierName, isGrouped, String.class);
-				session.addUserTier(tierDesc);
-				
-				TierViewItem tvi = sessionFactory.createTierViewItem(tierName, true, "default");
-				List<TierViewItem> tierView = session.getTierView();
-				tierView.add(tvi);
-				session.setTierView(tierView);
-			}
+			TierDescription tierDesc = ensureTierExists(tierName, isGrouped);
 			
 			Tier<String> depTier = $u::r.getTier(tierName, String.class);
 			if(depTier == null) {

@@ -119,7 +119,7 @@ public class PhonTalkMessageTableModel extends AbstractTableModel {
 		final PhonTalkMessage msg = messages.get(rowIndex);
 		switch(columnIndex) {
 		case 0:
-			retVal = msg.getFile().getName();
+			retVal = (msg.getFile() != null ? msg.getFile().getName() : "");
 			break;
 			
 		case 1:

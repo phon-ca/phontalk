@@ -43,8 +43,25 @@ chat
 	
 chat_content
 	:	comment
+	{
+		// add comment to last record
+		if(session.getRecordCount() == 0)
+			session.getMetadata().addComment($comment.comment);
+		else
+			session.getRecord(session.getRecordCount()-1).addComment($comment.comment);
+	}
 	|	u
+	{
+		session.addRecord($u.record);
+	}
 	|	lazy_gem
+	{
+		// add comment to last record
+		if(session.getRecordCount() == 0)
+			session.getMetadata().addComment($lazy_gem.lazyGem);
+		else
+			session.getRecord(session.getRecordCount()-1).addComment($lazy_gem.lazyGem);
+	}
 	;
 	
 chat_attrs

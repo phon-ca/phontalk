@@ -41,26 +41,7 @@ tagmarker returns [String val]
 			String tierName = morData.getObj1();
 			
 			// make sure dep tier exists in session
-			TierDescription tierDesc = null;
-			for(TierDescription current:session.getUserTiers())
-			{
-				if(current.getName().equals(tierName))
-				{
-					tierDesc = current;
-					break;
-				}
-			}
-			
-			if(tierDesc == null) {
-				// create the new tier
-				tierDesc = sessionFactory.createTierDescription(tierName, true, String.class);
-				session.addUserTier(tierDesc);
-				
-				TierViewItem tvi = sessionFactory.createTierViewItem(tierName, true, "default");
-				List<TierViewItem> tierView = session.getTierView();
-				tierView.add(tvi);
-				session.setTierView(tierView);
-			}
+			TierDescription tierDesc = ensureTierExists(tierName, true);
 			
 			Group group = null;
 			// get the correct word group holder

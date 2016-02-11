@@ -98,23 +98,7 @@ scope {
 		
 		if($u::recordLang != null) {
 			// make sure the uttlang tier exists in session
-			TierDescription langTierDesc = null;
-			for(TierDescription depTierDesc:session.getUserTiers()) {
-				if(depTierDesc.getName().equals("uttlan")) {
-					langTierDesc = depTierDesc;
-					break;
-				}
-			}
-			if(langTierDesc == null) {
-				langTierDesc = sessionFactory.createTierDescription("uttlang", false);
-				session.addUserTier(langTierDesc);
-				
-				TierViewItem tvi = sessionFactory.createTierViewItem(langTierDesc.getName(),
-					true, "default");
-				List<TierViewItem> tierView = session.getTierView();
-				tierView.add(tvi);
-				session.setTierView(tierView);
-			}
+			TierDescription langTierDesc = ensureTierExists("uttlang", false);
 			
 			Tier<String> langTier = $u::r.getTier(langTierDesc.getName(), String.class);
 			if(langTier == null) {

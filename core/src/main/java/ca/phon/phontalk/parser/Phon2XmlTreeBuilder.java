@@ -298,10 +298,12 @@ public class Phon2XmlTreeBuilder {
 		CommonTree parent = 
 			AntlrUtils.createToken(chatTokens, "PARTICIPANTS_START");
 		parent.setParent(tree);
+		tree.addChild(parent);
 		
 		for(Participant p:t.getParticipants()) {
 			CommonTree pNode =
 				AntlrUtils.createToken(chatTokens, "PARTICIPANT_START");
+			parent.addChild(pNode);
 			pNode.setParent(parent);
 			
 			String partId = p.getId();
@@ -393,10 +395,7 @@ public class Phon2XmlTreeBuilder {
 				pSes.setParent(pNode);
 				pNode.addChild(pSes);
 			}
-			
-			parent.addChild(pNode);
 		}
-		tree.addChild(parent);
 	}
 	
 	/**

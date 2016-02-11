@@ -51,28 +51,7 @@ scope {
 			String tierName = $mor.tierName;
 			
 			// make sure dep tier exists in session
-			TierDescription tierDesc = null;
-			for(TierDescription current:session.getUserTiers())
-			{
-				if(current.getName().equals(tierName))
-				{
-					tierDesc = current;
-					break;
-				}
-			}
-			
-			if(tierDesc == null) {
-				// create the new tier
-				tierDesc = sessionFactory.createTierDescription(tierDesc.getName(),
-					tierDesc.isGrouped(), String.class);
-				session.addUserTier(tierDesc);
-				
-				TierViewItem tvi = sessionFactory.createTierViewItem(
-					tierDesc.getName(), true, "default");
-				List<TierViewItem> tierView = session.getTierView();
-				tierView.add(tvi);
-				session.setTierView(tierView);
-			}
+			TierDescription tierDesc = ensureTierExists(tierName, true);
 			
 			// add mor data as a dep tier of the current word(group)
 			Group group = null;

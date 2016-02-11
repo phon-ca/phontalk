@@ -24,7 +24,7 @@ phattr
     <buffer name="ChatTree.g">
         <![CDATA[
 
-ph returns [IPAElement val]
+ph returns [String val, SyllableConstituentType type, boolean hiatus]
 scope {
 	IPAElementFactory factory;
 	SyllableConstituentType sctype;
@@ -37,18 +37,9 @@ scope {
 }
 	:	^(PH_START phattr* TEXT)
 	{
-		IPATranscriptBuilder builder = new IPATranscriptBuilder();
-		builder.append($TEXT.text);
-		
-		if(builder.size() != 1) {
-			// TODO throw exception here
-		}
-		
-		$val = builder.toIPATranscript().elementAt(0);
-		
-		SyllabificationInfo info = $val.getExtension(SyllabificationInfo.class);
-		info.setConstituentType($ph::sctype);
-		info.setDiphthongMember(!$ph::isHiatus);
+		$val = $TEXT.text;
+		$type = $ph::sctype;
+		$hiatus = $ph::isHiatus;
 	}
 	;
 	

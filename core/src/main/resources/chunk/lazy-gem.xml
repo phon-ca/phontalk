@@ -31,9 +31,6 @@ lazy_gem returns [Comment lazyGem]
 		{
 			$lazyGem.setValue($label.text);
 		}
-		
-		// add comment to last record
-		session.getRecord(session.getRecordCount()-1).addComment($lazyGem);
 	}
 ;
 ]]>

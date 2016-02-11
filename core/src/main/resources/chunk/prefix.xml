@@ -65,6 +65,10 @@ import java.util.HashMap;
 import java.util.logging.*;
 
 import java.time.*;
+
+import javax.xml.datatype.*;
+
+import org.apache.commons.lang3.*;
 }
 
 @members {
@@ -84,6 +88,30 @@ import java.time.*;
 	
 	public void reportError(RecognitionException e) {
 		throw new TreeWalkerError(e);
+	}
+	
+	private TierDescription ensureTierExists(String tierName, boolean grouped) {
+		TierDescription tierDesc = null;
+		for(TierDescription current:session.getUserTiers())
+		{
+			if(current.isGrouped() == grouped && current.getName().equals(tierName))
+			{
+				tierDesc = current;
+				break;
+			}
+		}
+		
+		if(tierDesc == null) {
+			// create the new tier
+			tierDesc = sessionFactory.createTierDescription(tierName, grouped, String.class);
+			session.addUserTier(tierDesc);
+			
+			TierViewItem tvi = sessionFactory.createTierViewItem(tierName, true, "default");
+			List<TierViewItem> tierView = new ArrayList<>(session.getTierView());
+			tierView.add(tvi);
+			session.setTierView(tierView);
+		}
+		return tierDesc;
 	}
 }
 ]]>
@@ -107,6 +135,7 @@ package ca.phon.phontalk.parser;
 import ca.phon.phontalk.*;
 
 import java.util.logging.*;
+
 }
 
 @members {

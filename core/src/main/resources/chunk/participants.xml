@@ -42,7 +42,7 @@ part_attr
     <buffer name="ChatTree.g">
     	<![CDATA[
 participants 
-	:	^(PARTICIPANTS_START participant*)
+	:	^(PARTICIPANTS_START (participant { session.addParticipant($participant.val); })*)
 	;
 	
 participant returns [Participant val]
@@ -71,12 +71,14 @@ part_attr
 	|	PARTICIPANT_ATTR_AGE
 	{
 		LocalDate date = session.getDate();
-		AgeFormatter formatter = new AgeFormatter();
 		
 		try {
-			Period age = formatter.parse($PARTICIPANT_ATTR_AGE.text);
+			DatatypeFactory dtFactory = DatatypeFactory.newInstance();
+			javax.xml.datatype.Duration duration = dtFactory.newDuration($PARTICIPANT_ATTR_AGE.text);
+			Period age = Period.of(duration.getYears(), duration.getMonths(),
+										 duration.getDays());
 			$participant::p.setAge(age);
-		} catch (ParseException e) {
+		} catch (javax.xml.datatype.DatatypeConfigurationException e) {
 			LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
 		}
 		
