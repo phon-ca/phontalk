@@ -94,24 +94,28 @@ public class PhoTreeBuilder {
 		final ArrayList<CommonTree> pwTrees = 
 				new ArrayList<CommonTree>();
 		
+		int phIdx = 0;
 		for(IPATranscript word:ipa.words()) {
 			final CommonTree pwTree = AntlrUtils.createToken(chatTokens, "PW_START");
 			pwTrees.add(pwTree);
 			
-			word.accept(new ElementVisitor(pwTree));
+			ElementVisitor visitor = new ElementVisitor(pwTree, phIdx);
+			word.accept(visitor);
+			phIdx = visitor.phIdx;
 		}
 		
 		return pwTrees;
 	}
 	
-	class ElementVisitor extends VisitorAdapter<IPAElement> {
+	public class ElementVisitor extends VisitorAdapter<IPAElement> {
 		
 		CommonTree pwTree;
 		
 		private int phIdx = 0;
 		
-		public ElementVisitor(CommonTree tree) {
+		public ElementVisitor(CommonTree tree, int phIdx) {
 			pwTree = tree;
+			this.phIdx = phIdx;
 		}
 
 		@Override

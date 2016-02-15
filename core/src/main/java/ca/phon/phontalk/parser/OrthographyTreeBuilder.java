@@ -40,13 +40,11 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	
 	private Orthography ortho;
 	
-	private CommonTree uttNode;
+	private CommonTree terminator;
 	
-	public void buildTree(CommonTree uttNode, CommonTree parent, Orthography ortho) {
-		uttNodeStack.push(uttNode);
-		nodeStack.push(uttNode);
-		if(uttNode != parent && parent != null)
-			nodeStack.push(parent);
+	public void buildTree(Stack<CommonTree> uttNodeStack, CommonTree parent, Orthography ortho) {
+		this.uttNodeStack = uttNodeStack;
+		nodeStack.push(parent);
 		attachToLastChild = false;
 		this.ortho = ortho;
 		ortho.accept(this);
@@ -55,6 +53,16 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	@Override
 	public void fallbackVisit(OrthoElement obj) {
 		LOGGER.severe("Unknown element type " + obj.getClass() + " for " + obj.text());
+	}
+	
+	@Visits
+	public void visitWordnet(OrthoWordnet wordnet) {
+		visitWord(wordnet.getWord1());
+		String wkType = 
+				(wordnet.getMarker() == OrthoWordnetMarker.COMPOUND ? "cmp" : "cli");
+		insertWordnet((CommonTree)nodeStack.peek().getChild(nodeStack.peek().getChildCount()-1), wkType);
+		attachToLastChild = true;
+		visitWord(wordnet.getWord2());
 	}
 	
 	@Visits
@@ -126,8 +134,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				val += c;
 			}
 		}
-		if(val.length() > 0)
-			addTextNode(wParent, val);
+		addTextNode(wParent, val);
 	}
 	
 	/**
@@ -664,7 +671,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			// some tags need special handling...
 			// TERMINATOR
 			if (type.equals("t")) { 
-				addTerminator(uttNode, data);
+				addTerminator(uttNodeStack.get(0), data);
 			} else if(type.equals("replacement")) { 
 
 				CommonTree parentNode = nodeStack.peek();
@@ -774,14 +781,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		}
 	}
 	
-	@Visits
-	public void visitWordnet(OrthoWordnet wordnet) {
-		visitWord(wordnet.getWord1());
-		String wkType = 
-				(wordnet.getMarker() == OrthoWordnetMarker.COMPOUND ? "cmp" : "cli");
-		insertWordnet(nodeStack.peek(), wkType);
-		visitWord(wordnet.getWord2());
-	}
+	
 	
 	/**
 	 * wk
@@ -817,15 +817,15 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			break;
 			
 		case EXCLAMATION:
-			addTerminator(uttNode, "e");
+			addTerminator(uttNodeStack.get(0), "e");
 			break;
 			
 		case QUESTION:
-			addTerminator(uttNode, "q");
+			addTerminator(uttNodeStack.get(0), "q");
 			break;
 			
 		case PERIOD:
-			addTerminator(uttNode, "p");
+			addTerminator(uttNodeStack.get(0), "p");
 			break;
 			
 		case OPEN_BRACE:
@@ -833,9 +833,8 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				// create a super-<g> node
 				CommonTree superG = 
 						new CommonTree(new CommonToken(chatTokens.getTokenType("G_START")));
-				superG.setParent(uttNode);
-				uttNode.addChild(superG);
-				uttNode = superG;
+				superG.setParent(uttNodeStack.peek());
+				uttNodeStack.peek().addChild(superG);
 				
 				uttNodeStack.push(superG);
 			} else {
@@ -859,9 +858,9 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			if(ortho.length() == 1) {
 				// pop the group from the uttstack
 	    		uttNodeStack.pop();
-	    		uttNode = uttNodeStack.peek();
+			} else {
+				nodeStack.pop();
 			}
-			nodeStack.pop();
 			break;
 			
 		default:
@@ -880,10 +879,14 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
     	tgTree.setParent(parentNode);
 	}
 	
+	public CommonTree getTerminator() {
+		return this.terminator;
+	}
+	
 	/**
 	 * Add a terminator
 	 */
-	private void addTerminator(CommonTree parent, String type) {
+	public void addTerminator(CommonTree parent, String type) {
 		CommonTree tNode =
 			AntlrUtils.createToken(chatTokens, "T_START");
 		tNode.setParent(parent);
@@ -894,6 +897,8 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		ttNode.getToken().setText(type);
 		ttNode.setParent(tNode);
 		tNode.addChild(ttNode);
+		
+		terminator = tNode;
 	}
 	
 }

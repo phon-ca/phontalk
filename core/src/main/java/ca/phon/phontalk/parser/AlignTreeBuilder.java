@@ -39,12 +39,9 @@ public class AlignTreeBuilder {
 	public CommonTree buildAlignmentTree(PhoneMap pm) {
 		CommonTree alignNode = AntlrUtils.createToken(chatTokens, "ALIGN_START");
 
-		final IPATranscript targetSoundPhones = pm.getTargetRep().stripDiacritics().audiblePhones();
-		final IPATranscript actualSoundPhones = pm.getActualRep().stripDiacritics().audiblePhones();
-
 		// add alignment columns
-		int lastTIdx = 0;
-		int lastAIdx = 0;
+		int targetIdx = 0;
+		int actualIdx = 0;
 
 		for(int i = 0; i < pm.getAlignmentLength(); i++) {
 			CommonTree colTree = AntlrUtils.createToken(chatTokens, "COL_START");
@@ -55,41 +52,19 @@ public class AlignTreeBuilder {
 			final IPAElement aP = pm.getBottomAlignmentElements().get(i);
 
 			if(tP != null) {
-
-				int tpIdx = targetSoundPhones.indexOf(tP);
-
-				if(tpIdx < 0) {
-					LOGGER.warning("Invalid position ref for phone '" + tP
-							+ "': '" +tpIdx+ "'");
-					break;
-				}
-
 				CommonTree modelTree = AntlrUtils.createToken(chatTokens, "MODELREF_START");
-				String modelRef = "ph" + tpIdx;
+				String modelRef = "ph" + (targetIdx++);
 				AntlrUtils.addTextNode(modelTree, chatTokens, modelRef);
 				modelTree.setParent(colTree);
 				colTree.addChild(modelTree);
-
-				lastTIdx = tpIdx;
 			}
 
 			if(aP != null) {
-
-				int apIdx = actualSoundPhones.indexOf(aP);
-
-				if(apIdx < 0) {
-					LOGGER.warning("Invalid position ref for phone '" + aP
-							+ "': '" +apIdx+ "'");
-					break;
-				}
-
 				CommonTree actualTree = AntlrUtils.createToken(chatTokens, "ACTUALREF_START");
-				String actualRef = "ph" + apIdx;
+				String actualRef = "ph" + (actualIdx++);
 				AntlrUtils.addTextNode(actualTree, chatTokens, actualRef);
 				actualTree.setParent(colTree);
 				colTree.addChild(actualTree);
-
-				lastAIdx = apIdx;
 			}
 		}
 		

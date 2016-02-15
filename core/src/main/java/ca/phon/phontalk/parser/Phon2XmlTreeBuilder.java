@@ -353,15 +353,16 @@ public class Phon2XmlTreeBuilder {
 			}
 			
 			Period age = p.getAge(t.getDate());
-			if(!age.isNegative() && !age.isZero()) {
-				AgeFormatter pdf = new AgeFormatter();
+			if(age != null && !age.isNegative() && !age.isZero()) {
 				CommonTree pAge = 
 					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_AGE");
 				
-				pAge.getToken().setText(pdf.format(age));
+				pAge.getToken().setText(String.format("P%dY%dM%dD", age.getYears(), age.getMonths(), age.getDays()));
 				pAge.setParent(pNode);
 				pNode.addChild(pAge);
-				
+			}
+			
+			if(p.getBirthDate() != null) {
 				DateFormatter dateFormat = new DateFormatter();
 				CommonTree pBday = 
 					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_BIRTHDAY");
@@ -543,7 +544,13 @@ public class Phon2XmlTreeBuilder {
 			}
 			
 			Orthography ortho = group.getOrthography();
-			orthoBuilder.buildTree(uttNode, nodeStack.peek(), ortho);
+			orthoBuilder.buildTree(uttNodeStack, nodeStack.peek(), ortho);
+			
+			if(gIdx == utt.numberOfGroups() - 1) {
+				if(orthoBuilder.getTerminator() == null) {
+					orthoBuilder.addTerminator(uNode, "p");
+				}
+			}
 			
 			if(hasTarget || hasActual) {
 				CommonTree grpNode = nodeStack.peek();
@@ -553,7 +560,6 @@ public class Phon2XmlTreeBuilder {
 					CommonTree targetNode =
 							AntlrUtils.createToken(chatTokens, "MODEL_START");
 					targetNode.setParent(grpNode);
-					targetNode.getToken().setText("MS");
 					grpNode.addChild(targetNode);
 
 					// syllabification

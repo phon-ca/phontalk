@@ -44,6 +44,27 @@ public class AntlrUtils {
 		return new CommonTree(new CommonToken(tokenType));
 	}
 	
+	public static void printTree(CommonTree tree) {
+		final AntlrTokens chatTokens = new AntlrTokens("Chat.tokens");
+		printTree(chatTokens, tree, 0);
+	}
+	
+	public static void printTree(AntlrTokens chatTokens, CommonTree tree, int indent) {
+		if(tree != null) {
+			for(int i = 0; i < indent; i++) System.out.print("    ");
+			System.out.print(chatTokens.getTokenName(tree.getToken().getType()));
+			if(tree.getToken().getText() != null) {
+				System.out.print(":" + tree.getToken().getText());
+			}
+			System.out.println();
+		}
+		indent++;
+		for(int i = 0; i < tree.getChildCount(); i++) {
+			CommonTree child = (CommonTree)tree.getChild(i);
+			printTree(chatTokens, child, indent);
+		}
+	}
+	
 	/**
 	 * add a text node
 	 */

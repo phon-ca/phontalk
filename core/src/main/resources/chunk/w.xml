@@ -217,7 +217,7 @@ wattr
 w
 	:	^(W_START (wattrlist+=wattr)* langs? (contentlist+=wele)* )
 	->	template( content={$contentlist}, l={$langs.st}, wattrs={$wattrlist} )
-		"\<w <if(wattrs)><wattrs; separator=\"\"><endif>\><if(l)><l><endif><content; separator=\"\">\</w\>"
+		"\<w<if(wattrs)> <wattrs; separator=\"\"><endif><if(content)>\><else>/\><endif><if(l)><l><endif><if(content)><content; separator=\"\">\</w\><endif>"
 	;
 	
 wele

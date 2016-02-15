@@ -36,9 +36,11 @@ import org.antlr.stringtemplate.StringTemplateWriter;
 
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.AntlrTokens;
+import ca.phon.phontalk.parser.AntlrUtils;
 import ca.phon.phontalk.parser.Phon2XmlTreeBuilder;
 import ca.phon.phontalk.parser.Phon2XmlWalker;
 import ca.phon.phontalk.parser.TreeBuilderException;
+import ca.phon.session.Participant;
 import ca.phon.session.Record;
 import ca.phon.session.Session;
 import ca.phon.session.SessionFactory;
@@ -151,6 +153,8 @@ public class Phon2XmlConverter {
 			findRecordsWithErrors(sessionFile, session, msgListener);
 			return;
 		} catch (Exception | StackOverflowError e) {
+			final StackTraceElement ste = e.getStackTrace()[0];
+			System.out.println(ste.toString());
 			// sometime stackoverflow and other runtime errors
 			// can occur during string template output
 			findRecordsWithErrors(sessionFile, session, msgListener);
@@ -170,6 +174,10 @@ public class Phon2XmlConverter {
 		for(int i = 0; i < session.getRecordCount(); i++) {
 			Session testSession = factory.createSession();
 			factory.copySessionInformation(session, testSession);
+			factory.copySessionMetadata(session, testSession);
+			for(Participant p:session.getParticipants()) {
+				testSession.addParticipant(factory.cloneParticipant(p));
+			}
 			
 			Record record = session.getRecord(i);
 			testSession.addRecord(record);
@@ -196,6 +204,7 @@ public class Phon2XmlConverter {
 				Phon2XmlWalker.chat_return v = walker.chat();
 				v.st.toString();
 			} catch (TreeWalkerError e) {
+				AntlrUtils.printTree(tTree);
 				if(e.getCause() instanceof RecognitionException) {
 					final RecognitionException re = (RecognitionException)e.getCause();
 					final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("Phon2XmlWalker.tokens"));
@@ -214,6 +223,7 @@ public class Phon2XmlConverter {
 					}
 				}
 			} catch (RecognitionException re) {
+				AntlrUtils.printTree(tTree);
 				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("Phon2XmlWalker.tokens"));
 				visitor.visit(re);
 				final PhonTalkMessage msg = visitor.getMessage();
@@ -222,7 +232,8 @@ public class Phon2XmlConverter {
 				if(listener != null) {
 					listener.message(msg);
 				}
-			} catch (Exception e) {
+			} catch (Exception | StackOverflowError e) {
+				AntlrUtils.printTree(tTree);
 				final PhonTalkError err = new PhonTalkError("Record #" + (i+1) + " " + e.getMessage(), e);
 				err.setFile(f);
 				if(listener != null) {
@@ -234,4 +245,6 @@ public class Phon2XmlConverter {
 
 	}
 
+	
+	
 }
