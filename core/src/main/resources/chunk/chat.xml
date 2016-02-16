@@ -12,25 +12,30 @@ XPath - /xs:schema/xs:element[@name="CHAT"]
     <buffer name="Chat.g">
         <![CDATA[
 chat
-	:	CHAT_START chat_attrs* participants? chat_content* CHAT_END 
+	:	CHAT_START chat_attrs* metadata? participants chat_content* CHAT_END 
 	->	^(CHAT_START chat_attrs* participants? chat_content*)
 	;
 	
 chat_content
-	:	comment	
-	|	u
+	:	comment
+	|	tcu
+	|	begin_gem
+	|	end_gem
 	|	lazy_gem
+	|	u
 	;
 	
 chat_attrs
+	|	CHAT_ATTR_VERSION
+	|	CHAT_ATTR_DATE
+	|	CHAT_ATTR_CORPUS
 	:	CHAT_ATTR_MEDIA
 	|	CHAT_ATTR_MEDIATYPES
-	|	CHAT_ATTR_VERSION
 	|	CHAT_ATTR_LANG
-	|	CHAT_ATTR_CORPUS
-	|	CHAT_ATTR_ID
-	|	CHAT_ATTR_DATE
+	|	CHAT_ATTR_OPTIONS
+	|	CHAT_ATTR_COLORWORDS
 	|	CHAT_ATTR_PID
+	|	CHAT_ATTR_FONT
 	;
 ]]>
     </buffer>
@@ -65,7 +70,17 @@ chat_content
 	;
 	
 chat_attrs
-	:	CHAT_ATTR_MEDIA
+	:	CHAT_ATTR_VERSION
+	|	CHAT_ATTR_DATE
+	{
+		LocalDate date = DateFormatter.stringToDateTime($CHAT_ATTR_DATE.text);
+		session.setDate(date);
+	}
+	|	CHAT_ATTR_CORPUS
+	{
+		session.setCorpus($CHAT_ATTR_CORPUS.text);
+	}
+	|	CHAT_ATTR_MEDIA
 	{	
 		session.setMediaLocation($CHAT_ATTR_MEDIA.text + 
 			(session.getMediaLocation() != null ? session.getMediaLocation() : ""));
@@ -84,23 +99,17 @@ chat_attrs
 		session.setMediaLocation(
 			(session.getMediaLocation() != null ? session.getMediaLocation() : "") + suffix);
 	}
-	|	CHAT_ATTR_VERSION
 	|	CHAT_ATTR_LANG
 	{
 		session.setLanguage($CHAT_ATTR_LANG.text);
 	}
-	|	CHAT_ATTR_CORPUS
+	|	CHAT_ATTR_OPTIONS
 	{
-		session.setCorpus($CHAT_ATTR_CORPUS.text);
+		// TODO
 	}
-	|	CHAT_ATTR_ID
+	|	CHAT_ATTR_COLORWORDS
 	{
-		session.setName($CHAT_ATTR_ID.text);
-	}
-	|	CHAT_ATTR_DATE
-	{
-		LocalDate date = DateFormatter.stringToDateTime($CHAT_ATTR_DATE.text);
-		session.setDate(date);
+		// TODO
 	}
 	|	CHAT_ATTR_PID
 	{
@@ -108,6 +117,10 @@ chat_attrs
 		comment.setType(CommentEnum.Code);
 		comment.setValue("pid " + $CHAT_ATTR_PID.text);
 		session.getMetadata().addComment(comment);
+	}
+	|	CHAT_ATTR_FONT
+	{
+		// TODO
 	}
 	;
 ]]>
@@ -146,7 +159,19 @@ chat_content
 	;
 	
 chat_attrs
-	:	CHAT_ATTR_MEDIA
+	:	CHAT_ATTR_VERSION
+	->	template(version={$CHAT_ATTR_VERSION.text})
+	<<
+Version="<version>" >>
+	|	CHAT_ATTR_DATE
+	->	template(date={$CHAT_ATTR_DATE.text})
+	<<
+Date="<date>" >>
+	|	CHAT_ATTR_CORPUS
+	->	template(corpus={$CHAT_ATTR_CORPUS.text})
+	<<
+Corpus="<corpus>" >>
+	|	CHAT_ATTR_MEDIA
 	->	template(media={$CHAT_ATTR_MEDIA.text})
 	<<
 Media="<media>" >>
@@ -154,38 +179,42 @@ Media="<media>" >>
 	->	template(types={$CHAT_ATTR_MEDIATYPES.text})
 	<<
 Mediatypes="<types>" >>
-	|	CHAT_ATTR_VERSION
-	->	template(version={$CHAT_ATTR_VERSION.text})
-	<<
-Version="<version>" >>
 	|	CHAT_ATTR_LANG
 	->	template(lang={$CHAT_ATTR_LANG.text})
 	<<
 Lang="<lang>" >>
-	|	CHAT_ATTR_CORPUS
-	->	template(corpus={$CHAT_ATTR_CORPUS.text})
+	|	CHAT_ATTR_OPTIONS
+	->	template(opts={$CHAT_ATTR_OPTIONS.text})
 	<<
-Corpus="<corpus>" >>
+Options="<opts>" >>
+	|	CHAT_ATTR_COLORWORDS
+	->	template(wrds={$CHAT_ATTR_COLORWORDS.text})
+	<<
+Colorwords="<wrds>" >>
 	|	CHAT_ATTR_ID
 	->	template(id={$CHAT_ATTR_ID.text})
 	<<
 Id="<id>" >>
-	|	CHAT_ATTR_DATE
-	->	template(date={$CHAT_ATTR_DATE.text})
-	<<
-Date="<date>" >>
 	|	CHAT_ATTR_PID
 	->	template(pid={$CHAT_ATTR_PID.text})
 	<<
 PID="<pid>" >>
+	|	CHAT_ATTR_FONT
+	->	template(font={$CHAT_ATTR_FONT.text})
+	<<
+Font="<font>" >>
 	;
 	
 ]]>
 	</buffer>
     
+    <include>metadata.xml</include>
     <include>participants.xml</include>
     <include>comment.xml</include>
+	<include>tcu.xml</include>
+	<include>begin_gem.xml</include>
+	<include>end_gem.xml</include>
+	<include>lazy_gem.xml</include>
     <include>u.xml</include>
-	<include>lazy-gem.xml</include>
 
 </chunk>

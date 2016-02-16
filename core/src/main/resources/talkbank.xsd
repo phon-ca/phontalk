@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
    xmlns:xml="http://www.w3.org/XML/1998/namespace"
   -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:tb="http://www.talkbank.org/ns/talkbank" xmlns="http://www.talkbank.org/ns/talkbank"
-  targetNamespace="http://www.talkbank.org/ns/talkbank" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-  jaxb:version="2.1" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-  jaxb:extensionBindingPrefixes="xjc" xmlns:xhtml="http://www.w3.org/1999/xhtml"
-  elementFormDefault="qualified" version="2.0.3" id="Talkbank">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tb="http://www.talkbank.org/ns/talkbank" xmlns="http://www.talkbank.org/ns/talkbank" targetNamespace="http://www.talkbank.org/ns/talkbank" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" jaxb:extensionBindingPrefixes="xjc" xmlns:xhtml="http://www.w3.org/1999/xhtml" elementFormDefault="qualified" version="2.1.0" id="Talkbank">
 
-  <xs:import namespace="http://www.w3.org/XML/1998/namespace"
-    schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
 
   <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
     <xs:appinfo>
@@ -52,7 +45,7 @@
                 section on this topic...</a>
             </xs:documentation>
           </xs:annotation>
-          <xs:complexType>
+          <xs:complexType mixed="false">
             <xs:sequence>
               <xs:element name="participant" type="participantType" maxOccurs="unbounded"/>
             </xs:sequence>
@@ -77,7 +70,7 @@
                   on this topic...</a>
               </xs:documentation>
             </xs:annotation>
-            <xs:complexType>
+            <xs:complexType mixed="false">
               <xs:attribute name="label" type="xs:string" use="required">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                   <xs:documentation> Label for a begin/end gem. </xs:documentation>
@@ -98,7 +91,7 @@
                   on this topic...</a>
               </xs:documentation>
             </xs:annotation>
-            <xs:complexType>
+            <xs:complexType mixed="false">
               <xs:attribute name="label" type="xs:string" use="required">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                   <xs:documentation> Label for a begin/end gem. </xs:documentation>
@@ -121,7 +114,7 @@
                   on this topic...</a>
               </xs:documentation>
             </xs:annotation>
-            <xs:complexType>
+            <xs:complexType mixed="false">
               <xs:attribute name="label" type="nonemptyStringType" use="required">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                   <xs:documentation> Label for a lazy gem. </xs:documentation>
@@ -138,16 +131,6 @@
         </xs:choice>
 
       </xs:sequence>
-
-      <xs:attribute name="Id" type="nonemptyStringType" use="required">
-        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation> Id for transcript, usually derived from the file name. </xs:documentation>
-          <xs:documentation>
-            <a href="http://childes.psy.cmu.edu/manuals/chat.html#TranscriptId">CHAT manual section
-              on this topic...</a>
-          </xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
 
       <xs:attribute name="Version" type="nonemptyStringType" use="required">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -365,7 +348,7 @@
   </xs:complexType>
 
 
-  <xs:complexType name="shorteningType">
+  <xs:complexType name="shorteningType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation> Unspoken segment in a word. </xs:documentation>
       <xs:documentation>
@@ -382,7 +365,7 @@
     </xs:simpleContent>
   </xs:complexType>
 
-  <xs:complexType name="freecodeType">
+  <xs:complexType name="freecodeType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation> Unscoped complex local events in the middle of an utterance. </xs:documentation>
       <xs:documentation>
@@ -397,7 +380,7 @@
 
   <xs:element name="freecode" type="freecodeType"/>
 
-  <xs:complexType name="postcodeType">
+  <xs:complexType name="postcodeType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation> Code that can only occur at the end of an utterance. Currently arbitrary
         information, although there are some conventions. </xs:documentation>
@@ -716,6 +699,17 @@
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
+
+      <xs:enumeration value="EndTurn">
+        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+          <xs:documentation> End Turn. </xs:documentation>
+          <xs:documentation>
+            <a href="http://childes.psy.cmu.edu/manuals/chat.html#EndTurn_Header">CHAT manual section
+              on this topic...</a>
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+
     </xs:restriction>
   </xs:simpleType>
 
@@ -744,8 +738,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>[!!]</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#ContrastiveStressing_Scope"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#ContrastiveStressing_Scope">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -967,7 +960,7 @@
           </xs:enumeration>
           <xs:enumeration value="tag">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x201E;</xs:documentation>
+              <xs:documentation>„</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#Tag_Satellite_Marker">CHAT
                   manual section on this topic...</a>
@@ -976,10 +969,9 @@
           </xs:enumeration>
           <xs:enumeration value="vocative">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x2021;</xs:documentation>
+              <xs:documentation>‡</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#Vocative_Satellite_Marker"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#Vocative_Satellite_Marker">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -1026,6 +1018,8 @@
           this topic...</a>
       </xs:documentation>
     </xs:annotation>
+
+    <xs:complexType mixed="false"/>
   </xs:element>
 
   <xs:element name="happening" type="nonemptyStringType">
@@ -1152,7 +1146,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="morphemicBaseType">
+  <xs:complexType name="morphemicBaseType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation> %mor unit of one-to-one correspondence with main line. A single word or a compound word or a terminator. </xs:documentation>
       <xs:documentation>
@@ -1191,7 +1185,7 @@
     </xs:annotation>
   </xs:element>
 
-  <xs:complexType name="morphemicCompoundWordType">
+  <xs:complexType name="morphemicCompoundWordType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation>a compound word in mor using +</xs:documentation>
       <xs:documentation>
@@ -1262,14 +1256,13 @@
       </xs:documentation>
     </xs:annotation>
 
-    <xs:complexType>
+    <xs:complexType mixed="false">
       <xs:choice>
         <xs:element name="single" type="languageType">
           <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Word is to be interpreted in a single language. </xs:documentation>
             <xs:documentation>
-              <a href="http://childes.psy.cmu.edu/manuals/chat.html#SecondLanguage_Marker_Single"
-                >CHAT manual section on this topic...</a>
+              <a href="http://childes.psy.cmu.edu/manuals/chat.html#SecondLanguage_Marker_Single">CHAT manual section on this topic...</a>
             </xs:documentation>
           </xs:annotation>
         </xs:element>
@@ -1278,8 +1271,7 @@
           <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Word is a combination of many languages. </xs:documentation>
             <xs:documentation>
-              <a href="http://childes.psy.cmu.edu/manuals/chat.html#SecondLanguage_Marker_Multiple"
-                >CHAT manual section on this topic...</a>
+              <a href="http://childes.psy.cmu.edu/manuals/chat.html#SecondLanguage_Marker_Multiple">CHAT manual section on this topic...</a>
             </xs:documentation>
           </xs:annotation>
         </xs:element>
@@ -1288,8 +1280,7 @@
           <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Word can be interpreted as one of many languages. </xs:documentation>
             <xs:documentation>
-              <a href="http://childes.psy.cmu.edu/manuals/chat.html#SecondLanguage_Marker_Ambiguous"
-                >CHAT manual section on this topic...</a>
+              <a href="http://childes.psy.cmu.edu/manuals/chat.html#SecondLanguage_Marker_Ambiguous">CHAT manual section on this topic...</a>
             </xs:documentation>
           </xs:annotation>
         </xs:element>
@@ -1431,8 +1422,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>@f</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#FamilySpecificForm_Marker"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#FamilySpecificForm_Marker">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -1458,8 +1448,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>@g</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#GeneralSpecialForm_Marker"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#GeneralSpecialForm_Marker">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -1539,9 +1528,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>@q</xs:documentation>
               <xs:documentation>
-                <a
-                  href="http://childes.psy.cmu.edu/manuals/chat.html#MetalinguisticReference_Marker"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#MetalinguisticReference_Marker">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -1619,28 +1606,9 @@
         </xs:annotation>
 
         <xs:restriction base="xs:string">
-          <xs:enumeration value="action">
-            <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>0</xs:documentation>
-              <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#UntranscribedMaterial_Code"
-                  >CHAT manual section on this topic...</a>
-              </xs:documentation>
-            </xs:annotation>
-          </xs:enumeration>
-
           <xs:enumeration value="omission">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>0word</xs:documentation>
-              <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#OmittedWord_Code">CHAT manual
-                  section on this topic...</a>
-              </xs:documentation>
-            </xs:annotation>
-          </xs:enumeration>
-          <xs:enumeration value="ellipsis">
-            <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>00word</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#OmittedWord_Code">CHAT manual
                   section on this topic...</a>
@@ -1651,8 +1619,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>&amp;; phonological fragment</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#PhonologicalFragment_Code"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#PhonologicalFragment_Code">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -1671,8 +1638,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>xxx</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#UnintelligibleSpeech_Code"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#UnintelligibleSpeech_Code">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -1689,8 +1655,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>www</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#UntranscribedMaterial_Code"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#UntranscribedMaterial_Code">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -1715,7 +1680,7 @@
         <xs:restriction base="xs:string">
           <xs:enumeration value="quoted utterance next">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>+&quot;</xs:documentation>
+              <xs:documentation>+"</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#QuotedUtterance_Linker">CHAT
                   manual section on this topic...</a>
@@ -1760,7 +1725,7 @@
           </xs:enumeration>
           <xs:enumeration value="technical break TCU completion">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>+&#x224B;</xs:documentation>
+              <xs:documentation>+≋</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#TechnicalBreakTCUCompletion_Linker">CHAT
                   manual section on this topic...</a>
@@ -1769,7 +1734,7 @@
           </xs:enumeration>
           <xs:enumeration value="no break TCU completion">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>+&#x2248;</xs:documentation>
+              <xs:documentation>+≈</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#NoBreakTCUCompletion_Linker">CHAT
                   manual section on this topic...</a>
@@ -1799,7 +1764,7 @@
     </xs:annotation>
   </xs:element>
 
-  <xs:complexType name="mediaType">
+  <xs:complexType name="mediaType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation> A pointer to a selection in the single video/audio file associated with the
         transcript. </xs:documentation>
@@ -1907,7 +1872,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:complexType name="morphemicPrefixType">
+  <xs:complexType name="morphemicPrefixType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation>word#</xs:documentation>
       <xs:documentation>
@@ -1920,7 +1885,7 @@
     </xs:simpleContent>
   </xs:complexType>
 
-  <xs:complexType name="morphemicTranslationType">
+  <xs:complexType name="morphemicTranslationType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation>=word (English translation)</xs:documentation>
       <xs:documentation>
@@ -1959,9 +1924,7 @@
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                   <xs:documentation> suffix fusion marker, CHAT equivalent is &amp;suffix </xs:documentation>
                   <xs:documentation>
-                    <a
-                      href="http://childes.psy.cmu.edu/manuals/chat.html#Mor_Markers_Suffix_Fusional"
-                      >CHAT manual section on this topic...</a>
+                    <a href="http://childes.psy.cmu.edu/manuals/chat.html#Mor_Markers_Suffix_Fusional">CHAT manual section on this topic...</a>
                   </xs:documentation>
                 </xs:annotation>
               </xs:enumeration>
@@ -2030,16 +1993,6 @@
         <xs:documentation> Speaker's age, start of range during transcript. </xs:documentation>
         <xs:documentation>
           <a href="http://childes.psy.cmu.edu/manuals/chat.html#Age_Field">CHAT manual section on
-            this topic...</a>
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-
-    <xs:attribute name="ageTo" type="xs:duration" use="optional">
-      <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-        <xs:documentation> Speaker's age, end of range during transcript. </xs:documentation>
-        <xs:documentation>
-          <a href="http://childes.psy.cmu.edu/manuals/chat.html#AgeTo_Field">CHAT manual section on
             this topic...</a>
         </xs:documentation>
       </xs:annotation>
@@ -2139,7 +2092,7 @@
   </xs:complexType>
 
 
-  <xs:complexType name="prosodyType">
+  <xs:complexType name="prosodyType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation>Prosody: stress, blocking etc.</xs:documentation>
       <xs:documentation>
@@ -2254,7 +2207,7 @@
           </xs:enumeration>
           <xs:enumeration value="rising to high">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x21D7;</xs:documentation>
+              <xs:documentation>⇗</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#RisingToHigh">CHAT manual
                   section on this topic...</a>
@@ -2263,7 +2216,7 @@
           </xs:enumeration>
           <xs:enumeration value="rising to mid">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x2197;</xs:documentation>
+              <xs:documentation>↗</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#RisingToMid">CHAT manual
                   section on this topic...</a>
@@ -2272,7 +2225,7 @@
           </xs:enumeration>
           <xs:enumeration value="level">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x2192;</xs:documentation>
+              <xs:documentation>→</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#Level">CHAT manual section on
                   this topic...</a>
@@ -2281,7 +2234,7 @@
           </xs:enumeration>
           <xs:enumeration value="falling to mid">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x2198;</xs:documentation>
+              <xs:documentation>↘</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#FallingToMid">CHAT manual
                   section on this topic...</a>
@@ -2290,7 +2243,7 @@
           </xs:enumeration>
           <xs:enumeration value="falling to low">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x21D8;</xs:documentation>
+              <xs:documentation>⇘</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#FallingToLow">CHAT manual
                   section on this topic...</a>
@@ -2299,7 +2252,7 @@
           </xs:enumeration>
           <xs:enumeration value="unmarked ending">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x221E;</xs:documentation>
+              <xs:documentation>∞</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#UnmarkedEnding">CHAT manual
                   section on this topic...</a>
@@ -2308,7 +2261,7 @@
           </xs:enumeration>
           <xs:enumeration value="uptake">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x2261;</xs:documentation>
+              <xs:documentation>≡</xs:documentation>
               <xs:documentation>
                 <a href="http://childes.psy.cmu.edu/manuals/chat.html#Uptake">CHAT manual section
                   on this topic...</a>
@@ -2357,8 +2310,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation> Exclamation point. </xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#ExclamationMark_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#ExclamationMark_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -2368,8 +2320,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>+.</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#TranscriptionBreak_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#TranscriptionBreak_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -2388,9 +2339,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>+..?</xs:documentation>
               <xs:documentation>
-                <a
-                  href="http://childes.psy.cmu.edu/manuals/chat.html#TrailingOffQuestion_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#TrailingOffQuestion_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -2399,9 +2348,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>+!?</xs:documentation>
               <xs:documentation>
-                <a
-                  href="http://childes.psy.cmu.edu/manuals/chat.html#QuestionExclamation_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#QuestionExclamation_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -2420,9 +2367,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>+/?</xs:documentation>
               <xs:documentation>
-                <a
-                  href="http://childes.psy.cmu.edu/manuals/chat.html#QuestionInterruption_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#QuestionInterruption_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -2431,8 +2376,7 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>+//.</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#SelfInterruption_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#SelfInterruption_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -2441,29 +2385,25 @@
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
               <xs:documentation>+//?</xs:documentation>
               <xs:documentation>
-                <a
-                  href="http://childes.psy.cmu.edu/manuals/chat.html#SelfInterruptedQuestion_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#SelfInterruptedQuestion_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
 
           <xs:enumeration value="quotation next line">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>+&quot;/.</xs:documentation>
+              <xs:documentation>+"/.</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#QuotationFollows_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#QuotationFollows_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
 
           <xs:enumeration value="quotation precedes">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>+&quot;.</xs:documentation>
+              <xs:documentation>+".</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#QuotationPrecedes_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#QuotationPrecedes_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -2480,21 +2420,18 @@
 
           <xs:enumeration value="technical break TCU continuation">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x224B;</xs:documentation>
+              <xs:documentation>≋</xs:documentation>
               <xs:documentation>
-                <a href="http://childes.psy.cmu.edu/manuals/chat.html#TechnicalBreakTCUContinuation_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#TechnicalBreakTCUContinuation_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
 
           <xs:enumeration value="no break TCU continuation">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>&#x2248;</xs:documentation>
+              <xs:documentation>≈</xs:documentation>
               <xs:documentation>
-                <a
-                  href="http://childes.psy.cmu.edu/manuals/chat.html#NoBreakTCUContinuation_Terminator"
-                  >CHAT manual section on this topic...</a>
+                <a href="http://childes.psy.cmu.edu/manuals/chat.html#NoBreakTCUContinuation_Terminator">CHAT manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
           </xs:enumeration>
@@ -2503,7 +2440,7 @@
     </xs:attribute>
   </xs:complexType>
 
-  <xs:complexType name="terminatorType">
+  <xs:complexType name="terminatorType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation> Main line terminator with optional %mor information. </xs:documentation>
       <xs:documentation>
@@ -2562,7 +2499,7 @@
 
   <xs:complexType name="signGroupType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-      <xs:documentation>Group purely for sign annotation purposes. Note that there are no main line annotations allowed for the group. Grouping brackets &#x3014; and &#x3015; may be used.</xs:documentation>
+      <xs:documentation>Group purely for sign annotation purposes. Note that there are no main line annotations allowed for the group. Grouping brackets 〔 and 〕 may be used.</xs:documentation>
       <xs:documentation>
         <a href="http://childes.psy.cmu.edu/manuals/chat.html#Sign_Group">CHAT manual
           section on this topic...</a>
@@ -2601,7 +2538,7 @@
       </xs:documentation>
     </xs:annotation>
 
-    <xs:complexType>
+    <xs:complexType mixed="false">
       <xs:simpleContent>
         <xs:extension base="nonemptyStringType"/>
       </xs:simpleContent>
@@ -2638,10 +2575,10 @@
       </xs:choice>
 
       <!--
-	  Must have at least one of actual or model.
+	  Can optionally have one of actual or model.
 	  Order does not matter.
       -->
-      <xs:choice>
+      <xs:choice minOccurs="0">
         <xs:sequence>
           <xs:element ref="actual"/>
           <xs:element ref="model" minOccurs="0"/>
@@ -2656,7 +2593,7 @@
 
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:element name="ss">
     <xs:annotation>
       <xs:documentation>
@@ -2683,13 +2620,13 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:complexType name="actualPhoType">
+  <xs:complexType name="actualPhoType" mixed="false">
     <xs:complexContent>
       <xs:extension base="phoType"/>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="modelPhoType">
+  <xs:complexType name="modelPhoType" mixed="false">
     <xs:complexContent>
       <xs:extension base="phoType"/>
     </xs:complexContent>
@@ -2820,7 +2757,7 @@
       </xs:annotation>
     </xs:attribute>
 
-    <!-- 
+    <!--
       Each phone needs an id for reference in alignment.
       id is not an xs:ID to avoid having globally unique ids.  The constraint for this
       is found in the model and actual element declarations.
@@ -2831,7 +2768,7 @@
           elements cannot have the same id. </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    
+
     <xs:attribute name="hiatus" type="xs:boolean" use="optional">
       <xs:annotation>
         <xs:documentation>
@@ -3032,7 +2969,7 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="speakerUtteranceType">
+  <xs:complexType name="speakerUtteranceType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation> A single utterance, along with all dependent information. </xs:documentation>
       <xs:documentation>
@@ -3364,8 +3301,7 @@
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
           <xs:documentation>[=? text]</xs:documentation>
           <xs:documentation>
-            <a href="http://childes.psy.cmu.edu/manuals/chat.html#AlternativeTranscription_Scope"
-              >CHAT manual section on this topic...</a>
+            <a href="http://childes.psy.cmu.edu/manuals/chat.html#AlternativeTranscription_Scope">CHAT manual section on this topic...</a>
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -3418,8 +3354,7 @@
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
           <xs:documentation>[%sxx: text]</xs:documentation>
           <xs:documentation>
-            <a href="http://childes.psy.cmu.edu/manuals/chat.html#StandardForUnclearSource_Scope"
-              >CHAT manual section on this topic...</a>
+            <a href="http://childes.psy.cmu.edu/manuals/chat.html#StandardForUnclearSource_Scope">CHAT manual section on this topic...</a>
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -3534,12 +3469,8 @@
           topic...</a>
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
-      <xs:simpleContent>
-        <xs:extension base="empty">
-          <xs:attribute name="type" type="beginEndType" use="required"/>
-        </xs:extension>
-      </xs:simpleContent>
+    <xs:complexType mixed="false">
+        <xs:attribute name="type" type="beginEndType" use="required"/>
     </xs:complexType>
   </xs:element>
 
@@ -3551,12 +3482,8 @@
           topic...</a>
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
-      <xs:simpleContent>
-        <xs:extension base="empty">
-          <xs:attribute name="type" type="beginEndType" use="required"/>
-        </xs:extension>
-      </xs:simpleContent>
+    <xs:complexType mixed="false">
+        <xs:attribute name="type" type="beginEndType" use="required"/>
     </xs:complexType>
   </xs:element>
 
@@ -3568,7 +3495,7 @@
           topic...</a>
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
+    <xs:complexType mixed="false">
       <xs:simpleContent>
         <xs:extension base="nonemptyStringType">
           <xs:attribute name="type" type="beginEndType" use="required"/>
@@ -3585,7 +3512,7 @@
           section on this topic...</a>
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
+    <xs:complexType mixed="false">
       <xs:simpleContent>
         <xs:extension base="nonemptyStringType">
           <xs:attribute name="type" type="beginEndSimpleType" use="required">
@@ -3634,7 +3561,7 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="constriction">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x223E;</xs:documentation>
+          <xs:documentation>∾</xs:documentation>
 	  <xs:documentation>
 	    <a href="http://childes.psy.cmu.edu/manuals/chat.html#Constriction_Element">CHAT manual section on this topic...</a>
 	  </xs:documentation>
@@ -3642,7 +3569,7 @@
       </xs:enumeration>
       <xs:enumeration value="inhalation">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x2219;</xs:documentation>
+          <xs:documentation>∙</xs:documentation>
 	  <xs:documentation>
 	    <a href="http://childes.psy.cmu.edu/manuals/chat.html#Inhalation_Element">CHAT manual section on this topic...</a>
 	  </xs:documentation>
@@ -3650,7 +3577,7 @@
       </xs:enumeration>
       <xs:enumeration value="laugh in word">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x1F29;</xs:documentation>
+          <xs:documentation>Ἡ</xs:documentation>
 	  <xs:documentation>
 	    <a href="http://childes.psy.cmu.edu/manuals/chat.html#LaughInWord_Element">CHAT manual section on this topic...</a>
 	  </xs:documentation>
@@ -3658,7 +3585,7 @@
       </xs:enumeration>
       <xs:enumeration value="pitch down">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x2193;</xs:documentation>
+          <xs:documentation>↓</xs:documentation>
 	  <xs:documentation>
 	    <a href="http://childes.psy.cmu.edu/manuals/chat.html#PitchDown_Element">CHAT manual section on this topic...</a>
 	  </xs:documentation>
@@ -3666,7 +3593,7 @@
       </xs:enumeration>
       <xs:enumeration value="pitch reset">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x21BB;</xs:documentation>
+          <xs:documentation>↻</xs:documentation>
 	  <xs:documentation>
 	    <a href="http://childes.psy.cmu.edu/manuals/chat.html#PitchReset_Element">CHAT manual section on this topic...</a>
 	  </xs:documentation>
@@ -3674,7 +3601,7 @@
       </xs:enumeration>
       <xs:enumeration value="pitch up">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x2191;</xs:documentation>
+          <xs:documentation>↑</xs:documentation>
 	  <xs:documentation>
 	    <a href="http://childes.psy.cmu.edu/manuals/chat.html#PitchUp_Element">CHAT manual section on this topic...</a>
 	  </xs:documentation>
@@ -3682,7 +3609,7 @@
       </xs:enumeration>
       <xs:enumeration value="primary stress">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x02C8;</xs:documentation>
+          <xs:documentation>ˈ</xs:documentation>
 	  <xs:documentation>
 	    <a href="http://childes.psy.cmu.edu/manuals/chat.html#PrimaryStress_Element">CHAT manual section on this topic...</a>
 	  </xs:documentation>
@@ -3690,7 +3617,7 @@
       </xs:enumeration>
       <xs:enumeration value="secondary stress">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x02CC;</xs:documentation>
+          <xs:documentation>ˌ</xs:documentation>
 	  <xs:documentation>
 	    <a href="http://childes.psy.cmu.edu/manuals/chat.html#SecondaryStress_Element">CHAT manual section on this topic...</a>
 	  </xs:documentation>
@@ -3704,7 +3631,7 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="breathy voice">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x264B;</xs:documentation>
+          <xs:documentation>♋</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Creaky_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3713,7 +3640,7 @@
       </xs:enumeration>
       <xs:enumeration value="creaky">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x204E;</xs:documentation>
+          <xs:documentation>⁎</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Creaky_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3722,7 +3649,7 @@
       </xs:enumeration>
       <xs:enumeration value="faster">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x2206;</xs:documentation>
+          <xs:documentation>∆</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Faster_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3731,7 +3658,7 @@
       </xs:enumeration>
       <xs:enumeration value="high-pitch">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x2594;</xs:documentation>
+          <xs:documentation>▔</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#HighPitch_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3740,7 +3667,7 @@
       </xs:enumeration>
       <xs:enumeration value="louder">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x25C9;</xs:documentation>
+          <xs:documentation>◉</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Louder_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3749,7 +3676,7 @@
       </xs:enumeration>
       <xs:enumeration value="low-pitch">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x2581;</xs:documentation>
+          <xs:documentation>▁</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#LowPitch_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3758,7 +3685,7 @@
       </xs:enumeration>
       <xs:enumeration value="precise">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x00A7;</xs:documentation>
+          <xs:documentation>§</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Precise_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3767,7 +3694,7 @@
       </xs:enumeration>
       <xs:enumeration value="singing">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x222E;</xs:documentation>
+          <xs:documentation>∮</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Singing_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3776,7 +3703,7 @@
       </xs:enumeration>
       <xs:enumeration value="slower">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x2207;</xs:documentation>
+          <xs:documentation>∇</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Slower_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3785,7 +3712,7 @@
       </xs:enumeration>
       <xs:enumeration value="smile voice">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x263A;</xs:documentation>
+          <xs:documentation>☺</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#SmileVoice_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3794,7 +3721,7 @@
       </xs:enumeration>
       <xs:enumeration value="softer">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x00B0;</xs:documentation>
+          <xs:documentation>°</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Softer_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3803,7 +3730,7 @@
       </xs:enumeration>
       <xs:enumeration value="unsure">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x2047;</xs:documentation>
+          <xs:documentation>⁇</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Unsure_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3812,7 +3739,7 @@
       </xs:enumeration>
       <xs:enumeration value="whisper">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x222C;</xs:documentation>
+          <xs:documentation>∬</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Whisper_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3821,7 +3748,7 @@
       </xs:enumeration>
       <xs:enumeration value="yawn">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>&#x03AB;</xs:documentation>
+          <xs:documentation>Ϋ</xs:documentation>
           <xs:documentation>
             <a href="http://childes.psy.cmu.edu/manuals/chat.html#Yawn_Delimiter">CHAT manual
               section on this topic...</a>
@@ -3866,7 +3793,7 @@
           section on this topic...</a>
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
+    <xs:complexType mixed="false">
       <xs:sequence>
         <xs:element ref="w" minOccurs="1" maxOccurs="unbounded"/>
       </xs:sequence>
@@ -3889,13 +3816,13 @@
 
   <xs:element name="quotation">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-      <xs:documentation>Begin or end quoted material; &#x201C; and &#x201D;</xs:documentation>
+      <xs:documentation>Begin or end quoted material; “ and ”</xs:documentation>
       <xs:documentation>
         <a href="http://childes.psy.cmu.edu/manuals/chat.html#Quotation">CHAT manual section
           on this topic...</a>
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
+    <xs:complexType mixed="false">
       <xs:sequence minOccurs="0" maxOccurs="unbounded">
 	<xs:element ref="mor"/>
       </xs:sequence>
@@ -3905,13 +3832,13 @@
 
   <xs:element name="quotation2">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-      <xs:documentation>Second level of begin or end quoted material; &#x2018; and &#x2019;</xs:documentation>
+      <xs:documentation>Second level of begin or end quoted material; ‘ and ’</xs:documentation>
       <xs:documentation>
         <a href="http://childes.psy.cmu.edu/manuals/chat.html#Quotation2">CHAT manual section
           on this topic...</a>
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
+    <xs:complexType mixed="false">
       <xs:sequence minOccurs="0" maxOccurs="unbounded">
 	<xs:element ref="mor"/>
       </xs:sequence>
@@ -3981,6 +3908,16 @@
         </xs:annotation>
       </xs:enumeration>
 
+      <xs:enumeration value="num">
+        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+          <xs:documentation> TODO </xs:documentation>
+          <xs:documentation>
+            <a href="http://childes.psy.cmu.edu/manuals/chat.html#Num_Option">CHAT manual section
+              on this topic...</a>
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+
       <xs:enumeration value="multi">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
           <xs:documentation> Purely for the display purposes of CLAN, in order to have CLAN handle
@@ -4033,7 +3970,7 @@
     <xs:list itemType="optionType"/>
   </xs:simpleType>
 
-  <xs:complexType name="mediaPicType">
+  <xs:complexType name="mediaPicType" mixed="false">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation>A reference to a graphics file.</xs:documentation>
       <xs:documentation>
@@ -4054,11 +3991,9 @@
           on this topic...</a>
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="w"/>
-      </xs:sequence>
+    <xs:complexType mixed="false">
       <xs:attribute name="who" type="speakerID" use="required"/>
+      <xs:attribute name="said" type="nonemptyStringType" use="required"/>
     </xs:complexType>
   </xs:element>
 
@@ -4109,7 +4044,7 @@
           on this topic...</a>
       </xs:documentation>
     </xs:annotation>
-    <xs:complexType>
+    <xs:complexType mixed="false">
       <xs:simpleContent>
         <xs:extension base="nonemptyStringType"/>
       </xs:simpleContent>
@@ -4156,58 +4091,60 @@
       <xs:enumeration value="Brother"/>
       <xs:enumeration value="Sister"/>
       <xs:enumeration value="Sibling"/>
-      <xs:enumeration value="Grandmother"/>
-      <xs:enumeration value="Grandfather"/>
-      <xs:enumeration value="Aunt"/>
-      <xs:enumeration value="Uncle"/>
-      <xs:enumeration value="Cousin"/>
-      <xs:enumeration value="Family_Friend"/>
-      <xs:enumeration value="Student"/>
-      <xs:enumeration value="Teacher"/>
-      <xs:enumeration value="Playmate"/>
-      <xs:enumeration value="Visitor"/>
-      <xs:enumeration value="Babysitter"/>
-      <xs:enumeration value="Caretaker"/>
-      <xs:enumeration value="Housekeeper"/>
-      <xs:enumeration value="Investigator"/>
-      <xs:enumeration value="Observer"/>
-      <xs:enumeration value="Clinician"/>
-      <xs:enumeration value="Therapist"/>
-      <xs:enumeration value="Interviewer"/>
-      <xs:enumeration value="Informant"/>
-      <xs:enumeration value="Participant"/>
-      <xs:enumeration value="Subject"/>
-      <xs:enumeration value="Partner"/>
-      <xs:enumeration value="Doctor"/>
-      <xs:enumeration value="Nurse"/>
-      <xs:enumeration value="Patient"/>
-      <xs:enumeration value="Unidentified"/>
-      <xs:enumeration value="Uncertain"/>
-      <xs:enumeration value="Camera_Operator"/>
-      <xs:enumeration value="Group"/>
-      <xs:enumeration value="Narrator"/>
-      <xs:enumeration value="Adult"/>
-      <xs:enumeration value="Teenager"/>
-      <xs:enumeration value="Boy"/>
-      <xs:enumeration value="Girl"/>
       <xs:enumeration value="Male"/>
       <xs:enumeration value="Female"/>
-      <xs:enumeration value="Non_Human"/>
-      <xs:enumeration value="Toy"/>
-      <xs:enumeration value="Media"/>
-      <xs:enumeration value="Environment"/>
-      <xs:enumeration value="OffScript"/>
-      <xs:enumeration value="Text"/>
-      <xs:enumeration value="PlayRole"/>
-      <xs:enumeration value="Justice"/>
-      <xs:enumeration value="Judge"/>
+      <xs:enumeration value="Participant"/>
+      <xs:enumeration value="Adult"/>
       <xs:enumeration value="Attorney"/>
-      <xs:enumeration value="Speaker"/>
-      <xs:enumeration value="ShowHost"/>
-      <xs:enumeration value="ShowGuest"/>
-      <xs:enumeration value="Operator"/>
-      <xs:enumeration value="Caller"/>
+      <xs:enumeration value="Audience"/>
+      <xs:enumeration value="Aunt"/>
+      <xs:enumeration value="Babysitter"/>
+      <xs:enumeration value="Boy"/>
       <xs:enumeration value="CallTaker"/>
+      <xs:enumeration value="Caller"/>
+      <xs:enumeration value="Camera_Operator"/>
+      <xs:enumeration value="Caretaker"/>
+      <xs:enumeration value="Clinician"/>
+      <xs:enumeration value="Cousin"/>
+      <xs:enumeration value="Doctor"/>
+      <xs:enumeration value="Environment"/>
+      <xs:enumeration value="Family_Friend"/>
+      <xs:enumeration value="Girl"/>
+      <xs:enumeration value="Grandfather"/>
+      <xs:enumeration value="Grandmother"/>
+      <xs:enumeration value="Group"/>
+      <xs:enumeration value="Housekeeper"/>
+      <xs:enumeration value="Informant"/>
+      <xs:enumeration value="Interviewer"/>
+      <xs:enumeration value="Investigator"/>
+      <xs:enumeration value="Judge"/>
+      <xs:enumeration value="Justice"/>
+      <xs:enumeration value="Media"/>
+      <xs:enumeration value="Narrator"/>
+      <xs:enumeration value="Non_Human"/>
+      <xs:enumeration value="Nurse"/>
+      <xs:enumeration value="Observer"/>
+      <xs:enumeration value="OffScript"/>
+      <xs:enumeration value="Operator"/>
+      <xs:enumeration value="Partner"/>
+      <xs:enumeration value="Patient"/>
+      <xs:enumeration value="PlayRole"/>
+      <xs:enumeration value="Playmate"/>
+      <xs:enumeration value="ShowGuest"/>
+      <xs:enumeration value="ShowHost"/>
+      <xs:enumeration value="Speaker"/>
+      <xs:enumeration value="Student"/>
+      <xs:enumeration value="Subject"/>
+      <xs:enumeration value="Teacher"/>
+      <xs:enumeration value="Teenager"/>
+      <xs:enumeration value="Text"/>
+      <xs:enumeration value="Therapist"/>
+      <xs:enumeration value="Toy"/>
+      <xs:enumeration value="Uncertain"/>
+      <xs:enumeration value="Uncle"/>
+      <xs:enumeration value="Unidentified"/>
+      <xs:enumeration value="Visitor"/>
+      <xs:enumeration value="LENA"/>
     </xs:restriction>
   </xs:simpleType>
   <!-- End generated by get-participant-roles.pl for schema -->
