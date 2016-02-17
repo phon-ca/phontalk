@@ -108,6 +108,12 @@ scope {
 			langTier.setGroup(0, $u::recordLang);
 		}
 		
+		// add comments if necessary
+		if(nextRecordComments.size() > 0) {
+			nextRecordComments.forEach( c -> $u.record.addComment(c) );
+			nextRecordComments.clear();
+		}
+		
 		$u.record = $u::r;
 	}
 	;

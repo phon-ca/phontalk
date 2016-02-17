@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+-->
+<chunk xmlns="https://www.phon.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+end_gem
+    :    END_GEM_START END_GEM_ATTR_LABEL END_GEN_END
+    ->    ^(END_GEM_START END_GEM_ATTR_LABEL)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+end_gem returns [Comment endGem]
+    :   ^(END_GEM_START END_GEM_ATTR_LABEL)
+    {
+        $endGem = sessionFactory.createComment(
+            CommentEnum.EndGem, $END_GEM_ATTR_LABEL.text);
+    }
+    ;        
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+end_gem
+    :    ^(END_GEM_START END_GEM_ATTR_LABEL)
+    ->    template(lbl={$END_GEM_ATTR_LABEL.text})
+    <<\<end-gem label="<lbl>"/\> >>
+    ;
+]]>
+    </buffer>
+    
+</chunk>

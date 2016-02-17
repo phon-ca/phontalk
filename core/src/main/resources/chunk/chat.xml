@@ -12,8 +12,8 @@ XPath - /xs:schema/xs:element[@name="CHAT"]
     <buffer name="Chat.g">
         <![CDATA[
 chat
-	:	CHAT_START chat_attrs* metadata? participants chat_content* CHAT_END 
-	->	^(CHAT_START chat_attrs* participants? chat_content*)
+	:	CHAT_START chat_attrs+ metadata? participants chat_content* CHAT_END 
+	->	^(CHAT_START chat_attrs+ metadata? participants chat_content*)
 	;
 	
 chat_content
@@ -43,7 +43,7 @@ chat_attrs
     <buffer name="ChatTree.g">
         <![CDATA[
 chat
-	:	^(CHAT_START chat_attrs* participants? chat_content*)
+	:	^(CHAT_START chat_attrs+ metadata? participants chat_content*)
 	;
 	
 chat_content
@@ -61,11 +61,20 @@ chat_content
 	}
 	|	lazy_gem
 	{
-		// add comment to last record
-		if(session.getRecordCount() == 0)
-			session.getMetadata().addComment($lazy_gem.lazyGem);
-		else
-			session.getRecord(session.getRecordCount()-1).addComment($lazy_gem.lazyGem);
+		// add comment to next record
+		nextRecordComments.add($lazy_gem.lazyGem);
+	}
+	|	begin_gem
+	{
+		nextRecordComments.add($begin_gem.beginGem);
+	}
+	|	end_gem
+	{
+		nextRecordComments.add($end_gem.endGem);
+	}
+	|	tcu
+	{
+		$tcu.records.forEach( r -> session.addRecord(r) );
 	}
 	;
 	
@@ -129,9 +138,10 @@ chat_attrs
 	<buffer name="Phon2XmlWalker.g">
 		<![CDATA[
 chat
-	:	^(CHAT_START (attrlist+=chat_attrs)* (partlist=participants)? (contentlist+=chat_content)*)
+	:	^(CHAT_START (attrlist+=chat_attrs)+ (meta=metadata)? (partlist=participants) (contentlist+=chat_content)*)
 	->	template(
 			attrs={$attrlist},
+			md=${meta.st},
 			parts={$partlist.st},
 			content={$contentlist}
 		)
@@ -141,6 +151,7 @@ chat
 	xmlns="http://www.talkbank.org/ns/talkbank"  
 	xsi:schemaLocation="http://www.talkbank.org/ns/talkbank http://talkbank.org/software/talkbank.xsd" 
 	<attrs; separator=""> \>
+	<if(md)><md><endif>
 	<parts>
 	<content; separator="">
 \</CHAT\> >>
@@ -155,6 +166,15 @@ chat_content
 		"<v>"
 	|	lazy_gem
 	->	template( v={$lazy_gem.st} )
+		"<v>"
+	|	begin_gem
+	->	template( v={$being_gem.st} )
+		"<v>"
+	|	end_gem
+	->	template( v={$end_gem.st} )
+		"<v>"
+	|	tcu
+	->	template( v=${tcu.st} )
 		"<v>"
 	;
 	

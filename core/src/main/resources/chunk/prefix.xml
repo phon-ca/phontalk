@@ -84,6 +84,10 @@ import org.apache.commons.lang3.*;
 
 	public Session getSession() { return session; }
 	
+	/** List of comments which are to be added 
+	    to the next record */
+	private List<Comment> nextRecordComments = new ArrayList<Comment>();
+	
 	private int recordIndex = 0;
 	
 	public void reportError(RecognitionException e) {

@@ -17,8 +17,11 @@ tcu
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-tcu
-    :    ^(TCU_START records+=u+)
+tcu returns [List<Record> records]
+@before {
+    $records = new ArrayList<Record>();
+}
+    :    ^(TCU_START (records+=u{$records.add($u.record);})+)
     {
         // add TCU comments to appropriate records
         Record firstRecord = $records.get(0);
