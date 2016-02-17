@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+-->
+<chunk xmlns="https://www.phon.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="Chat.g">
+        <![CDATA[
+tcu
+    :    TCU_START u+ TCU_END
+    ->    ^(TCU_START u+)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="ChatTree.g">
+        <![CDATA[
+tcu
+    :    ^(TCU_START records+=u+)
+    {
+        // add TCU comments to appropriate records
+        Record firstRecord = $records.get(0);
+        Record lastRecord = $record.get($records.size()-1);
+        
+        Comment tcuStart = sessionFactory.createComment(CommentEnum.BeginTcu, "");
+        firstRecord.addComment(tcuStart);
+        
+        Comment tcuEnd = sessionFactory.createComment(CommentEnum.EndTcu, "");
+        lastRecord.addComment(tcuEnd);
+    }
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="Phon2XmlWalker.g">
+        <![CDATA[
+tcu
+    :    ^(TCU_START vals+=u+)
+    ->    template(content={$vals})
+    <<\<tcu\><content>\</tcu\> >>
+    ;
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include>u.xml</include>
+    
+</chunk>
