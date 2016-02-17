@@ -26,10 +26,10 @@ chat_content
 	;
 	
 chat_attrs
-	|	CHAT_ATTR_VERSION
+	:	CHAT_ATTR_VERSION
 	|	CHAT_ATTR_DATE
 	|	CHAT_ATTR_CORPUS
-	:	CHAT_ATTR_MEDIA
+	|	CHAT_ATTR_MEDIA
 	|	CHAT_ATTR_MEDIATYPES
 	|	CHAT_ATTR_LANG
 	|	CHAT_ATTR_OPTIONS
@@ -51,9 +51,9 @@ chat_content
 	{
 		// add comment to last record
 		if(session.getRecordCount() == 0)
-			session.getMetadata().addComment($comment.comment);
+			session.getMetadata().addComment($comment.val);
 		else
-			session.getRecord(session.getRecordCount()-1).addComment($comment.comment);
+			nextRecordComments.add($comment.val);
 	}
 	|	u
 	{
@@ -141,7 +141,7 @@ chat
 	:	^(CHAT_START (attrlist+=chat_attrs)+ (meta=metadata)? (partlist=participants) (contentlist+=chat_content)*)
 	->	template(
 			attrs={$attrlist},
-			md=${meta.st},
+			md={$meta.st},
 			parts={$partlist.st},
 			content={$contentlist}
 		)
@@ -168,13 +168,13 @@ chat_content
 	->	template( v={$lazy_gem.st} )
 		"<v>"
 	|	begin_gem
-	->	template( v={$being_gem.st} )
+	->	template( v={$begin_gem.st} )
 		"<v>"
 	|	end_gem
 	->	template( v={$end_gem.st} )
 		"<v>"
 	|	tcu
-	->	template( v=${tcu.st} )
+	->	template( v={$tcu.st} )
 		"<v>"
 	;
 	

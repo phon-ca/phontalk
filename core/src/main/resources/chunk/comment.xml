@@ -12,8 +12,8 @@ XPath -	/xs:schema/xs:complexType[@name="commentType"]
     <buffer name="Chat.g">
         <![CDATA[
 comment
-	:	COMMENT_START COMMENT_ATTR_TYPE? TEXT* COMMENT_END 
-	->	^(COMMENT_START COMMENT_ATTR_TYPE? TEXT*)
+	:	COMMENT_START COMMENT_ATTR_TYPE? media? TEXT* COMMENT_END 
+	->	^(COMMENT_START COMMENT_ATTR_TYPE? media? TEXT*)
 	;
 ]]>
     </buffer>
@@ -21,27 +21,26 @@ comment
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-comment returns [Comment comment]
-	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? vals+=TEXT*)
+comment returns [Comment val]
+scope {
+	StringBuffer buffer;
+}
+@init {
+	$comment::buffer = new StringBuffer();
+}
+	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? media? (TEXT{$comment::buffer.append($TEXT.text);})*)
 	{
-		$comment.comment = sessionFactory.createComment();
-		// create a new comment in the transcript
-		String text = "";
-		if($vals != null) {
-			for(int i = 0; i < $vals.size(); i++) {
-				text += $vals.get(i).toString();
-			}
-		}
-		$comment.comment.setValue(text);
-		
-
+		CommentEnum cType = CommentEnum.Generic;
 		if($type != null)
 		{
-			CommentEnum cType =
+			CommentEnum t =
 				CommentEnum.fromString($type.text);
-			if(cType == null)
-				cType = CommentEnum.Generic;
-			$comment.comment.setType(cType);
+			if(t != null) cType = t;
+		}
+		$val = sessionFactory.createComment(cType, $comment::buffer.toString());
+		
+		if($media != null) {
+			$val.putExtension(MediaSegment.class, $media.val);
 		}
 	}
 	;
@@ -51,12 +50,13 @@ comment returns [Comment comment]
 	<buffer name="Phon2XmlWalker.g">
 		<![CDATA[
 comment
-	:	^(COMMENT_START ctype=COMMENT_ATTR_TYPE? vals+=TEXT*)
+	:	^(COMMENT_START ctype=COMMENT_ATTR_TYPE? m=media? vals+=TEXT*)
 	->	template(
 			type={$ctype.text},
+			mref={$m.st},
 			vals={$vals}
 		)
-	<<\<comment type="<type>"\><vals>\</comment\> >>
+	<<\<comment type="<type>"\><if(mref)><mref><endif><vals>\</comment\> >>
 	;
 ]]>
 	</buffer>

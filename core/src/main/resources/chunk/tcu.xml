@@ -21,11 +21,11 @@ tcu returns [List<Record> records]
 @before {
     $records = new ArrayList<Record>();
 }
-    :    ^(TCU_START (records+=u{$records.add($u.record);})+)
+    :    ^(TCU_START (tcuGrp+=u{$records.add($u.record);})+)
     {
         // add TCU comments to appropriate records
-        Record firstRecord = $records.get(0);
-        Record lastRecord = $record.get($records.size()-1);
+        Record firstRecord = (Record)$tcuGrp.get(0);
+        Record lastRecord = (Record)$tcuGrp.get($tcuGrp.size()-1);
         
         Comment tcuStart = sessionFactory.createComment(CommentEnum.BeginTcu, "");
         firstRecord.addComment(tcuStart);

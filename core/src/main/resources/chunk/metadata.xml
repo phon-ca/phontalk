@@ -104,7 +104,7 @@ dc_rights
     ->    ^(RIGHTS_START RIGHTS_ATTR_LANG? TEXT)
     ;
     
-dc_appid
+dc_appId
     :    APPID_START APPID_ATTR_LANG? TEXT APPID_END
     ->    ^(APPID_START APPID_ATTR_LANG? TEXT)
     ;
@@ -196,7 +196,7 @@ dc_rights
     :    ^(RIGHTS_START RIGHTS_ATTR_LANG? TEXT)
     ;
     
-dc_appid
+dc_appId
     :    ^(APPID_START APPID_ATTR_LANG? TEXT)
     ;
 ]]>
@@ -285,13 +285,10 @@ dc_rights
     :    ^(RIGHTS_START RIGHTS_ATTR_LANG? TEXT)
     ;
     
-dc_appid
+dc_appId
     :    ^(APPID_START APPID_ATTR_LANG? TEXT)
     ;
 ]]>
     </buffer>
-    
-    <!-- Includes -->
-    <include></include>
     
 </chunk>
