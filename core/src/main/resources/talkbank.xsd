@@ -3054,16 +3054,6 @@
     </xs:attribute>
   </xs:complexType>
 
-  <!-- GJH 2010-12-20
-    * Removed simpleType 'utteranceTypeType'
-  <xs:simpleType name="utteranceTypeType">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="phon"/>
-      <xs:enumeration value="morpho"/>
-    </xs:restriction>
-  </xs:simpleType>
-  -->
-
   <xs:simpleType name="annotationTypeType">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation> Utterance annotation type. </xs:documentation>

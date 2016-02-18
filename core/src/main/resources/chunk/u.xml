@@ -11,8 +11,8 @@ XPath -	/xs:schema/xs:complexType[@name="speakerUtteranceType"]
     <buffer name="Chat.g">
         <![CDATA[
 u
-	:	U_START u_attrs* ( uele )* t? postcode? media? a* U_END 
-	->	^(U_START u_attrs* uele* t? postcode? media? a*)
+	:	U_START u_attrs* linker* ( uele )* t postcode* media? uendele* U_END 
+	->	^(U_START u_attrs* linker* uele* t postcode* media? uendele*)
 	;
 	catch [RecognitionException re] {
 		consumeUntil(input, U_END);
@@ -33,16 +33,31 @@ ugrp
 	:	w 
 	|	pg 
 	|	g
+	|	sg
 	;
 	
 uannotation
-	: 	s 
+	: 	blob
+	|	quotation
+	|	quotation2
 	|	pause 
-	|	e
-	|	linker
-	|	tagmarker
 	|	internal_media
+	|	freecode
+	|	e
+	|	s
+	|	tagmarker
 	|	overlap_point
+	|	underline
+	|	italic
+	|	long_feature
+	|	nonvocal
+	;
+	
+uendele
+	:	k
+	|	error
+	|	r
+	|	a
 	;
 ]]>
     </buffer>
@@ -72,7 +87,7 @@ scope {
 	$u.record = $u::r;
 	++recordIndex;
 }
-	:	^(U_START u_attrs* uele* t? postcode? seg=media? a*)
+	:	^(U_START u_attrs* links+=linker* uele* t postcode* seg=media? uendele*)
 	{
 		// setup speaker
 		if($u::who != null) 
@@ -88,6 +103,14 @@ scope {
 				}
 			}
 			
+		}
+		
+		if($links != null) {
+			OrthographyBuilder builder = new OrthographyBuilder();
+			for(int i = 0; i < $links.size(); i++) {
+				builder.append($links.get(i).val);
+			}
+			$u::r.getOrthography().setGroup(0, builder.toOrthography());
 		}
 		
 		// set media if avail
@@ -242,18 +265,17 @@ uele
 					.toOrthography());
 		}
 	}
+	|	sg
+	{
+		// TODO support sign groups
+		LOGGER.warning("Sign groups are not supported");
+	}
 	;
 	
 uannotation
-	:	s
-	{
-		// add separator to last group
-		Group lastGroup = 
-			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthography(
-			(new OrthographyBuilder()).append(lastGroup.getOrthography())
-				.append($s.val).toOrthography());
-	}
+	:	blob
+	|	quotation
+	|	quotation2
 	|	pause
 	{
 		// add pause to last group as a comment
@@ -263,6 +285,15 @@ uannotation
 			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($pause.val).toOrthography());
 	}
+	|	internal_media
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($internal_media.val).toOrthography());
+	}
+	|	freecode
 	|	e
 	{
 		// add event to last group
@@ -273,13 +304,14 @@ uannotation
 			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($e.val).toOrthography());
 	}
-	|	linker
+	|	s
 	{
+		// add separator to last group
 		Group lastGroup = 
 			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
 		lastGroup.setOrthography(
 			(new OrthographyBuilder()).append(lastGroup.getOrthography())
-				.append($linker.val).toOrthography());
+				.append($s.val).toOrthography());
 	}
 	|	tagmarker
 	{
@@ -289,14 +321,6 @@ uannotation
 			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($tagmarker.val).toOrthography());
 	}
-	|	internal_media
-	{
-		Group lastGroup = 
-			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthography(
-			(new OrthographyBuilder()).append(lastGroup.getOrthography())
-				.append($internal_media.val).toOrthography());
-	}
 	|	overlap_point
 	{
 		Group lastGroup = 
@@ -305,6 +329,17 @@ uannotation
 			(new OrthographyBuilder()).append(lastGroup.getOrthography())
 				.append($overlap_point.val).toOrthography());
 	}
+	|	underline
+	|	italic
+	|	long_feature
+	|	nonvocal
+	;
+	
+uendele
+	:	k
+	|	error
+	|	r
+	|	a
 	;
 ]]>
     </buffer>
@@ -312,21 +347,23 @@ uannotation
 	<buffer name="Phon2XmlWalker.g">
 		<![CDATA[
 u
-	:	^(U_START (attrs+=u_attrs)* (contentlist+=uele)* t? postcode? media? (annotationlist+=a)*)
+	:	^(U_START (attrs+=u_attrs)* (links+=linker)* (contentlist+=uele)* t (pcs+=postcode)* media? (annotationlist+=uendele)*)
 	->	template(
 			attrlist={$attrs},
 			ucontent={$contentlist},
+			linkers={$links}
 			terminator={$t.st},
-			pc={$postcode.st},
+			postcodes={$pcs},
 			segment={$media.st},
 			annotations={$annotationlist},
 			uttid={recordIndex++}
 		)
 	<<
 \<u <attrlist; separator=" "> uID="u<uttid>"\>
+	<linkers; separator="">
 	<ucontent; separator="">
 	<terminator>
-	<pc>
+	<pcs; separator="">
 	<segment>
 	<annotations; separator="">
 \</u\>
@@ -352,26 +389,47 @@ uele
 	;
 	
 uannotation
-	: 	s 
-	->	template( v={$s.st} )
+	: 	blob
+	->	template( v={$blob.st} )
+		"<v>"
+	|	quotation
+	->	template( v={$quotation.st} )
+		"<v>"
+	|	quotation2
+	->	template( v={$quotation.st} )
 		"<v>"
 	|	pause
 	->	template( v={$pause.st} )
 		"<v>"
+	|	internal_media
+	->	template( v={$internal_media.st} )
+		"<v>"
+	|	freecode
+	->	template( v={$freecode.st} )
+		"<v>"
 	|	e
 	->	template( v={$e.st} )
 		"<v>"
-	|	linker
-	->	template( v={$linker.st} )
+	|	s 
+	->	template( v={$s.st} )
 		"<v>"
 	|	tagmarker
 	->	template( v={$tagmarker.st} )
 		"<v>"
-	|	internal_media
-	->	template( v={$internal_media.st} )
-		"<v>"
 	|	overlap_point
 	->	template( v={$overlap_point.st} )
+		"<v>"
+	|	underline
+	->	template( v={$underline.st} )
+		"<v>"
+	|	italic
+	->	template( v={$italic.st} )
+		"<v>"
+	|	long_feature
+	->	template( v={$long_feature.st} )
+		"<v>"
+	|	nonvocal
+		template( v={$nonvocal.st} )
 		"<v>"
 	;
 	
@@ -386,26 +444,56 @@ ugrp
 	|	g
 	-> 	template( v={$g.st} )
 		"<v>"
+	|	sg
+	->	template( v={$sg.st} )
+		"<v>"
+	;
+	
+uendele
+	:	k
+	->	template( v={$k.st} )
+		"<v>"
+	|	error
+	->	template( v={$error.st} )
+		"<v>"
+	|	r
+	->	template( v={$r.st} )
+		"<v>"
+	|	a
+	->	template( v={$a.st} )
+		"<v>"
 	;
 ]]>
 	</buffer>
 
     
     <!-- Includes -->
-    <include>w.xml</include>
-    <include>pg.xml</include>
-    <include>g.xml</include>
-    <include>s.xml</include>
-    <include>pause.xml</include>
-    <include>e.xml</include>
-    <include>t.xml</include>
-    <include>media.xml</include>
-	<include>internalmedia.xml</include>
-	<include>overlappoint.xml</include>
-    <include>a.xml</include>
-	<include>postcode.xml</include>
 	<include>linker.xml</include>
+    <include>w.xml</include>
+	<include>blob.xml</include>
+    <include>g.xml</include>
+    <include>pg.xml</include>
+	<include>sg.xml</include>
+	<include>quotation.xml</include>
+	<include>quotation2.xml</include>
+    <include>pause.xml</include>
+	<include>internalmedia.xml</include>
+	<include>freecode.xml</include>
+    <include>e.xml</include>
+    <include>s.xml</include>
 	<include>tagmarker.xml</include>
+	<include>overlappoint.xml</include>
+	<include>underline.xml</include>
+	<include>italic.xml</include>
+	<include>longfeature.xml</include>
+	<include>nonvocal.xml</include>
+    <include>t.xml</include>
+	<include>postcode.xml</include>
+    <include>media.xml</include>
+	<include>k.xml</include>
+	<include>error.xml</include>
+	<include>r.xml</include>
+    <include>a.xml</include>
 
     
 </chunk>
