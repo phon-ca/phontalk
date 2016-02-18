@@ -404,27 +404,49 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private void processTranscript(CommonTree tree, Session t) 
 		throws TreeBuilderException {
+		Stack<CommonTree> treeStack = new Stack<>();
+		treeStack.push(tree);
 		// go through the transcript contents
 		for(Record record:t.getRecords()) {
+			CommonTree parent = treeStack.peek();
+			List<Comment> endComments = new ArrayList<>();
 			for(int cIdx = 0; cIdx < record.getNumberOfComments(); cIdx++) {
 				// check for lazy-gem
 				Comment comment = record.getComment(cIdx);
-				if(comment.getType().toString().equalsIgnoreCase("LazyGem")) {
-					insertLazyGem(tree, comment);
+				if(comment.getType() == CommentEnum.LazyGem) {
+					insertLazyGem(parent, comment);
+				} else if(comment.getType() == CommentEnum.BeginGem) { 
+					insertBeginGem(parent, comment);
+				} else if(comment.getType() == CommentEnum.EndGem) {
+					endComments.add(comment);
+				} else if(comment.getType() == CommentEnum.BeginTcu) { 
+					CommonTree newParent = createTcu(parent, comment);
+					treeStack.push(newParent);
+					parent = newParent;
+				} else if(comment.getType() == CommentEnum.EndTcu) {
+					endComments.add(comment);
 				} else if(comment.getType() == CommentEnum.Date) {
 					// date is inserted before processing session
 				} else if(comment.getType() == CommentEnum.Code && comment.getValue().startsWith("pid ")) {
-					insertPid(tree, comment.getValue());
+					insertPid(parent, comment.getValue());
 				} else {					
-					insertComment(tree, comment);
+					insertComment(parent, comment);
 				}
 			}
 			
 			try {
-				insertRecord(tree, record);
+				insertRecord(parent, record);
 			} catch (TreeBuilderException e) {
 				throw new TreeBuilderException(
 						"Record #" + (recordIdx+1) + " " + e.getMessage());
+			}
+			
+			for(Comment comment:endComments) {
+				if(comment.getType() == CommentEnum.EndGem) {
+					insertEndGem(parent, comment);
+				} else if(comment.getType() == CommentEnum.EndTcu) {
+					treeStack.pop();
+				}
 			}
 			recordIdx++;
 		}
@@ -488,7 +510,49 @@ public class Phon2XmlTreeBuilder {
 		lazyGemNode.addChild(lazyGemLabel);
 	}
 	
+	/**
+	 * Insert begin gem
+	 */
+	private void insertBeginGem(CommonTree parent, Comment c) {
+		CommonTree beginGemNode = 
+			AntlrUtils.createToken(chatTokens, "BEGIN_GEM_START");
+		beginGemNode.setParent(parent);
+		parent.addChild(beginGemNode);
+		
+		CommonTree beginGemLabel = 
+			AntlrUtils.createToken(chatTokens, "BEGIN_GEM_ATTR_LABEL");
+		beginGemLabel.getToken().setText(c.getValue());
+		beginGemLabel.setParent(beginGemNode);
+		beginGemNode.addChild(beginGemLabel);
+	}
 	
+	/**
+	 * Insert end gem
+	 */
+	private void insertEndGem(CommonTree parent, Comment c) {
+		CommonTree endGemNode = 
+			AntlrUtils.createToken(chatTokens, "END_GEM_START");
+		endGemNode.setParent(parent);
+		parent.addChild(endGemNode);
+		
+		CommonTree endGemLabel = 
+			AntlrUtils.createToken(chatTokens, "END_GEM_ATTR_LABEL");
+		endGemLabel.getToken().setText(c.getValue());
+		endGemLabel.setParent(endGemNode);
+		endGemNode.addChild(endGemLabel);
+	}
+	
+	/**
+	 * Insert begin tcu
+	 */
+	private CommonTree createTcu(CommonTree parent, Comment c) {
+		CommonTree beginTcuNode = 
+			AntlrUtils.createToken(chatTokens, "TCU_START");
+		beginTcuNode.setParent(parent);
+		parent.addChild(beginTcuNode);
+		
+		return beginTcuNode;
+	}
 	
 	/**
 	 * Insert a record.
