@@ -24,7 +24,7 @@ sgchoice
     |    e
     |    s
     |    tagmarker
-    |    longfeature
+    |    long_feature
     |    nonvocal
     |    overlap_point
     |    underline
@@ -56,7 +56,7 @@ sgchoice
     |    e
     |    s
     |    tagmarker
-    |    longfeature
+    |    long_feature
     |    nonvocal
     |    overlap_point
     |    underline
@@ -86,7 +86,7 @@ sgchoice
     |    e
     |    s
     |    tagmarker
-    |    longfeature
+    |    long_feature
     |    nonvocal
     |    overlap_point
     |    underline

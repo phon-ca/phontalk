@@ -21,7 +21,7 @@ wele
 	|	italic
 	|	shortening
 	|	p
-	|	longfeature
+	|	long_feature
 	|	wk 
 	|	pos
 	|	replacement
@@ -90,7 +90,10 @@ wele
 	{
 		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $p.val;
 	}
-	|	longfeature
+	|	long_feature
+	{
+		$w::buffer += ($w::buffer.lengh() > 0 ? " " : "") + $long_feature.val;
+	}
 	| 	wk
 	{
 		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $wk.val;
@@ -239,7 +242,7 @@ wele
 	|	p
 	->	template( v={$p.st} )
 		"<v>"
-	|	longfeature
+	|	long_feature
 	->	template( v={$longfeature.st} )
 		"<v>"
 	|	wk

@@ -10,7 +10,7 @@
     <!-- Parser -->
     <buffer name="Chat.g">
         <![CDATA[
-longfeature
+long_feature
     :    LONG_FEATURE_START LONG_FEATURE_ATTR_TYPE TEXT LONG_FEATURE_END
     ->    ^(LONG_FEATURE_START LONG_FEATURE_ATTR_TYPE TEXT)
     ;
@@ -20,7 +20,7 @@ longfeature
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-longfeature returns [String val]
+long_feature returns [String val]
     :    ^(LONG_FEATURE_START LONG_FEATURE_ATTR_TYPE TEXT)
     {
         $val = "(long-feature," + $LONG_FEATURE_ATTR_TYPE.text + ":" + $TEXT.text + ")";
@@ -31,7 +31,7 @@ longfeature returns [String val]
     
     <buffer name="Phon2XmlWalker.g">
         <![CDATA[
-longfeature
+long_feature
     :    ^(LONG_FEATURE_START LONG_FEATURE_ATTR_TYPE TEXT)
     ->    template( type={$LONG_FEATURE_ATTR_TYPE.text},
                     val={$TEXT.text} )

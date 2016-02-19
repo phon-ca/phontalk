@@ -422,7 +422,7 @@ u
 	->	template(
 			attrlist={$attrs},
 			ucontent={$contentlist},
-			linkers={$links}
+			linkers={$links},
 			terminator={$t.st},
 			postcodes={$pcs},
 			segment={$media.st},
@@ -500,7 +500,7 @@ uannotation
 	->	template( v={$long_feature.st} )
 		"<v>"
 	|	nonvocal
-		template( v={$nonvocal.st} )
+	->	template( v={$nonvocal.st} )
 		"<v>"
 	;
 	
