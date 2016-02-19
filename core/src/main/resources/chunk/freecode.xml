@@ -19,8 +19,11 @@ freecode
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-freecode
+freecode returns [String val]
     :    ^(FREECODE_START TEXT)
+    {
+        $val = "(freecode:" + TEXT.text + ")";
+    }
     ;
 ]]>
     </buffer>
@@ -29,6 +32,8 @@ freecode
         <![CDATA[
 freecode
     :    ^(FREECODE_START TEXT)
+    ->    template( txt={$TEXT.text} )
+    <<\<freecode\><txt>\</freecode\> >>
     ;
 ]]>
     </buffer>

@@ -16,6 +16,7 @@ g
 	
 gele
 	:	w
+	|	g
 	|	pg
 	|	sg
 	|	quotation
@@ -262,7 +263,6 @@ gchoice
     
     <!-- Includes -->
 	<include>w.xml</include>
-	<include>g.xml</include>
 	<include>pg.xml</include>
 	<include>sg.xml</include>
     <include>quotation.xml</include>

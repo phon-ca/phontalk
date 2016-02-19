@@ -314,9 +314,48 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				} else if(eleName.equals("overlap-point")) {
 					addOverlapPoint(tree, eleData);
 				} else {
-					LOGGER.warning("Unsupported data " + data);
+					addGenericElement(tree, eleName, eleData);
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Phon: (eleName,attr=val: data)
+	 * 
+	 * @param parent
+	 * @param eleName
+	 * @param eleData may be <code>null</code>
+	 */
+	private void addGenericElement(CommonTree parent, String eleName, String eleData) {
+		String[] eleparts = eleName.split(",");
+		eleName = eleparts[0].trim();
+		
+		String tokenName = eleName
+				.replaceAll("-", "_")
+				.replaceAll("\\p{Space}", "_")
+				.toUpperCase();
+		String startTokenName = tokenName + "_START";
+		CommonTree eleTree = AntlrUtils.createToken(chatTokens, startTokenName);
+		eleTree.setParent(parent);
+		parent.addChild(eleTree);
+		
+		for(int i = 1; i < eleparts.length; i++) {
+			// setup attributes
+			String keyVal[] = eleparts[i].split("=");
+			// assign 'type' attribute by default
+			String attrName = (keyVal.length == 1 ? keyVal[0] : "type").trim();
+			String attrVal = (keyVal.length == 2 ? keyVal[1] : keyVal[0]).trim();
+			
+			String attrTokenName = tokenName + "_ATTR_" + attrName.toUpperCase();
+			CommonTree attrToken = AntlrUtils.createToken(chatTokens, attrTokenName);
+			attrToken.getToken().setText(attrVal);
+			eleTree.addChild(attrToken);
+			attrToken.setParent(eleTree);
+		}
+		
+		if(eleData != null && eleData.trim().length() > 0) {
+			addTextNode(eleTree, eleData.trim());
 		}
 	}
 	

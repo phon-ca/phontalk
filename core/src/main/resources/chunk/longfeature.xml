@@ -11,8 +11,8 @@
     <buffer name="Chat.g">
         <![CDATA[
 longfeature
-    :    LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT LONGFEATURE_END
-    ->    ^(LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT)
+    :    LONG_FEATURE_START LONG_FEATURE_ATTR_TYPE TEXT LONG_FEATURE_END
+    ->    ^(LONG_FEATURE_START LONG_FEATURE_ATTR_TYPE TEXT)
     ;
 ]]>
     </buffer>
@@ -20,8 +20,11 @@ longfeature
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-longfeature
-    :    ^(LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT)
+longfeature returns [String val]
+    :    ^(LONG_FEATURE_START LONG_FEATURE_ATTR_TYPE TEXT)
+    {
+        $val = "(long-feature," + $LONG_FEATURE_ATTR_TYPE.text + ":" + $TEXT.text + ")";
+    }
     ;
 ]]>
     </buffer>
@@ -29,7 +32,10 @@ longfeature
     <buffer name="Phon2XmlWalker.g">
         <![CDATA[
 longfeature
-    :    ^(LONGFEATURE_START LONGFEATURE_ATTR_TYPE TEXT)
+    :    ^(LONG_FEATURE_START LONG_FEATURE_ATTR_TYPE TEXT)
+    ->    template( type={$LONG_FEATURE_ATTR_TYPE.text},
+                    val={$TEXT.text} )
+    <<\<long-feature type="<type>"\><val>\</long-feature\> >>
     ;
 ]]>
     </buffer>

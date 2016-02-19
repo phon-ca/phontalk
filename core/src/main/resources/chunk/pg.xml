@@ -26,16 +26,19 @@ scope {
 pgele
 	:	w
 	|	g
+	|	quotation
+	|	quotation2
 	|	pause
+	|	internal_media
+	|	freecode
 	|  	e
-	|	underline
-	|	overlap
-	|	tagmarker
-	|	r 
-	|	k
-	|	ga
 	|	s
-	|	error
+	|	tagmarker
+	|	long_feature
+	|	nonvocal
+	|	overlap_point
+	|	underline
+	|	italic
 	;
 ]]>
     </buffer>
@@ -75,45 +78,59 @@ pgele returns [String val]
 	{
 		$val = "{" + $g.val + " }";
 	}
+	|	quotation
+	{
+		// TODO quotation
+		LOGGER.warning("quotation not supported");
+	}
+	|	quotation2
+	{
+		// TODO quotation2
+		LOGGER.warning("quotation2 not supported");
+	}
 	|	pause
 	{
 		$val = $pause.val;
+	}
+	|	internal_media
+	{
+		$val = $internal_media.val;
+	}
+	|	freecode
+	{
+		$val = $freecode.val;
 	}
 	|  	e
 	{
 		$val = $e.val;
 	}
-	|	underline
+	|	s
 	{
-		$val = $underline.val;
-	}
-	|	overlap
-	{
-		$val = "(" + $overlap.val + ")";
+		$val = $s.val;
 	}
 	|	tagmarker
 	{
 		$val = $tagmarker.val;
 	}
-	|	r 
+	|	long_feature
 	{
-		$val = "(x" + $r.val + ")";
+		$val = $long_feature.val;
 	}
-	|	k
+	|	nonvocal
 	{
-		$val = "(" +  $k.val + ")";
+		$val = $nonvocal.val;
 	}
-	|	ga
+	|	overlap_point
 	{
-		$val = $ga.val;
+		$val = $overlap_point.val;
 	}
-	|	s
+	|	underline
 	{
-		$val = $s.val;
+		$val = $underline.val;
 	}
-	|	error
+	|	italic
 	{
-		$val = $error.val;
+		$val = $italic.val;
 	}
 	;
 	
@@ -144,35 +161,44 @@ pgele
 	|	g
 	->	template( v={$g.st} )
 		"<v>"
+	|	quotation
+	->	template( v={$quotation.st} )
+		"<v>"
+	|	quotation2
+	->	template( v={$quotation2.st} )
+		"<v>"
 	|	pause
 	->	template( v={$pause.st} )
+		"<v>"
+	|	internal_media
+	->	template( v={$internal_media.st} )
+		"<v>"
+	|	freecode
+	->	template( v={$freecode.st} )
 		"<v>"
 	|  	e
 	->	template( v={$e.st} )
 		"<v>"
-	|	underline
-	->	template( v={$underline.st} )
-		"<v>"
-	|	overlap
-	->	template( v={$overlap.st} )
+	|	s
+	->	template( v={$s.st} )
 		"<v>"
 	|	tagmarker
 	->	template( v={$tagmarker.st} )
 		"<v>"
-	|	r 
-	->	template( v={$r.st} )
+	|	long_feature
+	->	template( v={$long_feature.st} )
 		"<v>"
-	|	k
-	->	template( v={$k.st} )
+	|	nonvocal
+	->	template( v={$nonvocal.st} )
 		"<v>"
-	|	ga
-	->	template( v={$ga.st} )
+	|	overlap_point
+	->	template( v={$overlap_point.st} )
 		"<v>"
-	|	s
-	->	template( v={$s.st} )
+	|	underline
+	->	template( v={$underline.st} )
 		"<v>"
-	|	error
-	->	template( v={$error.st} )
+	|	italic
+	->	template( v={$italic.st} )
 		"<v>"
 	;
 ]]>
@@ -180,16 +206,21 @@ pgele
     
     <!-- Includes -->
     <include>w.xml</include>
-    <include>r.xml</include>
-    <include>k.xml</include>
+    <include>g.xml</include>
+    <include>quotation.xml</include>
+	<include>quotation2.xml</include>
+	<include>pause.xml</include>
+	<include>internalmedia.xml</include>
+	<include>freecode.xml</include>
+	<include>e.xml</include>
+	<include>s.xml</include>
+	<include>tagmarker.xml</include>
+	<include>longfeature.xml</include>
+	<include>nonvocal.xml</include>
+	<include>overlappoint.xml</include>
+	<include>underline.xml</include>
+	<include>italic.xml</include>
 	<include>pho.xml</include>
 	<include>align.xml</include>
-	<include>ga.xml</include>
-	<include>overlap.xml</include>
-	<include>tagmarker.xml</include>
-	<include>e.xml</include>
-	<include>pause.xml</include>
-	<include>s.xml</include>
-	<include>error.xml</include>
 
 </chunk>

@@ -274,8 +274,23 @@ uele
 	
 uannotation
 	:	blob
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($blob.val).toOrthography());
+	}
 	|	quotation
+	{
+		// TODO quotation
+		LOGGER.warning("quotation not supported");
+	}
 	|	quotation2
+	{
+		// TODO quotation2
+		LOGGER.warning("quotation2 not supported");
+	}
 	|	pause
 	{
 		// add pause to last group as a comment
@@ -294,6 +309,13 @@ uannotation
 				.append($internal_media.val).toOrthography());
 	}
 	|	freecode
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($freecode.val).toOrthography());
+	}
 	|	e
 	{
 		// add event to last group
@@ -330,15 +352,64 @@ uannotation
 				.append($overlap_point.val).toOrthography());
 	}
 	|	underline
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($underline.val).toOrthography());
+	}
 	|	italic
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($italic.val).toOrthography());
+	}
 	|	long_feature
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($long_feature.val).toOrthography());
+	}
 	|	nonvocal
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($nonvocal.val).toOrthography());
+	}
 	;
 	
 uendele
 	:	k
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($k.val).toOrthography());
+	}
 	|	error
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($error.val).toOrthography());
+	}
 	|	r
+	{
+		Group lastGroup = 
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append($r.val).toOrthography());
+	}
 	|	a
 	;
 ]]>

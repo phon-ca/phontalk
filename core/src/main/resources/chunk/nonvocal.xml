@@ -19,8 +19,11 @@ nonvocal
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-nonvocal
+nonvocal returns [String val]
     :    ^(NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT)
+    {
+        $val = "(nonvocal," + $NONVOCAL_ATTR_TYPE.text + ":" + $TEXT.text + ")";
+    }
     ;
 ]]>
     </buffer>
@@ -29,6 +32,9 @@ nonvocal
         <![CDATA[
 nonvocal
     :    ^(NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT)
+    ->    template( type={$NONVOCAL_ATTR_TYPE.text},
+                    val={$TEXT.text} )
+    <<\<nonvocal type="<type>"\><val>\</nonvocal\> >>
     ;
 ]]>
     </buffer>

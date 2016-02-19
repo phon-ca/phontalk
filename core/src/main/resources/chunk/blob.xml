@@ -7,24 +7,39 @@
     <!-- Parser -->
     <buffer name="Chat.g">
         <![CDATA[
-        
+blob
+    :    BLOB_START TEXT* BLOB_END
+    ->    ^(BLOB_START TEXT*)
+    ;
 ]]>
     </buffer>
     
     <!-- Tree Walker -->
     <buffer name="ChatTree.g">
         <![CDATA[
-        
+blob returns [String val]
+scope {
+    StringBuffer buffer;
+}
+@init {
+    $blob::buffer = new StringBuffer();
+}
+    :    ^(BLOB_START (TEXT{$blob::buffer.append($TEXT.text);})*)
+    {
+        $val = "(blob:" + $blob::buffer.toString() + ")";
+    }
+    ;
 ]]>
     </buffer>
     
     <buffer name="Phon2XmlWalker.g">
         <![CDATA[
-        
+blob
+    :    ^(BLOB_START content+=TEXT*)
+    ->    template( val={$content} )
+    <<\<blob\><val>\</blob\> >>
+    ;
 ]]>
     </buffer>
-    
-    <!-- Includes -->
-    <include></include>
     
 </chunk>

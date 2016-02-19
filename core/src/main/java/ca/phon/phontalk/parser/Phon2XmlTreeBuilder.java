@@ -285,7 +285,7 @@ public class Phon2XmlTreeBuilder {
 		
 		// version
 		CommonTree vNode = AntlrUtils.createToken(chatTokens, "CHAT_ATTR_VERSION");
-		vNode.getToken().setText("2.0.2");
+		vNode.getToken().setText("2.1.0");
 		vNode.setParent(tree);
 		tree.addChild(vNode);
 	}
