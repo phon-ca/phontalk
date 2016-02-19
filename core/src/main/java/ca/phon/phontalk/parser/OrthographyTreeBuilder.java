@@ -18,6 +18,8 @@ import ca.phon.orthography.OrthoWord;
 import ca.phon.orthography.OrthoWordnet;
 import ca.phon.orthography.OrthoWordnetMarker;
 import ca.phon.orthography.Orthography;
+import ca.phon.orthography.WordPrefixType;
+import ca.phon.orthography.WordSuffixType;
 import ca.phon.visitor.VisitorAdapter;
 import ca.phon.visitor.annotation.Visits;
 
@@ -82,25 +84,45 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		}
 		
 		if(word.getSuffix() != null) {
-			String fullType = 
-					word.getSuffix().getDisplayName();
-			
-			CommonTree formTypeNode = 
-					AntlrUtils.createToken(chatTokens, "W_ATTR_FORMTYPE");
-			formTypeNode.getToken().setText(fullType);
-			formTypeNode.setParent(wParent);
-			wParent.addChild(formTypeNode);
+			WordSuffixType suffixType = word.getSuffix().getType();
+			if(suffixType == WordSuffixType.SEPARATED_PREFIX) {
+				CommonTree spTree =
+						AntlrUtils.createToken(chatTokens, "W_ATTR_SEPARATED_PREFIX");
+				spTree.getToken().setText("true");
+				spTree.setParent(wParent);
+				wParent.addChild(spTree);
+			} else if(suffixType == WordSuffixType.USER_SPECIAL_FORM) {
+				CommonTree usfTree =
+						AntlrUtils.createToken(chatTokens, "W_ATTR_USER_SPECIAL_FORM");
+				usfTree.getToken().setText(word.getSuffix().getCode());
+				usfTree.setParent(wParent);
+				wParent.addChild(usfTree);
+			} else if(suffixType == WordSuffixType.SECOND_LANGUAGE) { 
+				// TODO add as 'langs' tree
+			} else {
+				CommonTree formTypeNode = 
+						AntlrUtils.createToken(chatTokens, "W_ATTR_FORMTYPE");
+				formTypeNode.getToken().setText(suffixType.getDisplayName());
+				formTypeNode.setParent(wParent);
+				wParent.addChild(formTypeNode);
+			}
 		}
 		
 		if(word.getPrefix() != null) {
-			String wType = 
-					word.getPrefix().getDisplayName();
-			
-			CommonTree typeNode = 
-					AntlrUtils.createToken(chatTokens, "W_ATTR_TYPE");
-			typeNode.getToken().setText(wType);
-			typeNode.setParent(wParent);
-			wParent.addChild(typeNode);
+			WordPrefixType prefixType = word.getPrefix().getType();
+			if(prefixType == WordPrefixType.FRAGMENT || prefixType == WordPrefixType.OMISSION) {
+				CommonTree typeNode = 
+						AntlrUtils.createToken(chatTokens, "W_ATTR_TYPE");
+				typeNode.getToken().setText(prefixType.getDisplayName());
+				typeNode.setParent(wParent);
+				wParent.addChild(typeNode);
+			} else {
+				CommonTree utTree =
+						AntlrUtils.createToken(chatTokens, "W_ATTR_UNTRANSCRIBED");
+				utTree.getToken().setText(prefixType.getDisplayName());
+				utTree.setParent(wParent);
+				wParent.addChild(utTree);
+			}
 		}
 		
 		String addWord = word.getWord();

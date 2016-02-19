@@ -119,8 +119,20 @@ gele
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + "[" + $pg.val + "]";
 	}
 	|	sg
+	{
+		// TODO sg
+		LOGGER.warning("sg not supported");
+	}
 	|	quotation
+	{
+		// TODO quotation
+		LOGGER.warning("quotation not supported");
+	}
 	|	quotation2
+	{
+		// TODO quotation2
+		LOGGER.warning("quotation2 not supported");
+	}
 	|	pause
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $pause.val;
@@ -135,7 +147,6 @@ gele
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			$e.val;
 	}
-	
 	|	s
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
@@ -147,7 +158,15 @@ gele
 			"(" + $tagmarker.val + ")";
 	}
 	|	long_feature
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $long_feature.val + ")";
+	}
 	|	nonvocal
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $nonvocal.val + ")";
+	}
 	|	overlap_point
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
@@ -159,6 +178,10 @@ gele
 			$underline.val;
 	}
 	|	italic
+	{
+		 $g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			"(" + $italic.val + ")";
+	}
 	;
 	
 gchoice
@@ -211,8 +234,14 @@ gele
 	->	template( v={$pg.st} )
 		"<v>"
 	|	sg
+	->	template( v={$sg.st} )
+		"<v>"
 	|	quotation
+	->	template( v={$quotation.st} )
+		"<v>"
 	|	quotation2
+	->	template( v={$quotation2.st} )
+		"<v>"
 	|	pause
 	->	template( v={$pause.st} )
 		"<v>"
@@ -220,6 +249,8 @@ gele
 	->	template( v={$internal_media.st} )
 		"<v>"
 	|	freecode
+	->	template( v={$freecode.st} )
+		"<v>"
 	|	e
 	->	template( v={$e.st} )
 		"<v>"
@@ -230,7 +261,11 @@ gele
 	->  template( v={$tagmarker.st} )
 		"<v>"
 	|	long_feature
+	->	template( v={$long_feature.st} )
+		"<v>"
 	|	nonvocal
+	->	template( v={$nonvocal.st} )
+		"<v>"
 	|	overlap_point
 	->	template( v={$overlap_point.st} )
 		"<v>"
@@ -238,6 +273,8 @@ gele
 	->	template( v={$underline.st} )
 		"<v>"
 	|	italic
+	->	template( v={$italic.st} )
+		"<v>"
 	;
 	
 gchoice
