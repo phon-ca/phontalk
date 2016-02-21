@@ -92,7 +92,7 @@ wele
 	}
 	|	long_feature
 	{
-		$w::buffer += ($w::buffer.lengh() > 0 ? " " : "") + $long_feature.val;
+		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $long_feature.val;
 	}
 	| 	wk
 	{
@@ -135,7 +135,7 @@ wele
 	;
 	
 wattr
-	:	W_ATTR_SEPARATEDPREFIX
+	:	W_ATTR_SEPARATED_PREFIX
 	{
 		// word#
 		if(Boolean.parseBoolean($W_ATTR_SEPARATED_PREFIX.text))
@@ -256,7 +256,7 @@ wele
 	->	template( v={$p.st} )
 		"<v>"
 	|	long_feature
-	->	template( v={$longfeature.st} )
+	->	template( v={$long_feature.st} )
 		"<v>"
 	|	wk
 	->	template( v={$wk.st} )

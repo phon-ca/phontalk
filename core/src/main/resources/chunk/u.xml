@@ -76,18 +76,21 @@ scope {
 	
 	String who;
 	String recordLang;
+	
+	List<String> links;
 }
 @init {
 	$u::r = sessionFactory.createRecord();
 	$u::useLastGroup = false;
 	$u::who = null;
 	$u::recordLang = null;
+	$u::links = new ArrayList<>();
 }
 @after {
 	$u.record = $u::r;
 	++recordIndex;
 }
-	:	^(U_START u_attrs* links+=linker* uele* t postcode* seg=media? uendele*)
+	:	^(U_START u_attrs* (linker{$u::links.add($linker.val);})* uele* t postcode* seg=media? uendele*)
 	{
 		// setup speaker
 		if($u::who != null) 
@@ -105,11 +108,9 @@ scope {
 			
 		}
 		
-		if($links != null) {
+		if($u::links.size() > 0) {
 			OrthographyBuilder builder = new OrthographyBuilder();
-			for(int i = 0; i < $links.size(); i++) {
-				builder.append($links.get(i).val);
-			}
+			$u::links.forEach( l -> builder.append(l) );
 			$u::r.getOrthography().setGroup(0, builder.toOrthography());
 		}
 		
@@ -467,7 +468,7 @@ uannotation
 	->	template( v={$quotation.st} )
 		"<v>"
 	|	quotation2
-	->	template( v={$quotation.st} )
+	->	template( v={$quotation2.st} )
 		"<v>"
 	|	pause
 	->	template( v={$pause.st} )
