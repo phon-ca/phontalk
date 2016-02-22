@@ -389,29 +389,59 @@ uannotation
 uendele
 	:	k
 	{
-		Group lastGroup = 
-			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthography(
-			(new OrthographyBuilder()).append(lastGroup.getOrthography())
-				.append($k.val).toOrthography());
+		TierDescription tierDesc = ensureTierExists("Markers", false);
+		
+		Tier<String> markersTier = $u::r.getTier(tierDesc.getName());
+		if(markersTier == null) {
+			markersTier = sessionFactory.createTier(tierDesc.getName(), String.class, tierDesc.isGrouped());
+			$u::r.putTier(markersTier);
+		}
+		
+		StringBuffer buffer = new StringBuffer();
+		if(markersTier.getGroup(0) != null) {
+			buffer.append(markersTier.getGroup(0)).append(" ");
+		}
+		buffer.append($k.val);
+		markersTier.setGroup(0, buffer.toString());
 	}
 	|	error
 	{
-		Group lastGroup = 
-			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthography(
-			(new OrthographyBuilder()).append(lastGroup.getOrthography())
-				.append($error.val).toOrthography());
+		TierDescription tierDesc = ensureTierExists("Errors", false);
+		
+		Tier<String> errorsTier = $u::r.getTier(tierDesc.getName());
+		if(errorsTier == null) {
+			errorsTier = sessionFactory.createTier(tierDesc.getName(), String.class, tierDesc.isGrouped());
+			$u::r.putTier(errorsTier);
+		}
+		
+		StringBuffer buffer = new StringBuffer();
+		if(errorsTier.getGroup(0) != null) {
+			buffer.append(errorsTier.getGroup(0)).append(" ");
+		}
+		buffer.append($error.val);
+		errorsTier.setGroup(0, buffer.toString());
 	}
 	|	r
 	{
-		Group lastGroup = 
-			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthography(
-			(new OrthographyBuilder()).append(lastGroup.getOrthography())
-				.append($r.val).toOrthography());
+		TierDescription tierDesc = ensureTierExists("Repetition", false);
+		
+		Tier<String> repTier = $u::r.getTier(tierDesc.getName());
+		if(repTier == null) {
+			repTier = sessionFactory.createTier(tierDesc.getName(), String.class, tierDesc.isGrouped());
+			$u::r.putTier(errorsTier);
+		}
+		
+		StringBuffer buffer = new StringBuffer();
+		if(repTier.getGroup(0) != null) {
+			buffer.append(repTier.getGroup(0)).append(" ");
+		}
+		buffer.append($r.val);
+		repTier.setGroup(0, buffer.toString());
 	}
 	|	a
+	{
+		// sub-rule a performs necessary tier management
+	}
 	;
 ]]>
     </buffer>

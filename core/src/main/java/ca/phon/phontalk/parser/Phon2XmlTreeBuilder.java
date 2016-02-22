@@ -660,6 +660,7 @@ public class Phon2XmlTreeBuilder {
 			addPostcode(uNode, postcodeTier);
 		}
 
+		// utterance language tier
 		Tier<String> uttLangTier =
 				utt.getTier("uttlan", String.class);
 		if(uttLangTier != null) {
@@ -673,9 +674,8 @@ public class Phon2XmlTreeBuilder {
 		if(utt.getSegment() != null && utt.getSegment().getGroup(0) != null) {
 			addMedia(uNode, utt.getSegment().getGroup(0));
 		}
-		
+
 		// process dependent tiers
-		
 		// mor and grasp first
 		if(utt.getExtraTierNames().contains("Morphology")) {
 			try {
@@ -697,6 +697,9 @@ public class Phon2XmlTreeBuilder {
 		handeledTiers.add("GRASP");
 		handeledTiers.add("Postcode");
 		handeledTiers.add("uttlan");
+		handeledTiers.add("Markers");
+		handeledTiers.add("Errors");
+		handeledTiers.add("Repetition");
 		for(String depTierName:utt.getExtraTierNames()) {
 			Tier<String> depTier = utt.getTier(depTierName, String.class);
 			
@@ -782,6 +785,65 @@ public class Phon2XmlTreeBuilder {
 				}
 				
 				addTextNode(depTierNode, tierVal);
+			}
+		}
+		
+		// add Markers, Error and Repetition tiers (if available)
+		// make sure our tiers match expected syntax (i.e., all markers are in parenthesis)
+		final String regex = "\\([^)]*\\)(\\p{Space}?(\\([^)]*\\)))*";
+		final Pattern pattern = Pattern.compile(regex);
+		final String subRegex = "(\\([^)]*\\))";
+		
+		final CHATCodeTreeBuilder chatCodeBuilder = new CHATCodeTreeBuilder();
+		
+		Tier<String> markersTier = utt.getTier("Markers", String.class);
+		if(markersTier != null) {
+			final String tierVal = markersTier.getGroup(0);
+			final Matcher matcher = pattern.matcher(tierVal);
+			if(!matcher.matches()) {
+				LOGGER.severe("Tier 'Markers' is has incorrect syntax: " + tierVal);
+			} else {
+				final Pattern subPattern = Pattern.compile(subRegex);
+				final Matcher subMatcher = subPattern.matcher(tierVal);
+				
+				while(subMatcher.find()) {
+					final String markerVal = subMatcher.group(1);
+					chatCodeBuilder.handleParentheticData(uNode, markerVal);
+				}
+			}
+		}
+		
+		Tier<String> errorsTier = utt.getTier("Errors", String.class);
+		if(errorsTier != null) {
+			final String tierVal = errorsTier.getGroup(0);
+			final Matcher matcher = pattern.matcher(tierVal);
+			if(!matcher.matches()) {
+				LOGGER.severe("Tier 'Errors' is has incorrect syntax: " + tierVal);
+			} else {
+				final Pattern subPattern = Pattern.compile(subRegex);
+				final Matcher subMatcher = subPattern.matcher(tierVal);
+				
+				while(subMatcher.find()) {
+					final String errorVal = subMatcher.group(1);
+					chatCodeBuilder.handleParentheticData(uNode, errorVal);
+				}
+			}
+		}
+		
+		Tier<String> repTier = utt.getTier("Repetition", String.class);
+		if(repTier != null) {
+			final String tierVal = repTier.getGroup(0);
+			final Matcher matcher = pattern.matcher(tierVal);
+			if(!matcher.matches()) {
+				LOGGER.severe("Tier 'Repetition' is has incorrect syntax: " + tierVal);
+			} else {
+				final Pattern subPattern = Pattern.compile(subRegex);
+				final Matcher subMatcher = subPattern.matcher(tierVal);
+				
+				while(subMatcher.find()) {
+					final String repVal = subMatcher.group(1);
+					chatCodeBuilder.handleParentheticData(uNode, repVal);
+				}
 			}
 		}
 		
