@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 import javax.xml.bind.ValidationException;
@@ -34,6 +35,7 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.AntlrTokens;
+import ca.phon.phontalk.parser.AntlrUtils;
 import ca.phon.phontalk.parser.ChatParser;
 import ca.phon.phontalk.parser.ChatTokenSource;
 import ca.phon.phontalk.parser.ChatTree;
@@ -51,47 +53,32 @@ public class Xml2PhonConverter {
 	private final static Logger LOGGER = 
 			Logger.getLogger(Xml2PhonConverter.class.getName());
 	
+	private File inputFile = null;
+	
 	public Xml2PhonConverter() {
 		super();
 	}
-
+	
+	public File getInputFile() {
+		return this.inputFile;
+	}
+	
+	public void setInputFile(File inputFile) {
+		this.inputFile = inputFile;
+	}
+	
 	/**
-	 * Convert the given talkbank file and save as the
-	 * given phone file.
+	 * Convert the given steram into a session object.
 	 * 
-	 * @param inputFile
-	 * @param outputFile
+	 * @param inputStream
 	 * @param listener
+	 * @return session
+	 * 
 	 */
-	public void convertFile(File inputFile, File outputFile, PhonTalkListener listener) {
-		// first try to validate the input file
-		final TalkbankValidator validator = new TalkbankValidator();
-		final DefaultErrorHandler handler = new DefaultErrorHandler(inputFile, listener);
-		
-		// turn off validation of hacked version
-		try {
-			if(!validator.validate(inputFile, handler)) return;
-		} catch (ValidationException e1) {
-			if(PhonTalkUtil.isVerbose()) e1.printStackTrace();
-			final PhonTalkError err = new PhonTalkError(e1.getMessage(), e1);
-			err.setFile(inputFile);
-			if(listener != null) listener.message(err);
-			return;
-		}
-		
+	public Session convertStream(InputStream inputStream, PhonTalkListener listener) {
 		// create input token stream
-		TokenStream tokenStream;
-		try {
-			final FileInputStream fin = new FileInputStream(inputFile);
-			final ChatTokenSource tokenSource = new ChatTokenSource(fin);
-			tokenStream = new CommonTokenStream(tokenSource);
-		} catch (FileNotFoundException e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-			final PhonTalkError err = new PhonTalkError(e);
-			err.setFile(inputFile);
-			if(listener != null) listener.message(err);
-			return;
-		}
+		final ChatTokenSource tokenSource = new ChatTokenSource(inputStream);
+		TokenStream	tokenStream = new CommonTokenStream(tokenSource);
 		
 		// convert xml stream into an AST
 		ChatParser.chat_return parserRet;
@@ -107,7 +94,7 @@ public class Xml2PhonConverter {
 			final PhonTalkMessage msg = visitor.getMessage();
 			msg.setFile(inputFile);
 			if(listener != null) listener.message(msg);
-			return;
+			return null;
 		}
 		
 		// walk AST and output using string template
@@ -143,7 +130,43 @@ public class Xml2PhonConverter {
 			final PhonTalkMessage msg = visitor.getMessage();
 			msg.setFile(inputFile);
 			if(listener != null) listener.message(msg);
+			return null;
+		}
+		
+		return session;
+	}
+
+	/**
+	 * Convert the given talkbank file and save as the
+	 * given phone file.
+	 * 
+	 * @param inputFile
+	 * @param outputFile
+	 * @param listener
+	 */
+	public void convertFile(File inputFile, File outputFile, PhonTalkListener listener) {
+		this.inputFile = inputFile;
+		
+		// first try to validate the input file
+		final TalkbankValidator validator = new TalkbankValidator();
+		final DefaultErrorHandler handler = new DefaultErrorHandler(inputFile, listener);
+		
+		// turn off validation of hacked version
+		try {
+			if(!validator.validate(inputFile, handler)) return;
+		} catch (ValidationException e1) {
+			if(PhonTalkUtil.isVerbose()) e1.printStackTrace();
+			final PhonTalkError err = new PhonTalkError(e1.getMessage(), e1);
+			err.setFile(inputFile);
+			if(listener != null) listener.message(err);
 			return;
+		}
+		
+		Session session = null;
+		try(FileInputStream fin = new FileInputStream(inputFile)) {
+			session = convertStream(fin, listener);
+		} catch (IOException e) {
+			
 		}
 		
 		if(session != null) {

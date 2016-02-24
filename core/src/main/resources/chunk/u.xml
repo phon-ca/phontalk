@@ -111,6 +111,7 @@ scope {
 		if($u::links.size() > 0) {
 			OrthographyBuilder builder = new OrthographyBuilder();
 			$u::links.forEach( l -> builder.append(l) );
+			builder.append($u::r.getOrthography().getGroup(0));
 			$u::r.getOrthography().setGroup(0, builder.toOrthography());
 		}
 		
@@ -391,7 +392,7 @@ uendele
 	{
 		TierDescription tierDesc = ensureTierExists("Markers", false);
 		
-		Tier<String> markersTier = $u::r.getTier(tierDesc.getName());
+		Tier<String> markersTier = $u::r.getTier(tierDesc.getName(), String.class);
 		if(markersTier == null) {
 			markersTier = sessionFactory.createTier(tierDesc.getName(), String.class, tierDesc.isGrouped());
 			$u::r.putTier(markersTier);
@@ -408,7 +409,7 @@ uendele
 	{
 		TierDescription tierDesc = ensureTierExists("Errors", false);
 		
-		Tier<String> errorsTier = $u::r.getTier(tierDesc.getName());
+		Tier<String> errorsTier = $u::r.getTier(tierDesc.getName(), String.class);
 		if(errorsTier == null) {
 			errorsTier = sessionFactory.createTier(tierDesc.getName(), String.class, tierDesc.isGrouped());
 			$u::r.putTier(errorsTier);
@@ -425,10 +426,10 @@ uendele
 	{
 		TierDescription tierDesc = ensureTierExists("Repetition", false);
 		
-		Tier<String> repTier = $u::r.getTier(tierDesc.getName());
+		Tier<String> repTier = $u::r.getTier(tierDesc.getName(), String.class);
 		if(repTier == null) {
 			repTier = sessionFactory.createTier(tierDesc.getName(), String.class, tierDesc.isGrouped());
-			$u::r.putTier(errorsTier);
+			$u::r.putTier(repTier);
 		}
 		
 		StringBuffer buffer = new StringBuffer();
