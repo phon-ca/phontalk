@@ -93,6 +93,7 @@
 	  <module>core</module>
 	  <module>cli</module>
 	  <module>app</module>
+	  <module>plugin</module>
   </modules>
 
   <build>
