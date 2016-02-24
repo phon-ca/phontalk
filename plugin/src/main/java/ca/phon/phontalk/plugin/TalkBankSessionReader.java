@@ -18,6 +18,7 @@ import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
 import ca.phon.phontalk.Xml2PhonConverter;
 import ca.phon.session.Session;
+import ca.phon.session.io.OriginalFormat;
 import ca.phon.session.io.SessionIO;
 import ca.phon.session.io.SessionReader;
 
@@ -41,7 +42,9 @@ public class TalkBankSessionReader implements SessionReader {
 		};
 		
 		Session retVal = converter.convertStream(stream, listener);
+		// ID is no longer provided in TalkBank XML, Phon will fix this later
 		retVal.setName("");
+		retVal.putExtension(OriginalFormat.class, new OriginalFormat(getClass().getAnnotation(SessionIO.class)));
 		return retVal;
 	}
 
