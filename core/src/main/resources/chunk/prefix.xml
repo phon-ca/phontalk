@@ -32,7 +32,7 @@ tree grammar AST2Phon;
 options
 {
 	ASTLabelType = CommonTree ;
-	tokenVocab = Chat ;
+	tokenVocab = TalkBank2AST ;
 	output = AST;
 	superClass=PhonTalkTreeParser;
 }
@@ -128,7 +128,7 @@ tree grammar AST2TalkBank;
 options
 {
 	ASTLabelType = CommonTree ;
-	tokenVocab = Chat ;
+	tokenVocab = TalkBank2AST ;
 	output = template;
 	superClass=PhonTalkTreeParser;
 }

@@ -51,10 +51,10 @@ public class PhoTreeBuilder {
 	
 	private final static Logger LOGGER = Logger.getLogger(PhoTreeBuilder.class.getName());
 	
-	private final AntlrTokens chatTokens = new AntlrTokens("Chat.tokens");
+	private final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
 	
 	public CommonTree buildPhoTree(String eleName, IPATranscript ipa) {
-		final CommonTree retVal = AntlrUtils.createToken(chatTokens, eleName.toUpperCase() + "_START");
+		final CommonTree retVal = AntlrUtils.createToken(talkbankTokens, eleName.toUpperCase() + "_START");
 		final List<CommonTree> pwTrees = buildPwTrees(ipa);
 		for(CommonTree pwTree:pwTrees) {
 			retVal.addChild(pwTree);
@@ -96,7 +96,7 @@ public class PhoTreeBuilder {
 		
 		int phIdx = 0;
 		for(IPATranscript word:ipa.words()) {
-			final CommonTree pwTree = AntlrUtils.createToken(chatTokens, "PW_START");
+			final CommonTree pwTree = AntlrUtils.createToken(talkbankTokens, "PW_START");
 			pwTrees.add(pwTree);
 			
 			ElementVisitor visitor = new ElementVisitor(pwTree, phIdx);
@@ -122,32 +122,32 @@ public class PhoTreeBuilder {
 		public void fallbackVisit(IPAElement p) {
 			// add ph
 			String phId = "ph" + (phIdx++);
-			CommonTree phTree = AntlrUtils.createToken(chatTokens, "PH_START");
+			CommonTree phTree = AntlrUtils.createToken(talkbankTokens, "PH_START");
 			phTree.setParent(pwTree);
 			pwTree.addChild(phTree);
 
-			CommonTree phIdTree = AntlrUtils.createToken(chatTokens, "PH_ATTR_ID");
+			CommonTree phIdTree = AntlrUtils.createToken(talkbankTokens, "PH_ATTR_ID");
 			phIdTree.getToken().setText(phId);
 			phIdTree.setParent(phTree);
 			phTree.addChild(phIdTree);
 
-			CommonTree scTree = AntlrUtils.createToken(chatTokens, "PH_ATTR_SCTYPE");
+			CommonTree scTree = AntlrUtils.createToken(talkbankTokens, "PH_ATTR_SCTYPE");
 			scTree.getToken().setText(p.getScType().getIdentifier());
 			scTree.setParent(phTree);
 			phTree.addChild(scTree);
 
-			AntlrUtils.addTextNode(phTree, chatTokens, p.getText());
+			AntlrUtils.addTextNode(phTree, talkbankTokens, p.getText());
 		}
 		
 		@Visits
 		public void visitCompoundWordMarker(CompoundWordMarker cm) {
 			// add wk
-			CommonTree wkTree = AntlrUtils.createToken(chatTokens, "WK_START");
+			CommonTree wkTree = AntlrUtils.createToken(talkbankTokens, "WK_START");
 			wkTree.setParent(pwTree);
 			pwTree.addChild(wkTree);
 			
 			final String wkType = "cmp";
-			CommonTree wkTypeTree = AntlrUtils.createToken(chatTokens, "WK_ATTR_TYPE");
+			CommonTree wkTypeTree = AntlrUtils.createToken(talkbankTokens, "WK_ATTR_TYPE");
 			wkTypeTree.getToken().setText(wkType);
 			wkTypeTree.setParent(wkTree);
 			wkTree.addChild(wkTypeTree);
@@ -156,11 +156,11 @@ public class PhoTreeBuilder {
 		@Visits
 		public void visitStressMarker(StressMarker ss) {
 			// add ss
-			CommonTree ssTree = AntlrUtils.createToken(chatTokens, "SS_START");
+			CommonTree ssTree = AntlrUtils.createToken(talkbankTokens, "SS_START");
 			ssTree.setParent(pwTree);
 			pwTree.addChild(ssTree);
 
-			CommonTree ssTypeTree = AntlrUtils.createToken(chatTokens, "SS_ATTR_TYPE");
+			CommonTree ssTypeTree = AntlrUtils.createToken(talkbankTokens, "SS_ATTR_TYPE");
 			if(ss.getType() == StressType.PRIMARY) {
 				ssTypeTree.getToken().setText("1");
 			} else if(ss.getType() == StressType.SECONDARY) {

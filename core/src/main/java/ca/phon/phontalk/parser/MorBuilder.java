@@ -39,8 +39,8 @@ import ca.phon.phontalk.PhonTalkMessage;
  */
 public class MorBuilder {
 
-	private final AntlrTokens chatTokens = 
-			new AntlrTokens("Chat.tokens");
+	private final AntlrTokens talkbankTokens = 
+			new AntlrTokens("TalkBank2AST.tokens");
 	
 	/**
 	 * Attach the given GRASP tree to the 
@@ -55,13 +55,13 @@ public class MorBuilder {
 	public CommonTree attachGrasp(CommonTree morTree, CommonTree graspTree) {
 		final Integer prevTypes[] = 
 			{ 
-				chatTokens.getTokenType("GRA_ATTR_OMITTED"),
-				chatTokens.getTokenType("GRA_ATTR_TYPE"),
-				chatTokens.getTokenType("MW_START"),
-				chatTokens.getTokenType("MWC_START"),
-				chatTokens.getTokenType("MT_START"),
-				chatTokens.getTokenType("MENX_START"),
-				chatTokens.getTokenType("GRA_START")
+				talkbankTokens.getTokenType("GRA_ATTR_OMITTED"),
+				talkbankTokens.getTokenType("GRA_ATTR_TYPE"),
+				talkbankTokens.getTokenType("MW_START"),
+				talkbankTokens.getTokenType("MWC_START"),
+				talkbankTokens.getTokenType("MT_START"),
+				talkbankTokens.getTokenType("MENX_START"),
+				talkbankTokens.getTokenType("GRA_START")
 			};
 		final List<Integer> checkTypes = Arrays.asList(prevTypes);
 		int insertionPt = -1;
@@ -88,8 +88,8 @@ public class MorBuilder {
 	public CommonTree buildGraspTree(String gra) 
 		throws IllegalArgumentException {
 		
-		final CommonTree graTree = AntlrUtils.createToken(chatTokens, "GRA_START");
-		final CommonTree graTypeTree = AntlrUtils.createToken(chatTokens, "GRA_ATTR_TYPE");
+		final CommonTree graTree = AntlrUtils.createToken(talkbankTokens, "GRA_START");
+		final CommonTree graTypeTree = AntlrUtils.createToken(talkbankTokens, "GRA_ATTR_TYPE");
 		graTypeTree.getToken().setText("gra");
 		graTree.addChild(graTypeTree);
 		graTypeTree.setParent(graTree);
@@ -100,19 +100,19 @@ public class MorBuilder {
 		}
 		
 		final String idxVal = graParts[0];
-		final CommonTree idxTree = AntlrUtils.createToken(chatTokens, "GRA_ATTR_INDEX");
+		final CommonTree idxTree = AntlrUtils.createToken(talkbankTokens, "GRA_ATTR_INDEX");
 		idxTree.getToken().setText(idxVal);
 		idxTree.setParent(graTree);
 		graTree.addChild(idxTree);
 		
 		final String headVal = graParts[1];
-		final CommonTree headTree = AntlrUtils.createToken(chatTokens, "GRA_ATTR_HEAD");
+		final CommonTree headTree = AntlrUtils.createToken(talkbankTokens, "GRA_ATTR_HEAD");
 		headTree.getToken().setText(headVal);
 		headTree.setParent(graTree);
 		graTree.addChild(headTree);
 		
 		final String relVal = graParts[2];
-		final CommonTree relTree = AntlrUtils.createToken(chatTokens, "GRA_ATTR_RELATION");
+		final CommonTree relTree = AntlrUtils.createToken(talkbankTokens, "GRA_ATTR_RELATION");
 		relTree.getToken().setText(relVal);
 		relTree.setParent(graTree);
 		graTree.addChild(relTree);
@@ -140,7 +140,7 @@ public class MorBuilder {
 		final StringBuffer morBuffer = new StringBuffer(mor);
 		
 		// create a parent mor node
-		final CommonTree morTree = AntlrUtils.createToken(chatTokens, "MOR_START");
+		final CommonTree morTree = AntlrUtils.createToken(talkbankTokens, "MOR_START");
 		
 		// first check to see if we need to add the 'omitted'
 		// attribute
@@ -183,7 +183,7 @@ public class MorBuilder {
 		if(buffer.charAt(0) == '0') {
 			// add attribute node to tree
 			final CommonTree omittedNode = 
-					AntlrUtils.createToken(chatTokens, "MOR_ATTR_OMITTED");
+					AntlrUtils.createToken(talkbankTokens, "MOR_ATTR_OMITTED");
 			omittedNode.getToken().setText("true");
 			
 			buffer.delete(0, 1);
@@ -203,7 +203,7 @@ public class MorBuilder {
 			for(String morpre:morpres) {
 				// create a new mor pre tree
 				final CommonTree morPreTree = buildMorTree(morpre);
-				morPreTree.getToken().setType(chatTokens.getTokenType("MOR_PRE_START"));
+				morPreTree.getToken().setType(talkbankTokens.getTokenType("MOR_PRE_START"));
 				retVal.add(morPreTree);
 			}
 			
@@ -222,7 +222,7 @@ public class MorBuilder {
 			for(String morpost:morposts) {
 				final CommonTree morPostTree = 
 						buildMorTree(morpost);
-				morPostTree.getToken().setType(chatTokens.getTokenType("MOR_POST_START"));
+				morPostTree.getToken().setType(talkbankTokens.getTokenType("MOR_POST_START"));
 				retVal.add(morPostTree);
 			}
 			
@@ -240,9 +240,9 @@ public class MorBuilder {
 			final String menxvals[] = menxsection.split("=");
 			for(String menxval:menxvals) {
 				final CommonTree menxTree = 
-						AntlrUtils.createToken(chatTokens, "MENX_START");
+						AntlrUtils.createToken(talkbankTokens, "MENX_START");
 				retVal.add(menxTree);
-				AntlrUtils.addTextNode(menxTree, chatTokens, menxval);
+				AntlrUtils.addTextNode(menxTree, talkbankTokens, menxval);
 			}
 			
 			buffer.delete(morEnd, buffer.length());
@@ -273,7 +273,7 @@ public class MorBuilder {
 	}
 	
 	private CommonTree mwc(CommonTree tree, StringBuffer buffer) {
-		final CommonTree retVal = AntlrUtils.createToken(chatTokens, "MWC_START");
+		final CommonTree retVal = AntlrUtils.createToken(talkbankTokens, "MWC_START");
 		
 		final List<CommonTree> mpfxs = mpfx(tree, buffer);
 		for(CommonTree mpfx:mpfxs) {
@@ -301,7 +301,7 @@ public class MorBuilder {
 	
 	private CommonTree mw(CommonTree tree, StringBuffer buffer) {
 		final CommonTree retVal =
-				AntlrUtils.createToken(chatTokens, "MW_START");
+				AntlrUtils.createToken(talkbankTokens, "MW_START");
 		
 		// split at '|' first
 		final String mwParts[] = buffer.toString().split("\\|");
@@ -342,18 +342,18 @@ public class MorBuilder {
 	 * @return
 	 */
 	private CommonTree pos(CommonTree tree, StringBuffer buffer) {
-		final CommonTree retVal = AntlrUtils.createToken(chatTokens, "POS_START");
+		final CommonTree retVal = AntlrUtils.createToken(talkbankTokens, "POS_START");
 		
 		final String possection = buffer.toString();
 		final String[] posvals = possection.split(":");
-		final CommonTree posCTree = AntlrUtils.createToken(chatTokens, "C_START");
-		AntlrUtils.addTextNode(posCTree, chatTokens, posvals[0]);
+		final CommonTree posCTree = AntlrUtils.createToken(talkbankTokens, "C_START");
+		AntlrUtils.addTextNode(posCTree, talkbankTokens, posvals[0]);
 		posCTree.setParent(retVal);
 		retVal.addChild(posCTree);
 		
 		for(int i = 1; i < posvals.length; i++) {
-			final CommonTree posSTree = AntlrUtils.createToken(chatTokens, "S_START");
-			AntlrUtils.addTextNode(posSTree, chatTokens, posvals[i]);
+			final CommonTree posSTree = AntlrUtils.createToken(talkbankTokens, "S_START");
+			AntlrUtils.addTextNode(posSTree, talkbankTokens, posvals[i]);
 			posSTree.setParent(retVal);
 			retVal.addChild(posSTree);
 		}
@@ -362,8 +362,8 @@ public class MorBuilder {
 	}
 	
 	private CommonTree stem(CommonTree tree, StringBuffer buffer) {
-		final CommonTree retVal = AntlrUtils.createToken(chatTokens, "STEM_START");
-		AntlrUtils.addTextNode(retVal, chatTokens, buffer.toString());
+		final CommonTree retVal = AntlrUtils.createToken(talkbankTokens, "STEM_START");
+		AntlrUtils.addTextNode(retVal, talkbankTokens, buffer.toString());
 		buffer.setLength(0);
 		return retVal;
 	}
@@ -398,13 +398,13 @@ public class MorBuilder {
 				}
 				
 				final CommonTree mkTree = 
-						AntlrUtils.createToken(chatTokens, "MK_START");
+						AntlrUtils.createToken(talkbankTokens, "MK_START");
 				final CommonTree mkTypeTree = 
-						AntlrUtils.createToken(chatTokens, "MK_ATTR_TYPE");
+						AntlrUtils.createToken(talkbankTokens, "MK_ATTR_TYPE");
 				mkTypeTree.getToken().setText(mkType);
 				mkTypeTree.setParent(mkTree);
 				mkTree.addChild(mkTypeTree);
-				AntlrUtils.addTextNode(mkTree, chatTokens, mkVal);
+				AntlrUtils.addTextNode(mkTree, talkbankTokens, mkVal);
 				
 				retVal.add(mkTree);
 			}
@@ -422,8 +422,8 @@ public class MorBuilder {
 			final String mpfxvals[] = mpfxsection.split("#");
 			for(String mpfxval:mpfxvals) {
 				final CommonTree mpfxTree = 
-						AntlrUtils.createToken(chatTokens, "MPFX_START");
-				AntlrUtils.addTextNode(mpfxTree, chatTokens, mpfxval);
+						AntlrUtils.createToken(talkbankTokens, "MPFX_START");
+				AntlrUtils.addTextNode(mpfxTree, talkbankTokens, mpfxval);
 				retVal.add(mpfxTree);
 			}
 			buffer.delete(0, mpfxEnd+1);
@@ -433,7 +433,7 @@ public class MorBuilder {
 	
 	private CommonTree mt(CommonTree tree, StringBuffer buffer) {
 		final CommonTree retVal = 
-				AntlrUtils.createToken(chatTokens, "MT_START");
+				AntlrUtils.createToken(talkbankTokens, "MT_START");
 		String type = "mt"; // default
 		switch(buffer.charAt(0)) {
 		case '!':
@@ -453,7 +453,7 @@ public class MorBuilder {
 			break;
 		}
 		final CommonTree mtType =
-				AntlrUtils.createToken(chatTokens, "MT_ATTR_TYPE");
+				AntlrUtils.createToken(talkbankTokens, "MT_ATTR_TYPE");
 		
 		final String txt = buffer.toString();
 		final String typeRegex = "\\(mt:(.+)\\)";

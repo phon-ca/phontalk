@@ -32,7 +32,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	
 	private final static Logger LOGGER = Logger.getLogger(OrthographyTreeBuilder.class.getName());
 	
-	private static final AntlrTokens chatTokens = new AntlrTokens("Chat.tokens");
+	private static final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
 
 	private Stack<CommonTree> uttNodeStack = new Stack<CommonTree>();
 	
@@ -78,7 +78,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			attachToLastChild = false;
 		} else {
 			wParent = 
-				AntlrUtils.createToken(chatTokens, "W_START");
+				AntlrUtils.createToken(talkbankTokens, "W_START");
 			wParent.setParent(parentNode);
 			parentNode.addChild(wParent);
 		}
@@ -87,13 +87,13 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			WordSuffixType suffixType = word.getSuffix().getType();
 			if(suffixType == WordSuffixType.SEPARATED_PREFIX) {
 				CommonTree spTree =
-						AntlrUtils.createToken(chatTokens, "W_ATTR_SEPARATED_PREFIX");
+						AntlrUtils.createToken(talkbankTokens, "W_ATTR_SEPARATED_PREFIX");
 				spTree.getToken().setText("true");
 				spTree.setParent(wParent);
 				wParent.addChild(spTree);
 			} else if(suffixType == WordSuffixType.USER_SPECIAL_FORM) {
 				CommonTree usfTree =
-						AntlrUtils.createToken(chatTokens, "W_ATTR_USER_SPECIAL_FORM");
+						AntlrUtils.createToken(talkbankTokens, "W_ATTR_USER_SPECIAL_FORM");
 				usfTree.getToken().setText(word.getSuffix().getCode());
 				usfTree.setParent(wParent);
 				wParent.addChild(usfTree);
@@ -101,7 +101,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				// TODO add as 'langs' tree
 			} else {
 				CommonTree formTypeNode = 
-						AntlrUtils.createToken(chatTokens, "W_ATTR_FORMTYPE");
+						AntlrUtils.createToken(talkbankTokens, "W_ATTR_FORMTYPE");
 				formTypeNode.getToken().setText(suffixType.getDisplayName());
 				formTypeNode.setParent(wParent);
 				wParent.addChild(formTypeNode);
@@ -112,13 +112,13 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			WordPrefixType prefixType = word.getPrefix().getType();
 			if(prefixType == WordPrefixType.FRAGMENT || prefixType == WordPrefixType.OMISSION) {
 				CommonTree typeNode = 
-						AntlrUtils.createToken(chatTokens, "W_ATTR_TYPE");
+						AntlrUtils.createToken(talkbankTokens, "W_ATTR_TYPE");
 				typeNode.getToken().setText(prefixType.getDisplayName());
 				typeNode.setParent(wParent);
 				wParent.addChild(typeNode);
 			} else {
 				CommonTree utTree =
-						AntlrUtils.createToken(chatTokens, "W_ATTR_UNTRANSCRIBED");
+						AntlrUtils.createToken(talkbankTokens, "W_ATTR_UNTRANSCRIBED");
 				utTree.getToken().setText(prefixType.getDisplayName());
 				utTree.setParent(wParent);
 				wParent.addChild(utTree);
@@ -139,11 +139,11 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			} else if(c == '+' || c == '~') {
 				if(val.length() > 0)
 					addTextNode(wParent, val);
-				CommonTree wkTree = AntlrUtils.createToken(chatTokens, "WK_START");
+				CommonTree wkTree = AntlrUtils.createToken(talkbankTokens, "WK_START");
 				wkTree.setParent(wParent);
 				wParent.addChild(wkTree);
 
-				CommonTree wkTypeTree = AntlrUtils.createToken(chatTokens, "WK_ATTR_TYPE");
+				CommonTree wkTypeTree = AntlrUtils.createToken(talkbankTokens, "WK_ATTR_TYPE");
 				if(c == '+')
 					wkTypeTree.getToken().setText("cmp");
 				else
@@ -164,7 +164,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	 */
 	private void addShortening(CommonTree parent, String data) {
 		CommonTree shNode = 
-			AntlrUtils.createToken(chatTokens, "SHORTENING_START");
+			AntlrUtils.createToken(talkbankTokens, "SHORTENING_START");
 		shNode.setParent(parent);
 		addTextNode(shNode, data);
 		
@@ -202,7 +202,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		}
 		
 		final CommonTree eNode = 
-				AntlrUtils.createToken(chatTokens, "E_START");
+				AntlrUtils.createToken(talkbankTokens, "E_START");
 		eNode.setParent(parent);
 		parent.addChild(eNode);
 		
@@ -244,18 +244,18 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	 */
 	private void addOtherSpokenEvent(CommonTree parent, String speaker, String data) {
 		CommonTree oseNode =
-				AntlrUtils.createToken(chatTokens, "OTHERSPOKENEVENT_START");
+				AntlrUtils.createToken(talkbankTokens, "OTHERSPOKENEVENT_START");
 		oseNode.setParent(parent);
 		parent.addChild(oseNode);
 		
 		CommonTree whoNode =
-				AntlrUtils.createToken(chatTokens, "OTHERSPOKENEVENT_ATTR_WHO");
+				AntlrUtils.createToken(talkbankTokens, "OTHERSPOKENEVENT_ATTR_WHO");
 		whoNode.getToken().setText(speaker);
 		whoNode.setParent(oseNode);
 		oseNode.addChild(whoNode);
 		
 		CommonTree wNode =
-				AntlrUtils.createToken(chatTokens, "W_START");
+				AntlrUtils.createToken(talkbankTokens, "W_START");
 		wNode.setParent(oseNode);
 		oseNode.addChild(wNode);
 		
@@ -267,7 +267,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	 */
 	private void addTextNode(CommonTree parent, String data) {
 		CommonTree txtNode = 
-			AntlrUtils.createToken(chatTokens, "TEXT");
+			AntlrUtils.createToken(talkbankTokens, "TEXT");
 		txtNode.getToken().setText(data);
 		txtNode.setParent(parent);
 		parent.addChild(txtNode);
@@ -292,7 +292,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 
 				CommonTree parentNode = nodeStack.peek();
 				// find the last 'w' node
-				int wTokenType = chatTokens.getTokenType("W_START");
+				int wTokenType = talkbankTokens.getTokenType("W_START");
 				CommonTree wNode = null;
 				for(int cIndex = parentNode.getChildCount()-1; cIndex >= 0; cIndex--) {
 					CommonTree cNode = (CommonTree)parentNode.getChild(cIndex);
@@ -303,7 +303,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				}
 				if(wNode == null) {
 					// create a new word
-					wNode = AntlrUtils.createToken(chatTokens, "W_START");
+					wNode = AntlrUtils.createToken(talkbankTokens, "W_START");
 					wNode.setParent(parentNode);
 					parentNode.addChild(wNode);
 					attachToLastChild = true;
@@ -324,7 +324,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				}*/
 				if(wNode == null) {
 					// create a new word
-					wNode = AntlrUtils.createToken(chatTokens, "W_START");
+					wNode = AntlrUtils.createToken(talkbankTokens, "W_START");
 					wNode.setParent(parentNode);
 					parentNode.addChild(wNode);
 					attachToLastChild = true;
@@ -353,24 +353,24 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		String langsData = data.substring(cIndex+1);
 		
 		CommonTree langsNode = 
-			AntlrUtils.createToken(chatTokens, "LANGS_START");
+			AntlrUtils.createToken(talkbankTokens, "LANGS_START");
 		langsNode.setParent(parent);
 		parent.addChild(langsNode);
 		
 		CommonTree dataNode = null;
 		if(langsType.equals("single")) {
 			dataNode = 
-			AntlrUtils.createToken(chatTokens, "SINGLE_START");
+			AntlrUtils.createToken(talkbankTokens, "SINGLE_START");
 		} else if(langsType.equals("multiple")) {
 			dataNode = 
-			AntlrUtils.createToken(chatTokens, "MULTIPLE_START");
+			AntlrUtils.createToken(talkbankTokens, "MULTIPLE_START");
 		} else if(langsType.equals("ambiguous")) {
 			dataNode =
-			AntlrUtils.createToken(chatTokens, "AMBIGUOUS_START");
+			AntlrUtils.createToken(talkbankTokens, "AMBIGUOUS_START");
 		} else {
 			// just make it ambiguous
 			dataNode =
-			AntlrUtils.createToken(chatTokens, "AMBIGUOUS_START");
+			AntlrUtils.createToken(talkbankTokens, "AMBIGUOUS_START");
 		}
 		addTextNode(dataNode, langsData);
 		dataNode.setParent(langsNode);
@@ -382,14 +382,14 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	 */
 	private void addReplacement(CommonTree parent, String data) {
 		CommonTree rNode = 
-			AntlrUtils.createToken(chatTokens, "REPLACEMENT_START");
+			AntlrUtils.createToken(talkbankTokens, "REPLACEMENT_START");
 		rNode.setParent(parent);
 		parent.addChild(rNode);
 		
 		String[] wEles = data.split("\\p{Space}");
 		for(String wEle:wEles) {
 			CommonTree wNode = 
-				AntlrUtils.createToken(chatTokens, "W_START");
+				AntlrUtils.createToken(talkbankTokens, "W_START");
 			wNode.setParent(rNode);
 			rNode.addChild(wNode);
 			
@@ -404,11 +404,11 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	 */
 	private void insertWordnet(CommonTree parent, String type) {
 		CommonTree wkNode =
-			AntlrUtils.createToken(chatTokens, "WK_START");
+			AntlrUtils.createToken(talkbankTokens, "WK_START");
 		wkNode.setParent(parent);
 		
 		CommonTree typeNode =
-			AntlrUtils.createToken(chatTokens, "WK_ATTR_TYPE");
+			AntlrUtils.createToken(talkbankTokens, "WK_ATTR_TYPE");
 		typeNode.getToken().setText(type);
 		typeNode.setParent(wkNode);
 		wkNode.addChild(typeNode);
@@ -448,7 +448,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			if(ortho.length() == 1) {
 				// create a super-<g> node
 				CommonTree superG = 
-						new CommonTree(new CommonToken(chatTokens.getTokenType("G_START")));
+						new CommonTree(new CommonToken(talkbankTokens.getTokenType("G_START")));
 				superG.setParent(uttNodeStack.peek());
 				uttNodeStack.peek().addChild(superG);
 				
@@ -461,7 +461,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					attachToLastChild = false;
 				}
 				CommonTree gNode = 
-					AntlrUtils.createToken(chatTokens, "G_START");
+					AntlrUtils.createToken(talkbankTokens, "G_START");
 				gNode.setParent(parentNode);
 				parentNode.addChild(gNode);
 				
@@ -484,9 +484,9 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	}
 	
 	private void addTagMarker(CommonTree parentNode, String type) {
-    	CommonTree tgTree = AntlrUtils.createToken(chatTokens, "TAGMARKER_START");
+    	CommonTree tgTree = AntlrUtils.createToken(talkbankTokens, "TAGMARKER_START");
     	
-    	CommonTree tgTypeTree = AntlrUtils.createToken(chatTokens, "TAGMARKER_ATTR_TYPE");
+    	CommonTree tgTypeTree = AntlrUtils.createToken(talkbankTokens, "TAGMARKER_ATTR_TYPE");
     	tgTypeTree.getToken().setText(type);
     	tgTree.addChild(tgTypeTree);
     	tgTypeTree.setParent(tgTree);
@@ -504,12 +504,12 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	 */
 	public void addTerminator(CommonTree parent, String type) {
 		CommonTree tNode =
-			AntlrUtils.createToken(chatTokens, "T_START");
+			AntlrUtils.createToken(talkbankTokens, "T_START");
 		tNode.setParent(parent);
 		parent.addChild(tNode);
 		
 		CommonTree ttNode = 
-			AntlrUtils.createToken(chatTokens, "T_ATTR_TYPE");
+			AntlrUtils.createToken(talkbankTokens, "T_ATTR_TYPE");
 		ttNode.getToken().setText(type);
 		ttNode.setParent(tNode);
 		tNode.addChild(ttNode);

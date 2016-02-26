@@ -35,11 +35,11 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplateWriter;
 
+import ca.phon.phontalk.parser.AST2TalkBank;
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.AntlrUtils;
 import ca.phon.phontalk.parser.Phon2XmlTreeBuilder;
-import ca.phon.phontalk.parser.Phon2XmlWalker;
 import ca.phon.phontalk.parser.TreeBuilderException;
 import ca.phon.session.Participant;
 import ca.phon.session.Record;
@@ -96,9 +96,9 @@ public class Phon2XmlConverter {
 			final StringTemplateWriter stWriter = new NoIndentWriter(new PrintWriter(fwriter));
 			
 			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(sessionTree);
-			final Phon2XmlWalker walker = new Phon2XmlWalker(nodeStream);
+			final AST2TalkBank walker = new AST2TalkBank(nodeStream);
 			walker.setFile(outputFile.getAbsolutePath());
-			final Phon2XmlWalker.chat_return ret = walker.chat();
+			final AST2TalkBank.chat_return ret = walker.chat();
 			ret.st.write(stWriter);
 			fwriter.flush();
 			fwriter.close();
@@ -240,16 +240,16 @@ public class Phon2XmlConverter {
 			}
 
 			CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(tTree);
-			Phon2XmlWalker walker = new Phon2XmlWalker(nodeStream);
+			AST2TalkBank walker = new AST2TalkBank(nodeStream);
 
 			try {
-				Phon2XmlWalker.chat_return v = walker.chat();
+				AST2TalkBank.chat_return v = walker.chat();
 				v.st.toString();
 			} catch (TreeWalkerError e) {
 				AntlrUtils.printTree(tTree);
 				if(e.getCause() instanceof RecognitionException) {
 					final RecognitionException re = (RecognitionException)e.getCause();
-					final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("Phon2XmlWalker.tokens"));
+					final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2TalkBank.tokens"));
 					visitor.visit(re);
 					final PhonTalkMessage msg = visitor.getMessage();
 					msg.setMessage("Record #" + (i+1) + " " + msg.getMessage());
@@ -266,7 +266,7 @@ public class Phon2XmlConverter {
 				}
 			} catch (RecognitionException re) {
 				AntlrUtils.printTree(tTree);
-				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("Phon2XmlWalker.tokens"));
+				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2TalkBank.tokens"));
 				visitor.visit(re);
 				final PhonTalkMessage msg = visitor.getMessage();
 				msg.setMessage("Record #" + (i+1) + " " + msg.getMessage());

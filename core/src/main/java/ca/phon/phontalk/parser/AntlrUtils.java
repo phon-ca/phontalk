@@ -45,8 +45,8 @@ public class AntlrUtils {
 	}
 	
 	public static void printTree(CommonTree tree) {
-		final AntlrTokens chatTokens = new AntlrTokens("Chat.tokens");
-		printTree(chatTokens, tree, 0);
+		final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
+		printTree(talkbankTokens, tree, 0);
 	}
 	
 	public static void printTree(AntlrTokens chatTokens, CommonTree tree, int indent) {

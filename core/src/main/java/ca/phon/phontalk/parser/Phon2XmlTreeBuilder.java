@@ -65,7 +65,7 @@ public class Phon2XmlTreeBuilder {
 	
 	private final static Logger LOGGER = Logger.getLogger(Phon2XmlTreeBuilder.class.getName());
 	
-	private static final AntlrTokens chatTokens = new AntlrTokens("Chat.tokens");
+	private static final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
 	
 	private Pattern langPattern = 
 		Pattern.compile("([a-zA-Z]{3}(-[a-zA-Z0-9]{1,8})*\\p{Space}?)+");
@@ -110,7 +110,7 @@ public class Phon2XmlTreeBuilder {
 	 */
 	public CommonTree buildTree(Session session) 
 		throws TreeBuilderException {
-		CommonTree retVal = AntlrUtils.createToken(chatTokens, "CHAT_START");
+		CommonTree retVal = AntlrUtils.createToken(talkbankTokens, "CHAT_START");
 		retVal.setParent(null);
 		
 		recordIdx = 0;
@@ -181,11 +181,11 @@ public class Phon2XmlTreeBuilder {
 		
 		String chatDateStr = formatter.format(tDate).toUpperCase();
 		
-		CommonTree commentTree = AntlrUtils.createToken(chatTokens, "COMMENT_START");
+		CommonTree commentTree = AntlrUtils.createToken(talkbankTokens, "COMMENT_START");
 		commentTree.setParent(tree);
 		tree.addChild(commentTree);
 
-		CommonTree attrTree = AntlrUtils.createToken(chatTokens, "COMMENT_ATTR_TYPE");
+		CommonTree attrTree = AntlrUtils.createToken(talkbankTokens, "COMMENT_ATTR_TYPE");
 		attrTree.getToken().setText("Date");
 		attrTree.setParent(commentTree);
 		commentTree.addChild(attrTree);
@@ -200,7 +200,7 @@ public class Phon2XmlTreeBuilder {
 		// media
 		if(t.getMediaLocation() != null
 				&& t.getMediaLocation().length() > 0) {
-			CommonTree node = AntlrUtils.createToken(chatTokens, "CHAT_ATTR_MEDIA");
+			CommonTree node = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_MEDIA");
 			
 			File mediaFile = new File(t.getMediaLocation());
 			String mediaName = mediaFile.getName();
@@ -222,7 +222,7 @@ public class Phon2XmlTreeBuilder {
 			node.setParent(tree);
 			tree.addChild(node);
 			
-			CommonTree node2 = AntlrUtils.createToken(chatTokens, "CHAT_ATTR_MEDIATYPES");
+			CommonTree node2 = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_MEDIATYPES");
 			if(fext.equals("aif") || fext.equals("aiff") ||
 					fext.equals("wav")) {
 				node2.getToken().setText("audio");
@@ -251,7 +251,7 @@ public class Phon2XmlTreeBuilder {
 				lang = "xxx";
 			}
 			
-			CommonTree node = AntlrUtils.createToken(chatTokens, "CHAT_ATTR_LANG");
+			CommonTree node = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_LANG");
 			node.setParent(tree);
 			node.getToken().setText(lang.replaceAll(",", " "));
 			tree.addChild(node);
@@ -259,7 +259,7 @@ public class Phon2XmlTreeBuilder {
 		}
 		
 		// corpus
-		CommonTree cNode = AntlrUtils.createToken(chatTokens, "CHAT_ATTR_CORPUS");
+		CommonTree cNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_CORPUS");
 		cNode.getToken().setText(t.getCorpus());
 		cNode.setParent(tree);
 		tree.addChild(cNode);
@@ -269,7 +269,7 @@ public class Phon2XmlTreeBuilder {
 		 */
 		/*
 		{
-			CommonTree idNode = AntlrUtils.createToken(chatTokens, "CHAT_ATTR_ID");
+			CommonTree idNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_ID");
 			idNode.getToken().setText(t.getName());
 			idNode.setParent(tree);
 			tree.addChild(idNode);
@@ -278,13 +278,13 @@ public class Phon2XmlTreeBuilder {
 		
 		// date
 		String dString = DateFormatter.dateTimeToString(t.getDate());
-		CommonTree dateNode = AntlrUtils.createToken(chatTokens, "CHAT_ATTR_DATE");
+		CommonTree dateNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_DATE");
 		dateNode.getToken().setText(dString);
 		dateNode.setParent(tree);
 		tree.addChild(dateNode);
 		
 		// version
-		CommonTree vNode = AntlrUtils.createToken(chatTokens, "CHAT_ATTR_VERSION");
+		CommonTree vNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_VERSION");
 		vNode.getToken().setText("2.1.0");
 		vNode.setParent(tree);
 		tree.addChild(vNode);
@@ -296,13 +296,13 @@ public class Phon2XmlTreeBuilder {
 	private void setupParticipants(CommonTree tree, Session t) {
 		// parent participantS node
 		CommonTree parent = 
-			AntlrUtils.createToken(chatTokens, "PARTICIPANTS_START");
+			AntlrUtils.createToken(talkbankTokens, "PARTICIPANTS_START");
 		parent.setParent(tree);
 		tree.addChild(parent);
 		
 		for(Participant p:t.getParticipants()) {
 			CommonTree pNode =
-				AntlrUtils.createToken(chatTokens, "PARTICIPANT_START");
+				AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_START");
 			parent.addChild(pNode);
 			pNode.setParent(parent);
 			
@@ -312,14 +312,14 @@ public class Phon2XmlTreeBuilder {
 //				partId = "CHI";
 //			}
 			CommonTree pId = 
-				AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_ID");
+				AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_ID");
 			pId.getToken().setText(partId);
 			pId.setParent(pNode);
 			pNode.addChild(pId);
 			
 			if(p.getName() != null && p.getName().length() > 0) {
 				CommonTree pName = 
-					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_NAME");
+					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_NAME");
 				pName.getToken().setText(p.getName().replaceAll("\\p{Space}", "_"));
 				pName.setParent(pNode);
 				pNode.addChild(pName);
@@ -330,7 +330,7 @@ public class Phon2XmlTreeBuilder {
 				role = p.getRole().getTitle().replaceAll("\\p{Space}", "_");
 			}
 				CommonTree pRole = 
-					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_ROLE");
+					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_ROLE");
 				pRole.getToken().setText(role);
 				pRole.setParent(pNode);
 				pNode.addChild(pRole);
@@ -345,7 +345,7 @@ public class Phon2XmlTreeBuilder {
 					LOGGER.warning("Participant " + partId + " language '" + langString + "' does not match pattern " + langPattern.pattern());
 				} else {
 					CommonTree pLang = 
-						AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_LANGUAGE");
+						AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_LANGUAGE");
 					pLang.getToken().setText(langString);
 					pLang.setParent(pNode);
 					pNode.addChild(pLang);
@@ -355,7 +355,7 @@ public class Phon2XmlTreeBuilder {
 			Period age = p.getAge(t.getDate());
 			if(age != null && !age.isNegative() && !age.isZero()) {
 				CommonTree pAge = 
-					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_AGE");
+					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_AGE");
 				
 				pAge.getToken().setText(String.format("P%dY%dM%dD", age.getYears(), age.getMonths(), age.getDays()));
 				pAge.setParent(pNode);
@@ -365,7 +365,7 @@ public class Phon2XmlTreeBuilder {
 			if(p.getBirthDate() != null) {
 				DateFormatter dateFormat = new DateFormatter();
 				CommonTree pBday = 
-					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_BIRTHDAY");
+					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_BIRTHDAY");
 				pBday.getToken().setText(dateFormat.format(p.getBirthDate()));
 				pBday.setParent(pNode);
 				pNode.addChild(pBday);
@@ -373,7 +373,7 @@ public class Phon2XmlTreeBuilder {
 			
 			if(p.getGroup() != null && p.getGroup().length() > 0) {
 				CommonTree pGroup =
-					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_GROUP");
+					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_GROUP");
 				pGroup.getToken().setText(p.getGroup());
 				pGroup.setParent(pNode);
 				pNode.addChild(pGroup);
@@ -381,7 +381,7 @@ public class Phon2XmlTreeBuilder {
 			
 			if(p.getSex() != null) {
 				CommonTree pSex =
-					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_SEX");
+					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_SEX");
 				String sexType = 
 						(p.getSex() == Sex.MALE ? "male" : "female");
 				pSex.getToken().setText(sexType);
@@ -391,7 +391,7 @@ public class Phon2XmlTreeBuilder {
 			
 			if(p.getSES() != null && p.getSES().length() > 0) {
 				CommonTree pSes = 
-					AntlrUtils.createToken(chatTokens, "PARTICIPANT_ATTR_SES");
+					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_SES");
 				pSes.getToken().setText(p.getSES());
 				pSes.setParent(pNode);
 				pNode.addChild(pSes);
@@ -459,18 +459,18 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private void insertComment(CommonTree tree, Comment c) {
 		CommonTree cNode = 
-			AntlrUtils.createToken(chatTokens, "COMMENT_START");
+			AntlrUtils.createToken(talkbankTokens, "COMMENT_START");
 		cNode.setParent(tree);
 		tree.addChild(cNode);
 		
 		CommonTree typeNode =
-			AntlrUtils.createToken(chatTokens, "COMMENT_ATTR_TYPE");
+			AntlrUtils.createToken(talkbankTokens, "COMMENT_ATTR_TYPE");
 		typeNode.setParent(cNode);
 		typeNode.getToken().setText(c.getType().getTitle());
 		cNode.addChild(typeNode);
 		
 		CommonTree textNode = 
-			AntlrUtils.createToken(chatTokens, "TEXT");
+			AntlrUtils.createToken(talkbankTokens, "TEXT");
 		textNode.getToken().setText(c.getValue());
 		textNode.setParent(cNode);
 		cNode.addChild(textNode);
@@ -487,7 +487,7 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private void insertPid(CommonTree parent, String pid) {
 		CommonTree pidAttrNode = 
-				AntlrUtils.createToken(chatTokens, "CHAT_ATTR_PID");
+				AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_PID");
 		pidAttrNode.getToken().setText(pid.substring(4));
 		pidAttrNode.setParent(parent);
 		parent.insertChild(0, pidAttrNode);
@@ -499,12 +499,12 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private void insertLazyGem(CommonTree parent, Comment c) {
 		CommonTree lazyGemNode = 
-			AntlrUtils.createToken(chatTokens, "LAZY_GEM_START");
+			AntlrUtils.createToken(talkbankTokens, "LAZY_GEM_START");
 		lazyGemNode.setParent(parent);
 		parent.addChild(lazyGemNode);
 		
 		CommonTree lazyGemLabel = 
-			AntlrUtils.createToken(chatTokens, "LAZY_GEM_ATTR_LABEL");
+			AntlrUtils.createToken(talkbankTokens, "LAZY_GEM_ATTR_LABEL");
 		lazyGemLabel.getToken().setText(c.getValue());
 		lazyGemLabel.setParent(lazyGemNode);
 		lazyGemNode.addChild(lazyGemLabel);
@@ -515,12 +515,12 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private void insertBeginGem(CommonTree parent, Comment c) {
 		CommonTree beginGemNode = 
-			AntlrUtils.createToken(chatTokens, "BEGIN_GEM_START");
+			AntlrUtils.createToken(talkbankTokens, "BEGIN_GEM_START");
 		beginGemNode.setParent(parent);
 		parent.addChild(beginGemNode);
 		
 		CommonTree beginGemLabel = 
-			AntlrUtils.createToken(chatTokens, "BEGIN_GEM_ATTR_LABEL");
+			AntlrUtils.createToken(talkbankTokens, "BEGIN_GEM_ATTR_LABEL");
 		beginGemLabel.getToken().setText(c.getValue());
 		beginGemLabel.setParent(beginGemNode);
 		beginGemNode.addChild(beginGemLabel);
@@ -531,12 +531,12 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private void insertEndGem(CommonTree parent, Comment c) {
 		CommonTree endGemNode = 
-			AntlrUtils.createToken(chatTokens, "END_GEM_START");
+			AntlrUtils.createToken(talkbankTokens, "END_GEM_START");
 		endGemNode.setParent(parent);
 		parent.addChild(endGemNode);
 		
 		CommonTree endGemLabel = 
-			AntlrUtils.createToken(chatTokens, "END_GEM_ATTR_LABEL");
+			AntlrUtils.createToken(talkbankTokens, "END_GEM_ATTR_LABEL");
 		endGemLabel.getToken().setText(c.getValue());
 		endGemLabel.setParent(endGemNode);
 		endGemNode.addChild(endGemLabel);
@@ -547,7 +547,7 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private CommonTree createTcu(CommonTree parent, Comment c) {
 		CommonTree beginTcuNode = 
-			AntlrUtils.createToken(chatTokens, "TCU_START");
+			AntlrUtils.createToken(talkbankTokens, "TCU_START");
 		beginTcuNode.setParent(parent);
 		parent.addChild(beginTcuNode);
 		
@@ -560,11 +560,11 @@ public class Phon2XmlTreeBuilder {
 	private void insertRecord(CommonTree tree, Record utt) 
 		throws TreeBuilderException {
 		CommonTree uNode = 
-			AntlrUtils.createToken(chatTokens, "U_START");
+			AntlrUtils.createToken(talkbankTokens, "U_START");
 		uNode.setParent(tree);
 		
 		CommonTree whoNode = 
-			AntlrUtils.createToken(chatTokens, "U_ATTR_WHO");
+			AntlrUtils.createToken(talkbankTokens, "U_ATTR_WHO");
 		
 		if(utt.getSpeaker() == null) {
 			whoNode.getToken().setText("CHI");
@@ -601,7 +601,7 @@ public class Phon2XmlTreeBuilder {
 			nodeStack.push(uttNode);
 			if(hasTarget || hasActual) {
 				CommonTree grpNode =
-					AntlrUtils.createToken(chatTokens, "PG_START");
+					AntlrUtils.createToken(talkbankTokens, "PG_START");
 				grpNode.setParent(uttNode);
 				uttNode.addChild(grpNode);
 				nodeStack.push(grpNode);
@@ -622,7 +622,7 @@ public class Phon2XmlTreeBuilder {
 				// model form
 				if(hasTarget) {
 					CommonTree targetNode =
-							AntlrUtils.createToken(chatTokens, "MODEL_START");
+							AntlrUtils.createToken(talkbankTokens, "MODEL_START");
 					targetNode.setParent(grpNode);
 					grpNode.addChild(targetNode);
 
@@ -632,7 +632,7 @@ public class Phon2XmlTreeBuilder {
 
 				if(hasActual) {
 					CommonTree actualNode =
-							AntlrUtils.createToken(chatTokens, "ACTUAL_START");
+							AntlrUtils.createToken(talkbankTokens, "ACTUAL_START");
 					actualNode.setParent(grpNode);
 					grpNode.addChild(actualNode);
 
@@ -648,7 +648,7 @@ public class Phon2XmlTreeBuilder {
 			
 		}
 		
-		if(AntlrUtils.findChildrenWithType(uNode, chatTokens.getTokenType("T_START")) == null) {
+		if(AntlrUtils.findChildrenWithType(uNode, talkbankTokens.getTokenType("T_START")) == null) {
 			// add the terminator
 			addTerminator(uNode, termType);
 		}
@@ -664,7 +664,7 @@ public class Phon2XmlTreeBuilder {
 		Tier<String> uttLangTier =
 				utt.getTier("uttlan", String.class);
 		if(uttLangTier != null) {
-			CommonTree langAttrTree = AntlrUtils.createToken(chatTokens, "U_ATTR_LANG");
+			CommonTree langAttrTree = AntlrUtils.createToken(talkbankTokens, "U_ATTR_LANG");
 			langAttrTree.setParent(uNode);
 			uNode.insertChild(0, langAttrTree);
 			langAttrTree.getToken().setText(uttLangTier.getGroup(0));
@@ -712,18 +712,18 @@ public class Phon2XmlTreeBuilder {
 				
 				if(hasData) {
 					CommonTree depTierNode =
-							AntlrUtils.createToken(chatTokens, "A_START");
+							AntlrUtils.createToken(talkbankTokens, "A_START");
 					depTierNode.setParent(uNode);
 					
 					CommonTree typeNode =
-						AntlrUtils.createToken(chatTokens, "A_ATTR_TYPE");
+						AntlrUtils.createToken(talkbankTokens, "A_ATTR_TYPE");
 					typeNode.getToken().setText("extension");
 					
 					typeNode.setParent(depTierNode);
 					depTierNode.addChild(typeNode);
 					
 					CommonTree flavorNode = 
-						AntlrUtils.createToken(chatTokens, "A_ATTR_FLAVOR");
+						AntlrUtils.createToken(talkbankTokens, "A_ATTR_FLAVOR");
 					String tName = tierNameMap.get(depTierName);
 					flavorNode.getToken().setText(tName);
 					flavorNode.setParent(depTierNode);
@@ -738,11 +738,11 @@ public class Phon2XmlTreeBuilder {
 				if(tierVal.length() == 0) continue;
 			
 				CommonTree depTierNode =
-					AntlrUtils.createToken(chatTokens, "A_START");
+					AntlrUtils.createToken(talkbankTokens, "A_START");
 				depTierNode.setParent(uNode);
 				
 				CommonTree typeNode =
-					AntlrUtils.createToken(chatTokens, "A_ATTR_TYPE");
+					AntlrUtils.createToken(talkbankTokens, "A_ATTR_TYPE");
 				
 				if(depTierName.equalsIgnoreCase("addressee")
 					|| depTierName.equalsIgnoreCase("actions")
@@ -777,7 +777,7 @@ public class Phon2XmlTreeBuilder {
 				
 				if(typeNode.getToken().getText().equalsIgnoreCase("extension")) {
 					CommonTree flavorNode = 
-						AntlrUtils.createToken(chatTokens, "A_ATTR_FLAVOR");
+						AntlrUtils.createToken(talkbankTokens, "A_ATTR_FLAVOR");
 					String tName = tierNameMap.get(depTierName);
 					flavorNode.getToken().setText(tName);
 					flavorNode.setParent(depTierNode);
@@ -850,12 +850,12 @@ public class Phon2XmlTreeBuilder {
 		// notes
 		if(utt.getNotes() != null && utt.getNotes().getGroup(0).length() > 0) {
 			CommonTree notesNode =
-				AntlrUtils.createToken(chatTokens, "A_START");
+				AntlrUtils.createToken(talkbankTokens, "A_START");
 			notesNode.setParent(uNode);
 			uNode.addChild(notesNode);
 			
 			CommonTree typeNode = 
-				AntlrUtils.createToken(chatTokens, "A_ATTR_TYPE");
+				AntlrUtils.createToken(talkbankTokens, "A_ATTR_TYPE");
 			typeNode.getToken().setText("comments");
 			typeNode.setParent(notesNode);
 			notesNode.addChild(typeNode);
@@ -881,19 +881,19 @@ public class Phon2XmlTreeBuilder {
 		// final all word sub-trees
 		// word trees from utterance
 		final List<CommonTree> allWordTrees =
-				AntlrUtils.findAllChildrenWithType(uNode, chatTokens, "W_START", "TAGMARKER_START", "T_START");
+				AntlrUtils.findAllChildrenWithType(uNode, talkbankTokens, "W_START", "TAGMARKER_START", "T_START");
 		final List<CommonTree> wordTrees = new ArrayList<>();
 
 		for(CommonTree wordTree:allWordTrees) {
-			if(wordTree.getToken().getType() == chatTokens.getTokenType("W_START")) {
+			if(wordTree.getToken().getType() == talkbankTokens.getTokenType("W_START")) {
 				List<CommonTree> replNodes = 
-						AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "REPLACEMENT_START");
+						AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "REPLACEMENT_START");
 				if(replNodes.size() > 0) {
 					// don't add this tree
 					continue;
 				} else {
 					// get text node
-					List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "TEXT");
+					List<CommonTree> textNodes = AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "TEXT");
 					if(textNodes.size() > 0) {
 						CommonTree textNode = textNodes.get(0);
 						String wordText = textNode.getText();
@@ -904,7 +904,7 @@ public class Phon2XmlTreeBuilder {
 								|| wordText.matches("\\(\\.+\\)")) continue;
 						
 						// exclude fragments
-						List<CommonTree> typeNodes = AntlrUtils.findAllChildrenWithType(wordTree, chatTokens, "W_ATTR_TYPE");
+						List<CommonTree> typeNodes = AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "W_ATTR_TYPE");
 						if(typeNodes.size() > 0) {
 							String typeText = typeNodes.get(0).getText();
 							if(typeText.equals("fragment")) continue;
@@ -949,7 +949,7 @@ public class Phon2XmlTreeBuilder {
 			if(mortree == null) {
 				continue;
 			}
-			final CommonTree morTypeTree = AntlrUtils.createToken(chatTokens, "MOR_ATTR_TYPE");
+			final CommonTree morTypeTree = AntlrUtils.createToken(talkbankTokens, "MOR_ATTR_TYPE");
 			morTypeTree.getToken().setText("mor");
 			morTypeTree.setParent(mortree);
 			mortree.insertChild(0, morTypeTree);
@@ -963,10 +963,10 @@ public class Phon2XmlTreeBuilder {
 				throw new IllegalArgumentException("one-to-one alignment error: mor");
 			}
 			
-			final List<CommonTree> morOmittedTrees = AntlrUtils.findChildrenWithType(mortree, chatTokens, "MOR_ATTR_OMITTED");
+			final List<CommonTree> morOmittedTrees = AntlrUtils.findChildrenWithType(mortree, talkbankTokens, "MOR_ATTR_OMITTED");
 			final boolean morOmitted = 
 					(morOmittedTrees.size() > 0 && Boolean.parseBoolean(morOmittedTrees.get(0).getToken().getText()));
-			final List<CommonTree> wTypeTrees = AntlrUtils.findAllChildrenWithType(wTree, chatTokens, "W_ATTR_TYPE");
+			final List<CommonTree> wTypeTrees = AntlrUtils.findAllChildrenWithType(wTree, talkbankTokens, "W_ATTR_TYPE");
 			final boolean wOmitted = 
 					(wTypeTrees.size() > 0 && wTypeTrees.get(0).getToken().getText().equals("omission"));
 			
@@ -992,7 +992,7 @@ public class Phon2XmlTreeBuilder {
 		throws IllegalArgumentException {
 		final MorBuilder mb = new MorBuilder();
 		final List<CommonTree> mortrees =  
-				AntlrUtils.findAllChildrenWithType(uNode, chatTokens, "MOR_START", "MOR_PRE_START", "MOR_POST_START");
+				AntlrUtils.findAllChildrenWithType(uNode, talkbankTokens, "MOR_START", "MOR_PRE_START", "MOR_POST_START");
 		final Tier<String> graTier = utt.getTier("GRASP", String.class);
 		final List<CommonTree> graTrees = new ArrayList<CommonTree>();
 		for(String grpTierVal:graTier) {
@@ -1043,7 +1043,7 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private void addTextNode(CommonTree parent, String data) {
 		CommonTree txtNode = 
-			AntlrUtils.createToken(chatTokens, "TEXT");
+			AntlrUtils.createToken(talkbankTokens, "TEXT");
 		txtNode.getToken().setText(data);
 		txtNode.setParent(parent);
 		parent.addChild(txtNode);
@@ -1054,7 +1054,7 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private void addPostcode(CommonTree parent, Tier<String> data) {
 		CommonTree pcNode = 
-			AntlrUtils.createToken(chatTokens, "POSTCODE_START");
+			AntlrUtils.createToken(talkbankTokens, "POSTCODE_START");
 		pcNode.setParent(parent);
 		parent.addChild(pcNode);
 		
@@ -1072,7 +1072,7 @@ public class Phon2XmlTreeBuilder {
 		}
 
 		CommonTree mediaNode = 
-			AntlrUtils.createToken(chatTokens, "MEDIA_START");
+			AntlrUtils.createToken(talkbankTokens, "MEDIA_START");
 		mediaNode.setParent(parent);
 		parent.addChild(mediaNode);
 		
@@ -1081,19 +1081,19 @@ public class Phon2XmlTreeBuilder {
 		float endS = media.getEndValue() / 1000.0f;
 		
 		CommonTree unitNode =
-			AntlrUtils.createToken(chatTokens, "MEDIA_ATTR_UNIT");
+			AntlrUtils.createToken(talkbankTokens, "MEDIA_ATTR_UNIT");
 		unitNode.getToken().setText("s");
 		unitNode.setParent(mediaNode);
 		mediaNode.addChild(unitNode);
 		
 		CommonTree startNode = 
-			AntlrUtils.createToken(chatTokens, "MEDIA_ATTR_START");
+			AntlrUtils.createToken(talkbankTokens, "MEDIA_ATTR_START");
 		startNode.getToken().setText(""+startS);
 		startNode.setParent(mediaNode);
 		mediaNode.addChild(startNode);
 		
 		CommonTree endNode =
-			AntlrUtils.createToken(chatTokens, "MEDIA_ATTR_END");
+			AntlrUtils.createToken(talkbankTokens, "MEDIA_ATTR_END");
 		endNode.getToken().setText(""+endS);
 		endNode.setParent(mediaNode);
 		mediaNode.addChild(endNode);
@@ -1104,12 +1104,12 @@ public class Phon2XmlTreeBuilder {
 	 */
 	private void addTerminator(CommonTree parent, String type) {
 		CommonTree tNode =
-			AntlrUtils.createToken(chatTokens, "T_START");
+			AntlrUtils.createToken(talkbankTokens, "T_START");
 		tNode.setParent(parent);
 		parent.addChild(tNode);
 		
 		CommonTree ttNode = 
-			AntlrUtils.createToken(chatTokens, "T_ATTR_TYPE");
+			AntlrUtils.createToken(talkbankTokens, "T_ATTR_TYPE");
 		ttNode.getToken().setText(type);
 		ttNode.setParent(tNode);
 		tNode.addChild(ttNode);

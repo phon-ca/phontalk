@@ -19,7 +19,7 @@ public class TalkBankCodeTreeBuilder {
 
 	private final static Logger LOGGER = Logger.getLogger(Phon2XmlTreeBuilder.class.getName());
 	
-	private static final AntlrTokens chatTokens = new AntlrTokens("Chat.tokens");
+	private static final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
 	
 	/**
 	 * Handle data in parenthesis.
@@ -33,7 +33,7 @@ public class TalkBankCodeTreeBuilder {
 		
 		// attempt to find the utterance parent
 		CommonTree uttNode = null;
-		int uttTokenType = chatTokens.getTokenType("U_START");
+		int uttTokenType = talkbankTokens.getTokenType("U_START");
 		CommonTree cNode = (CommonTree)tree;
 		while(cNode != null) {
 			if(cNode.getToken().getType() == uttTokenType) {
@@ -138,7 +138,7 @@ public class TalkBankCodeTreeBuilder {
 	 */
 	public void addHappening(CommonTree parent, String data) {
 		CommonTree hNode = 
-			AntlrUtils.createToken(chatTokens, "HAPPENING_START");
+			AntlrUtils.createToken(talkbankTokens, "HAPPENING_START");
 		hNode.setParent(parent);
 		parent.addChild(hNode);
 		
@@ -161,7 +161,7 @@ public class TalkBankCodeTreeBuilder {
 				.replaceAll("\\p{Space}", "_")
 				.toUpperCase();
 		String startTokenName = tokenName + "_START";
-		CommonTree eleTree = AntlrUtils.createToken(chatTokens, startTokenName);
+		CommonTree eleTree = AntlrUtils.createToken(talkbankTokens, startTokenName);
 		eleTree.setParent(parent);
 		parent.addChild(eleTree);
 		
@@ -173,7 +173,7 @@ public class TalkBankCodeTreeBuilder {
 			String attrVal = (keyVal.length == 2 ? keyVal[1] : keyVal[0]).trim();
 			
 			String attrTokenName = tokenName + "_ATTR_" + attrName.toUpperCase();
-			CommonTree attrToken = AntlrUtils.createToken(chatTokens, attrTokenName);
+			CommonTree attrToken = AntlrUtils.createToken(talkbankTokens, attrTokenName);
 			attrToken.getToken().setText(attrVal);
 			eleTree.addChild(attrToken);
 			attrToken.setParent(eleTree);
@@ -189,7 +189,7 @@ public class TalkBankCodeTreeBuilder {
 	 */
 	public void addOverlap(CommonTree parent, String ovdata) {
 		CommonTree ovNode = 
-			AntlrUtils.createToken(chatTokens, "OVERLAP_START");
+			AntlrUtils.createToken(talkbankTokens, "OVERLAP_START");
 		ovNode.setParent(parent);
 		parent.addChild(ovNode);
 		
@@ -205,7 +205,7 @@ public class TalkBankCodeTreeBuilder {
 				actualType = "overlap precedes";
 			}
 			CommonTree typeNode = 
-				AntlrUtils.createToken(chatTokens, "OVERLAP_ATTR_TYPE");
+				AntlrUtils.createToken(talkbankTokens, "OVERLAP_ATTR_TYPE");
 			typeNode.getToken().setText(actualType);
 			typeNode.setParent(ovNode);
 			ovNode.addChild(typeNode);
@@ -214,7 +214,7 @@ public class TalkBankCodeTreeBuilder {
 				String ovIndex = matcher.group(2);
 				
 				CommonTree indexNode =
-					AntlrUtils.createToken(chatTokens, "OVERLAP_ATTR_INDEX");
+					AntlrUtils.createToken(talkbankTokens, "OVERLAP_ATTR_INDEX");
 				indexNode.getToken().setText(ovIndex);
 				indexNode.setParent(ovNode);
 				ovNode.addChild(indexNode);
@@ -227,7 +227,7 @@ public class TalkBankCodeTreeBuilder {
 	 */
 	public void addError(CommonTree parent, String data) {
 		CommonTree eNode = 
-			AntlrUtils.createToken(chatTokens, "ERROR_START");
+			AntlrUtils.createToken(talkbankTokens, "ERROR_START");
 		eNode.setParent(parent);
 		parent.addChild(eNode);
 		
@@ -236,26 +236,26 @@ public class TalkBankCodeTreeBuilder {
 	
 	public void addInternalMedia(CommonTree parent, String data) {
 		CommonTree imNode =
-				AntlrUtils.createToken(chatTokens, "INTERNAL_MEDIA_START");
+				AntlrUtils.createToken(talkbankTokens, "INTERNAL_MEDIA_START");
 		imNode.setParent(parent);
 		parent.addChild(imNode);
 		
 		String[] range = data.split("-");
 		
 		CommonTree startAttrNode=
-				AntlrUtils.createToken(chatTokens, "INTERNAL_MEDIA_ATTR_START");
+				AntlrUtils.createToken(talkbankTokens, "INTERNAL_MEDIA_ATTR_START");
 		startAttrNode.getToken().setText(range[0]);
 		imNode.addChild(startAttrNode);
 		startAttrNode.setParent(imNode);
 		
 		CommonTree endAttrNode =
-				AntlrUtils.createToken(chatTokens, "INTERNAL_MEDIA_ATTR_END");
+				AntlrUtils.createToken(talkbankTokens, "INTERNAL_MEDIA_ATTR_END");
 		endAttrNode.getToken().setText(range[1]);
 		imNode.addChild(endAttrNode);
 		endAttrNode.setParent(imNode);
 		
 		CommonTree unitNode =
-				AntlrUtils.createToken(chatTokens, "INTERNAL_MEDIA_ATTR_UNIT");
+				AntlrUtils.createToken(talkbankTokens, "INTERNAL_MEDIA_ATTR_UNIT");
 		unitNode.getToken().setText("s");
 		unitNode.setParent(imNode);
 		imNode.addChild(unitNode);
@@ -266,7 +266,7 @@ public class TalkBankCodeTreeBuilder {
 	 */
 	public void addAction(CommonTree parent, String data) {
 		CommonTree aNode =
-			AntlrUtils.createToken(chatTokens, "ACTION_START");
+			AntlrUtils.createToken(talkbankTokens, "ACTION_START");
 		aNode.setParent(parent);
 		parent.addChild(aNode);
 		
@@ -279,7 +279,7 @@ public class TalkBankCodeTreeBuilder {
 	 */
 	public void addLinker(CommonTree parent, String lkType) {
 		CommonTree lkNode = 
-			AntlrUtils.createToken(chatTokens, "LINKER_START");
+			AntlrUtils.createToken(talkbankTokens, "LINKER_START");
 		lkNode.setParent(parent);
 		
 		if(parent.getChildCount() > 1) {
@@ -287,8 +287,8 @@ public class TalkBankCodeTreeBuilder {
 			int sIndex = 0;
 			int cIndex = 0;
 			CommonTree cNode = (CommonTree)parent.getChild(cIndex++);
-			while(cNode != null && (cNode.getToken().getType() == chatTokens.getTokenType("U_ATTR_WHO")
-					|| cNode.getToken().getType() == chatTokens.getTokenType("LINKER_START")))
+			while(cNode != null && (cNode.getToken().getType() == talkbankTokens.getTokenType("U_ATTR_WHO")
+					|| cNode.getToken().getType() == talkbankTokens.getTokenType("LINKER_START")))
 			{
 				sIndex++;
 				cNode = (CommonTree)parent.getChild(cIndex++);
@@ -321,7 +321,7 @@ public class TalkBankCodeTreeBuilder {
 			actualType = "no break completion";
 		}
 		CommonTree typeNode = 
-			AntlrUtils.createToken(chatTokens, "LINKER_ATTR_TYPE");
+			AntlrUtils.createToken(talkbankTokens, "LINKER_ATTR_TYPE");
 		typeNode.getToken().setText(actualType);
 		typeNode.setParent(lkNode);
 		lkNode.addChild(typeNode);
@@ -333,33 +333,33 @@ public class TalkBankCodeTreeBuilder {
 	 */
 	public void addPause(CommonTree parent, String data) {
 		CommonTree pNode = 
-			AntlrUtils.createToken(chatTokens, "PAUSE_START");
+			AntlrUtils.createToken(talkbankTokens, "PAUSE_START");
 		pNode.setParent(parent);
 		parent.addChild(pNode);
 		
 		if(data.equals(".")) {
 			CommonTree slNode = 
-				AntlrUtils.createToken(chatTokens, "PAUSE_ATTR_SYMBOLIC_LENGTH");
+				AntlrUtils.createToken(talkbankTokens, "PAUSE_ATTR_SYMBOLIC_LENGTH");
 			slNode.getToken().setText("simple");
 			slNode.setParent(pNode);
 			pNode.addChild(slNode);
 		} else if(data.equals("..")) {
 			CommonTree slNode = 
-				AntlrUtils.createToken(chatTokens, "PAUSE_ATTR_SYMBOLIC_LENGTH");
+				AntlrUtils.createToken(talkbankTokens, "PAUSE_ATTR_SYMBOLIC_LENGTH");
 			slNode.getToken().setText("long");
 			slNode.setParent(pNode);
 			pNode.addChild(slNode);
 			
 		} else if(data.equals("...")) {
 			CommonTree slNode = 
-				AntlrUtils.createToken(chatTokens, "PAUSE_ATTR_SYMBOLIC_LENGTH");
+				AntlrUtils.createToken(talkbankTokens, "PAUSE_ATTR_SYMBOLIC_LENGTH");
 			slNode.getToken().setText("very long");
 			slNode.setParent(pNode);
 			pNode.addChild(slNode);
 		} else if(data.startsWith("pause:")) {
 			String numStr = data.substring(data.indexOf(':')+1);
 			CommonTree slNode = 
-				AntlrUtils.createToken(chatTokens, "PAUSE_ATTR_LENGTH");
+				AntlrUtils.createToken(talkbankTokens, "PAUSE_ATTR_LENGTH");
 			slNode.getToken().setText(numStr);
 			slNode.setParent(pNode);
 			pNode.addChild(slNode);
@@ -397,12 +397,12 @@ public class TalkBankCodeTreeBuilder {
 		
 		if(type != null) {
 			CommonTree markerNode = 
-				AntlrUtils.createToken(chatTokens, "K_START");
+				AntlrUtils.createToken(talkbankTokens, "K_START");
 			markerNode.setParent(parent);
 			parent.addChild(markerNode);
 			
 			CommonTree typeNode = 
-				AntlrUtils.createToken(chatTokens, "K_ATTR_TYPE");
+				AntlrUtils.createToken(talkbankTokens, "K_ATTR_TYPE");
 			typeNode.getToken().setText(type);
 			typeNode.setParent(markerNode);
 			markerNode.addChild(typeNode);
@@ -411,7 +411,7 @@ public class TalkBankCodeTreeBuilder {
 	
 	public void addOverlapPoint(CommonTree parent, String data) {
 		CommonTree opNode = 
-				AntlrUtils.createToken(chatTokens, "OVERLAP_POINT_START");
+				AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_START");
 		opNode.setParent(parent);
 		parent.addChild(opNode);
 		
@@ -420,7 +420,7 @@ public class TalkBankCodeTreeBuilder {
 		int atrIdx = 0;
 		if(attrs.length == 3) {
 			CommonTree idxNode = 
-					AntlrUtils.createToken(chatTokens, "OVERLAP_POINT_ATTR_INDEX");
+					AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_INDEX");
 			idxNode.getToken().setText(attrs[atrIdx++]);
 			idxNode.setParent(opNode);
 			opNode.addChild(idxNode);
@@ -428,13 +428,13 @@ public class TalkBankCodeTreeBuilder {
 		
 		if(attrs.length - atrIdx == 2) {
 			CommonTree startEndNode =
-					AntlrUtils.createToken(chatTokens, "OVERLAP_POINT_ATTR_START_END");
+					AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_START_END");
 			startEndNode.getToken().setText(attrs[atrIdx++]);
 			startEndNode.setParent(opNode);
 			opNode.addChild(startEndNode);
 			
 			CommonTree topBtmNode =
-					AntlrUtils.createToken(chatTokens, "OVERLAP_POINT_ATTR_TOP_BOTTOM");
+					AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_TOP_BOTTOM");
 			topBtmNode.getToken().setText(attrs[atrIdx++]);
 			topBtmNode.setParent(opNode);
 			opNode.addChild(topBtmNode);
@@ -446,12 +446,12 @@ public class TalkBankCodeTreeBuilder {
 	 */
 	public void addGa(CommonTree parent, String type, String data) {
 		CommonTree gaNode = 
-			AntlrUtils.createToken(chatTokens, "GA_START");
+			AntlrUtils.createToken(talkbankTokens, "GA_START");
 		gaNode.setParent(parent);
 		parent.addChild(gaNode);
 		
 		CommonTree gaTypeNode = 
-			AntlrUtils.createToken(chatTokens, "GA_ATTR_TYPE");
+			AntlrUtils.createToken(talkbankTokens, "GA_ATTR_TYPE");
 		gaTypeNode.getToken().setText(type);
 		gaTypeNode.setParent(gaNode);
 		gaNode.addChild(gaTypeNode);
@@ -464,12 +464,12 @@ public class TalkBankCodeTreeBuilder {
 	 */
 	public void addRepetition(CommonTree parent, String times) {
 		CommonTree rNode =
-			AntlrUtils.createToken(chatTokens, "R_START");
+			AntlrUtils.createToken(talkbankTokens, "R_START");
 		rNode.setParent(parent);
 		parent.addChild(rNode);
 		
 		CommonTree timesNode =
-			AntlrUtils.createToken(chatTokens, "R_ATTR_TIMES");
+			AntlrUtils.createToken(talkbankTokens, "R_ATTR_TIMES");
 		timesNode.getToken().setText(times);
 		timesNode.setParent(rNode);
 		rNode.addChild(timesNode);
@@ -480,7 +480,7 @@ public class TalkBankCodeTreeBuilder {
 	 */
 	public void addTextNode(CommonTree parent, String data) {
 		CommonTree txtNode = 
-			AntlrUtils.createToken(chatTokens, "TEXT");
+			AntlrUtils.createToken(talkbankTokens, "TEXT");
 		txtNode.getToken().setText(data);
 		txtNode.setParent(parent);
 		parent.addChild(txtNode);

@@ -56,7 +56,7 @@ public class TalkBankTokenSource implements TokenSource {
 	
 	private Queue<Token> tokenQueue = new Queue<Token>();
 	
-	private AntlrTokens tokenMap = new AntlrTokens("Chat.tokens");
+	private AntlrTokens tokenMap = new AntlrTokens("TalkBank2AST.tokens");
 	
 	
 	/**

@@ -20,7 +20,6 @@ package ca.phon.phontalk;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,12 +32,11 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 
+import ca.phon.phontalk.parser.AST2Phon;
 import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.AntlrTokens;
-import ca.phon.phontalk.parser.AntlrUtils;
-import ca.phon.phontalk.parser.ChatParser;
+import ca.phon.phontalk.parser.TalkBank2ASTParser;
 import ca.phon.phontalk.parser.TalkBankTokenSource;
-import ca.phon.phontalk.parser.ChatTree;
 import ca.phon.session.Session;
 import ca.phon.session.io.SessionOutputFactory;
 import ca.phon.session.io.SessionWriter;
@@ -81,15 +79,15 @@ public class Xml2PhonConverter {
 		TokenStream	tokenStream = new CommonTokenStream(tokenSource);
 		
 		// convert xml stream into an AST
-		ChatParser.chat_return parserRet;
+		TalkBank2ASTParser.chat_return parserRet;
 		try {
-			final ChatParser parser = new ChatParser(tokenStream);
+			final TalkBank2ASTParser parser = new TalkBank2ASTParser(tokenStream);
 			parser.setFile(inputFile.getAbsolutePath());
 			parser.setPhonTalkListener(listener);
 			parserRet = parser.chat();
 		} catch (RecognitionException re) {
 			if(PhonTalkUtil.isVerbose()) re.printStackTrace();
-			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("ChatParser.tokens"));
+			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2Phon.tokens"));
 			visitor.visit(re);
 			final PhonTalkMessage msg = visitor.getMessage();
 			msg.setFile(inputFile);
@@ -101,7 +99,7 @@ public class Xml2PhonConverter {
 		Session session = null;
 		try {
 			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(parserRet.getTree());
-			final ChatTree walker = new ChatTree(nodeStream);
+			final AST2Phon walker = new AST2Phon(nodeStream);
 			walker.setFile(inputFile.getAbsolutePath());
 			walker.setPhonTalkListener(listener);
 			

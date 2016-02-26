@@ -30,21 +30,21 @@ public class AlignTreeBuilder {
 	
 	private final Logger LOGGER = Logger.getLogger(AlignTreeBuilder.class.getName());
 
-	private final AntlrTokens chatTokens = new AntlrTokens("Chat.tokens");
+	private final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
 	
 	/**
 	 * Build the alignment tree for the given {@link PhoneMap}
 	 * 
 	 */
 	public CommonTree buildAlignmentTree(PhoneMap pm) {
-		CommonTree alignNode = AntlrUtils.createToken(chatTokens, "ALIGN_START");
+		CommonTree alignNode = AntlrUtils.createToken(talkbankTokens, "ALIGN_START");
 
 		// add alignment columns
 		int targetIdx = 0;
 		int actualIdx = 0;
 
 		for(int i = 0; i < pm.getAlignmentLength(); i++) {
-			CommonTree colTree = AntlrUtils.createToken(chatTokens, "COL_START");
+			CommonTree colTree = AntlrUtils.createToken(talkbankTokens, "COL_START");
 			colTree.setParent(alignNode);
 			alignNode.addChild(colTree);
 
@@ -52,17 +52,17 @@ public class AlignTreeBuilder {
 			final IPAElement aP = pm.getBottomAlignmentElements().get(i);
 
 			if(tP != null) {
-				CommonTree modelTree = AntlrUtils.createToken(chatTokens, "MODELREF_START");
+				CommonTree modelTree = AntlrUtils.createToken(talkbankTokens, "MODELREF_START");
 				String modelRef = "ph" + (targetIdx++);
-				AntlrUtils.addTextNode(modelTree, chatTokens, modelRef);
+				AntlrUtils.addTextNode(modelTree, talkbankTokens, modelRef);
 				modelTree.setParent(colTree);
 				colTree.addChild(modelTree);
 			}
 
 			if(aP != null) {
-				CommonTree actualTree = AntlrUtils.createToken(chatTokens, "ACTUALREF_START");
+				CommonTree actualTree = AntlrUtils.createToken(talkbankTokens, "ACTUALREF_START");
 				String actualRef = "ph" + (actualIdx++);
-				AntlrUtils.addTextNode(actualTree, chatTokens, actualRef);
+				AntlrUtils.addTextNode(actualTree, talkbankTokens, actualRef);
 				actualTree.setParent(colTree);
 				colTree.addChild(actualTree);
 			}
