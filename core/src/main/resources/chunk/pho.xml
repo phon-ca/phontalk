@@ -86,10 +86,14 @@ actual
 	;
 
 pw
+scope {
+	SyllableConstituentType lastType;
+}
 @init {
 	if($pho::buffer.length() > 0) {
 		$pho::buffer.append(" ");
 	}
+	$pw::lastType = SyllableConstituentType.UNKNOWN;
 }
 	:	^(PW_START pwele*)
 	;
@@ -105,8 +109,22 @@ pwele
 	}
 	|	ph
 	{
-		if($ph.val != null)
+		if($ph.val != null) {
 			$pho::buffer.append($ph.val);
+			if($ph.type != null && $ph.type != SyllableConstituentType.UNKNOWN) {
+				
+				if($pw::lastType == SyllableConstituentType.NUCLEUS &&
+					$ph.type == SyllableConstituentType.NUCLEUS && !$ph.hiatus) {
+					
+					$pho::buffer.replace($pho::buffer.length() - $ph.val.length() - 1,
+						$pho::buffer.length(), "D" + $ph.val);
+					$pho::buffer.append(':').append("D");
+				} else {
+					$pho::buffer.append(':').append($ph.type.getMnemonic());
+				}
+				$pw::lastType = $ph.type;
+			}
+		}
 	}
 	;
 ]]>

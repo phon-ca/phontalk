@@ -31,13 +31,14 @@ public class TestPhoneMapConversion {
 		final IPATranscript actual = (new IPATranscriptBuilder()).append("elo").toIPATranscript();
 		final PhoneMap phoneMap = (new PhoneAligner()).calculatePhoneMap(model, actual);
 		
+		// PhoneMap -> AST
 		final AlignTreeBuilder alignTreeBuilder = new AlignTreeBuilder();
 		final CommonTree modelTree = alignTreeBuilder.buildAlignmentTree(phoneMap);
+		
+		// AST -> XML
 		final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(modelTree);
 		final AST2TalkBank walker = new AST2TalkBank(nodeStream);
-		
 		final AST2TalkBank.align_return alignRet = walker.align();
-		
 		System.out.println(alignRet.st.toString());
 	}
 	
@@ -53,13 +54,14 @@ public class TestPhoneMapConversion {
 				"	<col><modelref>ph4</modelref>  <actualref>ph2</actualref> </col> \n" + 
 				"</align>";
 		
+		// XML -> AST
 		final TalkBankTokenSource tokenSource = new TalkBankTokenSource(new ByteArrayInputStream(xml.getBytes("UTF-8")));
 		TokenStream	tokenStream = new CommonTokenStream(tokenSource);
-		
 		final TalkBank2ASTParser parser = new TalkBank2ASTParser(tokenStream);
 		parser.setPhonTalkListener( (msg) -> System.err.println(msg.toString()) );
 		final CommonTree alignTree = parser.align().getTree();
 		
+		// AST -> PhoneMap
 		final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(alignTree);
 		final AST2Phon walker = new AST2Phon(nodeStream);
 		

@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import org.antlr.runtime.tree.CommonTree;
 
+import antlr.build.ANTLR;
 import ca.phon.ipa.CompoundWordMarker;
 import ca.phon.ipa.Contraction;
 import ca.phon.ipa.IPAElement;
@@ -37,6 +38,7 @@ import ca.phon.ipa.Sandhi;
 import ca.phon.ipa.StressMarker;
 import ca.phon.ipa.StressType;
 import ca.phon.ipa.SyllableBoundary;
+import ca.phon.syllable.SyllabificationInfo;
 import ca.phon.syllable.SyllableConstituentType;
 import ca.phon.syllable.SyllableStress;
 import ca.phon.util.Range;
@@ -113,6 +115,8 @@ public class PhoTreeBuilder {
 		
 		private int phIdx = 0;
 		
+		private SyllableConstituentType lastType = SyllableConstituentType.UNKNOWN;
+		
 		public ElementVisitor(CommonTree tree, int phIdx) {
 			pwTree = tree;
 			this.phIdx = phIdx;
@@ -135,7 +139,18 @@ public class PhoTreeBuilder {
 			scTree.getToken().setText(p.getScType().getIdentifier());
 			scTree.setParent(phTree);
 			phTree.addChild(scTree);
+			
+			if(lastType == SyllableConstituentType.NUCLEUS &&
+					p.getScType() == SyllableConstituentType.NUCLEUS
+					&& p.getExtension(SyllabificationInfo.class).isDiphthongMember()) {
+				CommonTree hiatusTree = AntlrUtils.createToken(talkbankTokens, "PH_ATTR_HIATUS");
+				hiatusTree.getToken().setText("false");
+				hiatusTree.setParent(phTree);
+				phTree.addChild(hiatusTree);
+			}
 
+			lastType = p.getScType();
+			
 			AntlrUtils.addTextNode(phTree, talkbankTokens, p.getText());
 		}
 		

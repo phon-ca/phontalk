@@ -16,6 +16,7 @@ ph
 phattr
 	:	PH_ATTR_ID
 	|	PH_ATTR_SCTYPE
+	|	PH_ATTR_HIATUS
 	;
 ]]>
     </buffer>
@@ -56,6 +57,10 @@ phattr
 		}
 	}
 	|	PH_ATTR_ID
+	|	PH_ATTR_HIATUS
+	{
+		$ph::isHiatus = Boolean.parseBoolean($PH_ATTR_HIATUS.text);
+	}
 	;
 
 ]]>
@@ -76,6 +81,9 @@ phattr
 	|	PH_ATTR_ID
 	->	template( v = {$PH_ATTR_ID.text} )
 	<<id="<v>">>
+	|	PH_ATTR_HIATUS
+	->	template( v = {$PH_ATTR_HIATUS.text} )
+	<<hiatus="<v>">>
 	;
 ]]>
     </buffer>
