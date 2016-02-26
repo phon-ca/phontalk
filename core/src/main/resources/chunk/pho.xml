@@ -54,10 +54,12 @@ scope
 		$pho.ipa = ($pho::buffer.length() > 0 
 					?	(new IPATranscriptBuilder()).append($pho::buffer.toString()).toIPATranscript()
 					:	new IPATranscript());
-		if($g.size() == 0) {
-			$ugrp::g.setIPATarget($pho.ipa);
-		} else {
-			$g::tReps.put($g::pgCount-1, $pho.ipa);
+		if(!isProcessFragments()) {
+			if($g.size() == 0) {
+				$ugrp::g.setIPATarget($pho.ipa);
+			} else {
+				$g::tReps.put($g::pgCount-1, $pho.ipa);
+			}
 		}
 	}
 	|	actual
@@ -65,10 +67,12 @@ scope
 		$pho.ipa = ($pho::buffer.length() > 0
 					?	(new IPATranscriptBuilder()).append($pho::buffer.toString()).toIPATranscript()
 					:	new IPATranscript());
-		if($g.size() == 0) {
-			$ugrp::g.setIPAActual($pho.ipa);
-		} else {
-			$g::aReps.put($g::pgCount-1, $pho.ipa);
+		if(!isProcessFragments()) {
+			if($g.size() == 0) {
+				$ugrp::g.setIPAActual($pho.ipa);
+			} else {
+				$g::aReps.put($g::pgCount-1, $pho.ipa);
+			}
 		}
 	}
 	;

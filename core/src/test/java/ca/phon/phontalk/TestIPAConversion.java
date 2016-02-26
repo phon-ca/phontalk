@@ -25,13 +25,14 @@ public class TestIPAConversion {
 
 	@Test
 	public void testIPATranscriptToXML() throws RecognitionException {
-		final String txt = "";
+		final String txt = "hello";
 		final IPATranscript ipa = (new IPATranscriptBuilder()).append(txt).toIPATranscript();
 	
 		final PhoTreeBuilder phoTreeBuilder = new PhoTreeBuilder();
-		final CommonTree modelTree = phoTreeBuilder.buildModelTree(ipa);
+		final CommonTree modelTree = phoTreeBuilder.buildPhoTree("model", ipa);
 		final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(modelTree);
 		final AST2TalkBank walker = new AST2TalkBank(nodeStream);
+		walker.setPhonTalkListener( (msg) -> System.err.println(msg) );
 		
 		final AST2TalkBank.pho_return phoRet = walker.pho();
 		
@@ -40,7 +41,7 @@ public class TestIPAConversion {
 	
 	@Test
 	public void testXMLToIPATranscript() throws UnsupportedEncodingException, RecognitionException {
-		String xml = "<model>\n" + 
+		String xml = "<actual>\n" + 
 				"	<pw>\n" + 
 				"		<ph id=\"ph0\" sctype=\"UK\">h</ph> \n" + 
 				"		<ph id=\"ph1\" sctype=\"UK\">e</ph> \n" + 
@@ -48,7 +49,7 @@ public class TestIPAConversion {
 				"		<ph id=\"ph3\" sctype=\"UK\">l</ph> \n" + 
 				"		<ph id=\"ph4\" sctype=\"UK\">o</ph> \n" + 
 				"	</pw> \n" + 
-				"</model>";
+				"</actual>";
 		final TalkBankTokenSource tokenSource = new TalkBankTokenSource(new ByteArrayInputStream(xml.getBytes("UTF-8")));
 		TokenStream	tokenStream = new CommonTokenStream(tokenSource);
 		
@@ -58,6 +59,7 @@ public class TestIPAConversion {
 		
 		final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(phoTree);
 		final AST2Phon walker = new AST2Phon(nodeStream);
+		walker.setProcessFragments(true);
 		final IPATranscript ipa = walker.pho().ipa;
 		
 		System.out.println(ipa.toString(true));

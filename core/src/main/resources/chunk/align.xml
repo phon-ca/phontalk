@@ -48,16 +48,20 @@ scope {
 }
 	:	^(ALIGN_START alignCol*)
 	{
-		IPATranscript tRep = $ugrp::g.getIPATarget();
-		IPATranscript aRep = $ugrp::g.getIPAActual();
+		IPATranscript tRep = 
+			(isProcessFragments() ? (IPATranscript)getProperty("model", new IPATranscript()) : $ugrp::g.getIPATarget());
+		IPATranscript aRep = 
+			(isProcessFragments() ? (IPATranscript)getProperty("actual", new IPATranscript()) : $ugrp::g.getIPAActual());
 
 		if(tRep != null && aRep != null) {
 			PhoneMap pm = new PhoneMap(tRep, aRep);
 			pm.setTopAlignment($align::topAlign.toArray(new Integer[0]));
 			pm.setBottomAlignment($align::btmAlign.toArray(new Integer[0]));
-
-			$ugrp::g.setPhoneAlignment(pm);
+			
 			$align.val = pm;
+
+			if(!isProcessFragments())
+				$ugrp::g.setPhoneAlignment(pm);
 		}
 		
 	}
