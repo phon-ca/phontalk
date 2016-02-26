@@ -6,7 +6,7 @@ Underline
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 underline
 	:	UNDERLINE_START UNDERLINE_ATTR_TYPE UNDERLINE_END
@@ -16,7 +16,7 @@ underline
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 underline returns [String val]
 @init {
@@ -31,7 +31,7 @@ $val = "";
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 underline
 	:	^(UNDERLINE_START type=UNDERLINE_ATTR_TYPE)

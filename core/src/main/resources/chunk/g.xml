@@ -7,7 +7,7 @@ XPath - /xs:schema/xs:complexType[@name="groupType"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 g	
 	:	G_START gele+ gchoice* G_END 
@@ -46,7 +46,7 @@ gchoice
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 g returns [String val,  Integer phoRepCount, Map<Integer,IPATranscript> targetReps, Map<Integer, IPATranscript> actReps, Map<Integer, PhoneMap> phoneMaps]
 scope {
@@ -215,7 +215,7 @@ gchoice
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 g	
 	:	^(G_START (contentlist+=gele)+ (choicelist+=gchoice)*)

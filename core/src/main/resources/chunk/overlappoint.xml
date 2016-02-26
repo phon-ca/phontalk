@@ -7,7 +7,7 @@
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 overlap_point
     :    OVERLAP_POINT_START overlap_pointattrs+ OVERLAP_POINT_END
@@ -23,7 +23,7 @@ overlap_pointattrs
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 overlap_point returns [String val]
 scope {
@@ -68,7 +68,7 @@ overlap_pointattrs
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 overlap_point
     :    ^(OVERLAP_POINT_START (attrlist+=overlap_pointattrs)+)

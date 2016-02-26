@@ -7,7 +7,7 @@ XPath - /xs:schema/xs:complexType[@name="separatorType"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 s
 	:	S_START S_ATTR_TYPE? TEXT? S_END 
@@ -17,7 +17,7 @@ s
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 s returns [String val]
 	:	^(S_START S_ATTR_TYPE? TEXT?)
@@ -66,7 +66,7 @@ s returns [String val]
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 s
 	:	^(S_START S_ATTR_TYPE? TEXT?)

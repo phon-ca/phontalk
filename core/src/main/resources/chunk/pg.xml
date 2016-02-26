@@ -7,7 +7,7 @@ XPath - /xs:schema/xs:complexType[@name="phoneticGroupType"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 pg
 scope {
@@ -44,7 +44,7 @@ pgele
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 pg returns [String val]
 scope {
@@ -137,7 +137,7 @@ pgele returns [String val]
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 pg
 	:	^(PG_START (contentlist+=pgele)* ( phoreps += pho )* align?)

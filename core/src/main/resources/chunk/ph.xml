@@ -6,7 +6,7 @@ Phone with syllabification type.
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 ph
 	:	PH_START phattr* TEXT PH_END
@@ -21,7 +21,7 @@ phattr
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 
 ph returns [String val, SyllableConstituentType type, boolean hiatus]
@@ -61,7 +61,7 @@ phattr
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 ph
 	:	^(PH_START (phattrs+=phattr)* TEXT)

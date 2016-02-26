@@ -6,7 +6,7 @@
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 mor
     :    MOR_START morattr+ morchoice menx* gra* morseq* MOR_END
@@ -105,7 +105,7 @@ mk
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 mor returns [String tierName, String val]
 scope
@@ -443,7 +443,7 @@ mk returns [String val, String type]
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 mor
     :    ^(MOR_START (attrlist+=morattr)+ morchoice (list1+=menx)* (list2+=gra)* (list3+=morseq)*)

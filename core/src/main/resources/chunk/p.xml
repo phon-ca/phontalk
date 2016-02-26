@@ -6,7 +6,7 @@
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 p
 	:	P_START P_ATTR_TYPE? P_END 
@@ -16,7 +16,7 @@ p
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 p returns [String val]
 	:	^(P_START type=P_ATTR_TYPE?)
@@ -43,7 +43,7 @@ p returns [String val]
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 p
 	:	^(P_START P_ATTR_TYPE?)

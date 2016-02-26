@@ -6,7 +6,7 @@ italic
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 italic
 	:	ITALIC_START ITALIC_ATTR_TYPE ITALIC_END
@@ -16,7 +16,7 @@ italic
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 italic returns [String val]
 @init {
@@ -31,7 +31,7 @@ $val = "";
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 italic
 	:	^(ITALIC_START type=ITALIC_ATTR_TYPE)

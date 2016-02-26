@@ -7,7 +7,7 @@ XPath - /xs:schema/xs:complexType[@name="annotationType"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 a
 	:	A_START a_attr* (aele)* A_END 
@@ -27,7 +27,7 @@ a_attr
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 a returns [String type, String flavor, String val]
 scope {
@@ -177,7 +177,7 @@ a_attr
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 a
 	:	^(A_START (attrlist+=a_attr)* (contentlist+=aele)*)

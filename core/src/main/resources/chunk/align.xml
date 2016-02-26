@@ -5,7 +5,7 @@
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 align
 	:	ALIGN_START alignCol* ALIGN_END
@@ -35,7 +35,7 @@ actualref
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 align returns [PhoneMap val]
 scope {
@@ -119,7 +119,7 @@ actualref
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 align
 	:	^(ALIGN_START (cols+=alignCol)*)

@@ -8,7 +8,7 @@ XPath: /xs:schema/xs:element[@name="lazy-gem"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 lazy_gem
 	:	LAZY_GEM_START LAZY_GEM_ATTR_LABEL? LAZY_GEM_END
@@ -18,7 +18,7 @@ lazy_gem
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 lazy_gem returns [Comment lazyGem]
 	:	^(LAZY_GEM_START label=LAZY_GEM_ATTR_LABEL?)
@@ -36,7 +36,7 @@ lazy_gem returns [Comment lazyGem]
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 lazy_gem
 	:	^(LAZY_GEM_START LAZY_GEM_ATTR_LABEL?)

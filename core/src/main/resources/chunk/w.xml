@@ -7,7 +7,7 @@ XPath - /xs:schema/xs:complexType[@name="wordType"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 w
 	:	W_START wattr* langs? wele* W_END 
@@ -41,7 +41,7 @@ wattr
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 w returns [String val]
 scope {
@@ -228,7 +228,7 @@ wattr
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 w
 	:	^(W_START (wattrlist+=wattr)* langs? (contentlist+=wele)* )

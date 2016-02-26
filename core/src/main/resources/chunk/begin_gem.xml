@@ -5,7 +5,7 @@
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 begin_gem
     :    BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL BEGIN_GEN_END
@@ -15,7 +15,7 @@ begin_gem
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 begin_gem returns [Comment beginGem]
     :   ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)
@@ -27,7 +27,7 @@ begin_gem returns [Comment beginGem]
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 begin_gem
     :    ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)

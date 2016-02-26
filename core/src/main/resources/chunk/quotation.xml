@@ -6,7 +6,7 @@
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 quotation
     :    QUOTATION_START QUOTATION_ATTR_TYPE mor* QUOTATION_END
@@ -16,7 +16,7 @@ quotation
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 quotation
     :    ^(QUOTATION_START QUOTATION_ATTR_TYPE mor*)
@@ -24,7 +24,7 @@ quotation
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 quotation
     :    ^(QUOTATION_START QUOTATION_ATTR_TYPE mor*)

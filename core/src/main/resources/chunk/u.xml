@@ -8,7 +8,7 @@ XPath -	/xs:schema/xs:complexType[@name="speakerUtteranceType"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 u
 	:	U_START u_attrs* linker* ( uele )* t postcode* media? uendele* U_END 
@@ -63,7 +63,7 @@ uendele
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 u returns [Record record]
 scope {
@@ -447,7 +447,7 @@ uendele
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 u
 	:	^(U_START (attrs+=u_attrs)* (links+=linker)* (contentlist+=uele)* t (pcs+=postcode)* media? (annotationlist+=uendele)*)

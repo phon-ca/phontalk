@@ -7,7 +7,7 @@ XPath - /xs:schema/xs:complexType[@name="postcodeType"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 postcode
 	:	POSTCODE_START TEXT? POSTCODE_END 
@@ -17,7 +17,7 @@ postcode
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 postcode
 	:	^(POSTCODE_START v=TEXT?)
@@ -37,7 +37,7 @@ postcode
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 postcode
 	:	^(POSTCODE_START TEXT?)

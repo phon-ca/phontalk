@@ -7,7 +7,7 @@ XPath -
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 t
 	:	T_START T_ATTR_TYPE? mor? T_END 
@@ -17,7 +17,7 @@ t
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 t returns [String val]
 scope {
@@ -73,7 +73,7 @@ scope {
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 t
 	:	^(T_START T_ATTR_TYPE? m=mor?)

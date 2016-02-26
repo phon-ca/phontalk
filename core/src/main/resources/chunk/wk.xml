@@ -7,7 +7,7 @@ XPath -
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 wk
 	:	WK_START WK_ATTR_TYPE? WK_END
@@ -17,7 +17,7 @@ wk
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 wk returns [String val]
 	:	^(WK_START type=WK_ATTR_TYPE?)
@@ -38,7 +38,7 @@ wk returns [String val]
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 wk
     :    ^(WK_START WK_ATTR_TYPE?)

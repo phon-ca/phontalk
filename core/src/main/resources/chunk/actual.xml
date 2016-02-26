@@ -6,7 +6,7 @@ Model IPA Form
 <chunk xmlns="https://www.phon.ca/ns/chunk">
 
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 actual
 	:	ACTUAL_START actualvalue sb? ACTUAL_END
@@ -21,7 +21,7 @@ actualvalue
     </buffer>
 
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 actual
 	:	^(ACTUAL_START actualvalue sb?)
@@ -33,7 +33,7 @@ actualvalue
 ]]>
     </buffer>
 
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 actual
 	:	^(ACTUAL_START actualvalue sb?)

@@ -9,7 +9,7 @@ XPath -	/xs:schema/xs:element[@name="CHAT"]/xs:complexType/xs:sequence/xs:elemen
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 participants 
 	:	PARTICIPANTS_START participant* PARTICIPANTS_END 
@@ -40,7 +40,7 @@ part_attr
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
     	<![CDATA[
 participants 
 	:	^(PARTICIPANTS_START (participant { session.addParticipant($participant.val); })*)
@@ -122,7 +122,7 @@ part_attr
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 participants 
 	:	^(PARTICIPANTS_START (partlist+=participant)*)

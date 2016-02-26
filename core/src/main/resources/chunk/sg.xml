@@ -6,7 +6,7 @@
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 sg
     :    SG_START sgchoice+ sw+ SG_END
@@ -39,7 +39,7 @@ sw
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 sg
     :    ^(SG_START sgchoice+ sw+)
@@ -69,7 +69,7 @@ sw
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 sg
     :    ^(SG_START sgchoice+ sw+)

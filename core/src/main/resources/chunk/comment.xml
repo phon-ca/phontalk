@@ -9,7 +9,7 @@ XPath -	/xs:schema/xs:complexType[@name="commentType"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 comment
 	:	COMMENT_START COMMENT_ATTR_TYPE? media? TEXT* COMMENT_END 
@@ -19,7 +19,7 @@ comment
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 comment returns [Comment val]
 scope {
@@ -47,7 +47,7 @@ scope {
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 comment
 	:	^(COMMENT_START ctype=COMMENT_ATTR_TYPE? m=media? vals+=TEXT*)

@@ -7,7 +7,7 @@ XPath - /xs:schema/xs:complexType[@name="makerType"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 k
 	:	K_START K_ATTR_TYPE? K_END 
@@ -17,7 +17,7 @@ k
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 k returns [String val]
 	:	^(K_START type=K_ATTR_TYPE?)
@@ -49,7 +49,7 @@ k returns [String val]
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 k
 	:    ^(K_START K_ATTR_TYPE?)

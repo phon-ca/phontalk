@@ -7,7 +7,7 @@ XPath -
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 r
 	:	R_START R_ATTR_TIMES? R_END 
@@ -17,7 +17,7 @@ r
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 r returns [String val]
 	:	^(R_START times=R_ATTR_TIMES?)
@@ -31,7 +31,7 @@ r returns [String val]
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 r
 	:	^(R_START R_ATTR_TIMES?)

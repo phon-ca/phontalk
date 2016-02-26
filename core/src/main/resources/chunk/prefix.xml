@@ -2,9 +2,9 @@
 
 <chunk xmlns="https://www.phon.ca/ns/chunk">
 
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
-grammar Chat;
+grammar TalkBank2AST;
 
 options {
 	output=AST;
@@ -25,9 +25,9 @@ private final static Logger LOGGER = Logger.getLogger("ca.phon.phontalk.parser")
 ]]>
     </buffer>
 
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
-tree grammar ChatTree;
+tree grammar AST2Phon;
 
 options
 {
@@ -121,9 +121,9 @@ import org.apache.commons.lang3.*;
 ]]>
     </buffer>
 
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
-tree grammar Phon2XmlWalker;
+tree grammar AST2TalkBank;
 
 options
 {

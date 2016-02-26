@@ -5,7 +5,7 @@
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 metadata
     :    METADATA_START dcelementtype* METADATA_END
@@ -113,7 +113,7 @@ dc_appId
     </buffer>
     
     <!-- Tree Walker -->
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 metadata
     :    ^(METADATA_START dcelementtype*)
@@ -202,7 +202,7 @@ dc_appId
 ]]>
     </buffer>
     
-    <buffer name="Phon2XmlWalker.g">
+    <buffer name="AST2TalkBank.g">
         <![CDATA[
 metadata
     :    ^(METADATA_START dcelementtype*)

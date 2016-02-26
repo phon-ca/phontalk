@@ -9,7 +9,7 @@ XPath - /xs:schema/xs:element[@name="CHAT"]
 <chunk xmlns="https://www.phon.ca/ns/chunk">
     
     <!-- Parser -->
-    <buffer name="Chat.g">
+    <buffer name="TalkBank2AST.g">
         <![CDATA[
 chat
 	:	CHAT_START chat_attrs+ metadata? participants chat_content* CHAT_END 
@@ -40,7 +40,7 @@ chat_attrs
 ]]>
     </buffer>
     
-    <buffer name="ChatTree.g">
+    <buffer name="AST2Phon.g">
         <![CDATA[
 chat
 	:	^(CHAT_START chat_attrs+ metadata? participants chat_content*)
@@ -135,7 +135,7 @@ chat_attrs
 ]]>
     </buffer>
 	
-	<buffer name="Phon2XmlWalker.g">
+	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 chat
 	:	^(CHAT_START (attrlist+=chat_attrs)+ (meta=metadata)? (partlist=participants) (contentlist+=chat_content)*)
