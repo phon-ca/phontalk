@@ -188,7 +188,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		final Pattern subElePattern = Pattern.compile("(\\(.*?\\))");
 		final Matcher subEleMatcher = subElePattern.matcher(eData);
 		
-		CHATCodeTreeBuilder chatCodeBuilder = new CHATCodeTreeBuilder();
+		TalkBankCodeTreeBuilder chatCodeBuilder = new TalkBankCodeTreeBuilder();
 		
 		int lastIdx = eData.length();
 		final List<String> subData = new ArrayList<String>();
@@ -275,7 +275,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	
 	@Visits
 	public void visitComment(OrthoComment comment) {
-		CHATCodeTreeBuilder chatCodeBuilder = new CHATCodeTreeBuilder();
+		TalkBankCodeTreeBuilder chatCodeBuilder = new TalkBankCodeTreeBuilder();
 		String w = comment.toString();
 		// COMMENTS - including CHAT coding
 		Pattern commentPattern = Pattern.compile("\\(([^:]+):(.*)\\)");

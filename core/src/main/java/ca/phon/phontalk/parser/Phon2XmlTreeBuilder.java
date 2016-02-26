@@ -794,7 +794,7 @@ public class Phon2XmlTreeBuilder {
 		final Pattern pattern = Pattern.compile(regex);
 		final String subRegex = "(\\([^)]*\\))";
 		
-		final CHATCodeTreeBuilder chatCodeBuilder = new CHATCodeTreeBuilder();
+		final TalkBankCodeTreeBuilder chatCodeBuilder = new TalkBankCodeTreeBuilder();
 		
 		Tier<String> markersTier = utt.getTier("Markers", String.class);
 		if(markersTier != null) {

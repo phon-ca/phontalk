@@ -44,9 +44,9 @@ import ca.phon.util.Queue;
  * 
  *
  */
-public class ChatTokenSource implements TokenSource {
+public class TalkBankTokenSource implements TokenSource {
 	
-	private final static Logger LOGGER = Logger.getLogger(ChatTokenSource.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(TalkBankTokenSource.class.getName());
 	
 	/** XML Event reader */
 	private XMLEventReader reader;
@@ -64,7 +64,7 @@ public class ChatTokenSource implements TokenSource {
 	 * 
 	 * @param file the token def file
 	 */
-	public ChatTokenSource(InputStream source) {
+	public TalkBankTokenSource(InputStream source) {
 		super();
 		
 		// create StAX reader

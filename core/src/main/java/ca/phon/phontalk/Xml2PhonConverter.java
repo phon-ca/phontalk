@@ -37,7 +37,7 @@ import ca.phon.phontalk.parser.AntlrExceptionVisitor;
 import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.AntlrUtils;
 import ca.phon.phontalk.parser.ChatParser;
-import ca.phon.phontalk.parser.ChatTokenSource;
+import ca.phon.phontalk.parser.TalkBankTokenSource;
 import ca.phon.phontalk.parser.ChatTree;
 import ca.phon.session.Session;
 import ca.phon.session.io.SessionOutputFactory;
@@ -77,7 +77,7 @@ public class Xml2PhonConverter {
 	 */
 	public Session convertStream(InputStream inputStream, PhonTalkListener listener) {
 		// create input token stream
-		final ChatTokenSource tokenSource = new ChatTokenSource(inputStream);
+		final TalkBankTokenSource tokenSource = new TalkBankTokenSource(inputStream);
 		TokenStream	tokenStream = new CommonTokenStream(tokenSource);
 		
 		// convert xml stream into an AST

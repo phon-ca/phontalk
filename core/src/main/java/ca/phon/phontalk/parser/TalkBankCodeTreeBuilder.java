@@ -15,7 +15,7 @@ import org.antlr.runtime.tree.CommonTree;
  * of the record. This includes the elements k, error,
  * and r for TalkBank.
  */
-public class CHATCodeTreeBuilder {
+public class TalkBankCodeTreeBuilder {
 
 	private final static Logger LOGGER = Logger.getLogger(Phon2XmlTreeBuilder.class.getName());
 	
