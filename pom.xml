@@ -124,68 +124,6 @@
 
   </build>
   
-  <profiles>
-    <profile>
-      <id>install4j</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.7</version>
-            <executions>
-
-              <execution>
-                <id>get-keystore-passwd</id>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <phase>package</phase>
-                <configuration>
-                  <target>
-                    <input message="Please enter the Mac OS X Keystore password: "
-                      addproperty="keystorePassword">
-                      <handler classname="org.apache.tools.ant.input.SecureInputHandler"/>
-                    </input>
-                  </target>
-                  <exportAntProperties>true</exportAntProperties>
-                </configuration>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant</artifactId>
-                <version>1.8.4</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-
-          <plugin>
-            <groupId>org.sonatype.install4j</groupId>
-            <artifactId>install4j-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>compile-installers</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <macKeystorePassword>${keystorePassword}</macKeystorePassword>
-                  <projectFile>${project.basedir}/src/package/install4j/phontalk.install4j</projectFile>
-                  <variables>
-                    <productVersion>${project.version}</productVersion>
-                  </variables>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
