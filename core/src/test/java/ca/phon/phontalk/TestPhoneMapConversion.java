@@ -3,6 +3,8 @@ package ca.phon.phontalk;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 
+import junit.framework.Assert;
+
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
@@ -39,7 +41,15 @@ public class TestPhoneMapConversion {
 		final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(modelTree);
 		final AST2TalkBank walker = new AST2TalkBank(nodeStream);
 		final AST2TalkBank.align_return alignRet = walker.align();
-		System.out.println(alignRet.st.toString());
+		
+		final String expected = "<align>\n" + 
+				"	<col><modelref>ph0</modelref> </col> \n" + 
+				"	<col><modelref>ph1</modelref>  <actualref>ph0</actualref> </col> \n" + 
+				"	<col><modelref>ph2</modelref> </col> \n" + 
+				"	<col><modelref>ph3</modelref>  <actualref>ph1</actualref> </col> \n" + 
+				"	<col><modelref>ph4</modelref>  <actualref>ph2</actualref> </col> \n" + 
+				"</align> ";
+		Assert.assertEquals(expected, alignRet.st.toString());
 	}
 	
 	@Test
@@ -74,7 +84,19 @@ public class TestPhoneMapConversion {
 		
 		final PhoneMap phoneMap = walker.align().val;
 		
-		System.out.println(phoneMap.toString(true));
+		final String expected = "h:U↔Ø,e:U↔e:U,l:U↔Ø,l:U↔l:U,o:U↔o:U";
+		Assert.assertEquals(expected, phoneMap.toString(true));
+	}
+	
+	@Test
+	public void testPhoneMapFromString() {
+		final IPATranscript model = (new IPATranscriptBuilder()).append("hello").toIPATranscript();
+		final IPATranscript actual = (new IPATranscriptBuilder()).append("elo").toIPATranscript();
+		final String alignTxt = "h:U↔Ø,e:U↔e:U,l:U↔Ø,l:U↔l:U,o:U↔o:U";
+		
+		final PhoneMap phoneMap = PhoneMap.fromString(model, actual, alignTxt);
+		
+		Assert.assertEquals(alignTxt, phoneMap.toString(true));
 	}
 	
 }
