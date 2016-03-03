@@ -53,6 +53,13 @@ scope {
 			// make sure dep tier exists in session
 			TierDescription tierDesc = ensureTierExists(tierName, true);
 			
+			Tier<String> morTier = $u::r.getTier(tierName, String.class);
+			if(morTier == null) {
+				morTier = sessionFactory.createTier(tierName, String.class, true);
+				for(int i = 0; i < $u::r.numberOfGroups(); i++) morTier.addGroup();
+				$u::r.putTier(morTier);
+			}
+			
 			// add mor data as a dep tier of the current word(group)
 			Group group = null;
 			// get the correct word group holder

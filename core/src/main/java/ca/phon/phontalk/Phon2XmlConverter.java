@@ -217,6 +217,7 @@ public class Phon2XmlConverter {
 			Session testSession = factory.createSession();
 			factory.copySessionInformation(session, testSession);
 			factory.copySessionMetadata(session, testSession);
+			factory.copySessionTierInformation(session, testSession);
 			for(Participant p:session.getParticipants()) {
 				testSession.addParticipant(factory.cloneParticipant(p));
 			}

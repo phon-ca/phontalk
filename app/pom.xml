@@ -84,9 +84,17 @@
 			             				<exclude>ca/phon/util/NativeDialogs.class</exclude>
 			             				<exclude>ca/phon/util/NativeDialogEvent.class</exclude>
 			             				<exclude>ca/phon/util/NativeDialogListener.class</exclude>
-										<exclude>ca/phon/util/NativeDialogAdapter.class</exclude>
+								<exclude>ca/phon/util/NativeDialogAdapter.class</exclude>
 			             			</excludes>
 			             		</filter>
+						<filter>
+            						<artifact>*:*</artifact>
+            						<excludes>
+                						<exclude>META-INF/*.SF</exclude>
+                						<exclude>META-INF/*.DSA</exclude>
+               							<exclude>META-INF/*.RSA</exclude>
+            						</excludes>
+        					</filter>
 			             	</filters>
 				        </configuration>
 		          	</execution>

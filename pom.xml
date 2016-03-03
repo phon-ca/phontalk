@@ -11,7 +11,7 @@
 
   <name>PhonTalk</name>
   <url>http://phon.ling.mun.ca</url>
-  <description>Utility for converting files between Talkbank and Phon.  Includesa plug-in for Phon as well as a CLI.</description>
+  <description>Utility for converting files between Talkbank and Phon.  Includes a plug-in for Phon as well as a CLI.</description>
 
   <developers>
     <developer>

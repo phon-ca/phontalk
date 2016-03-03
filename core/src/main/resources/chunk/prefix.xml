@@ -82,7 +82,11 @@ import org.apache.commons.lang3.*;
 	private Session session = 
 		sessionFactory.createSession();
 
-	public Session getSession() { return session; }
+	public Session getSession() { 
+		// fix tier view
+		sessionFactory.setupDefaultTierView(session);
+		return session;
+	}
 	
 	/** List of comments which are to be added 
 	    to the next record */
