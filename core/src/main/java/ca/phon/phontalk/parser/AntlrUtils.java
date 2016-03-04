@@ -18,6 +18,9 @@
  */
 package ca.phon.phontalk.parser;
 
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,23 +48,27 @@ public class AntlrUtils {
 	}
 	
 	public static void printTree(CommonTree tree) {
-		final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
-		printTree(talkbankTokens, tree, 0);
+		printTree(tree, System.out);
 	}
 	
-	public static void printTree(AntlrTokens chatTokens, CommonTree tree, int indent) {
+	public static void printTree(CommonTree tree, OutputStream out) {
+		final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
+		printTree(talkbankTokens, tree, 0, new PrintStream(out));
+	}
+	
+	public static void printTree(AntlrTokens chatTokens, CommonTree tree, int indent, PrintStream stream) {
 		if(tree != null) {
-			for(int i = 0; i < indent; i++) System.out.print("    ");
-			System.out.print(chatTokens.getTokenName(tree.getToken().getType()));
+			for(int i = 0; i < indent; i++) stream.print("    ");
+			stream.print(chatTokens.getTokenName(tree.getToken().getType()));
 			if(tree.getToken().getText() != null) {
-				System.out.print(":" + tree.getToken().getText());
+				stream.print(":" + tree.getToken().getText());
 			}
-			System.out.println();
+			stream.println();
 		}
 		indent++;
 		for(int i = 0; i < tree.getChildCount(); i++) {
 			CommonTree child = (CommonTree)tree.getChild(i);
-			printTree(chatTokens, child, indent);
+			printTree(chatTokens, child, indent, stream);
 		}
 	}
 	
