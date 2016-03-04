@@ -91,6 +91,8 @@ public class Phon2XmlConverter {
 			return;
 		}
 		
+		AntlrUtils.printTree(sessionTree);
+		
 		try {
 			final OutputStreamWriter fwriter = new OutputStreamWriter(outputStream, "UTF-8");
 			final StringTemplateWriter stWriter = new NoIndentWriter(new PrintWriter(fwriter));

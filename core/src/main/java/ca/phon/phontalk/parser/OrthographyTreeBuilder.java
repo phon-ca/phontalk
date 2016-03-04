@@ -128,6 +128,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		String addWord = word.getWord();
 		String val = "";
 		for(char c:addWord.toCharArray()) {
+			// deal with shortenings
 			if(c == '<') {
 				if(val.length() > 0)
 					addTextNode(wParent, val);
@@ -136,23 +137,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				if(val.length() > 0)
 					addShortening(wParent, val);
 				val = "";
-			} else if(c == '+' || c == '~') {
-				if(val.length() > 0)
-					addTextNode(wParent, val);
-				CommonTree wkTree = AntlrUtils.createToken(talkbankTokens, "WK_START");
-				wkTree.setParent(wParent);
-				wParent.addChild(wkTree);
-
-				CommonTree wkTypeTree = AntlrUtils.createToken(talkbankTokens, "WK_ATTR_TYPE");
-				if(c == '+')
-					wkTypeTree.getToken().setText("cmp");
-				else
-					wkTypeTree.getToken().setText("cli");
-				wkTypeTree.setParent(wkTree);
-				wkTree.addChild(wkTypeTree);
-				val = "";
-			}
-			else {
+			} else {
 				val += c;
 			}
 		}

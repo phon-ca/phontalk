@@ -123,7 +123,13 @@ public class Phon2XmlTreeBuilder {
 		
 		setupHeaderData(retVal, session);
 		setupParticipants(retVal, session);
+		
+		for(int cidx = 0; cidx < session.getMetadata().getNumberOfComments(); cidx++) {
+			final Comment comment = session.getMetadata().getComment(cidx);
+			insertComment(retVal, comment);
+		}
 		insertDate(retVal, session);
+		
 		processTranscript(retVal, session);
 		
 		return retVal;
@@ -580,7 +586,6 @@ public class Phon2XmlTreeBuilder {
 		Stack<CommonTree> uttNodeStack = new Stack<CommonTree>();
 		uttNodeStack.push(uNode);
 		
-		final OrthographyTreeBuilder orthoBuilder = new OrthographyTreeBuilder();
 		
 		for(int gIdx = 0; gIdx < utt.numberOfGroups(); gIdx++) {
 			final Group group = utt.getGroup(gIdx);
@@ -608,6 +613,7 @@ public class Phon2XmlTreeBuilder {
 			}
 			
 			Orthography ortho = group.getOrthography();
+			final OrthographyTreeBuilder orthoBuilder = new OrthographyTreeBuilder();
 			orthoBuilder.buildTree(uttNodeStack, nodeStack.peek(), ortho);
 			
 			if(gIdx == utt.numberOfGroups() - 1) {
@@ -885,6 +891,22 @@ public class Phon2XmlTreeBuilder {
 		final List<CommonTree> wordTrees = new ArrayList<>();
 
 		for(CommonTree wordTree:allWordTrees) {
+			
+			final CommonTree wordParent = (CommonTree)wordTree.getParent();
+			if(wordParent.getToken().getType() == talkbankTokens.getTokenType("G_START")) {
+				// if re-tracing, don't add to list of required words
+				final CommonTree lastChild = 
+						(CommonTree)wordParent.getChild(wordParent.getChildCount()-1);
+				if(lastChild.getToken().getType() == talkbankTokens.getTokenType("K_START")) {
+					final List<CommonTree> typeTrees = 
+							AntlrUtils.findAllChildrenWithType(lastChild, talkbankTokens, "K_ATTR_TYPE");
+					if(typeTrees.size() > 0
+							&& typeTrees.get(0).getToken().getText().startsWith("retracing")) {
+						continue;
+					}
+				}
+			}
+			
 			if(wordTree.getToken().getType() == talkbankTokens.getTokenType("W_START")) {
 				List<CommonTree> replNodes = 
 						AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "REPLACEMENT_START");
@@ -899,15 +921,19 @@ public class Phon2XmlTreeBuilder {
 						String wordText = textNode.getText();
 						
 						// exclude xxx, yyy, and pauses
-						if(wordText.equals("xxx") 
-								|| wordText.equals("yyy")
-								|| wordText.matches("\\(\\.+\\)")) continue;
+						if(wordText.matches("\\(\\.+\\)")) continue;
 						
 						// exclude fragments
 						List<CommonTree> typeNodes = AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "W_ATTR_TYPE");
 						if(typeNodes.size() > 0) {
 							String typeText = typeNodes.get(0).getText();
 							if(typeText.equals("fragment")) continue;
+						}
+						
+						List<CommonTree> untranscribedNodes = 
+								AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "W_ATTR_UNTRANSCRIBED");
+						if(untranscribedNodes.size() > 0) {
+							continue;
 						}
 						
 						wordTrees.add(wordTree);
