@@ -135,7 +135,7 @@ scope {
 		
 		// add comments if necessary
 		if(nextRecordComments.size() > 0) {
-			nextRecordComments.forEach( c -> $u.record.addComment(c) );
+			nextRecordComments.forEach( c -> $u::r.addComment(c) );
 			nextRecordComments.clear();
 		}
 		
