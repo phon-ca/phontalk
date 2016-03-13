@@ -1006,15 +1006,31 @@ public class Phon2XmlTreeBuilder {
 				throw new IllegalArgumentException("one-to-one alignment error: mor");
 			}
 			
-			final List<CommonTree> morOmittedTrees = AntlrUtils.findChildrenWithType(mortree, talkbankTokens, "MOR_ATTR_OMITTED");
-			final boolean morOmitted = 
-					(morOmittedTrees.size() > 0 && Boolean.parseBoolean(morOmittedTrees.get(0).getToken().getText()));
+			// ensure omitted status is the same as the aligned word
 			final List<CommonTree> wTypeTrees = AntlrUtils.findAllChildrenWithType(wTree, talkbankTokens, "W_ATTR_TYPE");
 			final boolean wOmitted = 
 					(wTypeTrees.size() > 0 && wTypeTrees.get(0).getToken().getText().equals("omission"));
 			
+			
+			final List<CommonTree> morOmittedTrees = AntlrUtils.findChildrenWithType(mortree, talkbankTokens, "MOR_ATTR_OMITTED");
+			final boolean morOmitted = 
+					(morOmittedTrees.size() > 0 && Boolean.parseBoolean(morOmittedTrees.get(0).getToken().getText()));
+			
 			if(wOmitted ^ morOmitted) {
-				throw new IllegalArgumentException("one-to-one alignment error: mor omission mismatch ");
+				if(wOmitted) {
+					CommonTree omittedTree = 
+							(morOmittedTrees.size() > 0 ? morOmittedTrees.get(0) : AntlrUtils.createToken(talkbankTokens, "MOR_ATTR_OMITTED"));
+					omittedTree.getToken().setText("omitted");
+					if(omittedTree.getParent() == null) {
+						omittedTree.setParent(mortree);
+						mortree.insertChild(0, omittedTree);
+					}
+				} else {
+					if(morOmittedTrees.size() > 0) {
+						mortree.deleteChild(morOmittedTrees.get(0).getChildIndex());
+					}
+				}
+				//throw new IllegalArgumentException("one-to-one alignment error: mor omission mismatch ");
 			} else {
 				wTree.addChild(mortree);
 				mortree.setParent(wTree);
