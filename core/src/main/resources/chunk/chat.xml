@@ -111,6 +111,18 @@ chat_attrs
 	|	CHAT_ATTR_LANG
 	{
 		session.setLanguage($CHAT_ATTR_LANG.text);
+		
+		// attempt to load appropriate syllabifier
+		try {
+			Language syllabifierLang = Language.parseLanguage($CHAT_ATTR_LANG.text.split("\\p{Space}")[0]);
+			SyllabifierLibrary library = SyllabifierLibrary.getInstance();
+			Syllabifier syllabifier = library.getSyllabifierForLanguage(syllabifierLang);
+			if(syllabifier != null) {
+				setSyllabifier(syllabifier);
+			}
+		} catch (IllegalArgumentException e) {
+			LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+		}
 	}
 	|	CHAT_ATTR_OPTIONS
 	{

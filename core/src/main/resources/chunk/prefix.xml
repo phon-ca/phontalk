@@ -141,6 +141,18 @@ import org.apache.commons.lang3.*;
 	public void setProperty(String key, Object value) {
 		properties.put(key, value);
 	}
+	
+	// syllabifier
+	private Syllabifier syllabifier = SyllabifierLibrary.getInstance().getSyllabifierForLanguage(Language.parseLanguage("eng-simple"));
+	
+	// set syllabifier, done during CHAT attribute processing (if possible)
+	private void setSyllabifier(Syllabifier syllabifier) {
+		this.syllabifier = syllabifier;
+	}
+	
+	private Syllabifier getSyllabifier() {
+		return this.syllabifier;
+	}
 }
 ]]>
     </buffer>

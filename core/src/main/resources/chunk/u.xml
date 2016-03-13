@@ -121,6 +121,7 @@ scope {
 			$u::r.getSegment().setGroup(0, $seg.val);
 		}
 		
+		Syllabifier syllabifier = getSyllabifier();
 		if($u::recordLang != null) {
 			// make sure the uttlang tier exists in session
 			TierDescription langTierDesc = ensureTierExists("uttlang", false);
@@ -131,6 +132,46 @@ scope {
 				$u::r.putTier(langTier);
 			}
 			langTier.setGroup(0, $u::recordLang);
+			
+			try {
+				Language lang = Language.parseLanguage($u::recordLang);
+				SyllabifierLibrary library = SyllabifierLibrary.getInstance();
+				Syllabifier s = library.getSyllabifierForLanguage(lang);
+				if(s != null) syllabifier = s;
+			} catch (IllegalArgumentException e) {
+				LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+			}
+		}
+		
+		// syllabify/align IPA as necessary
+		for(int gIdx = 0; gIdx < $u::r.numberOfGroups(); gIdx++) {
+			Group g = $u::r.getGroup(gIdx);
+			
+			IPATranscript model = g.getIPATarget();
+			boolean isSyllabifyModel = 
+					model.removePunctuation().stripDiacritics()
+						.toList().stream()
+						.filter( (ele) -> ele.getScType() != SyllableConstituentType.UNKNOWN )
+						.count() == 0;
+			if(isSyllabifyModel) {
+				syllabifier.syllabify(model.toList());
+			}
+			
+			IPATranscript actual = g.getIPAActual();
+			boolean isSyllabifyActual = 
+					actual.removePunctuation().stripDiacritics()
+						.toList().stream()
+						.filter( (ele) -> ele.getScType() != SyllableConstituentType.UNKNOWN )
+						.count() == 0;
+			if(isSyllabifyModel) {
+				syllabifier.syllabify(actual.toList());
+			}
+			
+			PhoneMap pm = g.getPhoneAlignment();
+			if(pm == null || pm.getAlignmentLength() == 0) {
+				pm = (new PhoneAligner()).calculatePhoneMap(model, actual);
+				g.setPhoneAlignment(pm);
+			}
 		}
 		
 		// add comments if necessary

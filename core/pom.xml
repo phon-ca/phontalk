@@ -17,6 +17,11 @@
 			<version>${ca.phon.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>ca.phon</groupId>
+			<artifactId>phon-syllabifier-opgraph</artifactId>
+			<version>${ca.phon.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>stringtemplate</artifactId>
 			<version>3.2.1</version>
