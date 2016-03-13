@@ -19,12 +19,18 @@
 package ca.phon.phontalk.app;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
 import ca.phon.phontalk.PhonTalkMessage;
+import ca.phon.util.FileUtil;
 
 public class PhonTalkMessageTableModel extends AbstractTableModel {
 	
@@ -38,7 +44,17 @@ public class PhonTalkMessageTableModel extends AbstractTableModel {
 	};
 	
 	private List<PhonTalkMessage> messages = new ArrayList<>();
+	
+	private File parentFolder = new File(".");
 
+	public File getParentFolder() {
+		return this.parentFolder;
+	}
+	
+	public void setParentFolder(File parentFolder) {
+		this.parentFolder = parentFolder;
+	}
+	
 	public void clear() {
 		messages.clear();
 		fireTableDataChanged();
@@ -119,7 +135,10 @@ public class PhonTalkMessageTableModel extends AbstractTableModel {
 		final PhonTalkMessage msg = messages.get(rowIndex);
 		switch(columnIndex) {
 		case 0:
-			retVal = (msg.getFile() != null ? msg.getFile().getName() : "");
+			Path parentPath = Paths.get(getParentFolder().toURI());
+			Path filePath = Paths.get(msg.getFile().toURI());
+			Path relativePath = parentPath.relativize(filePath);
+			retVal = relativePath.toFile();
 			break;
 			
 		case 1:

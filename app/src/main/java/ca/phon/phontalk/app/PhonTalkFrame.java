@@ -347,12 +347,11 @@ public class PhonTalkFrame extends JFrame {
 								final XPath xpath = xpathFactory.newXPath();
 							
 								final XPathExpression corpusExpr = xpath.compile("/CHAT/@Corpus");
-								final XPathExpression sessionExpr = xpath.compile("/CHAT/@Id");
 								
 								final String corpusName = 
 										(String)corpusExpr.evaluate(doc, XPathConstants.STRING);
 								final String sessionName = 
-										(String)sessionExpr.evaluate(doc, XPathConstants.STRING);
+										f.getName().substring(0, f.getName().length()-4);
 								
 								final String sessionPath = 
 										corpusName + File.separator + sessionName + ".xml";
@@ -493,6 +492,8 @@ public class PhonTalkFrame extends JFrame {
 		
 		@Override
 		public void dropTalkBankFolder(final File file) {
+			taskTableModel.setParentFolder(file.getParentFile());
+			reportTableModel.setParentFolder(file.getParentFile());
 			final Runnable onEDT = new Runnable() {
 				public void run() {
 					busyLabel.setBusy(true);
@@ -514,16 +515,22 @@ public class PhonTalkFrame extends JFrame {
 		
 		@Override
 		public void dropTalkBankFile(File file) {
+			taskTableModel.setParentFolder(file.getParentFile());
+			reportTableModel.setParentFolder(file.getParentFile());
 			convertTalkBankFile(file);
 		}
 		
 		@Override
 		public void dropPhonSession(File file) {
+			taskTableModel.setParentFolder(file.getParentFile());
+			reportTableModel.setParentFolder(file.getParentFile());
 			convertPhonSession(file);
 		}
 		
 		@Override
 		public void dropPhonProject(File file) {
+			taskTableModel.setParentFolder(file.getParentFile());
+			reportTableModel.setParentFolder(file.getParentFile());
 			try {
 				convertPhonProject(file);
 			} catch (IOException | ProjectConfigurationException e) {

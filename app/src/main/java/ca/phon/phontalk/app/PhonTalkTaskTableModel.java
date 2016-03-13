@@ -18,6 +18,9 @@
  */
 package ca.phon.phontalk.app;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +38,16 @@ public class PhonTalkTaskTableModel extends AbstractTableModel {
 	};
 	
 	private final List<PhonTalkTask> taskList = new ArrayList<>();
+	
+	private File parentFolder = new File(".");
+
+	public File getParentFolder() {
+		return this.parentFolder;
+	}
+	
+	public void setParentFolder(File parentFolder) {
+		this.parentFolder = parentFolder;
+	}
 	
 	public void clear() {
 		taskList.clear();
@@ -96,7 +109,9 @@ public class PhonTalkTaskTableModel extends AbstractTableModel {
 				break;
 				
 			case 1:
-				retVal = task.getInputFile().getName();
+				Path parentPath = Paths.get(parentFolder.toURI());
+				Path filePath = Paths.get(task.getInputFile().toURI());
+				retVal = parentPath.relativize(filePath).toString();
 				break;
 				
 			default:
