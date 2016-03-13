@@ -41,6 +41,7 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
 
 import ca.phon.ipa.IPATranscript;
+import ca.phon.ipa.alignment.PhoneAligner;
 import ca.phon.ipa.alignment.PhoneMap;
 import ca.phon.orthography.Orthography;
 import ca.phon.session.AgeFormatter;
@@ -72,7 +73,7 @@ public class Phon2XmlTreeBuilder {
 	
 	private int recordIdx = 0;
 	
-	private Map<String, String> tierNameMap = new HashMap<String, String>();
+	private final Map<String, String> tierNameMap = new HashMap<String, String>();
 	
 	private final static String chatTierNames[] = {
 		"addressee",
@@ -126,7 +127,17 @@ public class Phon2XmlTreeBuilder {
 		
 		for(int cidx = 0; cidx < session.getMetadata().getNumberOfComments(); cidx++) {
 			final Comment comment = session.getMetadata().getComment(cidx);
-			insertComment(retVal, comment);
+			if(comment.getType() == CommentEnum.LazyGem) {
+				insertLazyGem(retVal, comment);
+			} else if(comment.getType() == CommentEnum.BeginGem) { 
+				insertBeginGem(retVal, comment);
+			} else if(comment.getType() == CommentEnum.Date) {
+				// date is inserted before processing session
+			} else if(comment.getType() == CommentEnum.Code && comment.getValue().startsWith("pid")) {
+				insertPid(retVal, comment.getValue());
+			} else {					
+				insertComment(retVal, comment);
+			}
 		}
 		insertDate(retVal, session);
 		
@@ -459,7 +470,7 @@ public class Phon2XmlTreeBuilder {
 	}
 	
 	/**
-	 * Insert a comment
+	 * Insert a talkbank comment element
 	 * @param tree
 	 * @param c
 	 */
@@ -647,8 +658,12 @@ public class Phon2XmlTreeBuilder {
 				}
 
 				// alignment only makes sense when we have model+actual
-				if(hasActual && hasTarget && group.getPhoneAlignment() != null) {
-					addAlignment(grpNode, group.getPhoneAlignment());
+				if(hasActual && hasTarget) {
+					PhoneMap pm = group.getPhoneAlignment();
+					if(pm == null || pm.getAlignmentLength() == 0) {
+						pm = (new PhoneAligner()).calculatePhoneMap(tRep, aRep);
+					}
+					addAlignment(grpNode, pm);
 				}
 			}
 			
@@ -891,22 +906,6 @@ public class Phon2XmlTreeBuilder {
 		final List<CommonTree> wordTrees = new ArrayList<>();
 
 		for(CommonTree wordTree:allWordTrees) {
-			
-			final CommonTree wordParent = (CommonTree)wordTree.getParent();
-			if(wordParent.getToken().getType() == talkbankTokens.getTokenType("G_START")) {
-				// if re-tracing, don't add to list of required words
-				final CommonTree lastChild = 
-						(CommonTree)wordParent.getChild(wordParent.getChildCount()-1);
-				if(lastChild.getToken().getType() == talkbankTokens.getTokenType("K_START")) {
-					final List<CommonTree> typeTrees = 
-							AntlrUtils.findAllChildrenWithType(lastChild, talkbankTokens, "K_ATTR_TYPE");
-					if(typeTrees.size() > 0
-							&& typeTrees.get(0).getToken().getText().startsWith("retracing")) {
-						continue;
-					}
-				}
-			}
-			
 			if(wordTree.getToken().getType() == talkbankTokens.getTokenType("W_START")) {
 				List<CommonTree> replNodes = 
 						AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "REPLACEMENT_START");
@@ -941,6 +940,24 @@ public class Phon2XmlTreeBuilder {
 				}
 			} else {
 				wordTrees.add(wordTree);
+			}
+		}
+		
+		// look for g-elements with re-tracing at the end.
+		final List<CommonTree> gTrees = 
+				AntlrUtils.findAllChildrenWithType(uNode, talkbankTokens, "G_START");
+		for(CommonTree gTree:gTrees) {
+			final CommonTree lastElement = 
+					(CommonTree)gTree.getChild(gTree.getChildCount()-1);
+			if(lastElement.getToken().getType() == talkbankTokens.getTokenType("K_START")) {
+				final CommonTree attrTree = 
+						AntlrUtils.findChildrenWithType(lastElement, talkbankTokens, "K_ATTR_TYPE").get(0);
+				if(attrTree.getToken().getText().toLowerCase().startsWith("retracing")) {
+					// remove all word and tagmarker trees for mor consideration
+					final List<CommonTree> retracingTrees = 
+							AntlrUtils.findAllChildrenWithType(gTree, talkbankTokens, "W_START", "TAGMARKER_START");
+					wordTrees.removeAll(retracingTrees);
+				}
 			}
 		}
 		

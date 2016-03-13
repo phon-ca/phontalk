@@ -47,6 +47,7 @@ import ca.phon.session.Session;
 import ca.phon.session.SessionFactory;
 import ca.phon.session.io.SessionInputFactory;
 import ca.phon.session.io.SessionReader;
+import ca.phon.util.PrefHelper;
 
 public class Phon2XmlConverter {
 	
@@ -91,8 +92,6 @@ public class Phon2XmlConverter {
 			return;
 		}
 		
-		AntlrUtils.printTree(sessionTree);
-		
 		try {
 			final OutputStreamWriter fwriter = new OutputStreamWriter(outputStream, "UTF-8");
 			final StringTemplateWriter stWriter = new NoIndentWriter(new PrintWriter(fwriter));
@@ -136,6 +135,8 @@ public class Phon2XmlConverter {
 	}
 	
 	public void convertFile(File sessionFile, File outputFile, PhonTalkListener msgListener) {
+		setSessionFile(sessionFile);
+		setOutputFile(outputFile);
 		// HACK fix issues caused by changes in the way Phon 2.0 handles braces in Orthography
 		final StringBuffer sessionBuffer = new StringBuffer();
 		try {
@@ -155,7 +156,6 @@ public class Phon2XmlConverter {
 			out.write(sessionData);
 			out.flush();
 			out.close();
-			
 			
 			sessionFile = tempFile;
 		} catch (IOException e) {
@@ -249,7 +249,6 @@ public class Phon2XmlConverter {
 				AST2TalkBank.chat_return v = walker.chat();
 				v.st.toString();
 			} catch (TreeWalkerError e) {
-				AntlrUtils.printTree(tTree);
 				if(e.getCause() instanceof RecognitionException) {
 					final RecognitionException re = (RecognitionException)e.getCause();
 					final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2TalkBank.tokens"));

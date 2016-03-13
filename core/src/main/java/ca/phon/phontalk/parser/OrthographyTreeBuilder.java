@@ -6,6 +6,7 @@ import java.util.Stack;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
@@ -46,6 +47,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	
 	public void buildTree(Stack<CommonTree> uttNodeStack, CommonTree parent, Orthography ortho) {
 		this.uttNodeStack = uttNodeStack;
+		nodeStack.push(uttNodeStack.get(0));
 		nodeStack.push(parent);
 		attachToLastChild = false;
 		this.ortho = ortho;
@@ -430,7 +432,11 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			break;
 			
 		case OPEN_BRACE:
-			if(ortho.length() == 1) {
+			long numPunctAndWords =
+				StreamSupport.stream(ortho.spliterator(), true)
+					.filter( (ele) -> (ele instanceof OrthoPunct) || (ele instanceof OrthoWord) )
+					.count();
+			if(numPunctAndWords == 1) {
 				// create a super-<g> node
 				CommonTree superG = 
 						new CommonTree(new CommonToken(talkbankTokens.getTokenType("G_START")));
@@ -456,9 +462,14 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			break;
 			
 		case CLOSE_BRACE:
-			if(ortho.length() == 1) {
+			numPunctAndWords =
+				StreamSupport.stream(ortho.spliterator(), true)
+					.filter( (ele) -> (ele instanceof OrthoPunct) || (ele instanceof OrthoWord) )
+					.count();
+			if(numPunctAndWords == 1) {
 				// pop the group from the uttstack
 	    		uttNodeStack.pop();
+	    		nodeStack.pop();
 			} else {
 				nodeStack.pop();
 			}

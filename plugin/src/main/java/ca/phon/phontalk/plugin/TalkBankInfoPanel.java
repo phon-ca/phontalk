@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 
 
 
+
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -42,6 +44,8 @@ import javax.xml.xpath.XPathFactory;
 
 
 
+
+
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
@@ -51,6 +55,7 @@ import org.jdesktop.swingx.JXTitledSeparator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.xmlunit.XMLUnitException;
 import org.xmlunit.builder.Input;
 import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DOMDifferenceEngine;
@@ -61,12 +66,17 @@ import org.xmlunit.diff.DifferenceEngine;
 
 
 
+
+
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 
 
 
+
+
+import ca.phon.phontalk.TreeWalkerError;
 import ca.phon.phontalk.parser.AST2TalkBank;
 import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.phontalk.parser.AntlrUtils;
@@ -126,46 +136,22 @@ public class TalkBankInfoPanel extends JPanel {
 		// ANTLR tree
 		antlrArea = new RSyntaxTextArea();
 		antlrArea.setEditable(false);
-		CommonTree tree = null;
-		try {
-			tree = toAntlrTree();
-			final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			AntlrUtils.printTree(tree, bout);
-			final String treeTxt = bout.toString("UTF-8");
-			antlrArea.setText(treeTxt);
-		} catch (TreeBuilderException | IOException e) {
-			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			antlrArea.setText(e.getLocalizedMessage());
-		}
 		final RTextScrollPane antlrScroller = new RTextScrollPane(antlrArea, true);
 		tabs.addTab("ANTLR Tree", antlrScroller);
 		
 		// original xml
 		origXMLArea = new RSyntaxTextArea();
 		origXMLArea.setSyntaxEditingStyle(RSyntaxTextArea.SYNTAX_STYLE_XML);
-		try {
-			origXMLArea.setText(getOrigXml());
-		} catch (XPathExpressionException | ParserConfigurationException
-				| SAXException | IOException
-				| TransformerFactoryConfigurationError | TransformerException e1) {
-			LOGGER.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
-			origXMLArea.setText(e1.getLocalizedMessage());
-		}
 		origXMLArea.setEditable(false);
 		final RTextScrollPane origXmlScroller = new RTextScrollPane(origXMLArea, true);
-		
+
 		// new xml
 		xmlArea = new RSyntaxTextArea();
 		xmlArea.setSyntaxEditingStyle(RSyntaxTextArea.SYNTAX_STYLE_XML);
-		try {
-			xmlArea.setText(toXml(tree));
-		} catch (RecognitionException | TransformerFactoryConfigurationError | TransformerException e) {
-			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			xmlArea.setText(e.getLocalizedMessage());
-		}
 		xmlArea.setEditable(false);
 		final RTextScrollPane xmlScroller = new RTextScrollPane(xmlArea, true);
 		
+
 		diffArea = new RSyntaxTextArea();
 		diffArea.setEditable(false);
 		diffArea.setRows(8);
@@ -173,7 +159,7 @@ public class TalkBankInfoPanel extends JPanel {
 		
 		final GridBagLayout gbl = new GridBagLayout();
 		final JPanel xmlPanel = new JPanel(gbl);
-
+		
 		final GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
@@ -215,10 +201,40 @@ public class TalkBankInfoPanel extends JPanel {
 		gbc.weightx = 1.0;
 		gbc.weighty = 0.2;
 		xmlPanel.add(diffScroller, gbc);
-		calcDiff();
-		
 		tabs.addTab("TalkBank XML", xmlPanel);
 		
+		CommonTree tree = null;
+		try {
+			tree = toAntlrTree();
+			final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			AntlrUtils.printTree(tree, bout);
+			final String treeTxt = bout.toString("UTF-8");
+			antlrArea.setText(treeTxt);
+		} catch (TreeBuilderException | IOException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			antlrArea.setText(e.getLocalizedMessage());
+		}
+
+		if(tree != null) {
+			try {
+				origXMLArea.setText(getOrigXml());
+			} catch (XPathExpressionException | ParserConfigurationException
+					| SAXException | IOException
+					| TransformerFactoryConfigurationError | TransformerException e1) {
+				LOGGER.log(Level.SEVERE, e1.getLocalizedMessage(), e1);
+				origXMLArea.setText(e1.getLocalizedMessage());
+			}
+			
+			try {
+				String xmlData = toXml(tree);
+				xmlArea.setText(xmlData);
+			} catch (NullPointerException | TreeWalkerError | RecognitionException | TransformerFactoryConfigurationError | TransformerException e) {
+				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				xmlArea.setText(e.getLocalizedMessage());
+			}
+
+			calcDiff();
+		}
 	}
 	
 	private void calcDiff() {
@@ -240,7 +256,13 @@ public class TalkBankInfoPanel extends JPanel {
 				diffArea.setText(buf.toString());
 			}
 		});
-		diff.compare(control, test);
+		
+		try {
+			diff.compare(control, test);
+		} catch (XMLUnitException e) {
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			diffArea.setText(e.getLocalizedMessage());
+		}
 	}
 	
 	private String getOrigXml() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException, TransformerFactoryConfigurationError, TransformerException {
@@ -273,7 +295,9 @@ public class TalkBankInfoPanel extends JPanel {
 		
 		final Phon2XmlTreeBuilder treeBuilder = new Phon2XmlTreeBuilder();
 		
-		final CommonTree sessionTree = treeBuilder.buildTree(tempSession);
+		CommonTree sessionTree = new CommonTree();
+		sessionTree = treeBuilder.buildTree(tempSession);
+		
 		final List<CommonTree> recordTrees = 
 				AntlrUtils.findAllChildrenWithType(sessionTree, new AntlrTokens("TalkBank2AST.tokens"), "U_START");
 		return (recordTrees.isEmpty() ? new CommonTree() : recordTrees.get(0));
