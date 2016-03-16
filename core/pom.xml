@@ -18,7 +18,7 @@
 		</dependency>
 		<dependency>
 			<groupId>ca.phon</groupId>
-			<artifactId>phon-syllabifier-opgraph</artifactId>
+			<artifactId>phon-syllabifier</artifactId>
 			<version>${ca.phon.version}</version>
 		</dependency>
 		<dependency>
