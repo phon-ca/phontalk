@@ -64,16 +64,20 @@ public class TestPhoneMapConversion {
 				"	<col><modelref>ph4</modelref>  <actualref>ph2</actualref> </col> \n" + 
 				"</align>";
 		
+		final PhonTalkListener listener = 
+				(msg) -> System.err.println(msg);
+		
 		// XML -> AST
 		final TalkBankTokenSource tokenSource = new TalkBankTokenSource(new ByteArrayInputStream(xml.getBytes("UTF-8")));
 		TokenStream	tokenStream = new CommonTokenStream(tokenSource);
 		final TalkBank2ASTParser parser = new TalkBank2ASTParser(tokenStream);
-		parser.setPhonTalkListener( (msg) -> System.err.println(msg.toString()) );
+		parser.setPhonTalkListener(listener);
 		final CommonTree alignTree = parser.align().getTree();
 		
 		// AST -> PhoneMap
 		final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(alignTree);
 		final AST2Phon walker = new AST2Phon(nodeStream);
+		walker.setPhonTalkListener(listener);
 		
 		// turn on fragment processing
 		walker.setProcessFragments(true);
@@ -89,7 +93,7 @@ public class TestPhoneMapConversion {
 	}
 	
 	@Test
-	public void testPhoneMapFromString() {
+	public void testString2PhoneMap() {
 		final IPATranscript model = (new IPATranscriptBuilder()).append("hello").toIPATranscript();
 		final IPATranscript actual = (new IPATranscriptBuilder()).append("elo").toIPATranscript();
 		final String alignTxt = "h:U↔Ø,e:U↔e:U,l:U↔Ø,l:U↔l:U,o:U↔o:U";
