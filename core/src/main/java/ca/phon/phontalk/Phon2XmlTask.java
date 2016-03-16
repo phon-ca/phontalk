@@ -25,7 +25,6 @@ import java.io.InputStream;
 
 import javax.xml.bind.ValidationException;
 
-import ca.phon.session.Session;
 import ca.phon.session.io.SessionInputFactory;
 import ca.phon.session.io.SessionReader;
 

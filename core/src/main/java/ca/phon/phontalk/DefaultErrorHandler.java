@@ -19,7 +19,6 @@
 package ca.phon.phontalk;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;

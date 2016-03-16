@@ -20,7 +20,6 @@ package ca.phon.phontalk.parser;
 
 import java.io.File;
 
-import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.tree.TreeNodeStream;
@@ -28,7 +27,6 @@ import org.antlr.runtime.tree.TreeParser;
 
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
-import ca.phon.phontalk.PhonTalkUtil;
 
 public class PhonTalkTreeParser extends TreeParser {
 

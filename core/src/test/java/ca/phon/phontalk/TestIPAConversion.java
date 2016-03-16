@@ -18,9 +18,9 @@ import ca.phon.ipa.IPATranscript;
 import ca.phon.ipa.IPATranscriptBuilder;
 import ca.phon.phontalk.parser.AST2Phon;
 import ca.phon.phontalk.parser.AST2TalkBank;
+import ca.phon.phontalk.parser.PhoTreeBuilder;
 import ca.phon.phontalk.parser.TalkBank2ASTParser;
 import ca.phon.phontalk.parser.TalkBankTokenSource;
-import ca.phon.phontalk.parser.PhoTreeBuilder;
 
 @RunWith(JUnit4.class)
 public class TestIPAConversion {

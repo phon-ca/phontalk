@@ -24,24 +24,13 @@ import java.util.logging.Logger;
 
 import org.antlr.runtime.tree.CommonTree;
 
-import antlr.build.ANTLR;
 import ca.phon.ipa.CompoundWordMarker;
-import ca.phon.ipa.Contraction;
 import ca.phon.ipa.IPAElement;
 import ca.phon.ipa.IPATranscript;
-import ca.phon.ipa.IntonationGroup;
-import ca.phon.ipa.IntraWordPause;
-import ca.phon.ipa.Linker;
-import ca.phon.ipa.Pause;
-import ca.phon.ipa.Phone;
-import ca.phon.ipa.Sandhi;
 import ca.phon.ipa.StressMarker;
 import ca.phon.ipa.StressType;
-import ca.phon.ipa.SyllableBoundary;
 import ca.phon.syllable.SyllabificationInfo;
 import ca.phon.syllable.SyllableConstituentType;
-import ca.phon.syllable.SyllableStress;
-import ca.phon.util.Range;
 import ca.phon.visitor.VisitorAdapter;
 import ca.phon.visitor.annotation.Visits;
 

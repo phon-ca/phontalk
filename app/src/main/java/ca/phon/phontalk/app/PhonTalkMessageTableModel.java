@@ -26,11 +26,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-
 import ca.phon.phontalk.PhonTalkMessage;
-import ca.phon.util.FileUtil;
 
 public class PhonTalkMessageTableModel extends AbstractTableModel {
 	

@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 import org.antlr.runtime.tree.CommonTree;
 
 import ca.phon.ipa.IPAElement;
-import ca.phon.ipa.IPATranscript;
 import ca.phon.ipa.alignment.PhoneMap;
 
 public class AlignTreeBuilder {

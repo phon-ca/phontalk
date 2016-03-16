@@ -18,7 +18,6 @@
  */
 package ca.phon.phontalk.parser;
 
-import java.io.BufferedWriter;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;

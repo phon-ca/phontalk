@@ -47,7 +47,6 @@ import ca.phon.session.Session;
 import ca.phon.session.SessionFactory;
 import ca.phon.session.io.SessionInputFactory;
 import ca.phon.session.io.SessionReader;
-import ca.phon.util.PrefHelper;
 
 public class Phon2XmlConverter {
 	
