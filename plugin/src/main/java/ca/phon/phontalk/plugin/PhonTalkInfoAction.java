@@ -33,7 +33,8 @@ public class PhonTalkInfoAction extends SessionEditorAction {
 		final DialogHeader header = new DialogHeader("PhonTalk Debug", "Display ANTLR and TalkBank XML information");
 		
 		final TalkBankInfoPanel infoPanel = 
-				new TalkBankInfoPanel(getEditor().getProject(), session, record);
+				new TalkBankInfoPanel(getEditor().getProject(), session);
+		infoPanel.setRecord(record);
 		cmf.getContentPane().setLayout(new BorderLayout());
 		cmf.getContentPane().add(header, BorderLayout.NORTH);
 		cmf.getContentPane().add(infoPanel, BorderLayout.CENTER);

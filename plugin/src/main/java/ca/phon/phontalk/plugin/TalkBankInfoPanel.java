@@ -111,18 +111,13 @@ public class TalkBankInfoPanel extends JPanel {
 	// model
 	private final Project project;
 	private final Session session;
-	private final Record record;
-
-	public TalkBankInfoPanel(Project project, Session session, int recordIdx) {
-		this(project, session, session.getRecord(recordIdx));
-	}
+	private Record record;
 	
-	public TalkBankInfoPanel(Project project, Session session, Record record) {
+	public TalkBankInfoPanel(Project project, Session session) {
 		super();
 		
 		this.project = project;
 		this.session = session;
-		this.record = record;
 		
 		init();
 	}
@@ -202,6 +197,22 @@ public class TalkBankInfoPanel extends JPanel {
 		gbc.weighty = 0.2;
 		xmlPanel.add(diffScroller, gbc);
 		tabs.addTab("TalkBank XML", xmlPanel);
+	}
+	
+	public Record getRecord() {
+		return this.record;
+	}
+	
+	public void setRecord(Record record) {
+		this.record = record;
+		update();
+	}
+	
+	public void update() {
+		antlrArea.setText("");
+		origXMLArea.setText("");
+		xmlArea.setText("");
+		diffArea.setText("");
 		
 		CommonTree tree = null;
 		try {
