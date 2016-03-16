@@ -269,6 +269,7 @@ public class TalkBankInfoPanel extends JPanel {
 		final SessionFactory factory = SessionFactory.newFactory();
 		final Session tempSession = factory.createSession();
 		factory.copySessionInformation(session, tempSession);
+		factory.copySessionTierInformation(session, tempSession);
 		for(Participant part:session.getParticipants()) {
 			final Participant clonedPart = factory.cloneParticipant(part);
 			tempSession.addParticipant(clonedPart);
