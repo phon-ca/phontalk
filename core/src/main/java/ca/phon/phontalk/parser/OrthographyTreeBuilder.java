@@ -46,6 +46,9 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	private CommonTree terminator;
 	
 	public void buildTree(Stack<CommonTree> uttNodeStack, CommonTree parent, Orthography ortho) {
+		if(ortho.toString().equals("jack+in+the+box")) {
+			System.out.println("here");
+		}
 		this.uttNodeStack = uttNodeStack;
 		nodeStack.push(uttNodeStack.get(0));
 		nodeStack.push(parent);
@@ -61,12 +64,12 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	
 	@Visits
 	public void visitWordnet(OrthoWordnet wordnet) {
-		visitWord(wordnet.getWord1());
+		visit(wordnet.getWord1());
 		String wkType = 
 				(wordnet.getMarker() == OrthoWordnetMarker.COMPOUND ? "cmp" : "cli");
 		insertWordnet((CommonTree)nodeStack.peek().getChild(nodeStack.peek().getChildCount()-1), wkType);
 		attachToLastChild = true;
-		visitWord(wordnet.getWord2());
+		visit(wordnet.getWord2());
 	}
 	
 	@Visits
@@ -112,19 +115,19 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		
 		if(word.getPrefix() != null) {
 			WordPrefixType prefixType = word.getPrefix().getType();
-			if(prefixType == WordPrefixType.FRAGMENT || prefixType == WordPrefixType.OMISSION) {
-				CommonTree typeNode = 
-						AntlrUtils.createToken(talkbankTokens, "W_ATTR_TYPE");
-				typeNode.getToken().setText(prefixType.getDisplayName());
-				typeNode.setParent(wParent);
-				wParent.addChild(typeNode);
-			} else {
-				CommonTree utTree =
-						AntlrUtils.createToken(talkbankTokens, "W_ATTR_UNTRANSCRIBED");
-				utTree.getToken().setText(prefixType.getDisplayName());
-				utTree.setParent(wParent);
-				wParent.addChild(utTree);
-			}
+			CommonTree typeNode = 
+					AntlrUtils.createToken(talkbankTokens, "W_ATTR_TYPE");
+			typeNode.getToken().setText(prefixType.getDisplayName());
+			typeNode.setParent(wParent);
+			wParent.addChild(typeNode);
+		}
+		
+		if(word.isUntranscribed()) {
+			CommonTree utTree =
+					AntlrUtils.createToken(talkbankTokens, "W_ATTR_UNTRANSCRIBED");
+			utTree.getToken().setText(word.getUntranscribedType().getDisplayName());
+			utTree.setParent(wParent);
+			wParent.addChild(utTree);
 		}
 		
 		String addWord = word.getWord();

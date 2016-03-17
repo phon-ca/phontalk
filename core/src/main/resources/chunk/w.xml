@@ -221,16 +221,6 @@ wattr
 		}
 	}
 	|	W_ATTR_UNTRANSCRIBED
-	{
-		String t = $W_ATTR_UNTRANSCRIBED.text;
-		if(t.equals("unintelligible")) {
-			$w::prefix = "xxx";
-		} else if(t.equals("unintelligible-with-pho")) {
-			$w::prefix = "yyy";
-		} else if(t.equals("untranscribed")) {
-			$w::prefix = "www";
-		}
-	}
 	;
 ]]>
     </buffer>
