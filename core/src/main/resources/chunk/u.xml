@@ -287,8 +287,22 @@ uele
 					if(aRep == null) aRep = new IPATranscript();
 					nextGroup.setIPAActual(aRep);
 					
-					PhoneMap pm = new PhoneMap(tRep, aRep);
+					PhoneMap pm = $g.phoneMaps.get(phoRepIndex);
+					if(pm == null) 
+						pm = (new PhoneAligner()).calculatePhoneMap(tRep, aRep);
 					nextGroup.setPhoneAlignment(pm);
+					
+					for(String tierName:$g.tierMaps.keySet()) {
+						Tier<String> tier = $u::r.getTier(tierName, String.class);
+						if(tier == null) {
+							tier = sessionFactory.createTier(tierName, String.class, true);
+							for(int i = 0; i < $u::r.numberOfGroups(); i++) tier.addGroup();
+							$u::r.putTier(tier);
+						}
+						String grpVal = $g.tierMaps.get(tierName).get(phoRepIndex);
+						if(grpVal == null) grpVal = "";
+						nextGroup.setTier(tierName, String.class, grpVal);
+					}
 						
 					phoRepIndex++;
 				} else {

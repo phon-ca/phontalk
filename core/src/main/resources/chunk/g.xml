@@ -48,7 +48,7 @@ gchoice
     <!-- Tree Walker -->
     <buffer name="AST2Phon.g">
         <![CDATA[
-g returns [String val,  Integer phoRepCount, Map<Integer,IPATranscript> targetReps, Map<Integer, IPATranscript> actReps, Map<Integer, PhoneMap> phoneMaps]
+g returns [String val,  Integer phoRepCount, Map<Integer,IPATranscript> targetReps, Map<Integer, IPATranscript> actReps, Map<Integer, PhoneMap> phoneMaps, Map<String, Map<Integer, String>> tierMaps]
 scope {
 	String buffer;
 	
@@ -58,6 +58,7 @@ scope {
  	Map<Integer, IPATranscript> tReps;
  	Map<Integer, IPATranscript> aReps;
 	Map<Integer, PhoneMap> pMaps;
+	Map<String, Map<Integer, String>> trMaps;
  	
  	int pgCount;
 }
@@ -67,6 +68,7 @@ scope {
 	$g::tReps = new HashMap<Integer, IPATranscript>();
 	$g::aReps = new HashMap<Integer, IPATranscript>();
 	$g::pMaps = new HashMap<Integer, PhoneMap>();
+	$g::trMaps = new HashMap<String, Map<Integer, String>>();
 	
 	$g::pgCount = 0;
 }
@@ -76,6 +78,7 @@ scope {
 	$targetReps = $g::tReps;
 	$actReps = $g::aReps;
 	$phoneMaps = $g::pMaps;
+	$tierMaps = $g::trMaps;
 	
 	$phoRepCount = $g::pgCount;
 }
@@ -107,7 +110,24 @@ gele
 		Integer[] pMapKeys = $nestedg.phoneMaps.keySet().toArray(new Integer[0]);
 		for(Integer pmapKey:pMapKeys) {
 			int newKey = pmapKey + $g::pgCount;
-			$g::pMaps.put(pmapKey, $nestedg.phoneMaps.get(pmapKey));
+			$g::pMaps.put(newKey, $nestedg.phoneMaps.get(pmapKey));
+		}
+		
+		for(String tierName:$nestedg.tierMaps.keySet()) {
+			Map<Integer, String> trMap = $nestedg.tierMaps.get(tierName);
+			if(trMap == null) trMap = new HashMap<>();
+			
+			Integer[] trMapKeys = trMap.keySet().toArray(new Integer[0]);
+			for(Integer trMapKey:trMapKeys) {
+				int newKey = trMapKey + $g::pgCount;
+				
+				Map<Integer, String> newTrMap = $g::trMaps.get(tierName);
+				if(newTrMap == null) {
+					newTrMap = new LinkedHashMap<>();
+					$g::trMaps.put(tierName, newTrMap);
+				}
+				newTrMap.put(newKey, trMap.get(trMapKey));
+			}
 		}
 
 		$g::pgCount += $nestedg.phoRepCount;

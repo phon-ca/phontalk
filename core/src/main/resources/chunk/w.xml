@@ -109,30 +109,42 @@ wele
 		String morVal = $mor.val;
 		String tierName = $mor.tierName;
 		
-		// make sure dep tier exists in session
-		TierDescription tierDesc = ensureTierExists(tierName, true); 
-		
-		Tier<String> morTier = $u::r.getTier(tierName, String.class);
-		if(morTier == null) {
-			morTier = sessionFactory.createTier(tierName, String.class, true);
-			for(int i = 0; i < $u::r.numberOfGroups(); i++) morTier.addGroup();
-			$u::r.putTier(morTier);
+		if($pg.size() > 0 && $g.size() > 0) {
+			// add to group data
+			Map<Integer, String> trMap = $g::trMaps.get(tierName);
+			if(trMap == null) {
+				trMap = new LinkedHashMap<>();
+				$g::trMaps.put(tierName, trMap);
+			}
+			String val = (trMap.containsKey($g::pgCount-1) ? trMap.get($g::pgCount-1) : "");
+			val += (val.length() > 0 ? " " : "") + morVal;
+			trMap.put($g::pgCount-1, val);
+		} else {
+			// make sure dep tier exists in session
+			TierDescription tierDesc = ensureTierExists(tierName, true); 
+			
+			Tier<String> morTier = $u::r.getTier(tierName, String.class);
+			if(morTier == null) {
+				morTier = sessionFactory.createTier(tierName, String.class, true);
+				for(int i = 0; i < $u::r.numberOfGroups(); i++) morTier.addGroup();
+				$u::r.putTier(morTier);
+			}
+			
+			// add mor data as a dep tier of the current group
+			Group group = null;
+			// get the correct word group holder
+			if($t.size() > 0 || $ugrp.size() > 0) {
+			    group = ($t.size() > 0 ? $t::g : $ugrp::g);
+			} else if($u.size() > 0) {
+			    group = $u::r.getGroup($u::r.numberOfGroups()-1);
+			}
+			
+			String tierValue = 
+				(group.getTier(tierName) != null ? group.getTier(tierName, String.class) : "");
+			tierValue += 
+			    (tierValue.length() == 0 ? "" : " ") + morVal;
+			group.setTier(tierName, String.class, tierValue);
 		}
-		
-		// add mor data as a dep tier of the current group
-		Group group = null;
-		// get the correct word group holder
-		if($t.size() > 0 || $ugrp.size() > 0) {
-		    group = ($t.size() > 0 ? $t::g : $ugrp::g);
-		} else if($u.size() > 0) {
-		    group = $u::r.getGroup($u::r.numberOfGroups()-1);
-		}
-		
-		String tierValue = 
-			(group.getTier(tierName) != null ? group.getTier(tierName, String.class) : "");
-		tierValue += 
-		    (tierValue.length() == 0 ? "" : " ") + morVal;
-		group.setTier(tierName, String.class, tierValue);
 	}
 	|	mk
 	{
