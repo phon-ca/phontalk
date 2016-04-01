@@ -109,16 +109,16 @@ wele
 		String morVal = $mor.val;
 		String tierName = $mor.tierName;
 		
-		if($pg.size() > 0 && $g.size() > 0) {
+		if($g.size() > 0) {
 			// add to group data
 			Map<Integer, String> trMap = $g::trMaps.get(tierName);
 			if(trMap == null) {
 				trMap = new LinkedHashMap<>();
 				$g::trMaps.put(tierName, trMap);
 			}
-			String val = (trMap.containsKey($g::pgCount-1) ? trMap.get($g::pgCount-1) : "");
+			String val = (trMap.containsKey($g::pgCount) ? trMap.get($g::pgCount) : "");
 			val += (val.length() > 0 ? " " : "") + morVal;
-			trMap.put($g::pgCount-1, val);
+			trMap.put($g::pgCount, val);
 		} else {
 			// make sure dep tier exists in session
 			TierDescription tierDesc = ensureTierExists(tierName, true); 

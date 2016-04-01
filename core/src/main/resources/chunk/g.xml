@@ -137,6 +137,7 @@ gele
 	 	// enclose the pg data in [] so that we know to break up
 	 	// this into proper word groups in phon later.
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + "[" + $pg.val + "]";
+		$g::pgCount++;
 	}
 	|	sg
 	{
