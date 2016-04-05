@@ -269,7 +269,7 @@ uele
 				(new OrthographyBuilder()).append("{").toOrthography());
 			
 			// if we have sub-pg groups.  The new words should have been created.
-			int phoRepIndex = 0;
+			int phoRepIndex = 1;
 			for(String g:grps) {
 				Group nextGroup = $u::r.addGroup();
 				
@@ -304,7 +304,7 @@ uele
 						nextGroup.setTier(tierName, String.class, grpVal);
 					}
 						
-					phoRepIndex++;
+					++phoRepIndex;
 				} else {
 					nextGroup.setOrthography(
 						(new OrthographyBuilder()).append(g).toOrthography());
@@ -320,6 +320,29 @@ uele
 				(new OrthographyBuilder()).append($ugrp::g.getOrthography())
 					.append("{").append($g.val).append("}")
 					.toOrthography());
+					
+			// IPA Transcriptions
+			IPATranscript ipaT = $g.targetReps.get(0);
+			if(ipaT != null) $ugrp::g.setIPATarget(ipaT);
+			
+			IPATranscript ipaA = $g.actReps.get(0);
+			if(ipaA != null) $ugrp::g.setIPAActual(ipaA);
+			
+			PhoneMap pm = $g.phoneMaps.get(0);
+			if(pm != null) $ugrp::g.setPhoneAlignment(pm);
+			
+			// other tiers
+			for(String tierName:$g.tierMaps.keySet()) {
+				Tier<String> tier = $u::r.getTier(tierName, String.class);
+				if(tier == null) {
+					tier = sessionFactory.createTier(tierName, String.class, true);
+					for(int i = 0; i < $u::r.numberOfGroups(); i++) tier.addGroup();
+					$u::r.putTier(tier);
+				}
+				String grpVal = $g.tierMaps.get(tierName).get(0);
+				if(grpVal == null) grpVal = "";
+				$ugrp::g.setTier(tierName, String.class, grpVal);
+			}
 		}
 	}
 	|	sg

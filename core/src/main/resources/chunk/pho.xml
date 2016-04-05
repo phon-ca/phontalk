@@ -58,7 +58,7 @@ scope
 			if($g.size() == 0) {
 				$ugrp::g.setIPATarget($pho.ipa);
 			} else {
-				$g::tReps.put($g::pgCount-1, $pho.ipa);
+				$g::tReps.put($g::pgCount, $pho.ipa);
 			}
 		}
 	}
@@ -71,7 +71,7 @@ scope
 			if($g.size() == 0) {
 				$ugrp::g.setIPAActual($pho.ipa);
 			} else {
-				$g::aReps.put($g::pgCount-1, $pho.ipa);
+				$g::aReps.put($g::pgCount, $pho.ipa);
 			}
 		}
 	}
