@@ -46,9 +46,6 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	private CommonTree terminator;
 	
 	public void buildTree(Stack<CommonTree> uttNodeStack, CommonTree parent, Orthography ortho) {
-		if(ortho.toString().equals("jack+in+the+box")) {
-			System.out.println("here");
-		}
 		this.uttNodeStack = uttNodeStack;
 		nodeStack.push(uttNodeStack.get(0));
 		nodeStack.push(parent);

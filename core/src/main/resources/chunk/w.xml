@@ -57,7 +57,7 @@ scope {
 	$w::prefix = "";
 }
 @after {
-	$val = $w::prefix + $w::word + $w::suffix + $w::elements;
+	$val = $w::prefix + $w::word + $w::suffix + ($w::elements.length() > 0 ? " " + $w::elements : "");
 }
 	:	^(W_START wattr* ls=langs? wele*)
 	{
@@ -252,31 +252,31 @@ wele
 	->	template( v={$TEXT.text} )
 		"<v>"
 	|	overlap_point
-	->	template( v={$overlap_point.st} )
+	->	template( v={$overlap_point.st.toString()} )
 		"<v>"
 	|	underline
-	->	template( v={$underline.st} )
+	->	template( v={$underline.st.toString()} )
 		"<v>"
 	|	italic
-	->	template( v={$italic.st} )
+	->	template( v={$italic.st.toString()} )
 		"<v>"
 	|	shortening
-	->	template( v={$shortening.st} )
+	->	template( v={$shortening.st.toString()} )
 		"<v>"
 	|	p
-	->	template( v={$p.st} )
+	->	template( v={$p.st.toString()} )
 		"<v>"
 	|	long_feature
-	->	template( v={$long_feature.st} )
+	->	template( v={$long_feature.st.toString()} )
 		"<v>"
 	|	wk
-	->	template( v={$wk.st} )
+	->	template( v={$wk.st.toString()} )
 		"<v>"
 	|	pos
-	->	template( v={$pos.st} )
+	->	template( v={$pos.st.toString()} )
 		"<v>"
 	|	replacement
-	->	template( v={$replacement.st} )
+	->	template( v={$replacement.st.toString()} )
 		"<v>"
 	|	mor
 	->	template( v={$mor.st} )
