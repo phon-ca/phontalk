@@ -45,22 +45,24 @@ wattr
         <![CDATA[
 w returns [String val]
 scope {
-	String buffer;
+	String word;
+	String elements;
 	String suffix;
 	String prefix;
 }
 @init {
-	$w::buffer = new String();
+	$w::word = new String();
+	$w::elements = new String();
 	$w::suffix = "";
 	$w::prefix = "";
 }
 @after {
-	$val = $w::prefix + $w::buffer.toString() + $w::suffix;
+	$val = $w::prefix + $w::word + $w::suffix + $w::elements;
 }
 	:	^(W_START wattr* ls=langs? wele*)
 	{
 		if($ls.val != null) {
-			$w::buffer = $ls.val + $w::buffer;
+			$w::word = $ls.val + $w::word;
 		}
 	}
 	;
@@ -68,40 +70,40 @@ scope {
 wele
 	:	TEXT
 	{	
-		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $TEXT.text;	
+		$w::word += ($w::word.length() > 0 ? "" : "") + $TEXT.text;	
 	}
 	|	overlap_point
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $overlap_point.val;
+		$w::elements += ($w::elements.length() > 0 ? " " : "") + $overlap_point.val;
 	}
 	|	underline
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $underline.val;
+		$w::elements += ($w::elements.length() > 0 ? " " : "") + $underline.val;
 	}
 	|	italic
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $italic.val;
+		$w::elements += ($w::elements.length() > 0 ? " " : "") + $italic.val;
 	}
 	|	shortening
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $shortening.val;
+		$w::elements += ($w::elements.length() > 0 ? "" : "") + $shortening.val;
 	}
 	|	p 
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $p.val;
+		$w::elements += ($w::elements.length() > 0 ? "" : "") + $p.val;
 	}
 	|	long_feature
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $long_feature.val;
+		$w::elements += ($w::elements.length() > 0 ? " " : "") + $long_feature.val;
 	}
 	| 	wk
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? "" : "") + $wk.val;
+		$w::elements += ($w::elements.length() > 0 ? "" : "") + $wk.val;
 	}
 	|	pos
 	|	replacement
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") + $replacement.val;
+		$w::elements += ($w::elements.length() > 0 ? " " : "") + $replacement.val;
 	}
 	|	mor
 	{
@@ -148,7 +150,7 @@ wele
 	}
 	|	mk
 	{
-		$w::buffer += ($w::buffer.length() > 0 ? " " : "") 
+		$w::elements += ($w::elements.length() > 0 ? " " : "") 
 			+ "(mk," + $mk.type + ":" + $mk.val + ")";
 	}
 	;
