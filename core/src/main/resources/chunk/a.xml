@@ -107,10 +107,22 @@ scope {
 			}
 			
 			if(isGrouped) {
-				String[] grpVals = tierVal.split("\\[");
-				for(String grpVal:grpVals) {
-					grpVal = grpVal.trim().substring(0, grpVal.length()-1);
+				final Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+				final Matcher matcher = pattern.matcher(tierVal);
+				int numDepGroups = 0;
+				while(matcher.find()) {
+					final String grpVal = matcher.group(1).trim();
 					depTier.addGroup(grpVal);
+					++numDepGroups;
+				}
+				
+				if(numDepGroups > $u::r.getOrthography().numberOfGroups()) {
+					final PhonTalkMessage msg = new PhonTalkMessage(
+						"Record #" + (session.getRecordCount()+1) + ". Tier " + tierName + " has more groups than Orthography.",
+						PhonTalkMessage.Severity.WARNING);
+					msg.setFile(new java.io.File(this.getFile()));
+					if(getPhonTalkListener() != null)
+						getPhonTalkListener().message(msg);
 				}
 			} else {
 				depTier.setGroup(0, tierVal);
