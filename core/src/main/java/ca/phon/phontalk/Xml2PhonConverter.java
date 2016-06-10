@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.ValidationException;
@@ -164,12 +165,19 @@ public class Xml2PhonConverter {
 		try(FileInputStream fin = new FileInputStream(inputFile)) {
 			session = convertStream(fin, listener);
 		} catch (IOException e) {
-			
+			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		}
 		
 		if(session != null) {
 			// save the transcript to the given file (also validates)
 			try (FileOutputStream fout = new FileOutputStream(outputFile)) {
+				// set session name so Phon 2.1.8- can read files
+				String name = outputFile.getName();
+				if(name.indexOf('.') > 0) {
+					name = name.substring(0, name.indexOf('.'));
+				}
+				session.setName(name);
+				
 				final SessionOutputFactory sessionOutputFactory =
 						new SessionOutputFactory();
 				final SessionWriter writer = sessionOutputFactory.createWriter();
