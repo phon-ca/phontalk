@@ -19,7 +19,7 @@ public class PhonTalkMenuFilter implements IPluginExtensionPoint<IPluginMenuFilt
 		}
 		
 		final MenuBuilder builder = new MenuBuilder(menu);
-		builder.addMenuItem("Tools", new PhonTalkInfoAction((SessionEditor)owner));
+		builder.addItem("Tools", new PhonTalkInfoAction((SessionEditor)owner));
 	}
 
 	@Override

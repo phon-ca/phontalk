@@ -75,19 +75,19 @@ scope {
 			if(tierName.equals("orthography")) tierName = "ort"; // change tier name for orthpgraphy to avoid collisions
 			
 			TierDescription tierDesc = ensureTierExists(tierName, false);
-			Tier<String> userTier = $u::r.getTier(tierName, String.class);
+			Tier<TierString> userTier = $u::r.getTier(tierName, TierString.class);
 			if(userTier == null) {
-				userTier = sessionFactory.createTier(tierName, String.class, false);
+				userTier = sessionFactory.createTier(tierName, TierString.class, false);
 				$u::r.putTier(userTier);
 			}
-			userTier.setGroup(0, tierVal);
+			userTier.setGroup(0, new TierString(tierVal));
 		}
 		
 		// set notes if type is 'comments'
 		else if($a::t.equals("comments")) 
 		{
 			// set notes in utterance
-			$u::r.getNotes().setGroup(0, tierVal);
+			$u::r.getNotes().setGroup(0, new TierString(tierVal));
 		}
 		
 		// if type is 'extension' create a new dep tier (if necessary)
@@ -100,9 +100,9 @@ scope {
 			 	(tierVal.startsWith("[") && tierVal.endsWith("]"));
 			TierDescription tierDesc = ensureTierExists(tierName, isGrouped);
 			
-			Tier<String> depTier = $u::r.getTier(tierName, String.class);
+			Tier<TierString> depTier = $u::r.getTier(tierName, TierString.class);
 			if(depTier == null) {
-				depTier = sessionFactory.createTier(tierName, String.class, isGrouped);
+				depTier = sessionFactory.createTier(tierName, TierString.class, isGrouped);
 				$u::r.putTier(depTier);
 			}
 			
@@ -112,7 +112,7 @@ scope {
 				int numDepGroups = 0;
 				while(matcher.find()) {
 					final String grpVal = matcher.group(1).trim();
-					depTier.addGroup(grpVal);
+					depTier.addGroup(new TierString(grpVal));
 					++numDepGroups;
 				}
 				
@@ -125,7 +125,7 @@ scope {
 						getPhonTalkListener().message(msg);
 				}
 			} else {
-				depTier.setGroup(0, tierVal);
+				depTier.setGroup(0, new TierString(tierVal));
 			}
 		}
 		
