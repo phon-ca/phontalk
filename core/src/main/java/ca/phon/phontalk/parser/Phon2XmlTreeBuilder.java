@@ -48,6 +48,7 @@ import ca.phon.session.Session;
 import ca.phon.session.Sex;
 import ca.phon.session.Tier;
 import ca.phon.session.TierDescription;
+import ca.phon.session.TierString;
 
 /**
  * This class is responsible for turning Phon sessions
@@ -873,7 +874,7 @@ public class Phon2XmlTreeBuilder {
 			typeNode.setParent(notesNode);
 			notesNode.addChild(typeNode);
 			
-			addTextNode(notesNode, utt.getNotes().getGroup(0));
+			addTextNode(notesNode, utt.getNotes().getGroup(0).toString());
 		}
 		
 		tree.addChild(uNode);
@@ -954,23 +955,20 @@ public class Phon2XmlTreeBuilder {
 		}
 		
 		// get a listing of all mordata elements
-		final Tier<String> morTier = utt.getTier("Morphology", String.class);
+		final Tier<TierString> morTier = utt.getTier("Morphology", TierString.class);
 		final List<String> morWrdVals = new ArrayList<String>();
-		for(String grpVal:morTier) {
-			// split by space
-			final String[] wrdVals = grpVal.split("\\s+");
-			
+		for(TierString grpVal:morTier) {
 			String cWrd = null;
-			for(String wrdVal:wrdVals) {
+			for(TierString wrdVal:grpVal.getWords()) {
 				if(wrdVal.startsWith("(") && !wrdVal.endsWith(")")) {
-					cWrd = wrdVal;
+					cWrd = wrdVal.toString();
 				} else if(cWrd != null) {
 					cWrd += " " + wrdVal;
 					if(wrdVal.endsWith(")")) {
 						morWrdVals.add(cWrd);
 					}
 				} else {
-					morWrdVals.add(wrdVal);
+					morWrdVals.add(wrdVal.toString());
 				}
 			}
 		}
@@ -1044,13 +1042,12 @@ public class Phon2XmlTreeBuilder {
 		final MorBuilder mb = new MorBuilder();
 		final List<CommonTree> mortrees =  
 				AntlrUtils.findAllChildrenWithType(uNode, talkbankTokens, "MOR_START", "MOR_PRE_START", "MOR_POST_START");
-		final Tier<String> graTier = utt.getTier("GRASP", String.class);
+		final Tier<TierString> graTier = utt.getTier("GRASP", TierString.class);
 		final List<CommonTree> graTrees = new ArrayList<CommonTree>();
-		for(String grpTierVal:graTier) {
-			final String wrdVals[] = grpTierVal.split("\\s+");
-			for(String wrdVal:wrdVals) {
+		for(TierString grpTierVal:graTier) {
+			for(TierString wrdVal:grpTierVal.getWords()) {
 				if(wrdVal.trim().length() == 0) continue;
-				final CommonTree graTree = mb.buildGraspTree(wrdVal);
+				final CommonTree graTree = mb.buildGraspTree(wrdVal.toString());
 				graTrees.add(graTree);
 			}
 		}
