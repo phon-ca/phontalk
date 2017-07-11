@@ -102,6 +102,10 @@ import org.apache.commons.lang3.*;
 	}
 	
 	private TierDescription ensureTierExists(String tierName, boolean grouped) {
+		return ensureTierExists(tierName, grouped, null);
+	}
+	
+	private TierDescription ensureTierExists(String tierName, boolean grouped, Record record) {
 		TierDescription tierDesc = null;
 		for(TierDescription current:session.getUserTiers())
 		{
@@ -122,6 +126,14 @@ import org.apache.commons.lang3.*;
 			tierView.add(tvi);
 			session.setTierView(tierView);
 		}
+		
+		if(record != null) {
+			if(!record.hasTier(tierName)) {
+				Tier<TierString> tier = sessionFactory.createTier(tierName, TierString.class, grouped);
+				record.putTier(tier);
+			}
+		}
+		
 		return tierDesc;
 	}
 	

@@ -246,7 +246,7 @@ scope
     :    ^(GRA_START graattrs+)
     {
         // make sure dep tier exists in session
-		TierDescription tierDesc = ensureTierExists("GRASP", true);
+		TierDescription tierDesc = ensureTierExists("GRASP", true, $u::r);
 		
 		// value
 		$val = $gra::index + "|" + $gra::head + "|" + $gra::relation;
@@ -264,7 +264,7 @@ scope
 		if(tierValue == null) tierValue = new String();
 		tierValue += 
 		    (tierValue.length() == 0 ? "" : " ") + $val;
-		group.setTier("GRASP", String.class, tierValue);
+		group.setTier("GRASP", TierString.class, new TierString(tierValue));
     }
     ;
     
