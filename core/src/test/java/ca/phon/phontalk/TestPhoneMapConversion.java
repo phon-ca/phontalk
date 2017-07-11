@@ -88,7 +88,7 @@ public class TestPhoneMapConversion {
 		
 		final PhoneMap phoneMap = walker.align().val;
 		
-		final String expected = "h:U↔Ø,e:U↔e:U,l:U↔Ø,l:U↔l:U,o:U↔o:U";
+		final String expected = "h↔Ø,e↔e,l↔Ø,l↔l,o↔o";
 		Assert.assertEquals(expected, phoneMap.toString(true));
 	}
 	
@@ -96,7 +96,7 @@ public class TestPhoneMapConversion {
 	public void testString2PhoneMap() {
 		final IPATranscript model = (new IPATranscriptBuilder()).append("hello").toIPATranscript();
 		final IPATranscript actual = (new IPATranscriptBuilder()).append("elo").toIPATranscript();
-		final String alignTxt = "h:U↔Ø,e:U↔e:U,l:U↔Ø,l:U↔l:U,o:U↔o:U";
+		final String alignTxt = "h↔Ø,e↔e,l↔Ø,l↔l,o↔o";
 		
 		final PhoneMap phoneMap = PhoneMap.fromString(model, actual, alignTxt);
 		
