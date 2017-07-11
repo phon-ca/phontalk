@@ -88,19 +88,19 @@ public class TestPhoneMapConversion {
 		
 		final PhoneMap phoneMap = walker.align().val;
 		
-		final String expected = "h↔Ø,e↔e,l↔Ø,l↔l,o↔o";
-		Assert.assertEquals(expected, phoneMap.toString(true));
+		final String expected = "h↔∅,e↔e,l↔∅,l↔l,o↔o";
+		Assert.assertEquals(expected, phoneMap.toString());
 	}
 	
 	@Test
 	public void testString2PhoneMap() {
 		final IPATranscript model = (new IPATranscriptBuilder()).append("hello").toIPATranscript();
 		final IPATranscript actual = (new IPATranscriptBuilder()).append("elo").toIPATranscript();
-		final String alignTxt = "h↔Ø,e↔e,l↔Ø,l↔l,o↔o";
+		final String alignTxt = "h↔∅,e↔e,l↔∅,l↔l,o↔o";
 		
 		final PhoneMap phoneMap = PhoneMap.fromString(model, actual, alignTxt);
 		
-		Assert.assertEquals(alignTxt, phoneMap.toString(true));
+		Assert.assertEquals(alignTxt, phoneMap.toString());
 	}
 	
 }
