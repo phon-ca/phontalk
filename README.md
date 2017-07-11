@@ -1,4 +1,4 @@
-= PhonTalk =
+# PhonTalk 
 
 PhonTalk is a library for converting between Phon sessions and the Talkbank
 http://www.talkbank.org XML format. TalkBank files processed in the 
