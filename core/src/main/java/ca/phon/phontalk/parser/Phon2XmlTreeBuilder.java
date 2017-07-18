@@ -721,10 +721,10 @@ public class Phon2XmlTreeBuilder {
 			handeledTiers.add(depTierName);
 			
 			if(depTier.isGrouped()) {
-				boolean hasData = 
-						(depTier.toString().replaceAll("\\[", "").replaceAll("\\]", "").trim().length() > 0);
-				
-				if(hasData) {
+//				boolean hasData = 
+//						(depTier.toString().replaceAll("\\[", "").replaceAll("\\]", "").trim().length() > 0);
+//				
+//				if(hasData) {
 					CommonTree depTierNode =
 							AntlrUtils.createToken(talkbankTokens, "A_START");
 					depTierNode.setParent(uNode);
@@ -745,8 +745,8 @@ public class Phon2XmlTreeBuilder {
 					
 					uNode.addChild(depTierNode);
 					
-					addTextNode(depTierNode, depTier.toString());
-				}
+					addTextNode(depTierNode, depTier.toString().trim());
+//				}
 			} else {
 				String tierVal = depTier.getGroup(0).trim();
 				if(tierVal.length() == 0) continue;
