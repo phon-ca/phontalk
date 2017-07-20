@@ -128,7 +128,7 @@ scope {
 			
 			Tier<String> langTier = $u::r.getTier(langTierDesc.getName(), String.class);
 			if(langTier == null) {
-				langTier = sessionFactory.createTier(langTierDesc.getName(), String.class, true);
+				langTier = sessionFactory.createTier(langTierDesc.getName(), String.class, false);
 				$u::r.putTier(langTier);
 			}
 			langTier.setGroup(0, $u::recordLang);
