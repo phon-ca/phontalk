@@ -99,8 +99,6 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				usfTree.getToken().setText(word.getSuffix().getCode());
 				usfTree.setParent(wParent);
 				wParent.addChild(usfTree);
-			} else if(suffixType == WordSuffixType.SECOND_LANGUAGE) { 
-				// TODO add as 'langs' tree
 			} else {
 				CommonTree formTypeNode = 
 						AntlrUtils.createToken(talkbankTokens, "W_ATTR_FORMTYPE");

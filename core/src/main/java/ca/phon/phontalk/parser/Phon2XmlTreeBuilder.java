@@ -295,7 +295,7 @@ public class Phon2XmlTreeBuilder {
 		
 		// version
 		CommonTree vNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_VERSION");
-		vNode.getToken().setText("2.1.0");
+		vNode.getToken().setText("2.5.0");
 		vNode.setParent(tree);
 		tree.addChild(vNode);
 	}
@@ -915,11 +915,13 @@ public class Phon2XmlTreeBuilder {
 						// exclude xxx, yyy, and pauses
 						if(wordText.matches("\\(\\.+\\)")) continue;
 						
+							
 						// exclude fragments
 						List<CommonTree> typeNodes = AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "W_ATTR_TYPE");
 						if(typeNodes.size() > 0) {
 							String typeText = typeNodes.get(0).getText();
-							if(typeText.equals("fragment")) continue;
+							if(typeText.equals("fragment") 
+									|| typeText.equals("filler") || typeText.equals("incomplete")) continue;
 						}
 						
 						List<CommonTree> untranscribedNodes = 

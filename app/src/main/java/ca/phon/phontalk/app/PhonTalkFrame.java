@@ -18,11 +18,7 @@
  */
 package ca.phon.phontalk.app;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -32,20 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import javax.xml.bind.ValidationException;
 import javax.xml.parsers.DocumentBuilder;
@@ -73,18 +56,16 @@ import ca.phon.project.Project;
 import ca.phon.project.ProjectFactory;
 import ca.phon.project.exceptions.ProjectConfigurationException;
 import ca.phon.query.report.csv.CSVTableDataWriter;
+import ca.phon.syllabifier.Syllabifier;
 import ca.phon.ui.HidablePanel;
 import ca.phon.ui.action.PhonActionEvent;
 import ca.phon.ui.action.PhonUIAction;
 import ca.phon.ui.decorations.DialogHeader;
 import ca.phon.ui.nativedialogs.FileFilter;
 import ca.phon.ui.nativedialogs.NativeDialogs;
-import ca.phon.util.OSInfo;
-import ca.phon.util.OpenFileLauncher;
-import ca.phon.worker.PhonTask;
+import ca.phon.util.*;
+import ca.phon.worker.*;
 import ca.phon.worker.PhonTask.TaskStatus;
-import ca.phon.worker.PhonTaskListener;
-import ca.phon.worker.PhonWorker;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -94,6 +75,8 @@ public class PhonTalkFrame extends JFrame {
 	private static final long serialVersionUID = -4442294523695339523L;
 	
 	private PhonTalkDropPanel dropPanel;
+	
+	private PhonTalkSettingPanel settingsPanel;
 	
 	private JXTable taskTable;
 	private PhonTalkTaskTableModel taskTableModel;
@@ -105,20 +88,19 @@ public class PhonTalkFrame extends JFrame {
 	
 	private JLabel statusLabel;
 	
-	private PhonWorker worker;
-	
-	private final ConcurrentLinkedQueue<Runnable> taskQueue = 
-			new ConcurrentLinkedQueue<Runnable>();
-	
+	private PhonWorkerGroup workerGroup;
+		
 	private JButton saveAsCSVButton;
 	
 	public PhonTalkFrame() {
 		super("PhonTalk");
 		
 		init();
-		worker = PhonWorker.createWorker(taskQueue);
-		worker.setFinishWhenQueueEmpty(false);
-		worker.start();
+		
+		PhonWorker.getInstance().start();
+		
+		workerGroup = new PhonWorkerGroup(1);
+		workerGroup.begin();
 	}
 	
 	private void init() {
@@ -126,6 +108,8 @@ public class PhonTalkFrame extends JFrame {
 		
 		final DialogHeader header = new DialogHeader("PhonTalk", "");
 		add(header, BorderLayout.NORTH);
+		
+		settingsPanel = new PhonTalkSettingPanel();
 		
 		final PhonUIAction saveAsCSVAct = new PhonUIAction(this, "saveAsCSV");
 		saveAsCSVAct.putValue(PhonUIAction.NAME, "Save as CSV...");
@@ -166,11 +150,20 @@ public class PhonTalkFrame extends JFrame {
 		dropPanel.setFont(dropPanel.getFont().deriveFont(Font.BOLD));
 		
 		final HidablePanel msgPanel = new HidablePanel(PhonTalkFrame.class.getName() + ".infoMsg");
-		msgPanel.setTopLabelText("<html>To convert files between Phon and TalkBank formats, "
-				+ "drop files onto the table above or use the Open button "
-				+ "to select a file/folder containing either a Phon project "
+		msgPanel.setTopLabelText("<html>To convert files between Phon and TalkBank formats, <br/>"
+				+ "drop files onto the table above or use the Open button <br/> "
+				+ "to select a file/folder containing either a Phon project <br/> "
 				+ "or Talkbank .xml files.</html>" );
-		dropPanel.add(msgPanel, BorderLayout.SOUTH);
+		final GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		settingsPanel.add(msgPanel, gbc);
+		dropPanel.add(settingsPanel, BorderLayout.SOUTH);
 		
 		
 		statusLabel = new JLabel();
@@ -240,7 +233,7 @@ public class PhonTalkFrame extends JFrame {
 		onClear();
 		for(PhonTalkTask task:tasks) {
 			taskTableModel.addTask(task);
-			taskQueue.add(task);
+			workerGroup.queueTask(task);
 		}
 	}
 	
@@ -348,8 +341,9 @@ public class PhonTalkFrame extends JFrame {
 							
 								final XPathExpression corpusExpr = xpath.compile("/CHAT/@Corpus");
 								
-								final String corpusName = 
+								final String chatCorpusName = 
 										(String)corpusExpr.evaluate(doc, XPathConstants.STRING);
+								final String corpusName = f.getParentFile().getName();
 								final String sessionName = 
 										f.getName().substring(0, f.getName().length()-4);
 								
@@ -367,7 +361,7 @@ public class PhonTalkFrame extends JFrame {
 								final Xml2PhonTask task = new Xml2PhonTask(f.getAbsolutePath(), sessionAbsPath, phonTalkListener);
 								task.addTaskListener(taskListener);
 								task.setName(f.getName());
-								taskQueue.add(task);
+								workerGroup.queueTask(task);
 								taskTableModel.addTask(task);
 							} catch (IOException e) {
 								e.printStackTrace();
@@ -397,7 +391,7 @@ public class PhonTalkFrame extends JFrame {
 		final Xml2PhonTask task = new Xml2PhonTask(file.getAbsolutePath(), newFile.getAbsolutePath(), phonTalkListener);
 		task.addTaskListener(taskListener);
 		task.setName(file.getName());
-		taskQueue.add(task);
+		workerGroup.queueTask(task);
 		taskTableModel.addTask(task);
 	}
 	
@@ -409,7 +403,7 @@ public class PhonTalkFrame extends JFrame {
 		final Phon2XmlTask task = new Phon2XmlTask(file.getAbsolutePath(), newFile.getAbsolutePath(), phonTalkListener);
 		task.addTaskListener(taskListener);
 		task.setName(file.getName());
-		taskQueue.add(task);
+		workerGroup.queueTask(task);
 		taskTableModel.addTask(task);
 	}
 	
@@ -432,7 +426,7 @@ public class PhonTalkFrame extends JFrame {
 						outputFile.getAbsolutePath(), phonTalkListener);
 				task.addTaskListener(taskListener);
 				task.setName(sessionFile.getName());
-				taskQueue.add(task);
+				workerGroup.queueTask(task);
 				taskTableModel.addTask(task);
 			}
 		}
@@ -478,7 +472,7 @@ public class PhonTalkFrame extends JFrame {
 				openOuputAct.putValue(PhonUIAction.SHORT_DESCRIPTION, task.getOutputFile().getAbsolutePath());
 				menu.add(openOuputAct);
 				
-				final PhonUIAction redoAct = new PhonUIAction(taskQueue, "add", task);
+				final PhonUIAction redoAct = new PhonUIAction(workerGroup.getTaskList(), "add", task);
 				redoAct.putValue(PhonUIAction.NAME, "Redo");
 				menu.add(redoAct);
 				
@@ -510,7 +504,7 @@ public class PhonTalkFrame extends JFrame {
 					}
 				}
 			};
-			worker.invokeLater(onBgThread);
+			PhonWorker.getInstance().invokeLater(onBgThread);
 		}
 		
 		@Override

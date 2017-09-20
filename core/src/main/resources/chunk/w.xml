@@ -183,6 +183,8 @@ wattr
 			$w::suffix += "c";
 		} else if(t.equals("dialect")) {
 			$w::suffix += "d";
+		} else if(t.equals("echolalia")) {
+			$w::suffix += "e";
 		} else if(t.equals("family-specific")) {
 			$w::suffix += "f";
 		} else if(t.equals("filled pause")) {
@@ -205,8 +207,6 @@ wattr
 			$w::suffix += "o";
 		} else if(t.equals("phonology consistent")) {
 			$w::suffix += "p";
-		} else if(t.equals("proto-morpheme")) {
-			$w::suffix += "pm";
 		} else if(t.equals("quoted metareference")) {
 			$w::suffix += "q";
 		} else if(t.equals("sign speech")) {
@@ -232,6 +232,10 @@ wattr
 			$w::prefix = "0";
 		} else if(t.equals("fragment")) {
 			$w::prefix = "&";
+		} else if(t.equals("filler")) {
+			$w::prefix = "&-";
+		} else if(t.equals("incomplete")) {
+			$w::prefix = "&+";
 		}
 	}
 	|	W_ATTR_UNTRANSCRIBED

@@ -157,11 +157,20 @@ import org.apache.commons.lang3.*;
 		properties.put(key, value);
 	}
 	
+	private boolean syllabifyAndAlign = false;
+	public boolean isSyllabifyAndAlign() {
+		return this.syllabifyAndAlign;
+	}
+	
+	public void setSyllabifyAndAlign(boolean syllabifyAndAlign) {
+		this.syllabifyAndAlign = syllabifyAndAlign;
+	}
+	
 	// syllabifier
 	private Syllabifier syllabifier = SyllabifierLibrary.getInstance().getSyllabifierForLanguage(Language.parseLanguage("eng-simple"));
 	
 	// set syllabifier, done during CHAT attribute processing (if possible)
-	private void setSyllabifier(Syllabifier syllabifier) {
+	public void setSyllabifier(Syllabifier syllabifier) {
 		this.syllabifier = syllabifier;
 	}
 	

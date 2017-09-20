@@ -180,13 +180,21 @@ public class MorBuilder {
 	
 	private CommonTree omitted(CommonTree tree, StringBuffer buffer) {
 		CommonTree retVal = null;
-		if(buffer.charAt(0) == '0') {
+		
+		int zeroIdx = -1;
+		int lastIndexOfPipe = buffer.lastIndexOf("|");
+		
+		if(buffer.charAt(0) == '0') 
+			zeroIdx = 0;
+		else if((lastIndexOfPipe >= 0 && lastIndexOfPipe < buffer.length()-1 && buffer.charAt(lastIndexOfPipe+1) == '0')) 
+			zeroIdx = lastIndexOfPipe+1;
+		if(zeroIdx >= 0) {
 			// add attribute node to tree
 			final CommonTree omittedNode = 
 					AntlrUtils.createToken(talkbankTokens, "MOR_ATTR_OMITTED");
 			omittedNode.getToken().setText("true");
 			
-			buffer.delete(0, 1);
+			buffer.delete(zeroIdx, zeroIdx+1);
 			
 			retVal = omittedNode;
 		}

@@ -41,6 +41,7 @@ import ca.phon.phontalk.parser.TalkBankTokenSource;
 import ca.phon.session.Session;
 import ca.phon.session.io.SessionOutputFactory;
 import ca.phon.session.io.SessionWriter;
+import ca.phon.syllabifier.SyllabifierLibrary;
 
 /**
  * Reads in a talkbank XML file using SAX and
@@ -54,6 +55,8 @@ public class Xml2PhonConverter {
 	
 	private File inputFile = null;
 	
+	private PhonTalkSettings settings;
+	
 	public Xml2PhonConverter() {
 		super();
 	}
@@ -66,6 +69,14 @@ public class Xml2PhonConverter {
 		this.inputFile = inputFile;
 	}
 	
+	public PhonTalkSettings getSettings() {
+		return (this.settings == null ? new PhonTalkSettings() : this.settings);
+	}
+
+	public void setSettings(PhonTalkSettings settings) {
+		this.settings = settings;
+	}
+
 	/**
 	 * Convert the given steram into a session object.
 	 * 
@@ -101,6 +112,9 @@ public class Xml2PhonConverter {
 		try {
 			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(parserRet.getTree());
 			final AST2Phon walker = new AST2Phon(nodeStream);
+			walker.setSyllabifyAndAlign(getSettings().isSyllabifyAndAlign());
+			walker.setSyllabifier(SyllabifierLibrary.getInstance()
+					.getSyllabifierForLanguage(getSettings().getSyllabifer()) );
 			walker.setFile(inputFile.getAbsolutePath());
 			walker.setPhonTalkListener(listener);
 			
