@@ -86,9 +86,7 @@ public class TalkBankCodeTreeBuilder {
 		}
 
 		// ga
-		else if(data.startsWith("%act:")) {
-			addGa(tree, "actions", data.substring(5).trim());
-		} else if(data.startsWith("=?")) {
+		else if(data.startsWith("=?")) {
 			addGa(tree, "alternative", data.substring(2).trim());
 		} else if(data.startsWith("%")) {
 			addGa(tree, "comments", data.substring(1).trim());
@@ -96,12 +94,6 @@ public class TalkBankCodeTreeBuilder {
 			addGa(tree, "paralinguistics", data.substring(2).trim());
 		} else if(data.startsWith("=")) {
 			addGa(tree, "explanation", data.substring(1).trim());
-		} else if(data.startsWith("%sdi:")) {
-			addGa(tree, "standard for dialect", data.substring(5).trim());
-		} else if(data.startsWith("%sch:")) {
-			addGa(tree, "standard for child", data.substring(5).trim());
-		} else if(data.startsWith("%xxx:")) {
-			addGa(tree, "standard for unclear source", data.substring(5).trim());
 		}
 		
 		// repeats
