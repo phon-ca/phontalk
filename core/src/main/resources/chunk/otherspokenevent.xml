@@ -9,8 +9,8 @@
         <![CDATA[
 
 otherspokenevent
-    :    OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO TEXT OTHERSPOKENEVENT_END
-    ->    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO TEXT)
+    :    OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO OTHERSPOKENEVENT_ATTR_SAID OTHERSPOKENEVENT_END
+    ->    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO OTHERSPOKENEVENT_ATTR_SAID)
     ;
 
 ]]>
@@ -21,9 +21,9 @@ otherspokenevent
         <![CDATA[
 
 otherspokenevent returns [String val]
-    :    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO TEXT)
+    :    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO OTHERSPOKENEVENT_ATTR_SAID)
     {
-        $val = $OTHERSPOKENEVENT_ATTR_WHO.text + "=" + $TEXT.text;
+        $val = $OTHERSPOKENEVENT_ATTR_WHO.text + "=" + $OTHERSPOKENEVENT_ATTR_SAID.text;
     }
     ;
 
@@ -34,9 +34,9 @@ otherspokenevent returns [String val]
         <![CDATA[
 
 otherspokenevent
-    :    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO TEXT)
-    ->    template( who={$OTHERSPOKENEVENT_ATTR_WHO.text}, word={$TEXT.text} )
-    <<\<otherSpokenEvent who="<who>"\><word>\</otherSpokenEvent\> >>
+    :    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO OTHERSPOKENEVENT_ATTR_SAID)
+    ->    template( who={$OTHERSPOKENEVENT_ATTR_WHO.text}, said={$OTHERSPOKENEVENT_ATTR_SAID.text} )
+    "\<otherSpokenEvent who=\"<who>\" said=\"<said>\"/\>"
     ;
 
 ]]>

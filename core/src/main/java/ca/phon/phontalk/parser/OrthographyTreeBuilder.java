@@ -239,12 +239,11 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		whoNode.setParent(oseNode);
 		oseNode.addChild(whoNode);
 		
-		CommonTree wNode =
-				AntlrUtils.createToken(talkbankTokens, "W_START");
-		wNode.setParent(oseNode);
-		oseNode.addChild(wNode);
-		
-		addTextNode(wNode, data);
+		CommonTree saidNode =
+				AntlrUtils.createToken(talkbankTokens, "OTHERSPOKENEVENT_ATTR_SAID");
+		saidNode.getToken().setText(data);
+		saidNode.setParent(oseNode);
+		oseNode.addChild(saidNode);
 	}
 	
 	/**
