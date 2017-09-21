@@ -1,3 +1,10 @@
+## Changes from 2.5
+
+ * Fixed support of the otherSpokenEvent element
+ * Updated list of annotation types
+ * Updated list of group annotation types
+ * Updated linker names
+
 ## Changes from 2.4
 
  * Update to TalkBank 2.5.0
