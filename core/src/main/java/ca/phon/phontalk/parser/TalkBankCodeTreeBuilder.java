@@ -307,10 +307,10 @@ public class TalkBankCodeTreeBuilder {
 			actualType = "self completion";
 		} else if(lkType.equals("++")) {
 			actualType = "other completion";
-		} else if(lkType.equals("+0x224b")) {
-			actualType = "TCU completion";
-		} else if(lkType.equals("+0x2248")) {
-			actualType = "no break completion";
+		} else if(lkType.equals("+\u224b")) {
+			actualType = "technical break TCU completion";
+		} else if(lkType.equals("+\u2248")) {
+			actualType = "no break TCU completion";
 		}
 		CommonTree typeNode = 
 			AntlrUtils.createToken(talkbankTokens, "LINKER_ATTR_TYPE");
