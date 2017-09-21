@@ -760,24 +760,29 @@ public class Phon2XmlTreeBuilder {
 				
 				if(depTierName.equalsIgnoreCase("addressee")
 					|| depTierName.equalsIgnoreCase("actions")
-					|| depTierName.equalsIgnoreCase("situation")
-					|| depTierName.equalsIgnoreCase("intonation")
-					|| depTierName.equalsIgnoreCase("explanation")
 					|| depTierName.equalsIgnoreCase("alternative")
 					|| depTierName.equalsIgnoreCase("coding")
 					|| depTierName.equalsIgnoreCase("cohesion")
 					|| depTierName.equalsIgnoreCase("english translation")
 					|| depTierName.equalsIgnoreCase("errcoding")
-					|| depTierName.equalsIgnoreCase("flows")
+					|| depTierName.equalsIgnoreCase("explanation")
+					|| depTierName.equalsIgnoreCase("flow")
+					|| depTierName.equalsIgnoreCase("facial")
 					|| depTierName.equalsIgnoreCase("target gloss")
 					|| depTierName.equalsIgnoreCase("gesture")
+					|| depTierName.equalsIgnoreCase("intonation")
 					|| depTierName.equalsIgnoreCase("language")
 					|| depTierName.equalsIgnoreCase("paralinguistics")
 					|| depTierName.equalsIgnoreCase("SALT")
+					|| depTierName.equalsIgnoreCase("situation")
 					|| depTierName.equalsIgnoreCase("speech act")
 					|| depTierName.equalsIgnoreCase("time stamp")
 				) {
-					typeNode.getToken().setText(depTierName.toLowerCase());
+					if(depTierName.equalsIgnoreCase("salt"))
+						depTierName = depTierName.toUpperCase();
+					else
+						depTierName = depTierName.toLowerCase();
+					typeNode.getToken().setText(depTierName);
 				} else if(depTierName.equalsIgnoreCase("translation")) {
 					typeNode.getToken().setText("english translation");
 				} else {

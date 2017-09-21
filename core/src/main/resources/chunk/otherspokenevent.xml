@@ -9,9 +9,14 @@
         <![CDATA[
 
 otherspokenevent
-    :    OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO OTHERSPOKENEVENT_ATTR_SAID OTHERSPOKENEVENT_END
-    ->    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO OTHERSPOKENEVENT_ATTR_SAID)
+    :    OTHERSPOKENEVENT_START otherspokenevent_attr* OTHERSPOKENEVENT_END
+    ->    ^(OTHERSPOKENEVENT_START otherspokenevent_attr*)
     ;
+    
+otherspokenevent_attr
+	:	OTHERSPOKENEVENT_ATTR_WHO
+	|	OTHERSPOKENEVENT_ATTR_SAID
+	;
 
 ]]>
     </buffer>
@@ -21,11 +26,30 @@ otherspokenevent
         <![CDATA[
 
 otherspokenevent returns [String val]
-    :    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO OTHERSPOKENEVENT_ATTR_SAID)
+scope {
+	String who;
+	String said;
+}
+@init {
+	$otherspokenevent::who = new String();
+	$otherspokenevent::said = new String();
+}
+    :    ^(OTHERSPOKENEVENT_START otherspokenevent_attr*)
     {
-        $val = $OTHERSPOKENEVENT_ATTR_WHO.text + "=" + $OTHERSPOKENEVENT_ATTR_SAID.text;
+        $val = $otherspokenevent::who + "=" + $otherspokenevent::said;
     }
     ;
+    
+otherspokenevent_attr
+	:	OTHERSPOKENEVENT_ATTR_WHO
+	{
+		$otherspokenevent::who = $OTHERSPOKENEVENT_ATTR_WHO.text;
+	}
+	|	OTHERSPOKENEVENT_ATTR_SAID
+	{
+		$otherspokenevent::said = $OTHERSPOKENEVENT_ATTR_SAID.text;
+	}
+	;
 
 ]]>
     </buffer>
@@ -34,10 +58,19 @@ otherspokenevent returns [String val]
         <![CDATA[
 
 otherspokenevent
-    :    ^(OTHERSPOKENEVENT_START OTHERSPOKENEVENT_ATTR_WHO OTHERSPOKENEVENT_ATTR_SAID)
-    ->    template( who={$OTHERSPOKENEVENT_ATTR_WHO.text}, said={$OTHERSPOKENEVENT_ATTR_SAID.text} )
-    "\<otherSpokenEvent who=\"<who>\" said=\"<said>\"/\>"
+    :    ^(OTHERSPOKENEVENT_START (attrlist+=otherspokenevent_attr)*)
+    ->    template( attrs={$attrlist} )
+    "\<otherSpokenEvent <attrs; separator=\"\">/\>"
     ;
+    
+otherspokenevent_attr
+	:	OTHERSPOKENEVENT_ATTR_WHO
+	-> template(who={$OTHERSPOKENEVENT_ATTR_WHO.text})
+	<<who="<who>" >>
+	|	OTHERSPOKENEVENT_ATTR_SAID
+	-> template(said={$OTHERSPOKENEVENT_ATTR_SAID.text})
+	<<said="<said>" >>
+	;
 
 ]]>
     </buffer>

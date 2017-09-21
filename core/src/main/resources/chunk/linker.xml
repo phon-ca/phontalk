@@ -39,9 +39,9 @@ linker returns [String val]
 			$val += "+,";
 		else if(lkType.equals("other completion"))
 			$val += "++";
-		else if(lkType.equals("TCU completion"))
+		else if(lkType.equals("technical break TCU completion"))
 			$val += "+\u224b";
-		else if(lkType.equals("no break completion"))
+		else if(lkType.equals("no break TCU completion"))
 			$val += "+\u2248";
 	}
 	;	
