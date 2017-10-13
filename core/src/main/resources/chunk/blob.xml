@@ -24,7 +24,7 @@ scope {
 @init {
     $blob::buffer = new StringBuffer();
 }
-    :    ^(BLOB_START (TEXT{$blob::buffer.append($TEXT.text);})*)
+    :    ^(BLOB_START (TEXT{$blob::buffer.append($TEXT.text.replaceAll("\\(", "\\\\(").replaceAll("\\)", "\\\\)"));})*)
     {
         $val = "(blob:" + $blob::buffer.toString() + ")";
     }

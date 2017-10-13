@@ -1,12 +1,11 @@
 package ca.phon.phontalk.parser;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * Builds ANTLR trees for various CHAT codes which
@@ -172,7 +171,8 @@ public class TalkBankCodeTreeBuilder {
 		}
 		
 		if(eleData != null && eleData.trim().length() > 0) {
-			addTextNode(eleTree, eleData.trim());
+			addTextNode(eleTree, 
+					StringEscapeUtils.escapeXml(eleData.trim().replaceAll("\\\\\\(", "(").replaceAll("\\\\\\)", ")")));
 		}
 	}
 	

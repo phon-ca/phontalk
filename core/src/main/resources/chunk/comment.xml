@@ -12,8 +12,13 @@ XPath -	/xs:schema/xs:complexType[@name="commentType"]
     <buffer name="TalkBank2AST.g">
         <![CDATA[
 comment
-	:	COMMENT_START COMMENT_ATTR_TYPE? media? TEXT* COMMENT_END 
-	->	^(COMMENT_START COMMENT_ATTR_TYPE? media? TEXT*)
+	:	COMMENT_START COMMENT_ATTR_TYPE? commentele* COMMENT_END 
+	->	^(COMMENT_START COMMENT_ATTR_TYPE? commentele*)
+	;
+	
+commentele
+	:	media
+	|	TEXT
 	;
 ]]>
     </buffer>
@@ -24,11 +29,12 @@ comment
 comment returns [Comment val]
 scope {
 	StringBuffer buffer;
+	MediaSegment media;
 }
 @init {
 	$comment::buffer = new StringBuffer();
 }
-	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? media? (TEXT{$comment::buffer.append($TEXT.text);})*)
+	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? commentele*)
 	{
 		CommentEnum cType = CommentEnum.Generic;
 		if($type != null)
@@ -40,8 +46,19 @@ scope {
 		$val = sessionFactory.createComment(cType, $comment::buffer.toString());
 		
 		if($media != null) {
-			$val.putExtension(MediaSegment.class, $media.val);
+			$val.putExtension(MediaSegment.class, $comment::media);
 		}
+	}
+	;
+	
+commentele
+	:	media
+	{
+		$comment::media = $media.val;
+	}
+	|	TEXT
+	{
+		$comment::buffer.append($TEXT.text);
 	}
 	;
 ]]>
@@ -50,13 +67,21 @@ scope {
 	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 comment
-	:	^(COMMENT_START ctype=COMMENT_ATTR_TYPE? m=media? vals+=TEXT*)
+	:	^(COMMENT_START ctype=COMMENT_ATTR_TYPE? vals+=commentele*)
 	->	template(
 			type={$ctype.text},
-			mref={$m.st},
 			vals={$vals}
 		)
-	<<\<comment type="<type>"\><if(mref)><mref><endif><vals>\</comment\> >>
+	<<\<comment type="<type>"\><vals>\</comment\> >>
+	;
+	
+commentele
+	:	media
+	->	template(v={$media.st})
+	"<v>"
+	|	TEXT
+	->	template(v={$TEXT.text})
+	"<v>"
 	;
 ]]>
 	</buffer>

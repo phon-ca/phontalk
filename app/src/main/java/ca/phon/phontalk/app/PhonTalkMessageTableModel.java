@@ -19,10 +19,8 @@
 package ca.phon.phontalk.app;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.*;
+import java.util.*;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -131,10 +129,12 @@ public class PhonTalkMessageTableModel extends AbstractTableModel {
 		final PhonTalkMessage msg = messages.get(rowIndex);
 		switch(columnIndex) {
 		case 0:
-			Path parentPath = Paths.get(getParentFolder().toURI());
-			Path filePath = Paths.get(msg.getFile().toURI());
-			Path relativePath = parentPath.relativize(filePath);
-			retVal = relativePath.toFile();
+			if(getParentFolder() != null && msg.getFile() != null) {
+				Path parentPath = Paths.get(getParentFolder().toURI());
+				Path filePath = Paths.get(msg.getFile().toURI());
+				Path relativePath = parentPath.relativize(filePath);
+				retVal = relativePath.toFile();
+			}	
 			break;
 			
 		case 1:

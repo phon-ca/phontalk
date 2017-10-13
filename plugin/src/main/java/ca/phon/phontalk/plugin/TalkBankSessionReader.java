@@ -1,34 +1,24 @@
 package ca.phon.phontalk.plugin;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.EventFilter;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
-import ca.phon.phontalk.PhonTalkListener;
-import ca.phon.phontalk.PhonTalkMessage;
-import ca.phon.phontalk.Xml2PhonConverter;
+import ca.phon.phontalk.*;
 import ca.phon.session.Session;
-import ca.phon.session.io.OriginalFormat;
-import ca.phon.session.io.SessionIO;
-import ca.phon.session.io.SessionReader;
+import ca.phon.session.io.*;
 
 @SessionIO(
 		group="org.talkbank",
 		id="talkbank",
-		version="2.1.0",
+		version="2.5.0",
 		mimetype="application/xml",
 		extension="xml",
-		name="TalkBank 2.1.0"
+		name="TalkBank"
 )
 public class TalkBankSessionReader implements SessionReader {
 

@@ -15,12 +15,46 @@ options {
 @header {
 package ca.phon.phontalk.parser;
 
-import java.util.logging.*;
+import ca.phon.phontalk.*;
+import ca.phon.phontalk.parser.*;
 
+import ca.phon.util.*;
+import ca.phon.ipa.*;
+import ca.phon.ipa.alignment.*;
+import ca.phon.syllable.*;
+import ca.phon.syllabifier.*;
+import ca.phon.orthography.*;
+import ca.phon.project.*;
+import ca.phon.session.*;
+import ca.phon.extensions.*;
+import ca.phon.formatter.*;
+import ca.phon.visitor.*;
+import ca.phon.worker.*;
+import ca.phon.plugin.*;
+
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.text.ParseException;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.logging.*;
+import java.util.stream.*;
+import java.util.regex.*;
+
+import java.time.*;
+
+import javax.xml.datatype.*;
+
+import org.apache.commons.lang3.*;
 }
 
 @members {
-private final static Logger LOGGER = Logger.getLogger("ca.phon.phontalk.parser");
+	private final static Logger LOGGER = Logger.getLogger("ca.phon.phontalk.parser");
+
+	public void reportError(RecognitionException e) {
+		throw new TreeWalkerError(e);
+	}
 }
 ]]>
     </buffer>

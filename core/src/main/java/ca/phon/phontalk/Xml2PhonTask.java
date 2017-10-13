@@ -18,12 +18,9 @@
  */
 package ca.phon.phontalk;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 
-import ca.phon.session.io.SessionInputFactory;
-import ca.phon.session.io.SessionReader;
+import ca.phon.session.io.*;
 
 /**
  * Converts a single stream of tb xml into phon xml
@@ -39,16 +36,16 @@ public class Xml2PhonTask extends PhonTalkTask {
 	public void performTask() {
 		super.setStatus(TaskStatus.RUNNING);
 
-		final Xml2PhonConverter converter = new Xml2PhonConverter();
-		converter.convertFile(getInputFile(), getOutputFile(), getListener());
-		
-		// check to make sure the file is a valid phon session
-		final SessionInputFactory inputFactory = new SessionInputFactory();
-		final SessionReader reader = inputFactory.createReader("phonbank", "1.2");
 		try {
+			final Xml2PhonConverter converter = new Xml2PhonConverter();
+			converter.convertFile(getInputFile(), getOutputFile(), getListener());
+			
+			// check to make sure the file is a valid phon session
+			final SessionInputFactory inputFactory = new SessionInputFactory();
+			final SessionReader reader = inputFactory.createReader("phonbank", "1.2");
 			reader.readSession(new FileInputStream(getOutputFile()));
 			super.setStatus(TaskStatus.FINISHED);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
 			final PhonTalkError err = new PhonTalkError(e);
 			err.setFile(getOutputFile());
