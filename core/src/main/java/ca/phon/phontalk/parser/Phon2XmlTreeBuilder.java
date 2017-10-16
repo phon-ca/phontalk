@@ -19,36 +19,18 @@
 package ca.phon.phontalk.parser;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.Period;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 import org.antlr.runtime.tree.CommonTree;
 
 import ca.phon.ipa.IPATranscript;
-import ca.phon.ipa.alignment.PhoneAligner;
-import ca.phon.ipa.alignment.PhoneMap;
+import ca.phon.ipa.alignment.*;
 import ca.phon.orthography.Orthography;
-import ca.phon.session.Comment;
-import ca.phon.session.CommentEnum;
-import ca.phon.session.DateFormatter;
-import ca.phon.session.Group;
-import ca.phon.session.MediaSegment;
-import ca.phon.session.Participant;
-import ca.phon.session.Record;
-import ca.phon.session.Session;
-import ca.phon.session.Sex;
-import ca.phon.session.Tier;
-import ca.phon.session.TierDescription;
-import ca.phon.session.TierString;
+import ca.phon.session.*;
 
 /**
  * This class is responsible for turning Phon sessions
@@ -785,6 +767,8 @@ public class Phon2XmlTreeBuilder {
 					typeNode.getToken().setText(depTierName);
 				} else if(depTierName.equalsIgnoreCase("translation")) {
 					typeNode.getToken().setText("english translation");
+				} else if(depTierName.equalsIgnoreCase("ort")) {
+					typeNode.getToken().setText("orthography");
 				} else {
 					typeNode.getToken().setText("extension");
 	//				continue;

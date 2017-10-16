@@ -93,7 +93,7 @@ gele
 	|	nestedg=g
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			"{]" + $nestedg.val + "}]"; 	
+			"{" + $nestedg.val + "}"; 	
 		
 		Integer[] targetKeys = $nestedg.targetReps.keySet().toArray(new Integer[0]);
 		for(Integer targetKey:targetKeys) {
