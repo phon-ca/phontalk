@@ -26,7 +26,6 @@ lazy_gem returns [Comment lazyGem]
 		$lazyGem = sessionFactory.createComment();
 		$lazyGem.setType(CommentEnum.fromString("LazyGem"));
 		
-		// create a new 'lazy-gem' comment in Phon
 		if($label != null)
 		{
 			$lazyGem.setValue($label.text);
