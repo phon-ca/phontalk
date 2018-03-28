@@ -164,7 +164,7 @@ scope {
 				
 				PhoneMap pm = g.getPhoneAlignment();
 				if(pm == null || pm.getAlignmentLength() == 0) {
-					pm = (new PhoneAligner()).calculatePhoneMap(model, actual);
+					pm = (new PhoneAligner()).calculatePhoneAlignment(model, actual);
 					g.setPhoneAlignment(pm);
 				}
 			}

@@ -1,28 +1,17 @@
 package ca.phon.phontalk;
 
-import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
-import junit.framework.Assert;
-
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenStream;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.runtime.*;
+import org.antlr.runtime.tree.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import ca.phon.ipa.IPATranscript;
-import ca.phon.ipa.IPATranscriptBuilder;
-import ca.phon.ipa.alignment.PhoneAligner;
-import ca.phon.ipa.alignment.PhoneMap;
-import ca.phon.phontalk.parser.AST2Phon;
-import ca.phon.phontalk.parser.AST2TalkBank;
-import ca.phon.phontalk.parser.AlignTreeBuilder;
-import ca.phon.phontalk.parser.TalkBank2ASTParser;
-import ca.phon.phontalk.parser.TalkBankTokenSource;
+import ca.phon.ipa.*;
+import ca.phon.ipa.alignment.*;
+import ca.phon.phontalk.parser.*;
+import junit.framework.Assert;
 
 @RunWith(JUnit4.class)
 public class TestPhoneMapConversion {
@@ -31,7 +20,7 @@ public class TestPhoneMapConversion {
 	public void testPhoneMap2XML() throws RecognitionException {
 		final IPATranscript model = (new IPATranscriptBuilder()).append("hello").toIPATranscript();
 		final IPATranscript actual = (new IPATranscriptBuilder()).append("elo").toIPATranscript();
-		final PhoneMap phoneMap = (new PhoneAligner()).calculatePhoneMap(model, actual);
+		final PhoneMap phoneMap = (new PhoneAligner()).calculatePhoneAlignment(model, actual);
 		
 		// PhoneMap -> AST
 		final AlignTreeBuilder alignTreeBuilder = new AlignTreeBuilder();

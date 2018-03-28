@@ -636,7 +636,7 @@ public class Phon2XmlTreeBuilder {
 				if(hasActual && hasTarget) {
 					PhoneMap pm = group.getPhoneAlignment();
 					if(pm == null || pm.getAlignmentLength() == 0) {
-						pm = (new PhoneAligner()).calculatePhoneMap(tRep, aRep);
+						pm = (new PhoneAligner()).calculatePhoneAlignment(tRep, aRep);
 					}
 					addAlignment(grpNode, pm);
 				}
