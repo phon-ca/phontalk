@@ -4,6 +4,7 @@ import java.io.*;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang3.StringUtils;
@@ -55,11 +56,16 @@ public class TalkBankSessionReader implements SessionReader {
 
 			XMLEvent evt;
 			while(!(evt = reader.nextEvent()).isStartElement());
-			String version = evt.asStartElement().getAttributeByName(new QName("Version")).getValue();
+			Attribute versionAttr = evt.asStartElement().getAttributeByName(new QName("Version"));
+			if(versionAttr == null) {
+				canRead = false;
+			} else {
+				String version = versionAttr.getValue();
 	
-			canRead = 
-					evt.asStartElement().getName().getLocalPart().equals("CHAT")
-					&& (version.compareTo("2.1.0") >= 0);
+				canRead = 
+						evt.asStartElement().getName().getLocalPart().equals("CHAT")
+						&& (version.compareTo("2.1.0") >= 0);
+			}
 		} catch (XMLStreamException e) {
 			throw new IOException(e);
 		}
