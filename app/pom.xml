@@ -11,14 +11,9 @@
 	<artifactId>phontalk-app</artifactId>
 
 	<dependencies>
-	<dependency>
-		<groupId>ca.phon</groupId>
-		<artifactId>native-dialogs</artifactId>
-		<version>6</version>
-	</dependency>
-	<dependency>
+		<dependency>
 			<groupId>ca.phon</groupId>
-			<artifactId>phontalk-core</artifactId>
+			<artifactId>phontalk-plugin</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -26,85 +21,6 @@
 			<artifactId>phon-app</artifactId>
 			<version>${ca.phon.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.swinglabs</groupId>
-			<artifactId>swingx</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jgoodies</groupId>
-			<artifactId>forms</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>it.cnr.imaa.essi</groupId>
-			<artifactId>lablib-checkboxtree</artifactId>
-			<version>3.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>de.susebox</groupId>
-			<artifactId>jtopas</artifactId>
-			<version>0.8</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-cli</groupId>
-			<artifactId>commons-cli</artifactId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
-			<version>2.3</version>
-		</dependency>
 	</dependencies>
-	
-	<build>
-	
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-shade-plugin</artifactId>
-		        <version>2.1</version>
-		        <executions>
-		        	<execution>
-		            	<phase>package</phase>
-	            		<goals>
-	              			<goal>shade</goal>
-	            		</goals>
-	            		<configuration>
-					<shadedArtifactAttached>true</shadedArtifactAttached>
-					<shadedClassifierName>all</shadedClassifierName>
-					        <transformers>
-			                	<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-			                  		<mainClass>ca.phon.phontalk.app.PhonTalkFrame</mainClass>
-			                	</transformer>
-			             	</transformers>
-			             	<filters>
-			             		<filter>
-			             			<artifact>ca.phon:phon</artifact>
-			             			<excludes>
-			             				<exclude>ca/phon/util/NativeDialogs.class</exclude>
-			             				<exclude>ca/phon/util/NativeDialogEvent.class</exclude>
-			             				<exclude>ca/phon/util/NativeDialogListener.class</exclude>
-								<exclude>ca/phon/util/NativeDialogAdapter.class</exclude>
-			             			</excludes>
-			             		</filter>
-						<filter>
-            						<artifact>*:*</artifact>
-            						<excludes>
-                						<exclude>META-INF/*.SF</exclude>
-                						<exclude>META-INF/*.DSA</exclude>
-               							<exclude>META-INF/*.RSA</exclude>
-            						</excludes>
-        					</filter>
-			             	</filters>
-				        </configuration>
-		          	</execution>
-		        </executions>
-			</plugin>
-		
-		</plugins>
-	
-	</build>
 	
 </project>

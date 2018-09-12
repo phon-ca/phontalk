@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.phon.phontalk.app;
+package ca.phon.phontalk.plugin.ui;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -288,23 +288,6 @@ public class PhonTalkFrame extends JFrame {
 				}
 			}
 		}
-	}
-	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater( () -> {
-			if(!OSInfo.isMacOs()) {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			
-			final PhonTalkFrame frame = new PhonTalkFrame();
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(1024, 768);
-			frame.setVisible(true);
-		});
 	}
 	
 	public void scanTalkBankFolder(File file) throws IOException {

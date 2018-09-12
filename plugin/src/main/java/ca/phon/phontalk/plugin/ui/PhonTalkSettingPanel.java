@@ -1,4 +1,4 @@
-package ca.phon.phontalk.app;
+package ca.phon.phontalk.plugin.ui;
 
 import java.awt.*;
 import java.awt.event.*;
