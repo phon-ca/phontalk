@@ -5,6 +5,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import ca.phon.app.log.LogUtil;
 import ca.phon.phontalk.*;
+import ca.phon.plugin.IPluginExtensionFactory;
+import ca.phon.plugin.IPluginExtensionPoint;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
 import ca.phon.ui.nativedialogs.OSInfo;
@@ -17,7 +19,7 @@ import ca.phon.ui.nativedialogs.OSInfo;
 		extension="cha",
 		name="CHAT"
 )
-public class CHATSessionReader implements SessionReader {
+public class CHATSessionReader implements SessionReader, IPluginExtensionPoint<SessionReader> {
 
 	public CHATSessionReader() {
 	}
@@ -93,6 +95,16 @@ public class CHATSessionReader implements SessionReader {
 			throw new IOException(buffer.toString());
 		}
 		
+	}
+
+	@Override
+	public Class<?> getExtensionType() {
+		return SessionReader.class;
+	}
+
+	@Override
+	public IPluginExtensionFactory<SessionReader> getFactory() {
+		return (args) -> { return new CHATSessionReader(); };
 	}
 	
 }

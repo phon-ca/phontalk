@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import ca.phon.phontalk.*;
+import ca.phon.plugin.IPluginExtensionFactory;
+import ca.phon.plugin.IPluginExtensionPoint;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
 
@@ -15,7 +17,7 @@ import ca.phon.session.io.*;
 		extension="cha",
 		name="CHAT"
 )
-public class CHATSessionWriter implements SessionWriter {
+public class CHATSessionWriter implements SessionWriter, IPluginExtensionPoint<SessionWriter> {
 
 	public CHATSessionWriter() {
 	}
@@ -63,5 +65,15 @@ public class CHATSessionWriter implements SessionWriter {
 		} else {
 			throw new IOException(buffer.toString());
 		}
+	}
+
+	@Override
+	public Class<?> getExtensionType() {
+		return SessionWriter.class;
+	}
+
+	@Override
+	public IPluginExtensionFactory<SessionWriter> getFactory() {
+		return (args) -> { return new CHATSessionWriter(); };
 	}
 }

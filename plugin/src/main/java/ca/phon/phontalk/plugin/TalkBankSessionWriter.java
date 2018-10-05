@@ -4,6 +4,8 @@ import java.io.*;
 
 import ca.phon.app.log.LogUtil;
 import ca.phon.phontalk.*;
+import ca.phon.plugin.IPluginExtensionFactory;
+import ca.phon.plugin.IPluginExtensionPoint;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
 
@@ -15,7 +17,7 @@ import ca.phon.session.io.*;
 		extension="xml",
 		name="TalkBank"
 )
-public class TalkBankSessionWriter implements SessionWriter {
+public class TalkBankSessionWriter implements SessionWriter, IPluginExtensionPoint<SessionWriter> {
 
 	@Override
 	public void writeSession(Session session, OutputStream out)
@@ -27,6 +29,16 @@ public class TalkBankSessionWriter implements SessionWriter {
 		};
 		
 		converter.sessionToStream(session, out, listener);
+	}
+
+	@Override
+	public Class<?> getExtensionType() {
+		return SessionWriter.class;
+	}
+
+	@Override
+	public IPluginExtensionFactory<SessionWriter> getFactory() {
+		return (args) -> { return new TalkBankSessionWriter(); };
 	}
 
 }

@@ -10,6 +10,8 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import ca.phon.phontalk.*;
+import ca.phon.plugin.IPluginExtensionFactory;
+import ca.phon.plugin.IPluginExtensionPoint;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
 
@@ -21,7 +23,7 @@ import ca.phon.session.io.*;
 		extension="xml",
 		name="TalkBank"
 )
-public class TalkBankSessionReader implements SessionReader {
+public class TalkBankSessionReader implements SessionReader, IPluginExtensionPoint<SessionReader> {
 
 	@Override
 	public Session readSession(InputStream stream) throws IOException {
@@ -89,6 +91,16 @@ public class TalkBankSessionReader implements SessionReader {
 			return retVal;
 		}
 
+	}
+
+	@Override
+	public Class<?> getExtensionType() {
+		return SessionReader.class;
+	}
+
+	@Override
+	public IPluginExtensionFactory<SessionReader> getFactory() {
+		return (args) -> { return new TalkBankSessionReader(); };
 	}
 
 }
