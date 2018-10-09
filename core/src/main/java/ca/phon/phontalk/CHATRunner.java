@@ -29,6 +29,8 @@ public class CHATRunner {
 		}
 		
 		final ProcessBuilder processBuilder = new ProcessBuilder(javaBin,
+						"--add-modules",
+						"java.xml.bind",
 						"-cp", chatter, 
 						"org.talkbank.chatter.App",
 						"-inputFormat", inputFormat,
