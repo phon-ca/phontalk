@@ -6,7 +6,7 @@
 
   <groupId>ca.phon</groupId>
   <artifactId>phontalk</artifactId>
-  <version>3.1</version>
+  <version>3.2</version>
   <packaging>pom</packaging>
 
   <name>PhonTalk</name>
@@ -83,12 +83,13 @@
   </pluginRepositories>
   
   <properties>
-  	<ca.phon.version>3.0.0-SNAPSHOT</ca.phon.version>
+  	<ca.phon.version>3.0.2-SNAPSHOT</ca.phon.version>
   	<junit.junit.version>4.8.2</junit.junit.version>
+  	
     <!-- Project settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.sourceVersion>9</project.build.sourceVersion>
-    <project.build.targetVersion>9</project.build.targetVersion>
+    <project.build.sourceVersion>11</project.build.sourceVersion>
+    <project.build.targetVersion>11</project.build.targetVersion>
   </properties>
 
   <modules>
@@ -104,7 +105,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.7.0</version>
+          <version>3.8.0</version>
         </plugin>
       </plugins>
 
@@ -115,14 +116,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>${project.build.sourceVersion}</source>
-          <target>${project.build.targetVersion}</target>
-          <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-          <compilerArgs>
-          	<arg>--add-modules</arg>
-          	<arg>java.xml.bind</arg>
-          </compilerArgs>
-        </configuration>
+			<source>${project.build.sourceVersion}</source>
+			<target>${project.build.targetVersion}</target>
+			<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+			<release>${project.build.targetVersion}</release>
+		</configuration>
       </plugin>
     </plugins>
 
@@ -132,7 +130,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>${junit.junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

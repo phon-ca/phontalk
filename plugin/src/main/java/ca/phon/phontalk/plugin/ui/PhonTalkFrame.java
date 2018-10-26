@@ -45,6 +45,7 @@ import org.jdesktop.swingx.JXTable;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import ca.phon.app.log.LogUtil;
 import ca.phon.app.project.DesktopProjectFactory;
 import ca.phon.phontalk.Phon2XmlTask;
 import ca.phon.phontalk.PhonTalkListener;
@@ -261,10 +262,13 @@ public class PhonTalkFrame extends JFrame {
 	}
 	
 	public void openFile(File file) {
-		try {
-			OpenFileLauncher.openURL(file.toURI().toURL());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
+		if(Desktop.isDesktopSupported()) {
+			try {
+				Desktop.getDesktop().open(file);
+			} catch (IOException e) {
+				LogUtil.severe(e);
+				Toolkit.getDefaultToolkit().beep();
+			}
 		}
 	}
 	
