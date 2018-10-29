@@ -7,7 +7,7 @@ import ca.phon.util.OSInfo;
 
 public class CHATRunner {
 
-	private final static String CHATTER_JAR = "data/bin/chatter.jar";
+	private final static String CHATTER_JAR = "bin/chatter.jar";
 	
 	public CHATRunner() {
 	}
