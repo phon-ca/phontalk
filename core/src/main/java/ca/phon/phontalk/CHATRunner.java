@@ -7,7 +7,7 @@ import ca.phon.util.OSInfo;
 
 public class CHATRunner {
 
-	private final static String CHATTER_JAR = "external-resources/chatter.jar";
+	private final static String CHATTER_JAR = "data/bin/chatter.jar";
 	
 	public CHATRunner() {
 	}
@@ -41,13 +41,6 @@ public class CHATRunner {
 	
 		final Process process = processBuilder.start();
 		return process;
-		
-//		final InputStream stdout = process.getInputStream();
-//		final BufferedReader in = new BufferedReader(new InputStreamReader(stdout, "UTF-8"));
-//		String line = null;
-//		while((line = in.readLine()) != null) {
-//			listener.message(new PhonTalkMessage(line));
-//		}
 	}
 	
 }
