@@ -46,9 +46,9 @@ public class CHATSessionReader implements SessionReader, IPluginExtensionPoint<S
 
 	@Override
 	public Session readSession(InputStream stream) throws IOException {
-		final File tempChaFile = File.createTempFile("chatter", "cha");
+		final File tempChaFile = File.createTempFile("chatter", ".cha");
 		tempChaFile.deleteOnExit();
-		final File tempFile = File.createTempFile("chatter", "toxml");
+		final File tempFile = File.createTempFile("chatter", ".xml");
 		tempFile.deleteOnExit();
 		
 		try(final PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(tempChaFile), "UTF-8"))) {

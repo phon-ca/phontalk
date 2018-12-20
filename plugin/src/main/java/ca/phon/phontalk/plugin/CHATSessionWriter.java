@@ -24,14 +24,14 @@ public class CHATSessionWriter implements SessionWriter, IPluginExtensionPoint<S
 
 	@Override
 	public void writeSession(Session session, OutputStream out) throws IOException {
-		final File tempXmlFile = File.createTempFile("phontalk", "xml");
+		final File tempXmlFile = File.createTempFile("phontalk", ".xml");
 		tempXmlFile.deleteOnExit();
 		// convert session to temporary xml file
 		final TalkBankSessionWriter tbWriter = new TalkBankSessionWriter();
 		tbWriter.writeSession(session, new FileOutputStream(tempXmlFile));
 		
 		// convert xml file to temp .cha file
-		final File tempChaFile = File.createTempFile("phontalk", "cha");
+		final File tempChaFile = File.createTempFile("phontalk", ".cha");
 		tempChaFile.deleteOnExit();
 		final StringBuffer buffer = new StringBuffer();
 		final AtomicReference<Boolean> chaReady = new AtomicReference<Boolean>(true);
