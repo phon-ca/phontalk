@@ -31,6 +31,7 @@ public class CHATRunner {
 		final ProcessBuilder processBuilder = new ProcessBuilder(javaBin,
 						"-cp", chatter, 
 						"org.talkbank.chatter.App",
+						"-allowAnyMediaName",
 						"-inputFormat", inputFormat,
 						"-outputFormat", outputFormat,
 						"-output", outputFile.getAbsolutePath(),
