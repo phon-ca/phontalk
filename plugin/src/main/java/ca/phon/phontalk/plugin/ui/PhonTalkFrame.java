@@ -113,13 +113,13 @@ public class PhonTalkFrame extends JFrame {
 		settingsPanel = new PhonTalkSettingPanel();
 		
 		final PhonUIAction saveAsCSVAct = new PhonUIAction(this, "saveAsCSV");
-		saveAsCSVAct.putValue(PhonUIAction.NAME, "Save as CSV...");
+		saveAsCSVAct.putValue(PhonUIAction.NAME, "Save log as CSV...");
 		final KeyStroke saveAsKs = KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 		saveAsCSVAct.putValue(PhonUIAction.ACCELERATOR_KEY, saveAsKs);
 		
 		final PhonUIAction clearAct = new PhonUIAction(this, "onClear");
-		clearAct.putValue(PhonUIAction.NAME, "Clear tables");
+		clearAct.putValue(PhonUIAction.NAME, "Clear log");
 		final KeyStroke clearKs = KeyStroke.getKeyStroke(KeyEvent.VK_C,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | KeyEvent.SHIFT_MASK);
 		clearAct.putValue(PhonUIAction.ACCELERATOR_KEY, clearKs);
