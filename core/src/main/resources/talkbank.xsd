@@ -8,7 +8,7 @@
   targetNamespace="http://www.talkbank.org/ns/talkbank" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
   jaxb:version="2.1" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
   jaxb:extensionBindingPrefixes="xjc" xmlns:xhtml="http://www.w3.org/1999/xhtml"
-  elementFormDefault="qualified" version="2.7.0" id="Talkbank">
+  elementFormDefault="qualified" version="2.10.0" id="Talkbank">
 
   <xs:import namespace="http://www.w3.org/XML/1998/namespace"
     schemaLocation="http://www.w3.org/2001/xml.xsd"/>
@@ -166,6 +166,16 @@
           <xs:documentation>
             <a href="https://talkbank.org/manuals/CHAT.html#Corpus_Field">CHAT manual section
               on this topic...</a>
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+      <xs:attribute name="Videos" type="videosType">
+        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+          <xs:documentation> The transcript may be associated with at most one media file. </xs:documentation>
+          <xs:documentation>
+            <a href="https://talkbank.org/manuals/CHAT.html#VideosHeader">CHAT manual section on
+              this topic...</a>
           </xs:documentation>
         </xs:annotation>
       </xs:attribute>
@@ -514,26 +524,6 @@
         </xs:annotation>
       </xs:enumeration>
 
-      <xs:enumeration value="Exceptions">
-        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation> Exceptions. </xs:documentation>
-          <xs:documentation>
-            <a href="https://talkbank.org/manuals/CHAT.html#Exceptions_Header">CHAT manual
-              section on this topic...</a>
-          </xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-
-      <xs:enumeration value="Interaction Type">
-        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation> Interaction type. </xs:documentation>
-          <xs:documentation>
-            <a href="https://talkbank.org/manuals/CHAT.html#Interaction_Type_Header">CHAT
-              manual section on this topic...</a>
-          </xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-
       <xs:enumeration value="Number">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
           <xs:documentation> Number. </xs:documentation>
@@ -589,19 +579,6 @@
           <xs:documentation> Comment. </xs:documentation>
           <xs:documentation>
             <a href="https://talkbank.org/manuals/CHAT.html#Comment_Header">CHAT manual
-              section on this topic...</a>
-          </xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-
-      <!-- TODO Should enforce -->
-      <xs:enumeration value="New Language">
-        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation> Mark the beginning of a transcript-wide scope in which all material is
-            in the specified language (which must be a proper ISO code listed in the languages
-            header). </xs:documentation>
-          <xs:documentation>
-            <a href="https://talkbank.org/manuals/CHAT.html#New_Language_Header">CHAT manual
               section on this topic...</a>
           </xs:documentation>
         </xs:annotation>
@@ -1489,15 +1466,6 @@
               <xs:documentation>@fp</xs:documentation>
               <xs:documentation>
                 <a href="https://talkbank.org/manuals/CHAT.html#FilledPause_Marker">CHAT
-                  manual section on this topic...</a>
-              </xs:documentation>
-            </xs:annotation>
-          </xs:enumeration>
-          <xs:enumeration value="filler syllable">
-            <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-              <xs:documentation>@fs</xs:documentation>
-              <xs:documentation>
-                <a href="https://talkbank.org/manuals/CHAT.html#FillerSyllable_Marker">CHAT
                   manual section on this topic...</a>
               </xs:documentation>
             </xs:annotation>
@@ -3295,15 +3263,6 @@
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="language">
-        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>%lan</xs:documentation>
-          <xs:documentation>
-            <a href="https://talkbank.org/manuals/CHAT.html#Language_Tier">CHAT manual section
-              on this topic...</a>
-          </xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
       <xs:enumeration value="orthography">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
           <xs:documentation>%ort</xs:documentation>
@@ -3942,6 +3901,10 @@
     <xs:list itemType="mediaTypeType"/>
   </xs:simpleType>
 
+  <xs:simpleType name="videosType">
+    <xs:list itemType="mediaRefType"/>
+  </xs:simpleType>
+
   <xs:simpleType name="speakerID">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
       <xs:documentation> Legal speaker ID for identifying utterances. </xs:documentation>
@@ -4025,31 +3988,25 @@
         </xs:annotation>
       </xs:enumeration>
 
-      <xs:enumeration value="sign">
+      <xs:enumeration value="dummy">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation> Sign language. </xs:documentation>
+          <xs:documentation> Mark file as dummy for CLAN CHECK. </xs:documentation>
           <xs:documentation>
-            <a href="https://talkbank.org/manuals/CHAT.html#Sign_Option">CHAT manual section
+            <a href="https://talkbank.org/manuals/CHAT.html#Dummy_Option">CHAT manual section
               on this topic...</a>
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
 
-      <xs:enumeration value="caps">
+      <xs:enumeration value="notarget">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation> Allow the use of capital letters inside words, relaxing the usual
-            restrictions (which have their own exceptions depending on the language in scope). </xs:documentation>
+          <xs:documentation> This option tells CHECK not to look for the presence of a Target_Child in the @Participants line. </xs:documentation>
           <xs:documentation>
-            <a href="https://talkbank.org/manuals/CHAT.html#Capitalization">CHAT manual
-              section on this topic...</a>
-          </xs:documentation>
-          <xs:documentation>
-            <a href="https://talkbank.org/manuals/CHAT.html#Caps_Option">CHAT manual section
+            <a href="https://talkbank.org/manuals/CHAT.html#Notarget_Option">CHAT manual section
               on this topic...</a>
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-
     </xs:restriction>
   </xs:simpleType>
 
@@ -4165,7 +4122,7 @@
         Allowable roles.
       </xs:documentation>
       <xs:documentation>
-        <a href="https://talkbank.org/manuals/CHAT.html#Role">CHAT manual section on this topic...</a>
+        <a href="http://childes.psy.cmu.edu/manuals/chat.html#Role">CHAT manual section on this topic...</a>
       </xs:documentation>
     </xs:annotation>
 
@@ -4178,60 +4135,46 @@
       <xs:enumeration value="Brother"/>
       <xs:enumeration value="Sister"/>
       <xs:enumeration value="Sibling"/>
-      <xs:enumeration value="Male"/>
-      <xs:enumeration value="Female"/>
-      <xs:enumeration value="Participant"/>
-      <xs:enumeration value="Adult"/>
-      <xs:enumeration value="Attorney"/>
-      <xs:enumeration value="Audience"/>
-      <xs:enumeration value="Aunt"/>
-      <xs:enumeration value="Babysitter"/>
-      <xs:enumeration value="Boy"/>
-      <xs:enumeration value="CallTaker"/>
-      <xs:enumeration value="Caller"/>
-      <xs:enumeration value="Camera_Operator"/>
-      <xs:enumeration value="Caretaker"/>
-      <xs:enumeration value="Clinician"/>
-      <xs:enumeration value="Cousin"/>
-      <xs:enumeration value="Doctor"/>
-      <xs:enumeration value="Environment"/>
-      <xs:enumeration value="Family_Friend"/>
-      <xs:enumeration value="Girl"/>
       <xs:enumeration value="Grandfather"/>
       <xs:enumeration value="Grandmother"/>
-      <xs:enumeration value="Group"/>
-      <xs:enumeration value="Housekeeper"/>
+      <xs:enumeration value="Relative"/>
+      <xs:enumeration value="Participant"/>
       <xs:enumeration value="Informant"/>
-      <xs:enumeration value="Interviewer"/>
-      <xs:enumeration value="Investigator"/>
-      <xs:enumeration value="Judge"/>
-      <xs:enumeration value="Justice"/>
-      <xs:enumeration value="Media"/>
-      <xs:enumeration value="Narrator"/>
-      <xs:enumeration value="Non_Human"/>
-      <xs:enumeration value="Nurse"/>
-      <xs:enumeration value="Observer"/>
-      <xs:enumeration value="OffScript"/>
-      <xs:enumeration value="Operator"/>
-      <xs:enumeration value="Partner"/>
-      <xs:enumeration value="Patient"/>
-      <xs:enumeration value="PlayRole"/>
-      <xs:enumeration value="Playmate"/>
-      <xs:enumeration value="ShowGuest"/>
-      <xs:enumeration value="ShowHost"/>
-      <xs:enumeration value="Speaker"/>
-      <xs:enumeration value="Student"/>
       <xs:enumeration value="Subject"/>
-      <xs:enumeration value="Teacher"/>
+      <xs:enumeration value="Investigator"/>
+      <xs:enumeration value="Partner"/>
+      <xs:enumeration value="Boy"/>
+      <xs:enumeration value="Girl"/>
+      <xs:enumeration value="Adult"/>
       <xs:enumeration value="Teenager"/>
-      <xs:enumeration value="Text"/>
-      <xs:enumeration value="Therapist"/>
-      <xs:enumeration value="Toy"/>
-      <xs:enumeration value="Uncertain"/>
-      <xs:enumeration value="Uncle"/>
-      <xs:enumeration value="Unidentified"/>
+      <xs:enumeration value="Male"/>
+      <xs:enumeration value="Female"/>
       <xs:enumeration value="Visitor"/>
+      <xs:enumeration value="Friend"/>
+      <xs:enumeration value="Playmate"/>
+      <xs:enumeration value="Caretaker"/>
+      <xs:enumeration value="Environment"/>
+      <xs:enumeration value="Group"/>
+      <xs:enumeration value="Unidentified"/>
+      <xs:enumeration value="Uncertain"/>
+      <xs:enumeration value="Other"/>
+      <xs:enumeration value="Text"/>
+      <xs:enumeration value="Media"/>
+      <xs:enumeration value="PlayRole"/>
       <xs:enumeration value="LENA"/>
+      <xs:enumeration value="Justice"/>
+      <xs:enumeration value="Attorney"/>
+      <xs:enumeration value="Doctor"/>
+      <xs:enumeration value="Nurse"/>
+      <xs:enumeration value="Student"/>
+      <xs:enumeration value="Teacher"/>
+      <xs:enumeration value="Host"/>
+      <xs:enumeration value="Guest"/>
+      <xs:enumeration value="Leader"/>
+      <xs:enumeration value="Member"/>
+      <xs:enumeration value="Narrator"/>
+      <xs:enumeration value="Speaker"/>
+      <xs:enumeration value="Audience"/>
     </xs:restriction>
   </xs:simpleType>
   <!-- End generated by get-participant-roles.pl for schema -->
