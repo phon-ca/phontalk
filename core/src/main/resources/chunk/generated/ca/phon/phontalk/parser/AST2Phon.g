@@ -25,6 +25,7 @@ import ca.phon.syllabifier.*;
 import ca.phon.orthography.*;
 import ca.phon.project.*;
 import ca.phon.session.*;
+import ca.phon.session.format.*;
 import ca.phon.extensions.*;
 import ca.phon.formatter.*;
 import ca.phon.visitor.*;

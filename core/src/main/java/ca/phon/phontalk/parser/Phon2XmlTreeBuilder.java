@@ -31,6 +31,7 @@ import ca.phon.ipa.IPATranscript;
 import ca.phon.ipa.alignment.*;
 import ca.phon.orthography.Orthography;
 import ca.phon.session.*;
+import ca.phon.session.format.DateFormatter;
 
 /**
  * This class is responsible for turning Phon sessions
