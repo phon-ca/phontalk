@@ -42,7 +42,7 @@ public class Phon2XmlTreeBuilder {
 	
 	private final static Logger LOGGER = Logger.getLogger(Phon2XmlTreeBuilder.class.getName());
 	
-	private final static String TALKBANK_VERSION = "2.10.0";
+	private final static String TALKBANK_VERSION = "2.16.0";
 	
 	private static final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
 	

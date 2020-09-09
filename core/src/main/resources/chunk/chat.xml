@@ -29,10 +29,14 @@ chat_attrs
 	:	CHAT_ATTR_VERSION
 	|	CHAT_ATTR_DATE
 	|	CHAT_ATTR_CORPUS
+	|	CHAT_ATTR_VIDEOS
 	|	CHAT_ATTR_MEDIA
 	|	CHAT_ATTR_MEDIATYPES
 	|	CHAT_ATTR_LANG
 	|	CHAT_ATTR_OPTIONS
+	|	CHAT_ATTR_DESIGNTYPE
+	|	CHAT_ATTR_ACTIVITYTYPE
+	|	CHAT_ATTR_GROUPTYPE
 	|	CHAT_ATTR_COLORWORDS
 	|	CHAT_ATTR_PID
 	|	CHAT_ATTR_FONT
@@ -43,7 +47,7 @@ chat_attrs
     <buffer name="AST2Phon.g">
         <![CDATA[
 chat
-	:	^(CHAT_START chat_attrs+ metadata? participants chat_content*)
+	:	^(CHAT_START chat_attrs+ participants chat_content*)
 	;
 	
 chat_content
@@ -72,14 +76,18 @@ chat_content
 	{
 		nextRecordComments.add($end_gem.endGem);
 	}
-	|	tcu
-	{
-		$tcu.records.forEach( r -> session.addRecord(r) );
-	}
 	;
 	
 chat_attrs
 	:	CHAT_ATTR_VERSION
+	{
+		String expectedVersion = "2.16.0";
+		String ver = $CHAT_ATTR_VERSION.text;
+		// log warning if not version we expect
+		if(!ver.equals(expectedVersion)) {
+			LOGGER.warning("Excpected version " + expectedVersion + ", got " + ver);
+		}
+	}
 	|	CHAT_ATTR_DATE
 	{
 		LocalDate date = DateFormatter.stringToDateTime($CHAT_ATTR_DATE.text);
@@ -88,6 +96,10 @@ chat_attrs
 	|	CHAT_ATTR_CORPUS
 	{
 		session.setCorpus($CHAT_ATTR_CORPUS.text);
+	}
+	|	CHAT_ATTR_VIDEOS
+	{
+		LOGGER.warning("CHAT attribute 'Videos' is currently unsupported");
 	}
 	|	CHAT_ATTR_MEDIA
 	{	
@@ -126,11 +138,27 @@ chat_attrs
 	}
 	|	CHAT_ATTR_OPTIONS
 	{
-		// TODO
+		LOGGER.warning("CHAT attribute 'Options' is currently unsupported");
+	}
+	|	CHAT_ATTR_DESIGNTYPE
+	{
+		LOGGER.warning("CHAT attribute 'DesignType' is currently unsupported");
+	}
+	|	CHAT_ATTR_ACTIVITYTYPE
+	{
+		LOGGER.warning("CHAT attribute 'ActivityType' is currently unsupported");
+	}
+	|	CHAT_ATTR_GROUPTYPE
+	{
+		LOGGER.warning("CHAT attribute 'GroupType' is currently unsupported");
 	}
 	|	CHAT_ATTR_COLORWORDS
 	{
-		// TODO
+		LOGGER.warning("CHAT attribute 'Colorwords' is currently unsupported");
+	}
+	|	CHAT_ATTR_WINDOW
+	{
+		LOGGER.warning("CHAT attribute 'Window' is currently unsupported");
 	}
 	|	CHAT_ATTR_PID
 	{
@@ -141,7 +169,7 @@ chat_attrs
 	}
 	|	CHAT_ATTR_FONT
 	{
-		// TODO
+		LOGGER.warning("CHAT attribute 'Font' is currently unsupported");
 	}
 	;
 ]]>
@@ -203,6 +231,10 @@ Date="<date>" >>
 	->	template(corpus={$CHAT_ATTR_CORPUS.text})
 	<<
 Corpus="<corpus>" >>
+	|	CHAT_ATTR_VIDEOS
+	->	template(videos={$CHAT_ATTR_VIDEOS.text})
+	<<
+Videos="<videos>" >>
 	|	CHAT_ATTR_MEDIA
 	->	template(media={$CHAT_ATTR_MEDIA.text})
 	<<
@@ -219,10 +251,26 @@ Lang="<lang>" >>
 	->	template(opts={$CHAT_ATTR_OPTIONS.text})
 	<<
 Options="<opts>" >>
+	|	CHAT_ATTR_DESIGNTYPE
+	->	template(type={$CHAT_ATTR_DESIGNTYPE.text})
+	<<
+DesignType="<type>" >>
+	|	CHAT_ATTR_ACTIVITYTYPE
+	->	template(type={$CHAT_ATTR_ACTIVITYTYPE.text})
+	<<
+ActivityType="<type>" >>
+	|	CHAT_ATTR_GROUPTYPE
+	->	template(type={$CHAT_ATTR_GROUPTYPE.text})
+	<<
+GroupType="<type>" >>
 	|	CHAT_ATTR_COLORWORDS
 	->	template(wrds={$CHAT_ATTR_COLORWORDS.text})
 	<<
 Colorwords="<wrds>" >>
+	|	CHAT_ATTR_WINDOW
+	->	template(window={$CHAT_ATTR_WINDOW.text})
+	<<
+Window="<window>" >>
 	|	CHAT_ATTR_ID
 	->	template(id={$CHAT_ATTR_ID.text})
 	<<
@@ -240,10 +288,8 @@ Font="<font>" >>
 ]]>
 	</buffer>
     
-    <include>metadata.xml</include>
     <include>participants.xml</include>
     <include>comment.xml</include>
-	<include>tcu.xml</include>
 	<include>begin_gem.xml</include>
 	<include>end_gem.xml</include>
 	<include>lazy_gem.xml</include>
