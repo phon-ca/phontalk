@@ -29,9 +29,7 @@ linker returns [String val]
 	:	^(LINKER_START type=LINKER_ATTR_TYPE)
 	{
 		String lkType = $type.text;
-		if(lkType.equals("quoted utterance next"))
-			$val += "+\"";
-		else if(lkType.equals("quick uptake"))
+		if(lkType.equals("quick uptake"))
 			$val += "+^";
 		else if(lkType.equals("lazy overlap mark"))
 			$val += "+<";

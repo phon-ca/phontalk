@@ -297,9 +297,7 @@ public class TalkBankCodeTreeBuilder {
 		}
 		
 		String actualType = "";
-		if(lkType.equals("+\"")) {
-			actualType = "quoted utterance next";
-		} else if(lkType.equals("+^")) {
+		if(lkType.equals("+^")) {
 			actualType = "quick uptake";
 		} else if(lkType.equals("+<")) {
 			actualType = "lazy overlap mark";
