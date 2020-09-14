@@ -196,7 +196,7 @@ chat_attrs
 		String ver = $CHAT_ATTR_VERSION.text;
 		// log warning if not version we expect
 		if(!ver.equals(expectedVersion)) {
-			LOGGER.warning("Excpected version " + expectedVersion + ", got " + ver);
+			reportWarning("Expected version " + expectedVersion + ", got " + ver);
 		}
 	}
 	|	CHAT_ATTR_DATE
@@ -241,32 +241,32 @@ chat_attrs
 				setSyllabifier(syllabifier);
 			}
 		} catch (IllegalArgumentException e) {
-			LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+			reportWarning(e.getLocalizedMessage());
 		}
 	}
 	|	CHAT_ATTR_OPTIONS
 	{
-		LOGGER.warning("CHAT attribute 'Options' is currently unsupported");
+		reportWarning("CHAT attribute 'Options' is currently unsupported");
 	}
 	|	CHAT_ATTR_DESIGNTYPE
 	{
-		LOGGER.warning("CHAT attribute 'DesignType' is currently unsupported");
+		reportWarning("CHAT attribute 'DesignType' is currently unsupported");
 	}
 	|	CHAT_ATTR_ACTIVITYTYPE
 	{
-		LOGGER.warning("CHAT attribute 'ActivityType' is currently unsupported");
+		reportWarning("CHAT attribute 'ActivityType' is currently unsupported");
 	}
 	|	CHAT_ATTR_GROUPTYPE
 	{
-		LOGGER.warning("CHAT attribute 'GroupType' is currently unsupported");
+		reportWarning("CHAT attribute 'GroupType' is currently unsupported");
 	}
 	|	CHAT_ATTR_COLORWORDS
 	{
-		LOGGER.warning("CHAT attribute 'Colorwords' is currently unsupported");
+		reportWarning("CHAT attribute 'Colorwords' is currently unsupported");
 	}
 	|	CHAT_ATTR_WINDOW
 	{
-		LOGGER.warning("CHAT attribute 'Window' is currently unsupported");
+		reportWarning("CHAT attribute 'Window' is currently unsupported");
 	}
 	|	CHAT_ATTR_PID
 	{
@@ -277,7 +277,7 @@ chat_attrs
 	}
 	|	CHAT_ATTR_FONT
 	{
-		LOGGER.warning("CHAT attribute 'Font' is currently unsupported");
+		reportWarning("CHAT attribute 'Font' is currently unsupported");
 	}
 	;
 

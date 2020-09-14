@@ -27,6 +27,10 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
@@ -50,6 +54,7 @@ import ca.phon.app.project.DesktopProjectFactory;
 import ca.phon.phontalk.Phon2XmlTask;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
+import ca.phon.phontalk.PhonTalkMessage.Severity;
 import ca.phon.phontalk.PhonTalkTask;
 import ca.phon.phontalk.TalkbankValidator;
 import ca.phon.phontalk.Xml2PhonTask;
@@ -115,19 +120,19 @@ public class PhonTalkFrame extends JFrame {
 		final PhonUIAction saveAsCSVAct = new PhonUIAction(this, "saveAsCSV");
 		saveAsCSVAct.putValue(PhonUIAction.NAME, "Save log as CSV...");
 		final KeyStroke saveAsKs = KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
 		saveAsCSVAct.putValue(PhonUIAction.ACCELERATOR_KEY, saveAsKs);
 		
 		final PhonUIAction clearAct = new PhonUIAction(this, "onClear");
 		clearAct.putValue(PhonUIAction.NAME, "Clear log");
 		final KeyStroke clearKs = KeyStroke.getKeyStroke(KeyEvent.VK_C,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | KeyEvent.SHIFT_MASK);
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | KeyEvent.SHIFT_DOWN_MASK);
 		clearAct.putValue(PhonUIAction.ACCELERATOR_KEY, clearKs);
 		
 		final PhonUIAction redoAct = new PhonUIAction(this, "onRedo");
 		redoAct.putValue(PhonUIAction.NAME, "Redo");
 		final KeyStroke redoKs = KeyStroke.getKeyStroke(KeyEvent.VK_R, 
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | KeyEvent.SHIFT_MASK);
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | KeyEvent.SHIFT_DOWN_MASK);
 		redoAct.putValue(PhonUIAction.ACCELERATOR_KEY, redoKs);
 		
 		saveAsCSVButton = new JButton(saveAsCSVAct);
@@ -197,7 +202,7 @@ public class PhonTalkFrame extends JFrame {
 		act.putValue(PhonUIAction.NAME, "Open...");
 		act.putValue(PhonUIAction.SHORT_DESCRIPTION, "Select folder for conversion");
 		act.putValue(PhonUIAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, 
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		
 		final JButton btn = new JButton(act);
 		dropPanel.add(btn, BorderLayout.NORTH);
@@ -213,7 +218,7 @@ public class PhonTalkFrame extends JFrame {
 		final PhonUIAction exitAct = new PhonUIAction(this, "onExit");
 		exitAct.putValue(PhonUIAction.NAME, "Exit");
 		final KeyStroke exitKs = KeyStroke.getKeyStroke(KeyEvent.VK_Q,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
 		exitAct.putValue(PhonUIAction.ACCELERATOR_KEY, exitKs);
 		fileMenu.add(exitAct);
 		
@@ -278,19 +283,29 @@ public class PhonTalkFrame extends JFrame {
 		if(selectedFolder != null) {
 			final File f = new File(selectedFolder);
 			final File projectFile = new File(f, "project.xml");
-			if(projectFile.exists()) {
-				try {
-					convertPhonProject(f);
-				} catch (IOException | ProjectConfigurationException e) {
-					e.printStackTrace();
+			PhonTask scanTask = new PhonTask() {
+				@Override
+				public void performTask() {
+					setStatus(TaskStatus.RUNNING);
+					
+					if(projectFile.exists()) {
+						try {
+							convertPhonProject(f);
+						} catch (IOException | ProjectConfigurationException e) {
+							e.printStackTrace();
+						}
+					} else {
+						try {
+							scanTalkBankFolder(f);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					
+					setStatus(TaskStatus.FINISHED);
 				}
-			} else {
-				try {
-					scanTalkBankFolder(f);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			};
+			PhonWorker.getInstance().invokeLater(scanTask);
 		}
 	}
 	

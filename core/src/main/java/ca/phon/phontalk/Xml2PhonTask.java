@@ -19,6 +19,8 @@
 package ca.phon.phontalk;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import ca.phon.session.io.*;
 
@@ -28,6 +30,9 @@ import ca.phon.session.io.*;
  */
 public class Xml2PhonTask extends PhonTalkTask {
 	
+	// logger for parsers
+	private final static Logger LOGGER = Logger.getLogger("ca.phon.phontalk.parser");
+	
 	public Xml2PhonTask(String inFile, String outFile, PhonTalkListener listener) {
 		super(new File(inFile), new File(outFile), listener);
 	}
@@ -35,7 +40,7 @@ public class Xml2PhonTask extends PhonTalkTask {
 	@Override
 	public void performTask() {
 		super.setStatus(TaskStatus.RUNNING);
-
+		
 		try {
 			final Xml2PhonConverter converter = new Xml2PhonConverter();
 			converter.convertFile(getInputFile(), getOutputFile(), getListener());
@@ -46,7 +51,9 @@ public class Xml2PhonTask extends PhonTalkTask {
 			reader.readSession(new FileInputStream(getOutputFile()));
 			super.setStatus(TaskStatus.FINISHED);
 		} catch (Exception e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
+			if(PhonTalkUtil.isVerbose()) {
+				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			}
 			final PhonTalkError err = new PhonTalkError(e);
 			err.setFile(getOutputFile());
 			if(getListener() != null) getListener().message(err);
@@ -54,10 +61,12 @@ public class Xml2PhonTask extends PhonTalkTask {
 			setStatus(TaskStatus.ERROR);
 		}
 	}
-
+	
 	@Override
 	public String getProcessName() {
 		return "TalkBank -> Phon";
 	}
 
+	
+	
 }

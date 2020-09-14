@@ -19,6 +19,7 @@
 package ca.phon.phontalk.parser;
 
 import java.io.File;
+import java.util.logging.Level;
 
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
@@ -27,6 +28,7 @@ import org.antlr.runtime.tree.TreeParser;
 
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
+import ca.phon.phontalk.PhonTalkMessage.Severity;
 
 public class PhonTalkTreeParser extends TreeParser {
 
@@ -64,6 +66,39 @@ public class PhonTalkTreeParser extends TreeParser {
 		this.listener = listener;
 	}
 
+	public void reportInfo(String message) {
+		reportError(message, Level.INFO);
+	}
+	
+	public void reportWarning(String message) {
+		reportError(message, Level.WARNING);
+	}
+	
+	public void reportError(String message) {
+		reportError(message, Level.SEVERE);
+	}
+	
+	public void reportError(String message, Level level) {
+		if(level.intValue() <= Level.INFO.intValue()) {
+			reportError(message, Severity.INFO);
+		} else if(level.intValue() <= Level.WARNING.intValue()) {
+			reportError(message, Severity.WARNING);
+		} else {
+			reportError(message, Severity.SEVERE);
+		}
+	}
+	
+	public void reportError(String message, Severity severity) {
+		PhonTalkMessage msg = new PhonTalkMessage(message, severity);
+		msg.setFile(new File(getFile()));
+		message(msg);
+	}
+	
+	public void message(PhonTalkMessage message) {
+		getPhonTalkListener().message(message);
+	}
+	
+	
 	@Override
 	public void reportError(RecognitionException re) {
 		super.reportError(re);
