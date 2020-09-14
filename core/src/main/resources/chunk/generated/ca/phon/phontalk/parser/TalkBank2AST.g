@@ -23,6 +23,7 @@ import ca.phon.syllabifier.*;
 import ca.phon.orthography.*;
 import ca.phon.project.*;
 import ca.phon.session.*;
+import ca.phon.session.format.*;
 import ca.phon.extensions.*;
 import ca.phon.formatter.*;
 import ca.phon.visitor.*;
@@ -58,13 +59,12 @@ import org.apache.commons.lang3.*;
 
         
 chat
-	:	CHAT_START chat_attrs+ metadata? participants chat_content* CHAT_END 
-	->	^(CHAT_START chat_attrs+ metadata? participants chat_content*)
+	:	CHAT_START chat_attrs+ participants chat_content* CHAT_END 
+	->	^(CHAT_START chat_attrs+ participants chat_content*)
 	;
 	
 chat_content
 	:	comment
-	|	tcu
 	|	begin_gem
 	|	end_gem
 	|	lazy_gem
@@ -75,120 +75,18 @@ chat_attrs
 	:	CHAT_ATTR_VERSION
 	|	CHAT_ATTR_DATE
 	|	CHAT_ATTR_CORPUS
+	|	CHAT_ATTR_VIDEOS
 	|	CHAT_ATTR_MEDIA
 	|	CHAT_ATTR_MEDIATYPES
 	|	CHAT_ATTR_LANG
 	|	CHAT_ATTR_OPTIONS
+	|	CHAT_ATTR_DESIGNTYPE
+	|	CHAT_ATTR_ACTIVITYTYPE
+	|	CHAT_ATTR_GROUPTYPE
 	|	CHAT_ATTR_COLORWORDS
 	|	CHAT_ATTR_PID
 	|	CHAT_ATTR_FONT
 	;
-
-    
-
-        
-metadata
-    :    METADATA_START dcelementtype* METADATA_END
-    ->    ^(METADATA_START dcelementtype*)
-    ;
-    
-dcelementtype
-    :    dc_title
-    |    dc_creator
-    |    dc_subject
-    |    dc_description
-    |    dc_publisher
-    |    dc_contributor
-    |    dc_date
-    |    dc_type
-    |    dc_format
-    |    dc_identifier
-    |    dc_relation
-    |    dc_coverage
-    |    dc_rights
-    |    dc_appId
-    ;
-    
-dc_title
-    :    TITLE_START TITLE_ATTR_LANG? TEXT TITLE_END
-    ->    ^(TITLE_START TITLE_ATTR_LANG? TEXT)
-    ;
-    
-dc_creator
-    :    CREATOR_START CREATOR_ATTR_LANG? TEXT CREATOR_END
-    ->    ^(CREATOR_START CREATOR_ATTR_LANG? TEXT)
-    ;
-    
-dc_subject
-    :    SUBJECT_START SUBJECT_ATTR_LANG? TEXT SUBJECT_END
-    ->    ^(SUBJECT_START SUBJECT_ATTR_LANG? TEXT)
-    ;
-    
-dc_description
-    :    DESCRIPTION_START DESCRIPTION_ATTR_LANG? TEXT DESCRIPTION_END
-    ->    ^(DESCRIPTION_START DESCRIPTION_ATTR_LANG? TEXT)
-    ;
-    
-dc_publisher
-    :    PUBLISHER_START PUBLISHER_ATTR_LANG? TEXT PUBLISHER_END
-    ->    ^(PUBLISHER_START PUBLISHER_ATTR_LANG? TEXT)
-    ;
-    
-dc_contributor
-    :    CONTRIBUTOR_START CONTRIBUTOR_ATTR_LANG? TEXT CONTRIBUTOR_END
-    ->    ^(CONTRIBUTOR_START CONTRIBUTOR_ATTR_LANG? TEXT)
-    ;
-    
-dc_date
-    :    DATE_START DATE_ATTR_LANG? TEXT DATE_END
-    ->    ^(DATE_START DATE_ATTR_LANG? TEXT)
-    ;
-    
-dc_type
-    :    TYPE_START DATE_ATTR_LANG? TEXT TYPE_END
-    ->    ^(TYPE_START DATE_ATTR_LANG? TEXT)
-    ;
-    
-dc_format
-    :    FORMAT_START DATE_ATTR_LANG? TEXT FORMAT_END
-    ->    ^(FORMAT_START DATE_ATTR_LANG? TEXT)
-    ;
-    
-dc_identifier
-    :    IDENTIFIER_START IDENTIFIER_ATTR_LANG? TEXT IDENTIFIER_END
-    ->    ^(IDENTIFIER_START IDENTIFIER_ATTR_LANG? TEXT)
-    ;
-    
-dc_source
-    :    SOURCE_START SOURCE_ATTR_LANG? TEXT SOURCE_END
-    ->    ^(SOURCE_START SOURCE_ATTR_LANG? TEXT)
-    ;
-    
-dc_language
-    :    LANGUAGE_START LANGUAGE_ATTR_LANG? TEXT LANGUAGE_END
-    ->    ^(LANGUAGE_START LANGUAGE_ATTR_LANG? TEXT)
-    ;
-
-dc_relation
-    :    RELATION_START RELATION_ATTR_LANG? TEXT RELATION_END
-    ->    ^(RELATION_START RELATION_ATTR_LANG? TEXT)
-    ;
-    
-dc_coverage
-    :    COVERAGE_START COVERAGE_ATTR_LANG? TEXT COVERAGE_END
-    ->    ^(COVERAGE_START COVERAGE_ATTR_LANG? TEXT)
-    ;
-    
-dc_rights
-    :    RIGHTS_START RIGHTS_ATTR_LANG? TEXT RIGHTS_END
-    ->    ^(RIGHTS_START RIGHTS_ATTR_LANG? TEXT)
-    ;
-    
-dc_appId
-    :    APPID_START APPID_ATTR_LANG? TEXT APPID_END
-    ->    ^(APPID_START APPID_ATTR_LANG? TEXT)
-    ;
-
 
     
 
@@ -235,10 +133,26 @@ commentele
     
 
         
-tcu
-    :    TCU_START u+ TCU_END
-    ->    ^(TCU_START u+)
+begin_gem
+    :    BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL BEGIN_GEN_END
+    ->    ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)
     ;
+
+    
+
+        
+end_gem
+    :    END_GEM_START END_GEM_ATTR_LABEL END_GEN_END
+    ->    ^(END_GEM_START END_GEM_ATTR_LABEL)
+    ;
+
+    
+
+        
+lazy_gem
+	:	LAZY_GEM_START LAZY_GEM_ATTR_LABEL? LAZY_GEM_END
+	->	^(LAZY_GEM_START LAZY_GEM_ATTR_LABEL?)
+	;
 
     
 
@@ -949,30 +863,6 @@ aele
 a_attr
 	:	A_ATTR_TYPE
 	|	A_ATTR_FLAVOR
-	;
-
-    
-
-        
-begin_gem
-    :    BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL BEGIN_GEN_END
-    ->    ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)
-    ;
-
-    
-
-        
-end_gem
-    :    END_GEM_START END_GEM_ATTR_LABEL END_GEN_END
-    ->    ^(END_GEM_START END_GEM_ATTR_LABEL)
-    ;
-
-    
-
-        
-lazy_gem
-	:	LAZY_GEM_START LAZY_GEM_ATTR_LABEL? LAZY_GEM_END
-	->	^(LAZY_GEM_START LAZY_GEM_ATTR_LABEL?)
 	;
 
     

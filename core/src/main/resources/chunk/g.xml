@@ -325,7 +325,7 @@ gchoice
     <include>quotation.xml</include>
 	<include>quotation2.xml</include>
 	<include>pause.xml</include>
-	<include>internal-media.xml</include>
+	<include>internalmedia.xml</include>
 	<include>freecode.xml</include>
 	<include>e.xml</include>
 	<include>s.xml</include>

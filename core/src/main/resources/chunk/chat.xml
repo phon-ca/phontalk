@@ -12,13 +12,12 @@ XPath - /xs:schema/xs:element[@name="CHAT"]
     <buffer name="TalkBank2AST.g">
         <![CDATA[
 chat
-	:	CHAT_START chat_attrs+ metadata? participants chat_content* CHAT_END 
-	->	^(CHAT_START chat_attrs+ metadata? participants chat_content*)
+	:	CHAT_START chat_attrs+ participants chat_content* CHAT_END 
+	->	^(CHAT_START chat_attrs+ participants chat_content*)
 	;
 	
 chat_content
 	:	comment
-	|	tcu
 	|	begin_gem
 	|	end_gem
 	|	lazy_gem
@@ -110,10 +109,7 @@ chat_attrs
 	{
 		String suffix = ".wav";  // default media type
 		String type = $CHAT_ATTR_MEDIATYPES.text;
-		if(type.equals("aif") || type.equals("aiff"))
-		{
-			suffix = ".aiff";
-		} else if(type.equals("mov") || type.equals("video"))
+		if(type.equals("video"))
 		{
 			suffix = ".mov";
 		}
@@ -178,10 +174,9 @@ chat_attrs
 	<buffer name="AST2TalkBank.g">
 		<![CDATA[
 chat
-	:	^(CHAT_START (attrlist+=chat_attrs)+ (meta=metadata)? (partlist=participants) (contentlist+=chat_content)*)
+	:	^(CHAT_START (attrlist+=chat_attrs)+ (partlist=participants) (contentlist+=chat_content)*)
 	->	template(
 			attrs={$attrlist},
-			md={$meta.st},
 			parts={$partlist.st},
 			content={$contentlist}
 		)
@@ -212,9 +207,6 @@ chat_content
 		"<v>"
 	|	end_gem
 	->	template( v={$end_gem.st} )
-		"<v>"
-	|	tcu
-	->	template( v={$tcu.st} )
 		"<v>"
 	;
 	

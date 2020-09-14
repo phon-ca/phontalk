@@ -40,10 +40,9 @@ public void reportError(RecognitionException e) {
 
 		
 chat
-	:	^(CHAT_START (attrlist+=chat_attrs)+ (meta=metadata)? (partlist=participants) (contentlist+=chat_content)*)
+	:	^(CHAT_START (attrlist+=chat_attrs)+ (partlist=participants) (contentlist+=chat_content)*)
 	->	template(
 			attrs={$attrlist},
-			md={$meta.st},
 			parts={$partlist.st},
 			content={$contentlist}
 		)
@@ -75,9 +74,6 @@ chat_content
 	|	end_gem
 	->	template( v={$end_gem.st} )
 		"<v>"
-	|	tcu
-	->	template( v={$tcu.st} )
-		"<v>"
 	;
 	
 chat_attrs
@@ -93,6 +89,10 @@ Date="<date>" >>
 	->	template(corpus={$CHAT_ATTR_CORPUS.text})
 	<<
 Corpus="<corpus>" >>
+	|	CHAT_ATTR_VIDEOS
+	->	template(videos={$CHAT_ATTR_VIDEOS.text})
+	<<
+Videos="<videos>" >>
 	|	CHAT_ATTR_MEDIA
 	->	template(media={$CHAT_ATTR_MEDIA.text})
 	<<
@@ -109,10 +109,26 @@ Lang="<lang>" >>
 	->	template(opts={$CHAT_ATTR_OPTIONS.text})
 	<<
 Options="<opts>" >>
+	|	CHAT_ATTR_DESIGNTYPE
+	->	template(type={$CHAT_ATTR_DESIGNTYPE.text})
+	<<
+DesignType="<type>" >>
+	|	CHAT_ATTR_ACTIVITYTYPE
+	->	template(type={$CHAT_ATTR_ACTIVITYTYPE.text})
+	<<
+ActivityType="<type>" >>
+	|	CHAT_ATTR_GROUPTYPE
+	->	template(type={$CHAT_ATTR_GROUPTYPE.text})
+	<<
+GroupType="<type>" >>
 	|	CHAT_ATTR_COLORWORDS
 	->	template(wrds={$CHAT_ATTR_COLORWORDS.text})
 	<<
 Colorwords="<wrds>" >>
+	|	CHAT_ATTR_WINDOW
+	->	template(window={$CHAT_ATTR_WINDOW.text})
+	<<
+Window="<window>" >>
 	|	CHAT_ATTR_ID
 	->	template(id={$CHAT_ATTR_ID.text})
 	<<
@@ -129,94 +145,6 @@ Font="<font>" >>
 	
 
 	
-
-        
-metadata
-    :    ^(METADATA_START dcelementtype*)
-    ;
-    
-dcelementtype
-    :    dc_title
-    |    dc_creator
-    |    dc_subject
-    |    dc_description
-    |    dc_publisher
-    |    dc_contributor
-    |    dc_date
-    |    dc_type
-    |    dc_format
-    |    dc_identifier
-    |    dc_relation
-    |    dc_coverage
-    |    dc_rights
-    |    dc_appId
-    ;
-    
-dc_title
-    :    ^(TITLE_START TITLE_ATTR_LANG? TEXT)
-    ;
-    
-dc_creator
-    :    ^(CREATOR_START CREATOR_ATTR_LANG? TEXT)
-    ;
-    
-dc_subject
-    :    ^(SUBJECT_START SUBJECT_ATTR_LANG? TEXT)
-    ;
-    
-dc_description
-    :    ^(DESCRIPTION_START DESCRIPTION_ATTR_LANG? TEXT)
-    ;
-    
-dc_publisher
-    :    ^(PUBLISHER_START PUBLISHER_ATTR_LANG? TEXT)
-    ;
-    
-dc_contributor
-    :    ^(CONTRIBUTOR_START CONTRIBUTOR_ATTR_LANG? TEXT)
-    ;
-    
-dc_date
-    :    ^(DATE_START DATE_ATTR_LANG? TEXT)
-    ;
-    
-dc_type
-    :    ^(TYPE_START DATE_ATTR_LANG? TEXT)
-    ;
-    
-dc_format
-    :    ^(FORMAT_START DATE_ATTR_LANG? TEXT)
-    ;
-    
-dc_identifier
-    :    ^(IDENTIFIER_START IDENTIFIER_ATTR_LANG? TEXT)
-    ;
-    
-dc_source
-    :    ^(SOURCE_START SOURCE_ATTR_LANG? TEXT)
-    ;
-    
-dc_language
-    :    ^(LANGUAGE_START LANGUAGE_ATTR_LANG? TEXT)
-    ;
-
-dc_relation
-    :    ^(RELATION_START RELATION_ATTR_LANG? TEXT)
-    ;
-    
-dc_coverage
-    :    ^(COVERAGE_START COVERAGE_ATTR_LANG? TEXT)
-    ;
-    
-dc_rights
-    :    ^(RIGHTS_START RIGHTS_ATTR_LANG? TEXT)
-    ;
-    
-dc_appId
-    :    ^(APPID_START APPID_ATTR_LANG? TEXT)
-    ;
-
-    
 
 		
 participants 
@@ -306,11 +234,29 @@ commentele
 	
 
         
-tcu
-    :    ^(TCU_START vals+=u+)
-    ->    template(content={$vals})
-    <<\<tcu\><content>\</tcu\> >>
+begin_gem
+    :    ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)
+    ->    template(lbl={$BEGIN_GEM_ATTR_LABEL.text})
+    <<\<begin-gem label="<lbl>"/\> >>
     ;
+
+    
+
+        
+end_gem
+    :    ^(END_GEM_START END_GEM_ATTR_LABEL)
+    ->    template(lbl={$END_GEM_ATTR_LABEL.text})
+    <<\<end-gem label="<lbl>"/\> >>
+    ;
+
+    
+
+        
+lazy_gem
+	:	^(LAZY_GEM_START LAZY_GEM_ATTR_LABEL?)
+	->    template( label={$LAZY_GEM_ATTR_LABEL.text} )
+	<<\<lazy-gem label="<label>"/\> >>
+	;
 
     
 
@@ -1381,30 +1327,3 @@ a_attr
 	;
 
 	
-
-        
-begin_gem
-    :    ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)
-    ->    template(lbl={$BEGIN_GEM_ATTR_LABEL.text})
-    <<\<begin-gem label="<lbl>"/\> >>
-    ;
-
-    
-
-        
-end_gem
-    :    ^(END_GEM_START END_GEM_ATTR_LABEL)
-    ->    template(lbl={$END_GEM_ATTR_LABEL.text})
-    <<\<end-gem label="<lbl>"/\> >>
-    ;
-
-    
-
-        
-lazy_gem
-	:	^(LAZY_GEM_START LAZY_GEM_ATTR_LABEL?)
-	->    template( label={$LAZY_GEM_ATTR_LABEL.text} )
-	<<\<lazy-gem label="<label>"/\> >>
-	;
-
-    

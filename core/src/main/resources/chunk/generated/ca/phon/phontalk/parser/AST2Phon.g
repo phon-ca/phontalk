@@ -158,7 +158,7 @@ import org.apache.commons.lang3.*;
 
         
 chat
-	:	^(CHAT_START chat_attrs+ metadata? participants chat_content*)
+	:	^(CHAT_START chat_attrs+ participants chat_content*)
 	;
 	
 chat_content
@@ -187,14 +187,18 @@ chat_content
 	{
 		nextRecordComments.add($end_gem.endGem);
 	}
-	|	tcu
-	{
-		$tcu.records.forEach( r -> session.addRecord(r) );
-	}
 	;
 	
 chat_attrs
 	:	CHAT_ATTR_VERSION
+	{
+		String expectedVersion = "2.16.0";
+		String ver = $CHAT_ATTR_VERSION.text;
+		// log warning if not version we expect
+		if(!ver.equals(expectedVersion)) {
+			LOGGER.warning("Excpected version " + expectedVersion + ", got " + ver);
+		}
+	}
 	|	CHAT_ATTR_DATE
 	{
 		LocalDate date = DateFormatter.stringToDateTime($CHAT_ATTR_DATE.text);
@@ -203,6 +207,10 @@ chat_attrs
 	|	CHAT_ATTR_CORPUS
 	{
 		session.setCorpus($CHAT_ATTR_CORPUS.text);
+	}
+	|	CHAT_ATTR_VIDEOS
+	{
+		LOGGER.warning("CHAT attribute 'Videos' is currently unsupported");
 	}
 	|	CHAT_ATTR_MEDIA
 	{	
@@ -213,10 +221,7 @@ chat_attrs
 	{
 		String suffix = ".wav";  // default media type
 		String type = $CHAT_ATTR_MEDIATYPES.text;
-		if(type.equals("aif") || type.equals("aiff"))
-		{
-			suffix = ".aiff";
-		} else if(type.equals("mov") || type.equals("video"))
+		if(type.equals("video"))
 		{
 			suffix = ".mov";
 		}
@@ -241,11 +246,27 @@ chat_attrs
 	}
 	|	CHAT_ATTR_OPTIONS
 	{
-		// TODO
+		LOGGER.warning("CHAT attribute 'Options' is currently unsupported");
+	}
+	|	CHAT_ATTR_DESIGNTYPE
+	{
+		LOGGER.warning("CHAT attribute 'DesignType' is currently unsupported");
+	}
+	|	CHAT_ATTR_ACTIVITYTYPE
+	{
+		LOGGER.warning("CHAT attribute 'ActivityType' is currently unsupported");
+	}
+	|	CHAT_ATTR_GROUPTYPE
+	{
+		LOGGER.warning("CHAT attribute 'GroupType' is currently unsupported");
 	}
 	|	CHAT_ATTR_COLORWORDS
 	{
-		// TODO
+		LOGGER.warning("CHAT attribute 'Colorwords' is currently unsupported");
+	}
+	|	CHAT_ATTR_WINDOW
+	{
+		LOGGER.warning("CHAT attribute 'Window' is currently unsupported");
 	}
 	|	CHAT_ATTR_PID
 	{
@@ -256,97 +277,9 @@ chat_attrs
 	}
 	|	CHAT_ATTR_FONT
 	{
-		// TODO
+		LOGGER.warning("CHAT attribute 'Font' is currently unsupported");
 	}
 	;
-
-    
-
-        
-metadata
-    :    ^(METADATA_START dcelementtype*)
-    ;
-    
-dcelementtype
-    :    dc_title
-    |    dc_creator
-    |    dc_subject
-    |    dc_description
-    |    dc_publisher
-    |    dc_contributor
-    |    dc_date
-    |    dc_type
-    |    dc_format
-    |    dc_identifier
-    |    dc_relation
-    |    dc_coverage
-    |    dc_rights
-    |    dc_appId
-    ;
-    
-dc_title
-    :    ^(TITLE_START TITLE_ATTR_LANG? TEXT)
-    ;
-    
-dc_creator
-    :    ^(CREATOR_START CREATOR_ATTR_LANG? TEXT)
-    ;
-    
-dc_subject
-    :    ^(SUBJECT_START SUBJECT_ATTR_LANG? TEXT)
-    ;
-    
-dc_description
-    :    ^(DESCRIPTION_START DESCRIPTION_ATTR_LANG? TEXT)
-    ;
-    
-dc_publisher
-    :    ^(PUBLISHER_START PUBLISHER_ATTR_LANG? TEXT)
-    ;
-    
-dc_contributor
-    :    ^(CONTRIBUTOR_START CONTRIBUTOR_ATTR_LANG? TEXT)
-    ;
-    
-dc_date
-    :    ^(DATE_START DATE_ATTR_LANG? TEXT)
-    ;
-    
-dc_type
-    :    ^(TYPE_START DATE_ATTR_LANG? TEXT)
-    ;
-    
-dc_format
-    :    ^(FORMAT_START DATE_ATTR_LANG? TEXT)
-    ;
-    
-dc_identifier
-    :    ^(IDENTIFIER_START IDENTIFIER_ATTR_LANG? TEXT)
-    ;
-    
-dc_source
-    :    ^(SOURCE_START SOURCE_ATTR_LANG? TEXT)
-    ;
-    
-dc_language
-    :    ^(LANGUAGE_START LANGUAGE_ATTR_LANG? TEXT)
-    ;
-
-dc_relation
-    :    ^(RELATION_START RELATION_ATTR_LANG? TEXT)
-    ;
-    
-dc_coverage
-    :    ^(COVERAGE_START COVERAGE_ATTR_LANG? TEXT)
-    ;
-    
-dc_rights
-    :    ^(RIGHTS_START RIGHTS_ATTR_LANG? TEXT)
-    ;
-    
-dc_appId
-    :    ^(APPID_START APPID_ATTR_LANG? TEXT)
-    ;
 
     
 
@@ -471,23 +404,40 @@ commentele
     
 
         
-tcu returns [List<Record> records]
-@before {
-    $records = new ArrayList<Record>();
-}
-    :    ^(TCU_START (tcuGrp+=u{$records.add($u.record);})+)
+begin_gem returns [Comment beginGem]
+    :   ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)
     {
-        // add TCU comments to appropriate records
-        Record firstRecord = (Record)$tcuGrp.get(0);
-        Record lastRecord = (Record)$tcuGrp.get($tcuGrp.size()-1);
-        
-        Comment tcuStart = sessionFactory.createComment(CommentEnum.BeginTcu, "");
-        firstRecord.addComment(tcuStart);
-        
-        Comment tcuEnd = sessionFactory.createComment(CommentEnum.EndTcu, "");
-        lastRecord.addComment(tcuEnd);
+        $beginGem = sessionFactory.createComment(
+            CommentEnum.BeginGem, $BEGIN_GEM_ATTR_LABEL.text);
     }
-    ;
+    ;        
+
+    
+
+        
+end_gem returns [Comment endGem]
+    :   ^(END_GEM_START END_GEM_ATTR_LABEL)
+    {
+        $endGem = sessionFactory.createComment(
+            CommentEnum.EndGem, $END_GEM_ATTR_LABEL.text);
+    }
+    ;        
+
+    
+
+        
+lazy_gem returns [Comment lazyGem]
+	:	^(LAZY_GEM_START label=LAZY_GEM_ATTR_LABEL?)
+	{
+		$lazyGem = sessionFactory.createComment();
+		$lazyGem.setType(CommentEnum.fromString("LazyGem"));
+		
+		if($label != null)
+		{
+			$lazyGem.setValue($label.text);
+		}
+	}
+;
 
     
 
@@ -959,9 +909,7 @@ linker returns [String val]
 	:	^(LINKER_START type=LINKER_ATTR_TYPE)
 	{
 		String lkType = $type.text;
-		if(lkType.equals("quoted utterance next"))
-			$val += "+\"";
-		else if(lkType.equals("quick uptake"))
+		if(lkType.equals("quick uptake"))
 			$val += "+^";
 		else if(lkType.equals("lazy overlap mark"))
 			$val += "+<";
@@ -3075,43 +3023,5 @@ a_attr
 		$a::f = $A_ATTR_FLAVOR.text;
 	}
 	;
-
-    
-
-        
-begin_gem returns [Comment beginGem]
-    :   ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)
-    {
-        $beginGem = sessionFactory.createComment(
-            CommentEnum.BeginGem, $BEGIN_GEM_ATTR_LABEL.text);
-    }
-    ;        
-
-    
-
-        
-end_gem returns [Comment endGem]
-    :   ^(END_GEM_START END_GEM_ATTR_LABEL)
-    {
-        $endGem = sessionFactory.createComment(
-            CommentEnum.EndGem, $END_GEM_ATTR_LABEL.text);
-    }
-    ;        
-
-    
-
-        
-lazy_gem returns [Comment lazyGem]
-	:	^(LAZY_GEM_START label=LAZY_GEM_ATTR_LABEL?)
-	{
-		$lazyGem = sessionFactory.createComment();
-		$lazyGem.setType(CommentEnum.fromString("LazyGem"));
-		
-		if($label != null)
-		{
-			$lazyGem.setValue($label.text);
-		}
-	}
-;
 
     
