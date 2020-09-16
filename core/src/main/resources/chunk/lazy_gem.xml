@@ -24,7 +24,7 @@ lazy_gem returns [Comment lazyGem]
 	:	^(LAZY_GEM_START label=LAZY_GEM_ATTR_LABEL?)
 	{
 		$lazyGem = sessionFactory.createComment();
-		$lazyGem.setType(CommentEnum.fromString("LazyGem"));
+		$lazyGem.setTag("LazyGem");
 		
 		if($label != null)
 		{

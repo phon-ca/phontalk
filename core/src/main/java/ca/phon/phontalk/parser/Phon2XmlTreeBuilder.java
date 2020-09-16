@@ -105,13 +105,13 @@ public class Phon2XmlTreeBuilder {
 		
 		for(int cidx = 0; cidx < session.getMetadata().getNumberOfComments(); cidx++) {
 			final Comment comment = session.getMetadata().getComment(cidx);
-			if(comment.getType() == CommentEnum.LazyGem) {
+			if(comment.getTag().equals("LazyGem")) {
 				insertLazyGem(retVal, comment);
-			} else if(comment.getType() == CommentEnum.BeginGem) { 
+			} else if(comment.getTag().equals("BeginGem")) { 
 				insertBeginGem(retVal, comment);
-			} else if(comment.getType() == CommentEnum.Date) {
+			} else if(comment.getTag().equals("Date")) {
 				// date is inserted before processing session
-			} else if(comment.getType() == CommentEnum.Code && comment.getValue().startsWith("pid")) {
+			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("pid")) {
 				insertPid(retVal, comment.getValue());
 			} else {					
 				insertComment(retVal, comment);
@@ -408,21 +408,21 @@ public class Phon2XmlTreeBuilder {
 			for(int cIdx = 0; cIdx < record.getNumberOfComments(); cIdx++) {
 				// check for lazy-gem
 				Comment comment = record.getComment(cIdx);
-				if(comment.getType() == CommentEnum.LazyGem) {
+				if(comment.getTag().equals("LazyGem")) {
 					insertLazyGem(parent, comment);
-				} else if(comment.getType() == CommentEnum.BeginGem) { 
+				} else if(comment.getTag().equals("BeginGem")) { 
 					insertBeginGem(parent, comment);
-				} else if(comment.getType() == CommentEnum.EndGem) {
+				} else if(comment.getTag().equals("EndGem")) {
 					endComments.add(comment);
-				} else if(comment.getType() == CommentEnum.BeginTcu) { 
+				} else if(comment.getTag().equals("BeginTcu")) { 
 					CommonTree newParent = createTcu(parent, comment);
 					treeStack.push(newParent);
 					parent = newParent;
-				} else if(comment.getType() == CommentEnum.EndTcu) {
+				} else if(comment.getTag().equals("EndTcu")) {
 					endComments.add(comment);
-				} else if(comment.getType() == CommentEnum.Date) {
+				} else if(comment.getTag().equals("Date")) {
 					// date is inserted before processing session
-				} else if(comment.getType() == CommentEnum.Code && comment.getValue().startsWith("pid ")) {
+				} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("pid ")) {
 					insertPid(parent, comment.getValue());
 				} else {					
 					insertComment(parent, comment);
@@ -437,9 +437,9 @@ public class Phon2XmlTreeBuilder {
 			}
 			
 			for(Comment comment:endComments) {
-				if(comment.getType() == CommentEnum.EndGem) {
+				if(comment.getTag().equals("EndGem")) {
 					insertEndGem(parent, comment);
-				} else if(comment.getType() == CommentEnum.EndTcu) {
+				} else if(comment.getTag().equals("EndTcu")) {
 					treeStack.pop();
 				}
 			}
@@ -458,10 +458,11 @@ public class Phon2XmlTreeBuilder {
 		cNode.setParent(tree);
 		tree.addChild(cNode);
 		
+		// TODO validate comment type
 		CommonTree typeNode =
 			AntlrUtils.createToken(talkbankTokens, "COMMENT_ATTR_TYPE");
 		typeNode.setParent(cNode);
-		typeNode.getToken().setText(c.getType().getTitle());
+		typeNode.getToken().setText(c.getTag());
 		cNode.addChild(typeNode);
 		
 		CommonTree textNode = 

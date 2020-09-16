@@ -21,7 +21,7 @@ begin_gem returns [Comment beginGem]
     :   ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)
     {
         $beginGem = sessionFactory.createComment(
-            CommentEnum.BeginGem, $BEGIN_GEM_ATTR_LABEL.text);
+            "BeginGem", $BEGIN_GEM_ATTR_LABEL.text);
     }
     ;        
 ]]>

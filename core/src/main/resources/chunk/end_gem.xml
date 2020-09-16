@@ -21,7 +21,7 @@ end_gem returns [Comment endGem]
     :   ^(END_GEM_START END_GEM_ATTR_LABEL)
     {
         $endGem = sessionFactory.createComment(
-            CommentEnum.EndGem, $END_GEM_ATTR_LABEL.text);
+            "EndGem", $END_GEM_ATTR_LABEL.text);
     }
     ;        
 ]]>

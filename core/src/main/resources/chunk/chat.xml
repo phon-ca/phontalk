@@ -159,7 +159,7 @@ chat_attrs
 	|	CHAT_ATTR_PID
 	{
 		Comment comment = sessionFactory.createComment();
-		comment.setType(CommentEnum.Code);
+		comment.setTag("Code");
 		comment.setValue("pid " + $CHAT_ATTR_PID.text);
 		session.getMetadata().addComment(comment);
 	}

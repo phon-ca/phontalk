@@ -36,12 +36,10 @@ scope {
 }
 	:	^(COMMENT_START type=COMMENT_ATTR_TYPE? commentele*)
 	{
-		CommentEnum cType = CommentEnum.Generic;
+		String cType = "Generic";
 		if($type != null)
 		{
-			CommentEnum t =
-				CommentEnum.fromString($type.text);
-			if(t != null) cType = t;
+			cType = $type.text;
 		}
 		$val = sessionFactory.createComment(cType, $comment::buffer.toString());
 		
