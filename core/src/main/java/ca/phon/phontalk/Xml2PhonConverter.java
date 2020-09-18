@@ -113,8 +113,11 @@ public class Xml2PhonConverter {
 				final RecognitionException re = (RecognitionException)e.getCause();
 				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2Phon.tokens"));
 				visitor.visit(re);
+				
 				final PhonTalkMessage msg = visitor.getMessage();
+				
 				msg.setMessage(msg.getMessage());
+				
 				if(listener != null) {
 					listener.message(msg);
 				}

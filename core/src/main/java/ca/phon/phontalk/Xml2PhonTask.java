@@ -22,6 +22,10 @@ import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.antlr.runtime.RecognitionException;
+
+import ca.phon.phontalk.parser.AntlrExceptionVisitor;
+import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.session.io.*;
 
 /**
@@ -54,9 +58,27 @@ public class Xml2PhonTask extends PhonTalkTask {
 			if(PhonTalkUtil.isVerbose()) {
 				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
-			final PhonTalkError err = new PhonTalkError(e);
-			err.setFile(getOutputFile());
-			if(getListener() != null) getListener().message(err);
+			
+			if(e.getCause() instanceof RecognitionException) {
+				final RecognitionException re = (RecognitionException)e.getCause();
+				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2Phon.tokens"));
+				visitor.visit(re);
+				
+				final PhonTalkMessage msg = visitor.getMessage();
+				
+				msg.setMessage(msg.getMessage());
+				
+				if(getListener() != null) {
+					getListener().message(msg);
+				}
+			} else {
+				final PhonTalkError err = new PhonTalkError(e.getMessage(), e);
+				err.setFile(getOutputFile());
+				if(getListener() != null) {
+					getListener().message(err);
+				}
+			}
+			
 			super.err = e;
 			setStatus(TaskStatus.ERROR);
 		}

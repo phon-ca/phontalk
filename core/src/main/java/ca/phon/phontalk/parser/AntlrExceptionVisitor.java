@@ -18,6 +18,7 @@
  */
 package ca.phon.phontalk.parser;
 
+import org.antlr.runtime.MismatchedTokenException;
 import org.antlr.runtime.MismatchedTreeNodeException;
 import org.antlr.runtime.RecognitionException;
 
@@ -60,7 +61,24 @@ public class AntlrExceptionVisitor extends VisitorAdapter<RecognitionException> 
 	}
 	
 	@Visits
-	public void visitMismatchedTokenException(MismatchedTreeNodeException mte) {
+	public void visitMismatchedTokenException(MismatchedTokenException mte) {
+		// convert token ids to names if possible
+		if(tokens != null) {
+			String expectedToken = tokens.getTokenName(mte.expecting);
+			String unexpectedToken = tokens.getTokenName(mte.getUnexpectedType());
+			
+			String msg = (mte.getMessage() != null ? mte.getMessage() : mte.toString()) + " Expecting " + expectedToken + ", Got " + unexpectedToken;
+			message = new PhonTalkError(mte);
+			message.setMessage(msg);
+			message.setLineNumber(mte.line);
+			message.setColNumber(mte.charPositionInLine);
+		} else {
+			fallbackVisit(mte);
+		}
+	}
+	
+	@Visits
+	public void visitMismatchedTreeNodeException(MismatchedTreeNodeException mte) {
 		// convert token ids to names if possible
 		if(tokens != null) {
 			String expectedToken = tokens.getTokenName(mte.expecting);

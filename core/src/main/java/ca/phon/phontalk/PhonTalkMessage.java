@@ -96,7 +96,12 @@ public class PhonTalkMessage implements Serializable, Comparable<PhonTalkMessage
 	}
 
 	public void setLineNumber(int lineNumber) {
-		this.lineNumber = lineNumber;
+		if(lineNumber < 0) {
+			// try to find line number if not set
+			
+		} else {
+			this.lineNumber = lineNumber;
+		}
 	}
 
 	public int getColNumber() {
