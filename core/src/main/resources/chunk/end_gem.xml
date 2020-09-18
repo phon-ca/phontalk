@@ -8,7 +8,7 @@
     <buffer name="TalkBank2AST.g">
         <![CDATA[
 end_gem
-    :    END_GEM_START END_GEM_ATTR_LABEL END_GEN_END
+    :    END_GEM_START END_GEM_ATTR_LABEL END_GEM_END
     ->    ^(END_GEM_START END_GEM_ATTR_LABEL)
     ;
 ]]>
