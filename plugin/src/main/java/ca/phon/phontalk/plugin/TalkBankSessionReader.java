@@ -66,7 +66,7 @@ public class TalkBankSessionReader implements SessionReader, IPluginExtensionPoi
 	
 				canRead = 
 						evt.asStartElement().getName().getLocalPart().equals("CHAT")
-						&& (version.compareTo("2.1.0") >= 0);
+						&& (version.compareTo("2.16.0") >= 0);
 			}
 		} catch (XMLStreamException e) {
 			throw new IOException(e);
