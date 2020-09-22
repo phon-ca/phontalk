@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import ca.phon.phontalk.plugin.ui.PhonTalkFrame;
+import ca.phon.phontalk.plugin.PhonTalkFrame;
 import ca.phon.util.OSInfo;
 
 public class PhonTalkApp {

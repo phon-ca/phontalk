@@ -1,4 +1,4 @@
-package ca.phon.phontalk.plugin.ui;
+package ca.phon.phontalk.plugin;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -9,7 +9,7 @@ import javax.swing.*;
 
 import org.jdesktop.swingx.VerticalLayout;
 
-import ca.phon.phontalk.PhonTalkSettings;
+import ca.phon.phontalk.Xml2PhonSettings;
 import ca.phon.syllabifier.*;
 import ca.phon.util.Language;
 
@@ -17,9 +17,9 @@ import ca.phon.util.Language;
  * Settings UI for phontalk
  *
  */
-public class PhonTalkSettingPanel extends JPanel {
+public class Xml2PhonSettingsPanel extends JPanel {
 	
-	private final PhonTalkSettings settings;
+	private final Xml2PhonSettings settings;
 	
 	private JPanel xml2PhonOptionsPanel;
 	
@@ -33,11 +33,11 @@ public class PhonTalkSettingPanel extends JPanel {
 	// phon2Xml UI
 	private JCheckBox includeAlignmentTier;
 	
-	public PhonTalkSettingPanel() {
-		this(new PhonTalkSettings());
+	public Xml2PhonSettingsPanel() {
+		this(new Xml2PhonSettings());
 	}
 	
-	public PhonTalkSettingPanel(PhonTalkSettings settings) {
+	public Xml2PhonSettingsPanel(Xml2PhonSettings settings) {
 		super();
 		this.settings = settings;
 		
@@ -55,7 +55,7 @@ public class PhonTalkSettingPanel extends JPanel {
 //		add(phon2XmlOptionsPanel);
 	}
 	
-	public PhonTalkSettings getSettings() {
+	public Xml2PhonSettings getSettings() {
 		return this.settings;
 	}
 

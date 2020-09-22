@@ -2,7 +2,7 @@ package ca.phon.phontalk;
 
 import ca.phon.util.PrefHelper;
 
-public class PhonTalkSettings {
+public class Xml2PhonSettings {
 	
 	/* Syllabify and align imported IPA transcripts */
 	public final static String SYLLABIFY_AND_ALIGN = "ca.phon.phontalk.syllabifyAndAlign";
@@ -32,21 +32,6 @@ public class PhonTalkSettings {
 	public void setSyllabifier(String syllabifier) {
 		this.syllabifer = syllabifier;
 		PrefHelper.getUserPreferences().put(SYLLABIFIER, syllabifier);
-	}
-	
-	/* Export alignment tier */
-	public final static String EXPORT_ALIGNMENT = "ca.phon.phontalk.exportAlignment";
-	public final static boolean DEFAULT_EXPORT_ALIGNMENT = false;
-	
-	private boolean exportAlignment = PrefHelper.getBoolean(EXPORT_ALIGNMENT, DEFAULT_EXPORT_ALIGNMENT);
-	
-	public boolean isExportAlignment() {
-		return this.exportAlignment;
-	}
-	
-	public void setExportAlignment(boolean exportAlignment) {
-		this.exportAlignment = exportAlignment;
-		PrefHelper.getUserPreferences().putBoolean(EXPORT_ALIGNMENT, exportAlignment);
 	}
 	
 }

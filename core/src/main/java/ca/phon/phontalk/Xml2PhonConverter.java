@@ -43,7 +43,7 @@ public class Xml2PhonConverter {
 	
 	private File inputFile = null;
 	
-	private PhonTalkSettings settings;
+	private Xml2PhonSettings settings;
 	
 	public Xml2PhonConverter() {
 		super();
@@ -57,11 +57,11 @@ public class Xml2PhonConverter {
 		this.inputFile = inputFile;
 	}
 	
-	public PhonTalkSettings getSettings() {
-		return (this.settings == null ? new PhonTalkSettings() : this.settings);
+	public Xml2PhonSettings getSettings() {
+		return (this.settings == null ? new Xml2PhonSettings() : this.settings);
 	}
 
-	public void setSettings(PhonTalkSettings settings) {
+	public void setSettings(Xml2PhonSettings settings) {
 		this.settings = settings;
 	}
 

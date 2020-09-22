@@ -41,6 +41,10 @@ public class Xml2PhonTask extends PhonTalkTask {
 		super(new File(inFile), new File(outFile), listener);
 	}
 
+	public Xml2PhonTask(File inFile, File outFile, PhonTalkListener listener) {
+		super(inFile, outFile, listener);
+	}
+	
 	@Override
 	public void performTask() {
 		super.setStatus(TaskStatus.RUNNING);

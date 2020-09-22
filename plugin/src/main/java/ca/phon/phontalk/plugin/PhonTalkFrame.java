@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.phon.phontalk.plugin.ui;
+package ca.phon.phontalk.plugin;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -82,7 +82,7 @@ public class PhonTalkFrame extends JFrame {
 	
 	private PhonTalkDropPanel dropPanel;
 	
-	private PhonTalkSettingPanel settingsPanel;
+	private Xml2PhonSettingsPanel settingsPanel;
 	
 	private JXTable taskTable;
 	private PhonTalkTaskTableModel taskTableModel;
@@ -115,7 +115,7 @@ public class PhonTalkFrame extends JFrame {
 		final DialogHeader header = new DialogHeader("PhonTalk", "");
 		add(header, BorderLayout.NORTH);
 		
-		settingsPanel = new PhonTalkSettingPanel();
+		settingsPanel = new Xml2PhonSettingsPanel();
 		
 		final PhonUIAction saveAsCSVAct = new PhonUIAction(this, "saveAsCSV");
 		saveAsCSVAct.putValue(PhonUIAction.NAME, "Save log as CSV...");
