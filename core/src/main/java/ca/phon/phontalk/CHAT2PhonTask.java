@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import ca.phon.phontalk.PhonTalkMessage.Severity;
 import ca.phon.session.Session;
 import ca.phon.session.io.OriginalFormat;
 import ca.phon.session.io.SessionIO;
@@ -54,7 +55,7 @@ public class CHAT2PhonTask extends PhonTalkTask {
 				throw e;
 			}
 			
-			final StringBuffer buffer = new StringBuffer();
+//			final StringBuffer buffer = new StringBuffer();
 			final AtomicReference<Boolean> xmlReady = new AtomicReference<Boolean>(true);
 			// use the converter to convert to XML
 			final CHAT2XmlConverter converter = new CHAT2XmlConverter();
@@ -63,8 +64,7 @@ public class CHAT2PhonTask extends PhonTalkTask {
 				@Override
 				public void message(PhonTalkMessage msg) {
 					xmlReady.set(false);
-					buffer.append(msg.getMessage());
-					buffer.append("\n");
+					getListener().message(msg);
 				}
 				
 			});
@@ -81,15 +81,16 @@ public class CHAT2PhonTask extends PhonTalkTask {
 					
 					@Override
 					public void message(PhonTalkMessage msg) {
-						buffer.append(msg.getMessage());
+						getListener().message(msg);
 					}
+					
 				});
 				retVal.putExtension(OriginalFormat.class, new OriginalFormat(getClass().getAnnotation(SessionIO.class)));
 				
 				SessionOutputFactory factory = new SessionOutputFactory();
 				factory.createWriter().writeSession(retVal, new FileOutputStream(getOutputFile()));
 			} else {
-				throw new IOException(buffer.toString());
+				throw new IOException("CHAT conversion failed");
 			}
 			
 			setStatus(TaskStatus.FINISHED);
@@ -97,6 +98,8 @@ public class CHAT2PhonTask extends PhonTalkTask {
 			LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
 			super.err = e;
 			setStatus(TaskStatus.ERROR);
+			
+			getListener().message(new PhonTalkMessage(e.getLocalizedMessage(), Severity.SEVERE));
 		}
 	}
 	

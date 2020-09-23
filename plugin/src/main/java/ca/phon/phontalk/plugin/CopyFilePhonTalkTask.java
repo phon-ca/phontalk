@@ -25,6 +25,8 @@ public class CopyFilePhonTalkTask extends PhonTalkTask {
 
 	@Override
 	public void performTask() {
+		setStatus(TaskStatus.RUNNING);
+		
 		Path inputPath = getInputFile().toPath();
 		Path outputPath = getOutputFile().toPath();
 		
@@ -33,7 +35,12 @@ public class CopyFilePhonTalkTask extends PhonTalkTask {
 		} catch (IOException e) {
 			getListener().message(new PhonTalkMessage(e.getLocalizedMessage(), Severity.SEVERE));
 			LogUtil.severe(e);
+			super.err = e;
+			setStatus(TaskStatus.ERROR);
 		}
+		
+		if(getStatus() == TaskStatus.RUNNING)
+			setStatus(TaskStatus.FINISHED);
 	}
 
 }

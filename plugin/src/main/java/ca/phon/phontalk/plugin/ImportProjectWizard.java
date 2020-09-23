@@ -8,8 +8,12 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -22,21 +26,30 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.WordUtils;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXStatusBar.Constraint.ResizeBehavior;
 import org.jdesktop.swingx.JXTable;
 
+import com.sun.jna.platform.win32.WinUser.COPYDATASTRUCT;
+
+import ca.phon.app.log.BufferPanel;
 import ca.phon.app.log.LogUtil;
+import ca.phon.app.modules.EntryPointArgs;
 import ca.phon.app.project.DesktopProjectFactory;
+import ca.phon.app.project.OpenProjectEP;
 import ca.phon.app.workspace.Workspace;
 import ca.phon.app.workspace.WorkspaceHistory;
 import ca.phon.phontalk.CHAT2PhonTask;
@@ -44,8 +57,11 @@ import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
 import ca.phon.phontalk.PhonTalkTask;
 import ca.phon.phontalk.Xml2PhonTask;
+import ca.phon.plugin.PluginEntryPointRunner;
+import ca.phon.plugin.PluginException;
 import ca.phon.project.Project;
 import ca.phon.project.ProjectFactory;
+import ca.phon.project.exceptions.ProjectConfigurationException;
 import ca.phon.ui.DropDownButton;
 import ca.phon.ui.action.PhonUIAction;
 import ca.phon.ui.decorations.DialogHeader;
@@ -64,6 +80,7 @@ import ca.phon.ui.tristatecheckbox.TristateCheckBoxTreeModel;
 import ca.phon.ui.tristatecheckbox.TristateCheckBoxTreeNode;
 import ca.phon.ui.wizard.BreadcrumbWizardFrame;
 import ca.phon.ui.wizard.WizardStep;
+import ca.phon.util.MsFormatter;
 import ca.phon.util.icons.IconManager;
 import ca.phon.util.icons.IconSize;
 import ca.phon.worker.PhonTask;
@@ -104,20 +121,35 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 	
 	/* Step 3 */
 	private WizardStep importStep;
-	private PhonWorkerGroup workerGroup;
+	private PhonWorker currentWorker;
 	private JSplitPane splitPane;
 	private JXTable taskTable;
 	private JXTable messageTable;
+	private BufferPanel bufferPanel;
 	
 	protected BreadcrumbButton btnStop;
 	protected BreadcrumbButton btnRunAgain;
+	protected BreadcrumbButton btnOpenProject;
 	
+	private boolean running = false;
+	private boolean canceled = false;
+	private long importStartedMs = 0L;
+	private long importFinishedMs = 0L;
 	private JXStatusBar statusBar;
 	private JXBusyLabel busyLabel;
 	private JLabel statusLabel;
 	
+	private int numFilesToCopy = 0;
+	private int numCHATFiles = 0;
+	private int numTBFiles = 0;
+	
+	private int numCHATFilesProcessed = 0;
+	private int numTBFilesProcessed = 0;
+	private int numFilesCopied = 0;
+	private int numFilesFailed = 0;
+	
 	public ImportProjectWizard() {
-		super("PhonTalk - Import Project");
+		super(DIALOG_TITLE);
 		
 		init();
 	}
@@ -143,10 +175,29 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		btnStop.setForeground(Color.white);
 		btnStop.addActionListener( (e) -> close() );
 
+		btnOpenProject = new BreadcrumbButton();
+		btnOpenProject.setFont(FontPreferences.getTitleFont().deriveFont(Font.BOLD));
+		btnOpenProject.setText("Open project");
+		btnOpenProject.addActionListener( (e) -> {
+			File projectFolder = new File(outputFolderField.getSelectedFile(), projectNameField.getText());
+			EntryPointArgs epArgs = new EntryPointArgs();
+			epArgs.put(EntryPointArgs.PROJECT_LOCATION, projectFolder.getAbsolutePath());
+			
+			try {
+				PluginEntryPointRunner.executePlugin(OpenProjectEP.EP_NAME, epArgs);
+			} catch (PluginException e1) {
+				LogUtil.severe(e1);
+			}
+		});
+		
 		btnRunAgain = new BreadcrumbButton();
 		btnRunAgain.setFont(FontPreferences.getTitleFont().deriveFont(Font.BOLD));
 		btnRunAgain.setText("Run again");
-		btnRunAgain.addActionListener( (e) -> gotoStep(super.getStepIndex(importStep)) );
+		btnRunAgain.addActionListener( (e) -> {
+			if(!running) {
+				beginImport();
+			}
+		});
 		
 		statusBar = new JXStatusBar();
 		busyLabel = new JXBusyLabel(new Dimension(16, 16));
@@ -165,36 +216,44 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		
 		// remove all buttons from breadcrumb
 		breadCrumbViewer.remove(nextButton);
+		breadCrumbViewer.remove(btnStop);
+		breadCrumbViewer.remove(btnOpenProject);
+		breadCrumbViewer.remove(btnRunAgain);
 	
-//		if(breadCrumbViewer.getBreadcrumb().getCurrentState() == importStep) {
-//			if(running) {
-//				btnStop.setText("Stop");
-//				btnStop.setBackground(Color.red);
-//				btnStop.setForeground(Color.white);
-//				
-//				breadCrumbViewer.add(btnStop);
-//				setBounds(btnStop);
-//				endBtn = btnStop;
-//			} else {
-//				if(reportBufferAvailable()) {
-//					btnStop.setText("Close window");
-//					btnStop.setBackground(btnRunAgain.getBackground());
-//					btnStop.setForeground(Color.black);
-//					
-//					breadCrumbViewer.add(btnStop);
-//					setBounds(btnStop);
-//					endBtn = btnStop;
-//				} else if(processor != null && processor.getError() != null) {
-//					breadCrumbViewer.add(btnRunAgain);
-//					setBounds(btnRunAgain);
-//					endBtn = btnRunAgain;
-//				}
-//			}
-//		} else {
+		if(breadCrumbViewer.getBreadcrumb().getCurrentState() == importStep && btnStop != null) {
+			if(running) {
+				btnStop.setText("Stop");
+				btnStop.setBackground(Color.red);
+				btnStop.setForeground(Color.white);
+				
+				breadCrumbViewer.add(btnStop);
+				setBounds(btnStop);
+				endBtn = btnStop;
+			} else {
+				btnStop.setText("Close window");
+				btnStop.setBackground(btnNext.getBackground());
+				btnStop.setForeground(Color.black);
+				
+				breadCrumbViewer.add(btnOpenProject);
+				setBounds(btnOpenProject);
+				
+				breadCrumbViewer.add(btnRunAgain);
+				setBounds(btnRunAgain);
+				btnRunAgain.setBounds(btnRunAgain.getBounds().x + btnOpenProject.getPreferredSize().width - btnOpenProject.getInsets().left/2-1, 
+						btnRunAgain.getBounds().y, btnRunAgain.getBounds().width, btnRunAgain.getBounds().height);
+				
+				breadCrumbViewer.add(btnStop);
+				setBounds(btnStop);
+				btnStop.setBounds(btnStop.getBounds().x + (btnRunAgain.getPreferredSize().width - btnRunAgain.getInsets().left/2-1)
+							+ (btnOpenProject.getPreferredSize().width - btnOpenProject.getInsets().left/2-1), 
+						btnStop.getBounds().y, btnStop.getBounds().width, btnStop.getBounds().height);
+				endBtn = btnStop;
+			}
+		} else {
 			breadCrumbViewer.add(nextButton);
 			setBounds(nextButton);
 			endBtn = nextButton;
-//		}
+		}
 
 		if(getCurrentStep() != importStep)
 			getRootPane().setDefaultButton(endBtn);
@@ -311,15 +370,15 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 				for(File folder:outputFolderHistory) {
 					PhonUIAction folderAct = new PhonUIAction(outputFolderField, "setFile", folder);
 					folderAct.putValue(PhonUIAction.NAME, folder.getAbsolutePath());
-					folderMenu.add(folderAct);
+					workspaceMenu.add(folderAct);
 					++idx;
 				}
 				if(idx > 0) {
-					folderMenu.addSeparator();
+					workspaceMenu.addSeparator();
 					PhonUIAction clearAct = new PhonUIAction(outputFolderHistory, "clearHistory");
 					clearAct.putValue(PhonUIAction.NAME, "Clear history");
 					clearAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Clear output folder history");
-					folderMenu.add(clearAct);
+					workspaceMenu.add(clearAct);
 				}
 				
 				if(idx > 0) {
@@ -397,6 +456,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		folderSelectionPanel.add(outputFolderField, gbc);
 		++gbc.gridy;
 		folderSelectionPanel.add(projectNameField, gbc);
+		folderSelectionPanel.setBorder(BorderFactory.createTitledBorder("Folder setup"));
 		
 		fileSelectionTree = new TristateCheckBoxTree();
 		fileSelectionTree.setRootVisible(false);
@@ -404,7 +464,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		fileSelectionTree.setCellEditor(new TristateCheckBoxTreeCellEditor(fileSelectionTree, new CellRenderer()));
 		
 		JScrollPane scroller = new JScrollPane(fileSelectionTree);
-		scroller.setBorder(BorderFactory.createTitledBorder("Select files for import"));
+		scroller.setBorder(BorderFactory.createTitledBorder("File selection"));
 		
 		JPanel centerPanel = new JPanel(new BorderLayout());
 		centerPanel.add(folderSelectionPanel, BorderLayout.NORTH);
@@ -437,18 +497,28 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		
 		PhonTalkTaskTableModel taskTableModel = new PhonTalkTaskTableModel();
 		taskTable = new JXTable(taskTableModel);
+		taskTable.setDefaultRenderer(TaskStatus.class, statusCellRenderer);
+		
 		JScrollPane taskScroller = new JScrollPane(taskTable);
 		Dimension prefSize = taskScroller.getPreferredSize();
 		prefSize.width = 300;
 		taskScroller.setPreferredSize(prefSize);
+		taskScroller.setMinimumSize(new Dimension(250, prefSize.height));
 		
 		PhonTalkMessageTableModel messageTableModel = new PhonTalkMessageTableModel();
 		messageTable = new JXTable(messageTableModel);
 		JScrollPane messageScroller = new JScrollPane(messageTable);
 		
+		bufferPanel = new BufferPanel("PhonTalk");
+		bufferPanel.getLogBuffer().setEditable(false);
+		
+		JTabbedPane tabPane = new JTabbedPane();
+		tabPane.add("Log", bufferPanel);
+		tabPane.add("Table", messageScroller);
+		
 		splitPane = new JSplitPane();
 		splitPane.setLeftComponent(taskScroller);
-		splitPane.setRightComponent(messageScroller);
+		splitPane.setRightComponent(tabPane);
 		importStep.add(splitPane, BorderLayout.CENTER);
 	}
 	
@@ -465,6 +535,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		FileFilter chatFilter = new FileFilter("CHAT files", "cha");
 		
 		for(File file:folder.listFiles()) {
+			if(file.isHidden()) continue;
 			if(file.isDirectory()) {
 				TristateCheckBoxTreeNode subtree = scanFolder(file);
 				retVal.add(subtree);
@@ -515,16 +586,8 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		
 		return retVal;
 	}
-
-	private Project createProject() throws IOException {
-		ProjectFactory projectFactory = new DesktopProjectFactory();
-		Project retVal = projectFactory.createProject(
-				new File(outputFolderField.getSelectedFile(), projectNameField.getText()));
-		retVal.setName(projectNameField.getText());
-		return retVal;
-	}
 	
-	private void setupTasks(Project project) {
+	private void setupTasks(PhonWorker worker, Project project) {
 		List<TreePath> checkedPaths = fileSelectionTree.getCheckedPaths();
 		for(TreePath path:checkedPaths) {
 			TristateCheckBoxTreeNode node = (TristateCheckBoxTreeNode)path.getLastPathComponent();
@@ -535,7 +598,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 				File parentFile = (parentNode != null ? (File)parentNode.getUserObject() : null);
 				
 				File inputFile = (File)ptNode.getUserObject();
-				File outputFolder = (parentFile == null ? new File(project.getLocation())
+				File outputFolder = (parentFile == null || parentNode.getParent() == null ? new File(project.getLocation())
 						: new File(project.getLocation(), parentFile.getName()));
 				if(!outputFolder.exists()) {
 					outputFolder.mkdirs();
@@ -547,7 +610,8 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 							new File(outputFolder, FilenameUtils.removeExtension(inputFile.getName()) + ".xml"), phonTalkListener);
 					chat2phonTask.addTaskListener(taskListener);
 					chat2phonTask.setName(inputFile.getName());
-					workerGroup.queueTask(chat2phonTask);
+					numCHATFiles++;
+					worker.invokeLater(chat2phonTask);
 					((PhonTalkTaskTableModel)taskTable.getModel()).addTask(chat2phonTask);
 					break;
 					
@@ -555,7 +619,8 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 					Xml2PhonTask xml2phonTask = new Xml2PhonTask(inputFile, new File(outputFolder, inputFile.getName()), phonTalkListener);
 					xml2phonTask.addTaskListener(taskListener);
 					xml2phonTask.setName(inputFile.getName());
-					workerGroup.queueTask(xml2phonTask);
+					worker.invokeLater(xml2phonTask);
+					numTBFiles++;
 					((PhonTalkTaskTableModel)taskTable.getModel()).addTask(xml2phonTask);
 					break;
 					
@@ -563,7 +628,8 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 					CopyFilePhonTalkTask copyTask = new CopyFilePhonTalkTask(inputFile, new File(outputFolder, inputFile.getName()), phonTalkListener);
 					copyTask.addTaskListener(taskListener);
 					copyTask.setName(inputFile.getName());
-					workerGroup.queueTask(copyTask);
+					worker.invokeLater(copyTask);
+					numFilesToCopy++;
 					((PhonTalkTaskTableModel)taskTable.getModel()).addTask(copyTask);
 					break;
 					
@@ -572,6 +638,22 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 				}
 			}
 		}
+		
+		SwingUtilities.invokeLater( taskTable::packAll );
+		
+		worker.setFinalTask( () -> {
+			running = false;
+			SwingUtilities.invokeLater( () -> { 
+				busyLabel.setBusy(false);
+				statusLabel.setText(String.format("%d/%d files processed",
+						numCHATFilesProcessed + numTBFilesProcessed + numFilesCopied, numCHATFiles + numTBFiles + numFilesToCopy));
+				updateBreadcrumbButtons();
+				
+				importFinishedMs = System.currentTimeMillis();
+				printEndOfImportReport();
+			});
+		});
+		worker.setFinishWhenQueueEmpty(true);
 	}
 	
 	private void setupProjectName() {
@@ -590,6 +672,129 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		}
 		
 		projectNameField.setText(projectName);
+	}
+	
+	private void beginImport() {
+		((PhonTalkTaskTableModel)taskTable.getModel()).clear();
+		((PhonTalkMessageTableModel)messageTable.getModel()).clear();
+		bufferPanel.getLogBuffer().setText("");
+		
+		numFilesToCopy = 0;
+		numCHATFiles = 0;
+		numTBFiles = 0;
+		numCHATFilesProcessed = 0;
+		numTBFilesProcessed = 0;
+		numFilesCopied = 0;
+		numFilesFailed = 0;
+		
+		currentWorker = PhonWorker.createWorker();
+		currentWorker.setName("PhonTalk");
+		printBeginImportReport();
+		
+		// add import folder to history
+		importFolderHistory.addToHistory(importFolderField.getSelectedFile());
+		importFolderHistory.saveHistory();
+		
+		File outputFolder = outputFolderField.getSelectedFile();
+		boolean inWorkspace = false;
+		for(File workspaceFolder:workspaceHistory) {
+			if(workspaceFolder.equals(outputFolder)) {
+				inWorkspace = true;
+				break;
+			}
+		}
+		if(!inWorkspace) {
+			outputFolderHistory.addToHistory(outputFolderField.getSelectedFile());
+			outputFolderHistory.saveHistory();
+		}
+		
+		((PhonTalkTaskTableModel)taskTable.getModel()).setParentFolder(importFolderField.getSelectedFile());
+		
+		try {
+			// create project
+			final Project project = createProject();
+			PhonWorker.getInstance().invokeLater( () -> setupTasks(currentWorker, project) );
+		} catch (IOException | ProjectConfigurationException e) {
+			showMessage(e.getLocalizedMessage());
+		}
+		
+		running = true;
+		canceled = false;
+		busyLabel.setBusy(true);
+		currentWorker.start();
+		
+		importStartedMs = System.currentTimeMillis();
+		
+		updateBreadcrumbButtons();
+	}
+	
+	private Project createProject() throws IOException, ProjectConfigurationException {
+		ProjectFactory projectFactory = new DesktopProjectFactory();
+		File projectFolder = new File(outputFolderField.getSelectedFile(), projectNameField.getText());
+		
+		if(!projectFolder.exists()) {
+			bufferPanel.getLogBuffer().append("Creating project at " + projectFolder.getAbsolutePath() + "\n\n");
+		} else {
+			bufferPanel.getLogBuffer().append("Opening project at " + projectFolder.getAbsolutePath() + "\n\n");
+		}
+	
+		Project retVal = projectFolder.exists() ? projectFactory.openProject(projectFolder) : projectFactory.createProject(projectFolder);
+		retVal.setName(projectNameField.getText());
+		return retVal;
+	}
+	
+	private void cancelImport() {
+		if(running && currentWorker != null) {
+			if(currentWorker.isAlive()) {
+				canceled = true;
+				currentWorker.shutdown();
+			}
+		}
+	}
+	
+	/* Log methods */
+	private void printBeginImportReport() {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("Begin Project Import\n");
+		buffer.append("----------------------------------------------\n");
+		buffer.append("Input folder:\t");
+		buffer.append(importFolderField.getSelectedFile().getAbsolutePath());
+		buffer.append('\n');
+		buffer.append("Output folder:\t");
+		buffer.append(outputFolderField.getSelectedFile().getAbsolutePath());
+		buffer.append('\n');
+		buffer.append("Project name:\t");
+		buffer.append(projectNameField.getText());
+		buffer.append('\n');
+		
+		buffer.append('\n');
+		
+		bufferPanel.getLogBuffer().append(buffer.toString());
+	}
+	
+	private void printEndOfImportReport() {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("----------------------------------------------\n");
+		if(canceled)
+			buffer.append("Import canceled:\t\t");
+		else
+			buffer.append("Import finished:\t\t");
+		buffer.append(String.format("%d/%d files processed\n",
+				numCHATFilesProcessed + numTBFilesProcessed + numFilesCopied, numCHATFiles + numTBFiles + numFilesToCopy));
+		if(numFilesToCopy > 0)
+			buffer.append(String.format("Files copied:\t\t\t%d/%d\n", numFilesCopied, numFilesToCopy));
+		if(numCHATFiles > 0)
+			buffer.append(String.format("CHAT files processed:\t%d/%d\n", numCHATFilesProcessed, numCHATFiles));
+		if(numTBFiles > 0)
+			buffer.append(String.format("TalkBank files processed:\t%d/%d\n", numTBFilesProcessed, numTBFiles));
+		if(numFilesFailed > 0)
+			buffer.append(String.format("Failed to process %d files\n", numFilesFailed));
+		
+		buffer.append(String.format("Elapsed time:\t\t\t%s\n", MsFormatter.msToDisplayString(importFinishedMs-importStartedMs)));
+		
+		bufferPanel.getLogBuffer().append(buffer.toString());
 	}
 	
 	@Override
@@ -625,12 +830,6 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 			if(projectNameField.getText().trim().length() == 0) {
 				showMessage("Please enter project name");
 				return;
-			} else {
-				File projectFolder = new File(outputFolderField.getSelectedFile(), projectNameField.getText().trim());
-				if(projectFolder.exists()) {
-					showMessage("Project folder already exists, please choose another project name");
-					return;
-				}
 			}
 			
 			// TODO ensure selected files for import
@@ -642,28 +841,30 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 	
 	@Override
 	public void gotoStep(int stepIndex) {
-		if(stepIndex == getStepIndex(importStep)) {
-			// add import folder to history
-			importFolderHistory.addToHistory(importFolderField.getSelectedFile());
-			importFolderHistory.saveHistory();
-			
-			outputFolderHistory.addToHistory(outputFolderField.getSelectedFile());
-			outputFolderHistory.saveHistory();
-		
-			
-			try {
-				// create project
-				final Project project = createProject();
-				PhonWorker.getInstance().invokeLater( () -> setupTasks(project) );
-			} catch (IOException e) {
-				showMessage(e.getLocalizedMessage());
-				
-			}
-			
-			workerGroup = new PhonWorkerGroup(1);
-			workerGroup.begin();
+		if(running) {
+			Toolkit.getDefaultToolkit().beep();
+			return;
 		}
+		// goto step
 		super.gotoStep(stepIndex);
+		
+		if(importStep == getCurrentStep() && currentWorker == null) {
+			beginImport();
+		}
+	}
+	
+	@Override
+	public void close() {
+		if(running) {
+			int selected = showMessageDialog(DIALOG_TITLE, "Cancel import?", MessageDialogProperties.yesNoOptions);
+			if(selected == 0) {
+				cancelImport();
+			} else {
+				return;
+			}
+		} else {
+			super.close();
+		}
 	}
 	
 	private void showMessage(String msg) {
@@ -679,6 +880,9 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 					final PhonTalkMessageTableModel reportTableModel =
 							(PhonTalkMessageTableModel)messageTable.getModel();
 					reportTableModel.addMessage(msg);
+					
+					String msgText = String.format("\t(%d:%d) %s\n", msg.getLineNumber(), msg.getColNumber(), msg.getMessage());
+					bufferPanel.getLogBuffer().append(msgText);
 				}
 			};
 			SwingUtilities.invokeLater(onEDT);
@@ -691,13 +895,26 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		@Override
 		public void statusChanged(PhonTask task, TaskStatus oldStatus,
 				TaskStatus newStatus) {
-			final String filename = task.getName();
+			final File inputFolder = importFolderField.getSelectedFile();
+			final File inputFile = ((PhonTalkTask)task).getInputFile();
+			
+			final PhonTalkTask ptTask = (PhonTalkTask)task;
 			final TaskStatus status = newStatus;
 			final PhonTalkTaskTableModel taskTableModel = 
 					(PhonTalkTaskTableModel)taskTable.getModel();
 			final Runnable onEDT = new Runnable() {
 				public void run() {
-					int taskRow = taskTableModel.rowForTask((PhonTalkTask)task);
+					String filename = inputFile.getAbsolutePath();
+					if(inputFile.getAbsolutePath().startsWith(inputFolder.getAbsolutePath())) {
+						filename = ".." + File.separator + inputFolder.toPath().relativize(inputFile.toPath()).toString();
+					}
+					
+					String outputFilename = ptTask.getOutputFile().getAbsolutePath();
+					if(outputFilename.startsWith(outputFolderField.getSelectedFile().getAbsolutePath())) {
+						outputFilename = ".." + File.separator + outputFolderField.getSelectedFile().toPath().relativize(ptTask.getOutputFile().toPath()).toString();
+					}
+					
+					int taskRow = taskTableModel.rowForTask(ptTask);
 					if(taskRow >= 0) {
 						taskTableModel.fireTableCellUpdated(taskRow, PhonTalkTaskTableModel.Columns.STATUS.ordinal());
 						// scroll to current task if no selection
@@ -705,9 +922,24 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 							taskTable.scrollRowToVisible(taskRow);
 					}
 					if(status == TaskStatus.RUNNING) {
-						statusLabel.setText(filename + " (" + ((PhonTalkTask)task).getProcessName() + ")");
+						statusLabel.setText(filename + " (" + ptTask.getProcessName() + ")");
+						
+						String msgText = String.format("(%s) %s -> %s\n", 
+								ptTask.getProcessName(), filename, outputFilename);
+						bufferPanel.getLogBuffer().append(msgText);
 					} else {
 						statusLabel.setText("");
+						bufferPanel.getLogBuffer().append("\n");
+						if(status == TaskStatus.FINISHED) {
+							if(task instanceof CopyFilePhonTalkTask) {
+								numFilesCopied++;
+							} else if (task instanceof CHAT2PhonTask) {
+								numCHATFilesProcessed++;
+							} else if (task instanceof Xml2PhonTask) {
+								numTBFilesProcessed++;
+							}
+						} else
+							numFilesFailed++;
 					}
 				}
 			};
@@ -783,5 +1015,53 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		}
 		
 	}
+	
+	private final DefaultTableCellRenderer statusCellRenderer = new DefaultTableCellRenderer() {
+		
+		ImageIcon waitingIcon = 
+			IconManager.getInstance().getIcon("actions/free_icon", IconSize.SMALL);
+		
+		ImageIcon runningIcon = 
+			IconManager.getInstance().getIcon("actions/greenled", IconSize.SMALL);
+		
+		ImageIcon errorIcon =
+			IconManager.getInstance().getIcon("status/dialog-error", IconSize.SMALL);
+		
+		ImageIcon finishedIcon =
+			IconManager.getInstance().getIcon("actions/ok", IconSize.SMALL);
+		
+		ImageIcon terminatedIcon =
+			IconManager.getInstance().getIcon("status/dialog-warning", IconSize.SMALL);
+
+		/* (non-Javadoc)
+		 * @see javax.swing.table.DefaultTableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+		 */
+		@Override
+		public Component getTableCellRendererComponent(JTable table,
+				Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+			JLabel retVal = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
+					row, column);
+			
+			TaskStatus status = (TaskStatus)value;
+			
+			if(status == TaskStatus.WAITING) {
+				retVal.setIcon(waitingIcon);
+			} else if(status == TaskStatus.RUNNING) {
+				retVal.setIcon(runningIcon);
+			} else if(status == TaskStatus.ERROR) {
+				retVal.setIcon(errorIcon);
+			} else if(status == TaskStatus.TERMINATED) {
+				retVal.setIcon(terminatedIcon);
+			} else if(status == TaskStatus.FINISHED) {
+				retVal.setIcon(finishedIcon);
+			}
+			
+			retVal.setText(WordUtils.capitalize(retVal.getText().toLowerCase()));
+			
+			return retVal;
+		}
+		
+	};
 	
 }

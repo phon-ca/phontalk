@@ -27,6 +27,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import ca.phon.phontalk.PhonTalkTask;
+import ca.phon.worker.PhonTask.TaskStatus;
 
 public class PhonTalkTaskTableModel extends AbstractTableModel {
 
@@ -84,6 +85,14 @@ public class PhonTalkTaskTableModel extends AbstractTableModel {
 		return retVal;
 	}
 	
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		if(columnIndex == 0)
+			return TaskStatus.class;
+		else
+			return String.class;
+	}
+
 	public void addTask(PhonTalkTask task) {
 		taskList.add(task);
 		fireTableRowsInserted(taskList.size()-1, taskList.size()-1);
@@ -109,9 +118,11 @@ public class PhonTalkTaskTableModel extends AbstractTableModel {
 				break;
 				
 			case 1:
-				Path parentPath = Paths.get(parentFolder.toURI());
-				Path filePath = Paths.get(task.getInputFile().toURI());
-				retVal = parentPath.relativize(filePath).toString();
+				File inputFile = task.getInputFile();
+				retVal = inputFile.getAbsolutePath();
+				if(parentFolder != null) {
+					retVal = ".." + File.separator + parentFolder.toPath().relativize(inputFile.toPath()).toString();
+				}
 				break;
 				
 			default:
