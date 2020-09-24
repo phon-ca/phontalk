@@ -29,6 +29,10 @@ import ca.phon.session.io.*;
  */
 public class Phon2XmlTask extends PhonTalkTask {
 	
+	public Phon2XmlTask(File inFile, File outFile, PhonTalkListener listener) {
+		super(inFile, outFile, listener);
+	}
+	
 	public Phon2XmlTask(String inFile, String outFile, PhonTalkListener listener) {
 		super(new File(inFile), new File(outFile), listener);
 	}

@@ -103,6 +103,7 @@ public class Phon2XmlTreeBuilder {
 		setupHeaderData(retVal, session);
 		setupParticipants(retVal, session);
 		
+		insertDate(retVal, session);
 		for(int cidx = 0; cidx < session.getMetadata().getNumberOfComments(); cidx++) {
 			final Comment comment = session.getMetadata().getComment(cidx);
 			if(comment.getTag().equals("LazyGem")) {
@@ -117,7 +118,6 @@ public class Phon2XmlTreeBuilder {
 				insertComment(retVal, comment);
 			}
 		}
-		insertDate(retVal, session);
 		
 		processTranscript(retVal, session);
 		
@@ -457,8 +457,7 @@ public class Phon2XmlTreeBuilder {
 			AntlrUtils.createToken(talkbankTokens, "COMMENT_START");
 		cNode.setParent(tree);
 		tree.addChild(cNode);
-		
-		// TODO validate comment type
+	
 		CommonTree typeNode =
 			AntlrUtils.createToken(talkbankTokens, "COMMENT_ATTR_TYPE");
 		typeNode.setParent(cNode);
