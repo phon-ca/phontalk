@@ -150,6 +150,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 	
 	public ImportProjectWizard() {
 		super(DIALOG_TITLE);
+		setWindowName(DIALOG_TITLE);
 		
 		init();
 	}

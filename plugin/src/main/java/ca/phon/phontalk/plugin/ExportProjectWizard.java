@@ -19,6 +19,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -26,6 +28,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -56,6 +59,7 @@ import ca.phon.app.log.LogUtil;
 import ca.phon.app.modules.EntryPointArgs;
 import ca.phon.app.project.DesktopProjectFactory;
 import ca.phon.app.project.OpenProjectEP;
+import ca.phon.app.project.ProjectWindow;
 import ca.phon.app.workspace.Workspace;
 import ca.phon.app.workspace.WorkspaceHistory;
 import ca.phon.phontalk.CHAT2PhonTask;
@@ -73,6 +77,7 @@ import ca.phon.project.exceptions.ProjectConfigurationException;
 import ca.phon.session.io.SessionIO;
 import ca.phon.session.io.SessionInputFactory;
 import ca.phon.session.io.SessionReader;
+import ca.phon.ui.CommonModuleFrame;
 import ca.phon.ui.DropDownButton;
 import ca.phon.ui.action.PhonUIAction;
 import ca.phon.ui.decorations.DialogHeader;
@@ -138,6 +143,20 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 	private JXTable messageTable;
 	private BufferPanel bufferPanel;
 	
+	/*
+	 * Excluded paths (relative to project folder)
+	 */
+	private final static List<String> EXCLUDED_PATHS = List.of( new String[] {
+		".query_results", "__res", "project.xml", "backups.zip"
+	});
+	
+	/*
+	 * Excluded file/folder names (path does not matter)
+	 */
+	private final static List<String> EXCLUDED_FILENAMES = List.of(new String[] {
+		".DS_Store", ".git", ".svn"
+	});
+	
 	protected BreadcrumbButton btnStop;
 	protected BreadcrumbButton btnRunAgain;
 	protected BreadcrumbButton btnOpenFolder;
@@ -159,6 +178,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 	
 	public ExportProjectWizard() {
 		super(DIALOG_TITLE);
+		setWindowName(DIALOG_TITLE);
 		
 		init();
 	}
@@ -296,11 +316,21 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 				PhonWorker.getInstance().invokeLater( () -> {
 					final TristateCheckBoxTreeNode treeNode = scanFolder(projectFolderField.getSelectedFile());
 					treeNode.setCheckingState(TristateCheckBoxState.CHECKED);
+					final TristateCheckBoxTreeModel treeModel = new TristateCheckBoxTreeModel(treeNode);
 					
 					SwingUtilities.invokeLater( () -> {
-						TristateCheckBoxTreeModel treeModel = new TristateCheckBoxTreeModel(treeNode);
 						fileSelectionTree.setRootVisible(true);
 						fileSelectionTree.setModel(treeModel);
+						
+						List<TreePath> checkedPaths = fileSelectionTree.getCheckedPaths();
+						for(TreePath path:checkedPaths) {
+							TristateCheckBoxTreeNode lastNode = (TristateCheckBoxTreeNode)path.getLastPathComponent();
+							String relativePath = 
+									projectFolderField.getSelectedFile().toPath().relativize(((File)lastNode.getUserObject()).toPath()).toString();
+							if(EXCLUDED_PATHS.contains(relativePath) || EXCLUDED_FILENAMES.contains(((File)lastNode.getUserObject()).getName())) {
+								lastNode.setCheckingState(TristateCheckBoxState.UNCHECKED);
+							}
+						}
 						
 //						setupProjectName();
 						busyLabel.setBusy(false);
@@ -337,20 +367,35 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 					projectMenu.add(clearAct);
 				}
 				
+				Map<Project, List<CommonModuleFrame>> projectWindows = CommonModuleFrame.getProjectWindows();
+				if(projectWindows.size() > 0) {
+					Set<Project> openProjects = projectWindows.keySet();
+					
+					if(idx > 0) projectMenu.addSeparator();
+					JMenuItem headerItm = new JMenuItem("-- Open projects --");
+					headerItm.setEnabled(false);
+					projectMenu.add(headerItm);
+					
+					for(Project project:openProjects) {
+						PhonUIAction projectAct = new PhonUIAction(projectFolderField, "setFile", new File(project.getLocation()));
+						projectAct.putValue(PhonUIAction.NAME, project.getLocation());
+						projectMenu.add(projectAct);
+						++idx;
+					}
+				}
+				
 				if(workspaceProjects.size() > 0) {
 					if(idx > 0) {
 						projectMenu.addSeparator();
 					}
 					
-					JMenuItem headerItem = new JMenuItem("-- Workspace Folders --");
-					headerItem.setEnabled(false);
-					projectMenu.add(headerItem);
-				}
-				for(Project project:workspaceProjects) {
-					PhonUIAction workspaceProjectAct = new PhonUIAction(projectFolderField, "setFile", new File(project.getLocation()));
-					workspaceProjectAct.putValue(PhonUIAction.NAME, project.getLocation());
-					projectMenu.add(workspaceProjectAct);
-					++idx;
+					JMenu workspaceMenu = new JMenu("Workspace projects");
+					projectMenu.add(workspaceMenu);
+					for(Project project:workspaceProjects) {
+						PhonUIAction workspaceProjectAct = new PhonUIAction(projectFolderField, "setFile", new File(project.getLocation()));
+						workspaceProjectAct.putValue(PhonUIAction.NAME, project.getLocation());
+						workspaceMenu.add(workspaceProjectAct);
+					}
 				}
 				
 				projectMenu.addSeparator();
