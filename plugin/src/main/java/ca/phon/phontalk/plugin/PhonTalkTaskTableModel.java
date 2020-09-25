@@ -121,7 +121,7 @@ public class PhonTalkTaskTableModel extends AbstractTableModel {
 				File inputFile = task.getInputFile();
 				retVal = inputFile.getAbsolutePath();
 				if(parentFolder != null) {
-					retVal = ".." + File.separator + parentFolder.toPath().relativize(inputFile.toPath()).toString();
+					retVal = "\u2026" + File.separator + parentFolder.toPath().relativize(inputFile.toPath()).toString();
 				}
 				break;
 				

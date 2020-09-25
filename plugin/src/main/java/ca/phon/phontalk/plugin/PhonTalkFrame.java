@@ -76,6 +76,7 @@ import ca.phon.worker.PhonTask.TaskStatus;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+@Deprecated
 public class PhonTalkFrame extends JFrame {
 
 	private static final long serialVersionUID = -4442294523695339523L;

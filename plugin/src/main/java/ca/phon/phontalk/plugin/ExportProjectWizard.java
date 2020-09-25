@@ -17,6 +17,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.Action;
@@ -101,8 +102,8 @@ import ca.phon.worker.PhonTask.TaskStatus;
 
 public class ExportProjectWizard extends BreadcrumbWizardFrame {
 	
-	private final static String DIALOG_TITLE = "Export Project (PhonTalk)";
-	private final static String DIALOG_MESAGE = "Export an existing Phon project to a folder of CHAT (.cha) or TalkBank (.xml) files";
+	final public static String DIALOG_TITLE = "Export Project (PhonTalk)";
+	final public static String DIALOG_MESAGE = "Export an existing Phon project to a folder of CHAT (.cha) or TalkBank (.xml) files";
 	
 	/* Step 1 */
 	private WizardStep folderStep;
@@ -225,10 +226,14 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		JButton endBtn = nextButton;
 		
 		// remove all buttons from breadcrumb
-		breadCrumbViewer.remove(nextButton);
-		breadCrumbViewer.remove(btnStop);
-		breadCrumbViewer.remove(btnOpenFolder);
-		breadCrumbViewer.remove(btnRunAgain);
+		if(nextButton != null)
+			breadCrumbViewer.remove(nextButton);
+		if(btnStop != null)
+			breadCrumbViewer.remove(btnStop);
+		if(btnOpenFolder != null)
+			breadCrumbViewer.remove(btnOpenFolder);
+		if(btnRunAgain != null)
+			breadCrumbViewer.remove(btnRunAgain);
 	
 		if(breadCrumbViewer.getBreadcrumb().getCurrentState() == importStep && btnStop != null) {
 			if(running) {
@@ -380,6 +385,10 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		exportFolderHistory = new FolderHistory(EXPORTFOLDER_HISTORY_PROP, MAX_FOLDERS);
 		exportFolderField = new FileSelectionField();
 		exportFolderField.setMode(SelectionMode.FOLDERS);
+		Iterator<File> itr = exportFolderHistory.iterator();
+		if(itr.hasNext()) {
+			exportFolderField.setFile(itr.next());
+		}
 		
 		JPopupMenu folderMenu = new JPopupMenu();
 		folderMenu.addPopupMenuListener(new PopupMenuListener() {
@@ -439,6 +448,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		
 		JPanel folderSelectionPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
+		folderSelectionPanel.setBorder(BorderFactory.createTitledBorder("Folder setup"));
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -686,7 +696,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 			projectFolderHistory.saveHistory();
 //		}
 		
-		((PhonTalkTaskTableModel)taskTable.getModel()).setParentFolder(exportFolderField.getSelectedFile());
+		((PhonTalkTaskTableModel)taskTable.getModel()).setParentFolder(projectFolderField.getSelectedFile());
 		
 		try {
 			// create project
@@ -739,7 +749,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		buffer.append("Project folder:\t");
 		buffer.append(projectFolderField.getSelectedFile().getAbsolutePath());
 		buffer.append('\n');
-		buffer.append("Output folder:\t");
+		buffer.append("Output folder:\t\t");
 		buffer.append(exportFolderField.getSelectedFile().getAbsolutePath());
 		buffer.append('\n');
 		
@@ -800,8 +810,10 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 				
 			}
 			
-			
-			
+			if(fileSelectionTree.getCheckedPaths().size() == 0) {
+				showMessage("Please select files for export");
+				return;
+			}
 		}
 		
 		super.next();
@@ -874,12 +886,12 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 				public void run() {
 					String filename = inputFile.getAbsolutePath();
 					if(inputFile.getAbsolutePath().startsWith(inputFolder.getAbsolutePath())) {
-						filename = ".." + File.separator + inputFolder.toPath().relativize(inputFile.toPath()).toString();
+						filename = "\u2026" + File.separator + inputFolder.toPath().relativize(inputFile.toPath()).toString();
 					}
 					
 					String outputFilename = ptTask.getOutputFile().getAbsolutePath();
 					if(outputFilename.startsWith(exportFolderField.getSelectedFile().getAbsolutePath())) {
-						outputFilename = ".." + File.separator + exportFolderField.getSelectedFile().toPath().relativize(ptTask.getOutputFile().toPath()).toString();
+						outputFilename = "\u2026" + File.separator + exportFolderField.getSelectedFile().toPath().relativize(ptTask.getOutputFile().toPath()).toString();
 					}
 					
 					int taskRow = taskTableModel.rowForTask(ptTask);

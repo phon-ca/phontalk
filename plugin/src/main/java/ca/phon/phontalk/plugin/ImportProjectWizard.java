@@ -91,8 +91,8 @@ import ca.phon.worker.PhonTask.TaskStatus;
 
 public class ImportProjectWizard extends BreadcrumbWizardFrame {
 	
-	private final static String DIALOG_TITLE = "Import Project (PhonTalk)";
-	private final static String DIALOG_MESAGE = "Create a new Phon project from a folder of CHAT (.cha) or TalkBank (.xml) files";
+	public final static String DIALOG_TITLE = "Import Project (PhonTalk)";
+	public final static String DIALOG_MESAGE = "Create a new Phon project from a folder of CHAT (.cha) or TalkBank (.xml) files";
 	
 	/* Step 1 */
 	private WizardStep folderStep;
@@ -215,10 +215,14 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		JButton endBtn = nextButton;
 		
 		// remove all buttons from breadcrumb
-		breadCrumbViewer.remove(nextButton);
-		breadCrumbViewer.remove(btnStop);
-		breadCrumbViewer.remove(btnOpenProject);
-		breadCrumbViewer.remove(btnRunAgain);
+		if(nextButton != null)
+			breadCrumbViewer.remove(nextButton);
+		if(btnStop != null)
+			breadCrumbViewer.remove(btnStop);
+		if(btnOpenProject != null)
+			breadCrumbViewer.remove(btnOpenProject);
+		if(btnRunAgain != null)
+			breadCrumbViewer.remove(btnRunAgain);
 	
 		if(breadCrumbViewer.getBreadcrumb().getCurrentState() == importStep && btnStop != null) {
 			if(running) {
@@ -778,21 +782,21 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		
 		buffer.append("----------------------------------------------\n");
 		if(canceled)
-			buffer.append("Import canceled:\t\t");
+			buffer.append("Import canceled:\t\t\t");
 		else
-			buffer.append("Import finished:\t\t");
+			buffer.append("Import finished:\t\t\t");
 		buffer.append(String.format("%d/%d files processed\n",
 				numCHATFilesProcessed + numTBFilesProcessed + numFilesCopied, numCHATFiles + numTBFiles + numFilesToCopy));
 		if(numFilesToCopy > 0)
-			buffer.append(String.format("Files copied:\t\t\t%d/%d\n", numFilesCopied, numFilesToCopy));
+			buffer.append(String.format("Files copied:\t\t\t\t%d/%d\n", numFilesCopied, numFilesToCopy));
 		if(numCHATFiles > 0)
-			buffer.append(String.format("CHAT files processed:\t%d/%d\n", numCHATFilesProcessed, numCHATFiles));
+			buffer.append(String.format("CHAT files processed:\t\t%d/%d\n", numCHATFilesProcessed, numCHATFiles));
 		if(numTBFiles > 0)
 			buffer.append(String.format("TalkBank files processed:\t%d/%d\n", numTBFilesProcessed, numTBFiles));
 		if(numFilesFailed > 0)
 			buffer.append(String.format("Failed to process %d files\n", numFilesFailed));
 		
-		buffer.append(String.format("Elapsed time:\t\t\t%s\n", MsFormatter.msToDisplayString(importFinishedMs-importStartedMs)));
+		buffer.append(String.format("Elapsed time:\t\t\t\t%s\n", MsFormatter.msToDisplayString(importFinishedMs-importStartedMs)));
 		
 		bufferPanel.getLogBuffer().append(buffer.toString());
 	}
@@ -832,8 +836,10 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 				return;
 			}
 			
-			// TODO ensure selected files for import
-			
+			if(fileSelectionTree.getCheckedPaths().size() == 0) {
+				showMessage("Please select files for import");
+				return;
+			}
 		}
 		
 		super.next();
@@ -906,12 +912,12 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 				public void run() {
 					String filename = inputFile.getAbsolutePath();
 					if(inputFile.getAbsolutePath().startsWith(inputFolder.getAbsolutePath())) {
-						filename = ".." + File.separator + inputFolder.toPath().relativize(inputFile.toPath()).toString();
+						filename = "\u2026" + File.separator + inputFolder.toPath().relativize(inputFile.toPath()).toString();
 					}
 					
 					String outputFilename = ptTask.getOutputFile().getAbsolutePath();
 					if(outputFilename.startsWith(outputFolderField.getSelectedFile().getAbsolutePath())) {
-						outputFilename = ".." + File.separator + outputFolderField.getSelectedFile().toPath().relativize(ptTask.getOutputFile().toPath()).toString();
+						outputFilename = "\u2026" + File.separator + outputFolderField.getSelectedFile().toPath().relativize(ptTask.getOutputFile().toPath()).toString();
 					}
 					
 					int taskRow = taskTableModel.rowForTask(ptTask);
