@@ -188,7 +188,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 	private void init() {
 		setupFolderStep();
 		setupOptionsStep();
-		createImportStep();
+		createExportStep();
 		
 		folderStep.setNextStep(1);
 		optionsStep.setPrevStep(0);
@@ -228,7 +228,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		btnRunAgain.setText("Run again");
 		btnRunAgain.addActionListener( (e) -> {
 			if(!running) {
-				beginImport();
+				beginExport();
 			}
 		});
 		
@@ -569,7 +569,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		optionsStep.add(centerPanel, BorderLayout.CENTER);
 	}
 	
-	private void createImportStep() {
+	private void createExportStep() {
 		importStep = new WizardStep();
 		importStep.setTitle("Import");
 		
@@ -603,12 +603,6 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		splitPane.setLeftComponent(taskScroller);
 		splitPane.setRightComponent(tabPane);
 		importStep.add(splitPane, BorderLayout.CENTER);
-	}
-	
-	public void clearImportFolderHistory() {
-		FolderHistory history = new FolderHistory(EXPORTFOLDER_HISTORY_PROP);
-		history.clearHistory();
-		history.saveHistory();
 	}
 	
 	private TristateCheckBoxTreeNode scanFolder(File folder) {
@@ -720,7 +714,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		worker.setFinishWhenQueueEmpty(true);
 	}
 	
-	private void beginImport() {
+	private void beginExport() {
 		((PhonTalkTaskTableModel)taskTable.getModel()).clear();
 		((PhonTalkMessageTableModel)messageTable.getModel()).clear();
 		bufferPanel.getLogBuffer().setText("");
@@ -787,7 +781,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 //		return retVal;
 //	}
 	
-	private void cancelImport() {
+	private void cancelExport() {
 		if(running && currentWorker != null) {
 			if(currentWorker.isAlive()) {
 				canceled = true;
@@ -885,16 +879,16 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		super.gotoStep(stepIndex);
 		
 		if(importStep == getCurrentStep() && currentWorker == null) {
-			beginImport();
+			beginExport();
 		}
 	}
 	
 	@Override
 	public void close() {
 		if(running) {
-			int selected = showMessageDialog(DIALOG_TITLE, "Cancel import?", MessageDialogProperties.yesNoOptions);
+			int selected = showMessageDialog(DIALOG_TITLE, "Cancel export?", MessageDialogProperties.yesNoOptions);
 			if(selected == 0) {
-				cancelImport();
+				cancelExport();
 			} else {
 				return;
 			}
