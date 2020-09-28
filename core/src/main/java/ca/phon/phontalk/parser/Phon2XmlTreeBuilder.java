@@ -114,6 +114,34 @@ public class Phon2XmlTreeBuilder {
 				// date is inserted before processing session
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("pid")) {
 				insertPid(retVal, comment.getValue());
+			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@ActivityType")) {
+				CommonTree activityTypeTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_ACTIVITYTYPE");
+				activityTypeTree.getToken().setText(comment.getValue().substring("@ActivityType".length()).trim());
+				retVal.addChild(activityTypeTree);
+			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@GroupType")) {
+				CommonTree groupTypeTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_GROUPTYPE");
+				groupTypeTree.getToken().setText(comment.getValue().substring("@GroupType".length()).trim());
+				retVal.addChild(groupTypeTree);
+			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@DesignType")) {
+				CommonTree designTypeTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_DESIGNTYPE");
+				designTypeTree.getToken().setText(comment.getValue().substring("@DesignType".length()).trim());
+				retVal.addChild(designTypeTree);
+			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@Colorwords")) {
+				CommonTree colorwordTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_COLORWORDS");
+				colorwordTree.getToken().setText(comment.getValue().substring("@Colorwords".length()).trim());
+				retVal.addChild(colorwordTree);
+			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@Options")) {
+				CommonTree optionsTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_OPTIONS");
+				optionsTree.getToken().setText(comment.getValue().substring("@Options".length()).trim());
+				retVal.addChild(optionsTree);
+			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@Window")) {
+				CommonTree optionsTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_WINDOW");
+				optionsTree.getToken().setText(comment.getValue().substring("@Window".length()).trim());
+				retVal.addChild(optionsTree);
+			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@Font")) {
+				CommonTree optionsTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_FONT");
+				optionsTree.getToken().setText(comment.getValue().substring("@Font".length()).trim());
+				retVal.addChild(optionsTree);
 			} else {					
 				insertComment(retVal, comment);
 			}

@@ -134,27 +134,45 @@ chat_attrs
 	}
 	|	CHAT_ATTR_OPTIONS
 	{
-		reportWarning("CHAT attribute 'Options' is currently unsupported");
+		Comment comment = sessionFactory.createComment();
+		comment.setTag("Code");
+		comment.setValue("@Options " + $CHAT_ATTR_OPTIONS.text);
+		session.getMetadata().addComment(comment);
 	}
 	|	CHAT_ATTR_DESIGNTYPE
 	{
-		reportWarning("CHAT attribute 'DesignType' is currently unsupported");
+		Comment comment = sessionFactory.createComment();
+		comment.setTag("Code");
+		comment.setValue("@DesignType " + $CHAT_ATTR_DESIGNTYPE.text);
+		session.getMetadata().addComment(comment);
 	}
 	|	CHAT_ATTR_ACTIVITYTYPE
 	{
-		reportWarning("CHAT attribute 'ActivityType' is currently unsupported");
+		Comment comment = sessionFactory.createComment();
+		comment.setTag("Code");
+		comment.setValue("@ActivityType " + $CHAT_ATTR_ACTIVITYTYPE.text);
+		session.getMetadata().addComment(comment);
 	}
 	|	CHAT_ATTR_GROUPTYPE
 	{
-		reportWarning("CHAT attribute 'GroupType' is currently unsupported");
+		Comment comment = sessionFactory.createComment();
+		comment.setTag("Code");
+		comment.setValue("@GroupType " + $CHAT_ATTR_GROUPTYPE.text);
+		session.getMetadata().addComment(comment);
 	}
 	|	CHAT_ATTR_COLORWORDS
 	{
-		reportWarning("CHAT attribute 'Colorwords' is currently unsupported");
+		Comment comment = sessionFactory.createComment();
+		comment.setTag("Code");
+		comment.setValue("@Colorwords " + $CHAT_ATTR_COLORWORDS.text);
+		session.getMetadata().addComment(comment);
 	}
 	|	CHAT_ATTR_WINDOW
 	{
-		reportWarning("CHAT attribute 'Window' is currently unsupported");
+		Comment comment = sessionFactory.createComment();
+		comment.setTag("Code");
+		comment.setValue("@Window " + $CHAT_ATTR_WINDOW.text);
+		session.getMetadata().addComment(comment);
 	}
 	|	CHAT_ATTR_PID
 	{
@@ -165,7 +183,10 @@ chat_attrs
 	}
 	|	CHAT_ATTR_FONT
 	{
-		reportWarning("CHAT attribute 'Font' is currently unsupported");
+		Comment comment = sessionFactory.createComment();
+		comment.setTag("Code");
+		comment.setValue("@Font " + $CHAT_ATTR_FONT.text);
+		session.getMetadata().addComment(comment);
 	}
 	;
 ]]>
