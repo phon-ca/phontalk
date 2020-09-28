@@ -52,6 +52,7 @@ import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXStatusBar.Constraint.ResizeBehavior;
 import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.VerticalLayout;
 
 import com.sun.jna.platform.win32.WinUser.COPYDATASTRUCT;
 
@@ -109,7 +110,7 @@ import ca.phon.worker.PhonTask.TaskStatus;
 public class ExportProjectWizard extends BreadcrumbWizardFrame {
 	
 	final public static String DIALOG_TITLE = "Export Project";
-	final public static String DIALOG_MESAGE = "Export an existing Phon project to a folder of CHAT (.cha) or TalkBank (.xml) files";
+	final public static String DIALOG_MESAGE = "Export a Phon project to a folder of CHAT (.cha) or TalkBank (.xml) files";
 	
 	/* Step 1 */
 	private WizardStep folderStep;
@@ -560,9 +561,12 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		typePanel.add(exportCHATBtn);
 		typePanel.add(exportTBBtn);
 		
+		JPanel centerPanel = new JPanel(new VerticalLayout());
+		centerPanel.add(typePanel);
+		
 		DialogHeader header = new DialogHeader(DIALOG_TITLE, DIALOG_MESAGE);
 		optionsStep.add(header, BorderLayout.NORTH);
-		optionsStep.add(typePanel, BorderLayout.CENTER);
+		optionsStep.add(centerPanel, BorderLayout.CENTER);
 	}
 	
 	private void createImportStep() {

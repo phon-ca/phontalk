@@ -117,31 +117,31 @@ public class Phon2XmlTreeBuilder {
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@ActivityType")) {
 				CommonTree activityTypeTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_ACTIVITYTYPE");
 				activityTypeTree.getToken().setText(comment.getValue().substring("@ActivityType".length()).trim());
-				retVal.addChild(activityTypeTree);
+				retVal.insertChild(0, activityTypeTree);
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@GroupType")) {
 				CommonTree groupTypeTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_GROUPTYPE");
 				groupTypeTree.getToken().setText(comment.getValue().substring("@GroupType".length()).trim());
-				retVal.addChild(groupTypeTree);
+				retVal.insertChild(0, groupTypeTree);
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@DesignType")) {
 				CommonTree designTypeTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_DESIGNTYPE");
 				designTypeTree.getToken().setText(comment.getValue().substring("@DesignType".length()).trim());
-				retVal.addChild(designTypeTree);
+				retVal.insertChild(0, designTypeTree);
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@Colorwords")) {
 				CommonTree colorwordTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_COLORWORDS");
 				colorwordTree.getToken().setText(comment.getValue().substring("@Colorwords".length()).trim());
-				retVal.addChild(colorwordTree);
+				retVal.insertChild(0, colorwordTree);
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@Options")) {
 				CommonTree optionsTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_OPTIONS");
 				optionsTree.getToken().setText(comment.getValue().substring("@Options".length()).trim());
-				retVal.addChild(optionsTree);
+				retVal.insertChild(0, optionsTree);
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@Window")) {
 				CommonTree optionsTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_WINDOW");
 				optionsTree.getToken().setText(comment.getValue().substring("@Window".length()).trim());
-				retVal.addChild(optionsTree);
+				retVal.insertChild(0, optionsTree);
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@Font")) {
 				CommonTree optionsTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_FONT");
 				optionsTree.getToken().setText(comment.getValue().substring("@Font".length()).trim());
-				retVal.addChild(optionsTree);
+				retVal.insertChild(0, optionsTree);
 			} else {					
 				insertComment(retVal, comment);
 			}
@@ -196,10 +196,10 @@ public class Phon2XmlTreeBuilder {
 	 * Insert the date comment into the xml
 	 */
 	private void insertDate(CommonTree tree, Session t) {
-		// date needs to be in CHAT format: dd-MMM-yyyy e.g., 1-Jul-1865
+		// date needs to be in CHAT format: dd-LL-yyyy e.g., 1-Jul-1865
 		// we need to use the US locale to get the correct format
 		DateTimeFormatter formatter = 
-				DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+				DateTimeFormatter.ofPattern("dd-LLL-yyyy");
 		LocalDate tDate = t.getDate();
 		
 		String chatDateStr = formatter.format(tDate).toUpperCase();
