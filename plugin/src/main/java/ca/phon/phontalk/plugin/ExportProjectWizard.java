@@ -107,7 +107,7 @@ import ca.phon.worker.PhonTask.TaskStatus;
 
 public class ExportProjectWizard extends BreadcrumbWizardFrame {
 	
-	final public static String DIALOG_TITLE = "Export Project (PhonTalk)";
+	final public static String DIALOG_TITLE = "Export Project";
 	final public static String DIALOG_MESAGE = "Export an existing Phon project to a folder of CHAT (.cha) or TalkBank (.xml) files";
 	
 	/* Step 1 */
@@ -372,14 +372,14 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 					Set<Project> openProjects = projectWindows.keySet();
 					
 					if(idx > 0) projectMenu.addSeparator();
-					JMenuItem headerItm = new JMenuItem("-- Open projects --");
-					headerItm.setEnabled(false);
-					projectMenu.add(headerItm);
+					
+					JMenu openProjectsMenu = new JMenu("Open projects");
+					projectMenu.add(openProjectsMenu);
 					
 					for(Project project:openProjects) {
 						PhonUIAction projectAct = new PhonUIAction(projectFolderField, "setFile", new File(project.getLocation()));
 						projectAct.putValue(PhonUIAction.NAME, project.getLocation());
-						projectMenu.add(projectAct);
+						openProjectsMenu.add(projectAct);
 						++idx;
 					}
 				}

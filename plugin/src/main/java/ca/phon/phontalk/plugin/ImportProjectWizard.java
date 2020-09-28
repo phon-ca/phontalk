@@ -23,6 +23,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -92,7 +93,7 @@ import ca.phon.worker.PhonTask.TaskStatus;
 
 public class ImportProjectWizard extends BreadcrumbWizardFrame {
 	
-	public final static String DIALOG_TITLE = "Import Project (PhonTalk)";
+	public final static String DIALOG_TITLE = "Import Project";
 	public final static String DIALOG_MESAGE = "Create a new Phon project from a folder of CHAT (.cha) or TalkBank (.xml) files";
 	
 	/* Step 1 */
@@ -363,51 +364,54 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		outputFolderHistory = new FolderHistory(OUTPUTFOLDER_HISTORY_PROP, MAX_FOLDERS);
 		outputFolderField = new FileSelectionField();
 		outputFolderField.setMode(SelectionMode.FOLDERS);
-		outputFolderField.setFile(Workspace.userWorkspaceFolder());
+		if(outputFolderHistory.iterator().hasNext())
+			outputFolderField.setFile(outputFolderHistory.iterator().next());
+		else
+			outputFolderField.setFile(Workspace.userWorkspaceFolder());
 		
-		JPopupMenu workspaceMenu = new JPopupMenu();
-		workspaceMenu.addPopupMenuListener(new PopupMenuListener() {
+		JPopupMenu outputFolderMenu = new JPopupMenu();
+		outputFolderMenu.addPopupMenuListener(new PopupMenuListener() {
 			
 			@Override
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-				workspaceMenu.removeAll();
+				outputFolderMenu.removeAll();
 				
 				int idx = 0;
 				for(File folder:outputFolderHistory) {
 					PhonUIAction folderAct = new PhonUIAction(outputFolderField, "setFile", folder);
 					folderAct.putValue(PhonUIAction.NAME, folder.getAbsolutePath());
-					workspaceMenu.add(folderAct);
+					outputFolderMenu.add(folderAct);
 					++idx;
 				}
 				if(idx > 0) {
-					workspaceMenu.addSeparator();
+					outputFolderMenu.addSeparator();
 					PhonUIAction clearAct = new PhonUIAction(outputFolderHistory, "clearHistory");
 					clearAct.putValue(PhonUIAction.NAME, "Clear history");
 					clearAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Clear output folder history");
-					workspaceMenu.add(clearAct);
+					outputFolderMenu.add(clearAct);
 				}
 				
-				if(idx > 0) {
-					workspaceMenu.addSeparator();
+				if(workspaceHistory.iterator().hasNext()) {
+					if(idx > 0) {
+						outputFolderMenu.addSeparator();
+					}
+					
+					JMenu workspaceMenu = new JMenu("Workspace history");
+					outputFolderMenu.add(workspaceMenu);
+					
+					for(File workspaceFolder:workspaceHistory) {
+						PhonUIAction workspaceAct = new PhonUIAction(outputFolderField, "setFile", workspaceFolder);
+						workspaceAct.putValue(PhonUIAction.NAME, workspaceFolder.getAbsolutePath());
+						workspaceMenu.add(workspaceAct);
+						++idx;
+					}
 				}
 				
-				for(File workspaceFolder:workspaceHistory) {
-					if(workspaceFolder.equals(Workspace.defaultWorkspaceFolder())) continue;
-					PhonUIAction workspaceAct = new PhonUIAction(outputFolderField, "setFile", workspaceFolder);
-					workspaceAct.putValue(PhonUIAction.NAME, workspaceFolder.getAbsolutePath());
-					workspaceMenu.add(workspaceAct);
-					++idx;
-				}
-				
-				PhonUIAction defWorksapceAct = new PhonUIAction(outputFolderField, "setFile", Workspace.defaultWorkspaceFolder());
-				defWorksapceAct.putValue(PhonUIAction.NAME, Workspace.defaultWorkspaceFolder().getAbsolutePath());
-				workspaceMenu.add(defWorksapceAct);
-				
-				workspaceMenu.addSeparator();
+				outputFolderMenu.addSeparator();
 				PhonUIAction browseAct = new PhonUIAction(outputFolderField, "onBrowse");
 				browseAct.putValue(PhonUIAction.NAME, "Select folder...");
 				browseAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Select output folder");
-				workspaceMenu.add(browseAct);
+				outputFolderMenu.add(browseAct);
 			}
 			
 			@Override
@@ -421,7 +425,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 	
 		
 		PhonUIAction dropDownAct = new PhonUIAction(outputFolderField, "onBrowse");
-		dropDownAct.putValue(DropDownButton.BUTTON_POPUP, workspaceMenu);
+		dropDownAct.putValue(DropDownButton.BUTTON_POPUP, outputFolderMenu);
 		dropDownAct.putValue(DropDownButton.ARROW_ICON_GAP, 0);
 		dropDownAct.putValue(DropDownButton.ARROW_ICON_POSITION, SwingConstants.BOTTOM);
 		dropDownAct.putValue(PhonUIAction.SMALL_ICON, outputFolderField.getBrowseButton().getIcon());
