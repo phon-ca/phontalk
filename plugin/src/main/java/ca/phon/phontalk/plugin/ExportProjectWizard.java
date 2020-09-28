@@ -17,6 +17,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -240,6 +241,10 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		add(statusBar, BorderLayout.SOUTH);
 		
 		SwingUtilities.invokeLater( () -> updateBreadcrumbButtons() );
+	}
+	
+	public void setProjectLocation(String projectLocation) {
+		projectFolderField.setFile(new File(projectLocation));
 	}
 	
 	public void updateBreadcrumbButtons() {
@@ -608,7 +613,9 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		
 		SessionInputFactory inputFactory = new SessionInputFactory();
 		
-		for(File file:folder.listFiles()) {
+		List<File> fileList = new ArrayList<>(List.of(folder.listFiles()));
+		fileList.sort( (f1, f2) -> { return f1.getName().compareTo(f2.getName()); } );
+		for(File file:fileList) {
 			if(file.isHidden()) continue;
 			if(file.getName().startsWith("~")) continue;
 			
