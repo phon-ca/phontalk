@@ -21,7 +21,7 @@ import ca.phon.session.io.*;
 		version="2.5.0",
 		mimetype="application/xml",
 		extension="xml",
-		name="TalkBank"
+		name="TalkBank (.xml)"
 )
 public class TalkBankSessionReader implements SessionReader, IPluginExtensionPoint<SessionReader> {
 

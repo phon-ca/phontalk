@@ -15,7 +15,7 @@ import ca.phon.session.io.*;
 		version="0.0.1",
 		mimetype="application/text",
 		extension="cha",
-		name="CHAT"
+		name="CHAT (.cha)"
 )
 public class CHATSessionWriter implements SessionWriter, IPluginExtensionPoint<SessionWriter> {
 

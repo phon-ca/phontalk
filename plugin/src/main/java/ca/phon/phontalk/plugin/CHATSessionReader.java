@@ -17,7 +17,7 @@ import ca.phon.ui.nativedialogs.OSInfo;
 		version="0.0.1",
 		mimetype="application/text",
 		extension="cha",
-		name="CHAT"
+		name="CHAT (.cha)"
 )
 public class CHATSessionReader implements SessionReader, IPluginExtensionPoint<SessionReader> {
 
