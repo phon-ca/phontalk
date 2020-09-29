@@ -571,7 +571,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 	
 	private void createExportStep() {
 		importStep = new WizardStep();
-		importStep.setTitle("Import");
+		importStep.setTitle("Export");
 		
 		importStep.setLayout(new BorderLayout());
 		
