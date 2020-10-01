@@ -135,6 +135,11 @@ public class Xml2PhonConverter {
 			msg.setFile(inputFile);
 			if(listener != null) listener.message(msg);
 			return null;
+		} catch (Exception e) {
+			final PhonTalkMessage msg = new PhonTalkMessage(e.getLocalizedMessage());
+			msg.setFile(inputFile);
+			if(listener != null) listener.message(msg);
+			return null;
 		}
 		
 		return session;

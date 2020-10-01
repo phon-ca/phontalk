@@ -9,6 +9,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
+import ca.phon.app.log.LogUtil;
 import ca.phon.phontalk.*;
 import ca.phon.plugin.IPluginExtensionFactory;
 import ca.phon.plugin.IPluginExtensionPoint;
@@ -29,12 +30,16 @@ public class TalkBankSessionReader implements SessionReader, IPluginExtensionPoi
 	public Session readSession(InputStream stream) throws IOException {
 		final Xml2PhonConverter converter = new Xml2PhonConverter();
 		converter.setInputFile(new File("unknown.xml"));
+		final StringBuffer buffer = new StringBuffer();
 		final PhonTalkListener listener = (PhonTalkMessage msg) -> {
-			// TODO add to list of session warnings
-			System.out.println(msg);
+			buffer.append(String.format("(%d:%d) %s", msg.getLineNumber(), msg.getColNumber(), msg.getMessage()));
 		};
 		
+		
 		Session retVal = converter.convertStream(stream, listener);
+		if(buffer.length() > 0) {
+			LogUtil.warning(buffer.toString());
+		}
 		// ID is no longer provided in TalkBank XML, Phon will fix this later
 		retVal.setName("");
 		retVal.putExtension(OriginalFormat.class, new OriginalFormat(getClass().getAnnotation(SessionIO.class)));
