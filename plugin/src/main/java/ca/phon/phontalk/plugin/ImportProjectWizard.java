@@ -544,6 +544,8 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		
 		FileFilter chatFilter = new FileFilter("CHAT files", "cha");
 		
+		if(!folder.exists()) return retVal;
+		
 		List<File> fileList = new ArrayList<>(List.of(folder.listFiles()));
 		fileList.sort( (f1, f2) -> { return f1.getName().compareTo(f2.getName()); } );
 		for(File file:fileList) {

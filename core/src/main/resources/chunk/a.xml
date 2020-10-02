@@ -47,7 +47,7 @@ scope {
 }
 	:	^(A_START a_attr* eles+=aele*)
 	{
-		String tierVal = $a::buffer.trim();
+		String tierVal = StringEscapeUtils.unescapeXml($a::buffer.trim());
 		// special tiers
 		if(	$a::t.equals("addressee") 
 			|| $a::t.equals("actions") 
@@ -197,7 +197,7 @@ a
 			attrs={$attrlist},
 			content={$contentlist}
 		)
-	<<\<a <attrs; separator=" ">\>\<![CDATA[<content; separator="">]]\>\</a\> >>
+	<<\<a <attrs; separator=" ">\><content; separator="">\</a\> >>
 	;
 
 aele

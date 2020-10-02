@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import java.util.regex.*;
 
 import org.antlr.runtime.tree.CommonTree;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import ca.phon.ipa.IPATranscript;
 import ca.phon.ipa.alignment.*;
@@ -231,8 +232,6 @@ public class Phon2XmlTreeBuilder {
 			int extIdx = mediaName.lastIndexOf('.');
 			String fname = 
 				(extIdx >= 0 ? mediaName.substring(0, extIdx) : mediaName);
-//			String fname = t.getMediaLocation().substring(0,
-//					t.getMediaLocation().lastIndexOf('.'));
 			String fext = 
 				(extIdx >= 0 ? mediaName.substring(extIdx+1) : "");
 			
@@ -252,8 +251,17 @@ public class Phon2XmlTreeBuilder {
 			} else {
 				node2.getToken().setText("video");
 			}
+			
+			if(t.getRecordCount() == 0) {
+				node2.getToken().setText(node2.getToken().getText() + " notrans");
+			}
+			
 			node2.setParent(tree);
 			tree.addChild(node2);
+		} else {
+			CommonTree node = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_MEDIATYPES");
+			node.getToken().setText("missing");
+			tree.addChild(node);
 		}
 		
 		// language
@@ -734,34 +742,33 @@ public class Phon2XmlTreeBuilder {
 			handeledTiers.add(depTierName);
 			
 			if(depTier.isGrouped()) {
-//				boolean hasData = 
-//						(depTier.toString().replaceAll("\\[", "").replaceAll("\\]", "").trim().length() > 0);
-//				
-//				if(hasData) {
-					CommonTree depTierNode =
-							AntlrUtils.createToken(talkbankTokens, "A_START");
-					depTierNode.setParent(uNode);
-					
-					CommonTree typeNode =
-						AntlrUtils.createToken(talkbankTokens, "A_ATTR_TYPE");
-					typeNode.getToken().setText("extension");
-					
-					typeNode.setParent(depTierNode);
-					depTierNode.addChild(typeNode);
-					
-					CommonTree flavorNode = 
-						AntlrUtils.createToken(talkbankTokens, "A_ATTR_FLAVOR");
-					String tName = tierNameMap.get(depTierName);
-					flavorNode.getToken().setText(tName);
-					flavorNode.setParent(depTierNode);
-					depTierNode.addChild(flavorNode);
-					
-					uNode.addChild(depTierNode);
-					
-					addTextNode(depTierNode, depTier.toString().trim());
-//				}
+				CommonTree depTierNode =
+						AntlrUtils.createToken(talkbankTokens, "A_START");
+				depTierNode.setParent(uNode);
+				
+				CommonTree typeNode =
+					AntlrUtils.createToken(talkbankTokens, "A_ATTR_TYPE");
+				typeNode.getToken().setText("extension");
+				
+				typeNode.setParent(depTierNode);
+				depTierNode.addChild(typeNode);
+				
+				CommonTree flavorNode = 
+					AntlrUtils.createToken(talkbankTokens, "A_ATTR_FLAVOR");
+				String tName = tierNameMap.get(depTierName);
+				flavorNode.getToken().setText(tName);
+				flavorNode.setParent(depTierNode);
+				depTierNode.addChild(flavorNode);
+				
+				uNode.addChild(depTierNode);
+				
+				String val = depTier.toString().trim();
+				// CHAT requires a space between the brackets
+				val = val.replaceAll("\\[\\]", "[ ]");
+				val = StringEscapeUtils.escapeXml(val);
+				addTextNode(depTierNode, val);
 			} else {
-				String tierVal = depTier.getGroup(0).trim();
+				String tierVal = StringEscapeUtils.escapeXml(depTier.getGroup(0).trim());
 				if(tierVal.length() == 0) continue;
 			
 				CommonTree depTierNode =
