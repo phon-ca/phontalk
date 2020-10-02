@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import ca.phon.ipa.IPATranscript;
 import ca.phon.ipa.alignment.*;
 import ca.phon.orthography.Orthography;
+import ca.phon.phontalk.Phon2XMLSettings;
 import ca.phon.session.*;
 import ca.phon.session.format.DateFormatter;
 
@@ -80,6 +81,17 @@ public class Phon2XmlTreeBuilder {
 		"Morphology",
 		"uttlan"
 	};
+	
+	private Phon2XMLSettings settings;
+	
+	public Phon2XmlTreeBuilder() {
+		this(new Phon2XMLSettings());
+	}
+	
+	public Phon2XmlTreeBuilder(Phon2XMLSettings settings) {
+		super();
+		this.settings = settings;
+	}
 	
 	/**
 	 * Construct the ANTLR Chat tree from the given Phon ITranscript.
@@ -611,7 +623,6 @@ public class Phon2XmlTreeBuilder {
 		Stack<CommonTree> uttNodeStack = new Stack<CommonTree>();
 		uttNodeStack.push(uNode);
 		
-		
 		for(int gIdx = 0; gIdx < utt.numberOfGroups(); gIdx++) {
 			final Group group = utt.getGroup(gIdx);
 			
@@ -658,7 +669,8 @@ public class Phon2XmlTreeBuilder {
 					grpNode.addChild(targetNode);
 
 					// syllabification
-					addSyllabification(targetNode, tRep);
+					if(settings.isExportSyllabAndAlign())
+						addSyllabification(targetNode, tRep);
 				}
 
 				if(hasActual) {
@@ -668,11 +680,12 @@ public class Phon2XmlTreeBuilder {
 					grpNode.addChild(actualNode);
 
 					// syllabification
-					addSyllabification(actualNode, aRep);
+					if(settings.isExportSyllabAndAlign())
+						addSyllabification(actualNode, aRep);
 				}
 
 				// alignment only makes sense when we have model+actual
-				if(hasActual && hasTarget) {
+				if(hasActual && hasTarget && settings.isExportSyllabAndAlign()) {
 					PhoneMap pm = group.getPhoneAlignment();
 					if(pm == null || pm.getAlignmentLength() == 0) {
 						pm = (new PhoneAligner()).calculatePhoneAlignment(tRep, aRep);
