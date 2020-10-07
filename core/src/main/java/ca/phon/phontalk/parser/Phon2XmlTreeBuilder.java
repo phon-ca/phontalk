@@ -33,6 +33,7 @@ import ca.phon.ipa.alignment.*;
 import ca.phon.orthography.Orthography;
 import ca.phon.phontalk.Phon2XMLSettings;
 import ca.phon.session.*;
+import ca.phon.session.Record;
 import ca.phon.session.format.DateFormatter;
 
 /**
