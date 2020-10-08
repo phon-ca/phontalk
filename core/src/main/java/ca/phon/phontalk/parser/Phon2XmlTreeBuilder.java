@@ -216,7 +216,7 @@ public class Phon2XmlTreeBuilder {
 				DateTimeFormatter.ofPattern("dd-LLL-yyyy");
 		LocalDate tDate = t.getDate();
 		
-		String chatDateStr = formatter.format(tDate).toUpperCase();
+		String chatDateStr = formatter.format(tDate).toUpperCase().replaceAll("\\.", "");
 		
 		CommonTree commentTree = AntlrUtils.createToken(talkbankTokens, "COMMENT_START");
 		commentTree.setParent(tree);

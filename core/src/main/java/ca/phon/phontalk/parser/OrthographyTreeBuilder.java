@@ -1,5 +1,6 @@
 package ca.phon.phontalk.parser;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -370,15 +371,27 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		rNode.setParent(parent);
 		parent.addChild(rNode);
 		
-		String[] wEles = data.split("\\p{Space}");
-		for(String wEle:wEles) {
-			CommonTree wNode = 
-				AntlrUtils.createToken(talkbankTokens, "W_START");
-			wNode.setParent(rNode);
-			rNode.addChild(wNode);
-			
-			addTextNode(wNode, wEle);
+		try {
+			OrthographyTreeBuilder innerBuilder = new OrthographyTreeBuilder();
+			Orthography replacementOrtho = Orthography.parseOrthography(data);
+			CommonTree fakeU = AntlrUtils.createToken(talkbankTokens, "U_START");
+			Stack<CommonTree> fakeUStack = new Stack<>();
+			fakeUStack.push(fakeU);
+			innerBuilder.buildTree(fakeUStack, rNode, replacementOrtho);
+		} catch (ParseException e) {
+			LOGGER.warning(e.getLocalizedMessage());
 		}
+		
+		
+//		String[] wEles = data.split("\\p{Space}");
+//		for(String wEle:wEles) {
+//			CommonTree wNode = 
+//				AntlrUtils.createToken(talkbankTokens, "W_START");
+//			wNode.setParent(rNode);
+//			rNode.addChild(wNode);
+//			
+//			addTextNode(wNode, wEle);
+//		}
 	}
 	
 	

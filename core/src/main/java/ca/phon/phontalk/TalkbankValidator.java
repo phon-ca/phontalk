@@ -135,7 +135,6 @@ public class TalkbankValidator {
 	 */
 	public LSResourceResolver getResourceResolver() {
 		final CatalogResolver entityResolver = getCatalogResolver();
-		
 	
 		LSResourceResolver retVal = new LSResourceResolver() {
 		    @Override
