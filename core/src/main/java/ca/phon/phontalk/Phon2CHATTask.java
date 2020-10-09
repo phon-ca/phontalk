@@ -80,6 +80,10 @@ public class Phon2CHATTask extends PhonTalkTask {
 				throw e;
 			}
 			
+			if(!getOutputFile().exists() || getOutputFile().length() == 0) {
+				throw new IOException("Output file not written");
+			}
+			
 			setStatus(TaskStatus.FINISHED);
 		} catch (Exception e) {
 			if(PhonTalkUtil.isVerbose()) e.printStackTrace();

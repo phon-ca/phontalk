@@ -893,7 +893,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 							(PhonTalkMessageTableModel)messageTable.getModel();
 					reportTableModel.addMessage(msg);
 					
-					String msgText = String.format("\t(%d:%d) %s\n", msg.getLineNumber(), msg.getColNumber(), msg.getMessage());
+					String msgText = String.format("\t%s\n", msg.getMessage());
 					bufferPanel.getLogBuffer().append(msgText);
 				}
 			};
