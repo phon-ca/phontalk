@@ -84,7 +84,7 @@
   
   <properties>
   	<ca.phon.version>3.1.4-SNAPSHOT</ca.phon.version>
-  	<junit.junit.version>4.8.2</junit.junit.version>
+  	<junit.junit.version>4.13.1</junit.junit.version>
   	
     <!-- Project settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
