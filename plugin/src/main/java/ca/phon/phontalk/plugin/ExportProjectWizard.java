@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -36,6 +37,7 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -563,6 +565,23 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		PhonTalkTaskTableModel taskTableModel = new PhonTalkTaskTableModel();
 		taskTable = new JXTable(taskTableModel);
 		taskTable.setDefaultRenderer(TaskStatus.class, statusCellRenderer);
+		taskTable.addMouseListener(new MouseInputAdapter() {
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(e.isPopupTrigger()) {
+					showTaskTableMenu(e);
+				}
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if(e.isPopupTrigger()) {
+					showTaskTableMenu(e);
+				}
+			}
+
+		});
 		
 		JScrollPane taskScroller = new JScrollPane(taskTable);
 		Dimension prefSize = taskScroller.getPreferredSize();
@@ -585,6 +604,29 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		splitPane.setLeftComponent(taskScroller);
 		splitPane.setRightComponent(tabPane);
 		importStep.add(splitPane, BorderLayout.CENTER);
+	}
+	
+	private void showTaskTableMenu(MouseEvent me) {
+		int row = taskTable.rowAtPoint(me.getPoint());
+		if(row >= 0 && row < taskTable.getRowCount()) {
+			taskTable.getSelectionModel().setSelectionInterval(row, row);
+			PhonTalkTask task = ((PhonTalkTaskTableModel)taskTable.getModel()).taskForRow(row);
+			if(task != null) {
+				JPopupMenu menu = new JPopupMenu();
+				
+				PhonUIAction showInputFileAct = new PhonUIAction(Desktop.getDesktop(), "open", task.getInputFile());
+				showInputFileAct.putValue(PhonUIAction.NAME, "Open input file");
+				showInputFileAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Open input file: " + task.getInputFile().getAbsolutePath());
+				menu.add(showInputFileAct);
+				
+				PhonUIAction showOutputFileAct = new PhonUIAction(Desktop.getDesktop(), "open", task.getOutputFile());
+				showOutputFileAct.putValue(PhonUIAction.NAME, "Open output file");
+				showOutputFileAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Open output file: " + task.getOutputFile().getAbsolutePath());
+				menu.add(showOutputFileAct).setEnabled(task.getStatus() == TaskStatus.FINISHED);
+			
+				menu.show(me.getComponent(), me.getX(), me.getY());
+			}
+		}
 	}
 	
 	private TristateCheckBoxTreeNode scanFolder(File folder) {
