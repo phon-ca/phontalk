@@ -640,6 +640,7 @@ public class ExportProjectWizard extends BreadcrumbWizardFrame {
 		for(File file:fileList) {
 			if(file.isHidden()) continue;
 			if(file.getName().startsWith("~")) continue;
+			if(file.getName().startsWith("__autosave_")) continue;
 			
 			if(file.isDirectory()) {
 				TristateCheckBoxTreeNode subtree = scanFolder(file);
