@@ -97,7 +97,7 @@ public class Phon2XmlTreeBuilder {
 	/**
 	 * Construct the ANTLR Chat tree from the given Phon ITranscript.
 	 * 
-	 * @param t
+	 * @param session
 	 * @return
 	 * @throws TreeBuilderException
 	 */
@@ -202,8 +202,9 @@ public class Phon2XmlTreeBuilder {
 			
 			tierNameMap.put(tierName, tierMapName);
 			
-			LOGGER.warning("Using name '" + tierMapName + "' for tier '" + tierName + "'");
+			LOGGER.info("Using name '" + tierMapName + "' for tier '" + tierName + "'");
 		}
+
 	}
 	
 	/**
@@ -526,7 +527,7 @@ public class Phon2XmlTreeBuilder {
 	 * Insert pid.  This is currently added as a comment to Phon
 	 * sessions.
 	 * 
-	 * @param tree
+	 * @param parent
 	 * @param pid
 	 */
 	private void insertPid(CommonTree parent, String pid) {
@@ -926,7 +927,7 @@ public class Phon2XmlTreeBuilder {
 	 * given tree.
 	 * 
 	 * @param utt
-	 * @param tree
+	 * @param uNode
 	 */
 	private List<CommonTree> processMorphology(Record utt, CommonTree uNode) 
 		throws IllegalArgumentException {
@@ -1078,7 +1079,7 @@ public class Phon2XmlTreeBuilder {
 	 * to the given mor trees.
 	 * 
 	 * @param utt
-	 * @param mortrees
+	 * @param uNode
 	 */
 	private void processGRASP(Record utt, CommonTree uNode) 
 		throws IllegalArgumentException {
@@ -1111,6 +1112,8 @@ public class Phon2XmlTreeBuilder {
 	 * align
 	 */
 	private void addAlignment(CommonTree parent, PhoneMap pm) {
+		// don't export empty alignments, this leads to invalid xml
+		if(pm.getAlignmentLength() == 0) return;
 		final AlignTreeBuilder alignTreeBuilder = new AlignTreeBuilder();
 		final CommonTree alignNode = alignTreeBuilder.buildAlignmentTree(pm);
 		alignNode.setParent(parent);
