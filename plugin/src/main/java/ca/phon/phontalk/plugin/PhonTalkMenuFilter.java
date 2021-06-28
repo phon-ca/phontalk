@@ -18,12 +18,12 @@ public class PhonTalkMenuFilter implements IPluginExtensionPoint<IPluginMenuFilt
 		
 		builder.addSeparator("File@Recent Projects/", "PhonTalk");
 		PluginAction exportAct = new PluginAction(ExportEntryPt.EP_NAME);
-		exportAct.putValue(PluginAction.NAME, ExportWizard.DIALOG_TITLE);
+		exportAct.putValue(PluginAction.NAME, ExportWizard.DIALOG_TITLE + "...");
 		exportAct.putValue(PluginAction.SHORT_DESCRIPTION, ExportWizard.DIALOG_MESAGE);
 		builder.addItem("File@PhonTalk", exportAct);
 		
 		PluginAction importAct = new PluginAction(ImportEntryPt.EP_NAME);
-		importAct.putValue(PluginAction.NAME, ImportWizard.DIALOG_TITLE);
+		importAct.putValue(PluginAction.NAME, ImportWizard.DIALOG_TITLE + "...");
 		importAct.putValue(PluginAction.SHORT_DESCRIPTION, ImportWizard.DIALOG_MESAGE);
 		builder.addItem("File@PhonTalk", importAct);
 	}

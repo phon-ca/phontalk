@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.PopupMenuEvent;
@@ -134,12 +135,19 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 	private int numTBFilesProcessed = 0;
 	private int numFilesCopied = 0;
 	private int numFilesFailed = 0;
-	
-	public ImportWizard() {
+
+
+	public ImportWizard(@Nullable Project p) {
 		super(DIALOG_TITLE);
 		setWindowName(DIALOG_TITLE);
+
+		putExtension(Project.class, p);
 		
 		init();
+	}
+
+	public Project getProject() {
+		return getExtension(Project.class);
 	}
 	
 	private void init() {
@@ -267,7 +275,7 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 		importFolderButton.setSelectFolder(true);
 		importFolderButton.setSelectFile(false);
 		importFolderButton.setTopLabelText("Import folder (click to select)");
-		importFolderButton.setBorder(BorderFactory.createTitledBorder("Import folder"));
+		importFolderButton.setBorder(BorderFactory.createTitledBorder(""));
 		importFolderButton.addPropertyChangeListener("selection", (e) -> {
 			if(importFolderButton.getSelection() != null) {
 				busyLabel.setBusy(true);
@@ -294,25 +302,23 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 		} );
 
 		projectButton = new ProjectSelectionButton();
-		projectButton.setBorder(BorderFactory.createTitledBorder("Project"));
-		projectButton.setVisible(false);
+		projectButton.setBorder(BorderFactory.createTitledBorder(""));
+		projectButton.setVisible(getProject() != null);
 		projectButton.addPropertyChangeListener("selection", (e) -> outputFolderButton.setSelection(projectButton.getSelection()) );
 
 		outputFolderButton = new FileHistorySelectionButton(OUTPUTFOLDER_HISTORY_PROP);
 		outputFolderButton.setSelectFolder(true);
 		outputFolderButton.setSelectFile(false);
 		outputFolderButton.setTopLabelText("Output folder (root of export)");
-		outputFolderButton.setBorder(BorderFactory.createTitledBorder("Output folder"));
+		outputFolderButton.setBorder(BorderFactory.createTitledBorder(""));
 		outputFolderButton.setVisible(false);
 
-		GridBagConstraints gbc = new GridBagConstraints();
+		// setup project location if we have an open project
+		if(getProject() != null) {
+			projectButton.setSelection(new File(getProject().getLocation()));
+		}
 
-		// radio buttons
-		ButtonGroup bg = new ButtonGroup();
-		bg.add(useWorkspaceButton);
-		bg.add(storeInProjectButton);
-		bg.add(customOutputFolderButton);
-		useWorkspaceButton.setSelected(true);
+		GridBagConstraints gbc = new GridBagConstraints();
 
 		ActionListener listener = (e) -> {
 			outputFolderButton.setSelection(determineOutputFolder());
@@ -322,6 +328,14 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 		useWorkspaceButton.addActionListener(listener);
 		storeInProjectButton.addActionListener(listener);
 		customOutputFolderButton.addActionListener(listener);
+
+		// radio buttons
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(useWorkspaceButton);
+		bg.add(storeInProjectButton);
+		bg.add(customOutputFolderButton);
+		useWorkspaceButton.setSelected(getProject() == null);
+		storeInProjectButton.setSelected(getProject() != null);
 
 		JPanel radioBoxPanel = new JPanel(new VerticalLayout());
 		radioBoxPanel.add(useWorkspaceButton);

@@ -3,6 +3,8 @@ package ca.phon.phontalk.plugin;
 import java.util.Map;
 
 import ca.phon.plugin.IPluginEntryPoint;
+import ca.phon.project.Project;
+import ca.phon.ui.CommonModuleFrame;
 
 public class ImportEntryPt implements IPluginEntryPoint {
 
@@ -15,7 +17,10 @@ public class ImportEntryPt implements IPluginEntryPoint {
 
 	@Override
 	public void pluginStart(Map<String, Object> args) {
-		ImportWizard wizard = new ImportWizard();
+		CommonModuleFrame cmf = CommonModuleFrame.getCurrentFrame();
+		Project p = (cmf == null ? null : cmf.getExtension(Project.class));
+
+		ImportWizard wizard = new ImportWizard(p);
 		wizard.pack();
 		wizard.setSize(800, 600);
 		wizard.centerWindow();

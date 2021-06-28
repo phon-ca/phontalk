@@ -20,15 +20,11 @@ public class ExportEntryPt implements IPluginEntryPoint {
 		CommonModuleFrame cmf = CommonModuleFrame.getCurrentFrame();
 		Project p = (cmf == null ? null : cmf.getExtension(Project.class));
 		
-		ExportWizard wizard = new ExportWizard();
+		ExportWizard wizard = new ExportWizard(p);
 		wizard.pack();
 		wizard.setSize(800, 600);
 		wizard.centerWindow();
-		
-//		if(p != null) {
-//			wizard.setProjectLocation(p.getLocation());
-//		}
-		
+
 		wizard.setVisible(true);
 	}
 
