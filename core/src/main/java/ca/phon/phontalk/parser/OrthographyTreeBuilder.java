@@ -160,7 +160,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	@Visits
 	public void visitEvent(OrthoEvent event) {
 		CommonTree parentNode = nodeStack.peek();
-		insertEvent(parentNode, event.getData());
+		insertEvent(parentNode, (event.getType() != null ? event.getType() + ":" : "") + event.getData());
 	}
 
 	private void insertEvent(CommonTree parent, String eData) {
