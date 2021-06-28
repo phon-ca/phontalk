@@ -1147,6 +1147,8 @@ public class Phon2XmlTreeBuilder {
 	 * Add a postcode element
 	 */
 	private void addPostcode(CommonTree parent, Tier<String> data) {
+		if(data.numberOfGroups() == 0 || data.getGroup(0).trim().length() == 0) return;
+
 		CommonTree pcNode = 
 			AntlrUtils.createToken(talkbankTokens, "POSTCODE_START");
 		pcNode.setParent(parent);

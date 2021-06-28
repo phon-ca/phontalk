@@ -343,6 +343,11 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 		exportFolderButton = new FileHistorySelectionButton(EXPORTFOLDER_HISTORY_PROP);
 		exportFolderButton.setTopLabelText("Output folder (folder where project will be exported)");
 		exportFolderButton.setBorder(BorderFactory.createTitledBorder(""));
+		exportFolderButton.setSelectFile(false);
+		exportFolderButton.setSelectFolder(true);
+		if(exportFolderButton.getFiles().iterator().hasNext()) {
+			exportFolderButton.setSelection(exportFolderButton.getFiles().iterator().next());
+		}
 		
 		JPanel folderSelectionPanel = new JPanel(new VerticalLayout());
 		folderSelectionPanel.add(projectSelectionButton);
@@ -525,12 +530,19 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 			if(node.isLeaf() && node instanceof PhonTalkTreeNode) {
 				PhonTalkTreeNode ptNode = (PhonTalkTreeNode)node;
 				File parentFile = (parentNode != null ? (File)parentNode.getUserObject() : null);
-				
+
 				File inputFile = (File)ptNode.getUserObject();
-				
-				// FIX ME
-				File outputFolder = (parentFile == null || parentNode.getParent() == null ? new File(exportFolderButton.getSelection(), project.getName())
-						: new File(new File(exportFolderButton.getSelection(), project.getName()), parentFile.getName()));
+
+				Path inputPath = inputFile.toPath();
+				Path parentPath = projectSelectionButton.getSelection().toPath();
+
+				Path relativePath = parentPath.relativize(inputPath);
+				// output folder for *this* file
+				File outputFolder = exportFolderButton.getSelection();
+				for(int i = 0; i < relativePath.getNameCount()-1; i++) {
+					outputFolder = new File(outputFolder, relativePath.getName(i).toString());
+				}
+
 				if(!outputFolder.exists()) {
 					outputFolder.mkdirs();
 				}
