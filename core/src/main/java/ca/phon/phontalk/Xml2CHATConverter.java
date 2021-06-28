@@ -16,6 +16,8 @@ public class Xml2CHATConverter {
 			final BufferedReader in = new BufferedReader(new InputStreamReader(stdout, "UTF-8"));
 			String line = null;
 			while((line = in.readLine()) != null) {
+				// ignore JVM warnings about reflective access within Chatter
+				if(line.startsWith("WARNING:")) continue;
 				listener.message(new PhonTalkMessage(line));
 			}
 		} catch (IOException e) {
