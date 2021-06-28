@@ -4,7 +4,7 @@ import java.util.Map;
 
 import ca.phon.plugin.IPluginEntryPoint;
 
-public class ImportProjectEntryPt implements IPluginEntryPoint {
+public class ImportEntryPt implements IPluginEntryPoint {
 
 	public final static String EP_NAME = "PhonTalk_ImportProject";
 	
@@ -15,7 +15,7 @@ public class ImportProjectEntryPt implements IPluginEntryPoint {
 
 	@Override
 	public void pluginStart(Map<String, Object> args) {
-		ImportProjectWizard wizard = new ImportProjectWizard();
+		ImportWizard wizard = new ImportWizard();
 		wizard.pack();
 		wizard.setSize(800, 600);
 		wizard.centerWindow();

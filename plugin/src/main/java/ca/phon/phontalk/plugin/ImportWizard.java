@@ -10,37 +10,24 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTree;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.TreePath;
 
+import ca.phon.app.project.*;
+import ca.phon.project.LocalProject;
+import ca.phon.ui.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jdesktop.swingx.JXBusyLabel;
@@ -48,13 +35,9 @@ import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXStatusBar.Constraint.ResizeBehavior;
 import org.jdesktop.swingx.JXTable;
 
-import com.sun.jna.platform.win32.WinUser.COPYDATASTRUCT;
-
 import ca.phon.app.log.BufferPanel;
 import ca.phon.app.log.LogUtil;
 import ca.phon.app.modules.EntryPointArgs;
-import ca.phon.app.project.DesktopProjectFactory;
-import ca.phon.app.project.OpenProjectEP;
 import ca.phon.app.workspace.Workspace;
 import ca.phon.app.workspace.WorkspaceHistory;
 import ca.phon.phontalk.CHAT2PhonTask;
@@ -67,7 +50,6 @@ import ca.phon.plugin.PluginException;
 import ca.phon.project.Project;
 import ca.phon.project.ProjectFactory;
 import ca.phon.project.exceptions.ProjectConfigurationException;
-import ca.phon.ui.DropDownButton;
 import ca.phon.ui.action.PhonUIAction;
 import ca.phon.ui.decorations.DialogHeader;
 import ca.phon.ui.fonts.FontPreferences;
@@ -91,33 +73,33 @@ import ca.phon.util.icons.IconSize;
 import ca.phon.worker.PhonTask;
 import ca.phon.worker.PhonTaskListener;
 import ca.phon.worker.PhonWorker;
-import ca.phon.worker.PhonWorkerGroup;
 import ca.phon.worker.PhonTask.TaskStatus;
+import org.jdesktop.swingx.VerticalLayout;
 
-public class ImportProjectWizard extends BreadcrumbWizardFrame {
+public class ImportWizard extends BreadcrumbWizardFrame {
 	
-	public final static String DIALOG_TITLE = "Import Project";
-	public final static String DIALOG_MESAGE = "Create a new Phon project from a folder of CHAT (.cha) or TalkBank (.xml) files";
+	public final static String DIALOG_TITLE = "Import from CHAT/TalkBank";
+	public final static String DIALOG_MESAGE = "Import to Phon from a folder of CHAT (.cha) or TalkBank (.xml) files";
 	
 	/* Step 1 */
 	private WizardStep folderStep;
 	
 	private final static int MAX_FOLDERS = 5;
-	
+
 	private final WorkspaceHistory workspaceHistory = new WorkspaceHistory();
 	
-	private final static String IMPORTFOLDER_HISTORY_PROP = ImportProjectWizard.class.getName() + ".importFolderHistory";
-	private FolderHistory importFolderHistory;
-	private FileSelectionField importFolderField;
-	private DropDownButton importFolderButton;
+	private final static String IMPORTFOLDER_HISTORY_PROP = ImportWizard.class.getName() + ".importFolderHistory";
+	private FileHistorySelectionButton importFolderButton;
 
-	private final static String OUTPUTFOLDER_HISTORY_PROP = ImportProjectWizard.class.getName() + ".outputFolderHistory";
-	private FolderHistory outputFolderHistory;
-	private FileSelectionField outputFolderField;
-	private DropDownButton browseButton;
-	
-	private PromptedTextField projectNameField;
-	
+	private JRadioButton useWorkspaceButton = new JRadioButton("Create new project in workspace folder");
+	private JRadioButton storeInProjectButton = new JRadioButton("Add files to existing Phon project");
+	private JRadioButton customOutputFolderButton = new JRadioButton("Advanced (keep existing folder structure)");
+
+	private ProjectSelectionButton projectButton;
+
+	private final static String OUTPUTFOLDER_HISTORY_PROP = ImportWizard.class.getName() + ".outputFolderHistory";
+	private FileHistorySelectionButton outputFolderButton;
+
 	private TristateCheckBoxTree fileSelectionTree;
 	
 	/* Step 2 */
@@ -153,7 +135,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 	private int numFilesCopied = 0;
 	private int numFilesFailed = 0;
 	
-	public ImportProjectWizard() {
+	public ImportWizard() {
 		super(DIALOG_TITLE);
 		setWindowName(DIALOG_TITLE);
 		
@@ -185,7 +167,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		btnOpenProject.setFont(FontPreferences.getTitleFont().deriveFont(Font.BOLD));
 		btnOpenProject.setText("Open project");
 		btnOpenProject.addActionListener( (e) -> {
-			File projectFolder = new File(outputFolderField.getSelectedFile(), projectNameField.getText());
+			File projectFolder = outputFolderButton.getSelection();
 			EntryPointArgs epArgs = new EntryPointArgs();
 			epArgs.put(EntryPointArgs.PROJECT_LOCATION, projectFolder.getAbsolutePath());
 			
@@ -280,24 +262,27 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		
 		DialogHeader header = new DialogHeader(DIALOG_TITLE, DIALOG_MESAGE);
 		folderStep.add(header, BorderLayout.NORTH);
-		
-		importFolderHistory = new FolderHistory(IMPORTFOLDER_HISTORY_PROP, MAX_FOLDERS);
-		importFolderField = new FileSelectionField();
-		importFolderField.setMode(SelectionMode.FOLDERS);
-		importFolderField.addPropertyChangeListener(FileSelectionField.FILE_PROP, e -> {
-			if(importFolderField.getSelectedFile() != null) {
+
+		importFolderButton = new FileHistorySelectionButton(IMPORTFOLDER_HISTORY_PROP);
+		importFolderButton.setSelectFolder(true);
+		importFolderButton.setSelectFile(false);
+		importFolderButton.setTopLabelText("Import folder (click to select)");
+		importFolderButton.setBorder(BorderFactory.createTitledBorder("Import folder"));
+		importFolderButton.addPropertyChangeListener("selection", (e) -> {
+			if(importFolderButton.getSelection() != null) {
 				busyLabel.setBusy(true);
 				statusLabel.setText("Scanning folder...");
 				PhonWorker.getInstance().invokeLater( () -> {
-					final TristateCheckBoxTreeNode treeNode = scanFolder(importFolderField.getSelectedFile());
+					final TristateCheckBoxTreeNode treeNode = scanFolder(importFolderButton.getSelection());
 					treeNode.setCheckingState(TristateCheckBoxState.CHECKED);
-					
+
 					SwingUtilities.invokeLater( () -> {
 						TristateCheckBoxTreeModel treeModel = new TristateCheckBoxTreeModel(treeNode);
 						fileSelectionTree.setRootVisible(true);
 						fileSelectionTree.setModel(treeModel);
-						
-						setupProjectName();
+
+						outputFolderButton.setSelection(determineOutputFolder());
+
 						busyLabel.setBusy(false);
 						statusLabel.setText("");
 					});
@@ -306,171 +291,53 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 				fileSelectionTree.setModel(new TristateCheckBoxTreeModel(new TristateCheckBoxTreeNode()));
 				fileSelectionTree.setRootVisible(false);
 			}
-		});
-		
-		JPopupMenu folderMenu = new JPopupMenu();
-		folderMenu.addPopupMenuListener(new PopupMenuListener() {
-			
-			@Override
-			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-				folderMenu.removeAll();
-				
-				int idx = 0;
-				for(File folder:importFolderHistory) {
-					PhonUIAction folderAct = new PhonUIAction(importFolderField, "setFile", folder);
-					folderAct.putValue(PhonUIAction.NAME, folder.getAbsolutePath());
-					folderMenu.add(folderAct);
-					++idx;
-				}
-				
-				if(idx == 0 ) {
-					folderMenu.setVisible(false);
-					importFolderField.onBrowse();
-					return;
-				}
-				folderMenu.addSeparator();
-				PhonUIAction clearAct = new PhonUIAction(importFolderHistory, "clearHistory");
-				clearAct.putValue(PhonUIAction.NAME, "Clear history");
-				clearAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Clear import folder history");
-				folderMenu.add(clearAct);
-				
-				folderMenu.addSeparator();
-				PhonUIAction browseAct = new PhonUIAction(importFolderField, "onBrowse");
-				browseAct.putValue(PhonUIAction.NAME, "Select folder...");
-				browseAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Select import folder");
-				folderMenu.add(browseAct);
-				
-			}
-			
-			@Override
-			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-			}
-			
-			@Override
-			public void popupMenuCanceled(PopupMenuEvent e) {
-			}
-			
-		});
-		
-		PhonUIAction folderAct = new PhonUIAction(importFolderField, "onBrowse");
-		folderAct.putValue(PhonUIAction.SMALL_ICON, importFolderField.getBrowseButton().getIcon());
-		folderAct.putValue(DropDownButton.ARROW_ICON_GAP, 0);
-		folderAct.putValue(DropDownButton.ARROW_ICON_POSITION, SwingConstants.BOTTOM);
-		folderAct.putValue(DropDownButton.BUTTON_POPUP, folderMenu);
-		
-		importFolderButton = new DropDownButton(folderAct);
-		importFolderButton.setOnlyPopup(true);
-		var importFolderConstraints = ((GridBagLayout)importFolderField.getLayout()).getConstraints(importFolderField.getBrowseButton());
-		importFolderField.remove(importFolderField.getBrowseButton());
-		importFolderField.add(importFolderButton, importFolderConstraints);
-		
-		outputFolderHistory = new FolderHistory(OUTPUTFOLDER_HISTORY_PROP, MAX_FOLDERS);
-		outputFolderField = new FileSelectionField();
-		outputFolderField.setMode(SelectionMode.FOLDERS);
-		if(outputFolderHistory.iterator().hasNext())
-			outputFolderField.setFile(outputFolderHistory.iterator().next());
-		else
-			outputFolderField.setFile(Workspace.userWorkspaceFolder());
-		
-		JPopupMenu outputFolderMenu = new JPopupMenu();
-		outputFolderMenu.addPopupMenuListener(new PopupMenuListener() {
-			
-			@Override
-			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-				outputFolderMenu.removeAll();
-				
-				int idx = 0;
-				for(File folder:outputFolderHistory) {
-					PhonUIAction folderAct = new PhonUIAction(outputFolderField, "setFile", folder);
-					folderAct.putValue(PhonUIAction.NAME, folder.getAbsolutePath());
-					outputFolderMenu.add(folderAct);
-					++idx;
-				}
-				if(idx > 0) {
-					outputFolderMenu.addSeparator();
-					PhonUIAction clearAct = new PhonUIAction(outputFolderHistory, "clearHistory");
-					clearAct.putValue(PhonUIAction.NAME, "Clear history");
-					clearAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Clear output folder history");
-					outputFolderMenu.add(clearAct);
-				}
-				
-				if(workspaceHistory.iterator().hasNext()) {
-					if(idx > 0) {
-						outputFolderMenu.addSeparator();
-					}
-					
-					JMenu workspaceMenu = new JMenu("Workspace history");
-					outputFolderMenu.add(workspaceMenu);
-					
-					for(File workspaceFolder:workspaceHistory) {
-						PhonUIAction workspaceAct = new PhonUIAction(outputFolderField, "setFile", workspaceFolder);
-						workspaceAct.putValue(PhonUIAction.NAME, workspaceFolder.getAbsolutePath());
-						workspaceMenu.add(workspaceAct);
-						++idx;
-					}
-				}
-				
-				outputFolderMenu.addSeparator();
-				PhonUIAction browseAct = new PhonUIAction(outputFolderField, "onBrowse");
-				browseAct.putValue(PhonUIAction.NAME, "Select folder...");
-				browseAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Select output folder");
-				outputFolderMenu.add(browseAct);
-			}
-			
-			@Override
-			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-			}
-			
-			@Override
-			public void popupMenuCanceled(PopupMenuEvent e) {
-			}
-		});
-	
-		
-		PhonUIAction dropDownAct = new PhonUIAction(outputFolderField, "onBrowse");
-		dropDownAct.putValue(DropDownButton.BUTTON_POPUP, outputFolderMenu);
-		dropDownAct.putValue(DropDownButton.ARROW_ICON_GAP, 0);
-		dropDownAct.putValue(DropDownButton.ARROW_ICON_POSITION, SwingConstants.BOTTOM);
-		dropDownAct.putValue(PhonUIAction.SMALL_ICON, outputFolderField.getBrowseButton().getIcon());
-		
-		browseButton = new DropDownButton(dropDownAct);
-		browseButton.setOnlyPopup(true);
-		var constraints = ((GridBagLayout)outputFolderField.getLayout()).getConstraints(outputFolderField.getBrowseButton());
-		outputFolderField.remove(outputFolderField.getBrowseButton());
-		outputFolderField.add(browseButton, constraints);
-		
-		projectNameField = new PromptedTextField("Project name");
-		
-		JPanel folderSelectionPanel = new JPanel(new GridBagLayout());
+		} );
+
+		projectButton = new ProjectSelectionButton();
+		projectButton.setBorder(BorderFactory.createTitledBorder("Project"));
+		projectButton.setVisible(false);
+		projectButton.addPropertyChangeListener("selection", (e) -> outputFolderButton.setSelection(projectButton.getSelection()) );
+
+		outputFolderButton = new FileHistorySelectionButton(OUTPUTFOLDER_HISTORY_PROP);
+		outputFolderButton.setSelectFolder(true);
+		outputFolderButton.setSelectFile(false);
+		outputFolderButton.setTopLabelText("Output folder (root of export)");
+		outputFolderButton.setBorder(BorderFactory.createTitledBorder("Output folder"));
+		outputFolderButton.setVisible(false);
+
 		GridBagConstraints gbc = new GridBagConstraints();
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-		gbc.anchor = GridBagConstraints.WEST;
-		
-		folderSelectionPanel.add(new JLabel("Import folder:"), gbc);
-		++gbc.gridy;
-		folderSelectionPanel.add(new JLabel("Output folder:"), gbc);
-		++gbc.gridy;
-		folderSelectionPanel.add(new JLabel("Project name:"), gbc);
-		
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 1.0;
-		
-		folderSelectionPanel.add(importFolderField, gbc);
-		++gbc.gridy;
-		folderSelectionPanel.add(outputFolderField, gbc);
-		++gbc.gridy;
-		folderSelectionPanel.add(projectNameField, gbc);
-		folderSelectionPanel.setBorder(BorderFactory.createTitledBorder("Folder setup"));
-		
+
+		// radio buttons
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(useWorkspaceButton);
+		bg.add(storeInProjectButton);
+		bg.add(customOutputFolderButton);
+		useWorkspaceButton.setSelected(true);
+
+		ActionListener listener = (e) -> {
+			outputFolderButton.setSelection(determineOutputFolder());
+			projectButton.setVisible(storeInProjectButton.isSelected());
+			outputFolderButton.setVisible(customOutputFolderButton.isSelected());
+		};
+		useWorkspaceButton.addActionListener(listener);
+		storeInProjectButton.addActionListener(listener);
+		customOutputFolderButton.addActionListener(listener);
+
+		JPanel radioBoxPanel = new JPanel(new VerticalLayout());
+		radioBoxPanel.add(useWorkspaceButton);
+		radioBoxPanel.add(storeInProjectButton);
+		radioBoxPanel.add(customOutputFolderButton);
+		radioBoxPanel.setBorder(BorderFactory.createTitledBorder("Import Action"));
+
+		JPanel optionalsPanel = new JPanel(new VerticalLayout());
+		optionalsPanel.add(projectButton);
+		optionalsPanel.add(outputFolderButton);
+
+		JPanel topPanel = new JPanel(new VerticalLayout());
+		topPanel.add(importFolderButton);
+		topPanel.add(radioBoxPanel);
+		topPanel.add(optionalsPanel);
+
 		fileSelectionTree = new TristateCheckBoxTree();
 		fileSelectionTree.setRootVisible(false);
 		fileSelectionTree.setCellRenderer(new CellRenderer());
@@ -480,11 +347,28 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		scroller.setBorder(BorderFactory.createTitledBorder("File selection"));
 		
 		JPanel centerPanel = new JPanel(new BorderLayout());
-		centerPanel.add(folderSelectionPanel, BorderLayout.NORTH);
+		centerPanel.add(topPanel, BorderLayout.NORTH);
 		centerPanel.add(scroller, BorderLayout.CENTER);
 		
 		folderStep.setTitle("Select files");
 		folderStep.add(centerPanel, BorderLayout.CENTER);
+	}
+
+	private File determineOutputFolder() {
+		File outputFolder = null;
+		if(useWorkspaceButton.isSelected() && importFolderButton.getSelection() != null) {
+			outputFolder = new File(Workspace.userWorkspaceFolder(), importFolderButton.getSelection().getName());
+			int idx = 1;
+			while(outputFolder.exists()) {
+				outputFolder = new File(Workspace.userWorkspaceFolder(), importFolderButton.getSelection().getName() + " (" + (idx++) + ")");
+			}
+//			outputFolderButton.setSelection(outputFolder);
+		} else if(storeInProjectButton.isSelected()) {
+			outputFolder = projectButton.getSelection();
+		} else {
+			outputFolder = outputFolderButton.getSelection();
+		}
+		return outputFolder;
 	}
 	
 	private void setupOptionsStep() {
@@ -575,12 +459,6 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		}
 	}
 	
-	public void clearImportFolderHistory() {
-		FolderHistory history = new FolderHistory(IMPORTFOLDER_HISTORY_PROP);
-		history.clearHistory();
-		history.saveHistory();
-	}
-	
 	private TristateCheckBoxTreeNode scanFolder(File folder) {
 		TristateCheckBoxTreeNode retVal = new TristateCheckBoxTreeNode(folder);
 		retVal.setEnablePartialCheck(false);
@@ -655,12 +533,36 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 				File parentFile = (parentNode != null ? (File)parentNode.getUserObject() : null);
 				
 				File inputFile = (File)ptNode.getUserObject();
-				File outputFolder = (parentFile == null || parentNode.getParent() == null ? new File(project.getLocation())
-						: new File(project.getLocation(), parentFile.getName()));
-				if(!outputFolder.exists()) {
-					outputFolder.mkdirs();
+
+				Path inputPath = inputFile.toPath();
+				Path parentPath = importFolderButton.getSelection().toPath();
+
+				Path relativePath = parentPath.relativize(inputPath);
+
+				boolean keepLongPath = customOutputFolderButton.isSelected();
+				// output folder for *this* file
+				File outputFolder = outputFolderButton.getSelection();
+				for(int i = 0; i < relativePath.getNameCount()-1; i++) {
+					if(i == 0 || keepLongPath) {
+						outputFolder = new File(outputFolder, relativePath.getName(i).toString());
+					} else {
+						outputFolder = new File(outputFolderButton.getSelection(), outputFolder.getName() + "_" + relativePath.getName(i));
+					}
 				}
-				
+
+				if((ptNode.getType() == PhonTalkTaskType.CHAT2Phon ||
+						ptNode.getType() == PhonTalkTaskType.XML2Phon)
+					&& (useWorkspaceButton.isSelected() || storeInProjectButton.isSelected())) {
+					// ensure files go into a proper corpus folder
+					if(relativePath.getNameCount() == 1) {
+						// move into corpus folder with name 'Transcripts'
+						outputFolder = new File(outputFolder, "Transcripts");
+					}
+				}
+
+				if(!outputFolder.exists())
+					outputFolder.mkdirs();
+
 				switch(ptNode.type) {
 				case CHAT2Phon:
 					CHAT2PhonTask chat2phonTask = new CHAT2PhonTask(inputFile, 
@@ -713,24 +615,6 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		worker.setFinishWhenQueueEmpty(true);
 	}
 	
-	private void setupProjectName() {
-		File outputFolder = outputFolderField.getSelectedFile();
-		if(outputFolder == null || !outputFolder.isDirectory()) return;
-		
-		File importFolder = importFolderField.getSelectedFile();
-		if(importFolder == null || !importFolder.isDirectory()) return;
-		
-		int idx = 0;
-		String projectName = importFolder.getName().trim();
-		File projectFile = new File(outputFolder, projectName);
-		while(projectFile.exists()) {
-			projectName = String.format("%s (%d)", importFolder.getName().trim(), ++idx);
-			projectFile = new File(outputFolder, projectName);
-		}
-		
-		projectNameField.setText(projectName);
-	}
-	
 	private void beginImport() {
 		((PhonTalkTaskTableModel)taskTable.getModel()).clear();
 		((PhonTalkMessageTableModel)messageTable.getModel()).clear();
@@ -749,10 +633,9 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		printBeginImportReport();
 		
 		// add import folder to history
-		importFolderHistory.addToHistory(importFolderField.getSelectedFile());
-		importFolderHistory.saveHistory();
+		importFolderButton.saveSelectionToHistory();
 		
-		File outputFolder = outputFolderField.getSelectedFile();
+		File outputFolder = outputFolderButton.getSelection();
 		boolean inWorkspace = false;
 		for(File workspaceFolder:workspaceHistory) {
 			if(workspaceFolder.equals(outputFolder)) {
@@ -760,43 +643,47 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 				break;
 			}
 		}
-		if(!inWorkspace) {
-			outputFolderHistory.addToHistory(outputFolderField.getSelectedFile());
-			outputFolderHistory.saveHistory();
-		}
+		outputFolderButton.saveSelectionToHistory();
 		
-		((PhonTalkTaskTableModel)taskTable.getModel()).setParentFolder(importFolderField.getSelectedFile());
+		((PhonTalkTaskTableModel)taskTable.getModel()).setParentFolder(importFolderButton.getSelection());
 		
 		try {
 			// create project
-			final Project project = createProject();
-			PhonWorker.getInstance().invokeLater( () -> setupTasks(currentWorker, project) );
+			final AtomicReference<Project> projectRef = new AtomicReference<>();
+			if(this.useWorkspaceButton.isSelected()) {
+				projectRef.set(createProject());
+			} else {
+				bufferPanel.getLogBuffer().append("Opening project at " + outputFolder.getAbsolutePath() + "\n\n");
+				projectRef.set((new DesktopProjectFactory()).openProject(outputFolder));
+			}
+			PhonWorker.getInstance().invokeLater( () -> setupTasks(currentWorker, projectRef.get()) );
 		} catch (IOException | ProjectConfigurationException e) {
 			showMessage(e.getLocalizedMessage());
 		}
-		
+
 		running = true;
 		canceled = false;
 		busyLabel.setBusy(true);
 		currentWorker.start();
-		
+
 		importStartedMs = System.currentTimeMillis();
-		
+
 		updateBreadcrumbButtons();
 	}
-	
+
 	private Project createProject() throws IOException, ProjectConfigurationException {
 		ProjectFactory projectFactory = new DesktopProjectFactory();
-		File projectFolder = new File(outputFolderField.getSelectedFile(), projectNameField.getText());
-		
-		if(!projectFolder.exists()) {
-			bufferPanel.getLogBuffer().append("Creating project at " + projectFolder.getAbsolutePath() + "\n\n");
-		} else {
-			bufferPanel.getLogBuffer().append("Opening project at " + projectFolder.getAbsolutePath() + "\n\n");
+
+		File projectFolder = outputFolderButton.getSelection();
+		int idx = 1;
+		while(projectFolder.exists()) {
+			projectFolder = new File(outputFolderButton.getSelection(), importFolderButton.getSelection().getName() + " (" + (idx++) + ")");
 		}
-	
-		Project retVal = projectFolder.exists() ? projectFactory.openProject(projectFolder) : projectFactory.createProject(projectFolder);
-		retVal.setName(projectNameField.getText());
+
+		bufferPanel.getLogBuffer().append("Creating project at " + projectFolder.getAbsolutePath() + "\n\n");
+
+		Project retVal = projectFactory.createProject(projectFolder);
+		retVal.setName(importFolderButton.getSelection().getName());
 		return retVal;
 	}
 	
@@ -816,14 +703,14 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		buffer.append("Begin Project Import\n");
 		buffer.append("----------------------------------------------\n");
 		buffer.append("Input folder:\t");
-		buffer.append(importFolderField.getSelectedFile().getAbsolutePath());
+		buffer.append(importFolderButton.getSelection().getAbsolutePath());
 		buffer.append('\n');
 		buffer.append("Output folder:\t");
-		buffer.append(outputFolderField.getSelectedFile().getAbsolutePath());
+		buffer.append(outputFolderButton.getSelection().getAbsolutePath());
 		buffer.append('\n');
-		buffer.append("Project name:\t");
-		buffer.append(projectNameField.getText());
-		buffer.append('\n');
+//		buffer.append("Project name:\t");
+//		buffer.append(importFolderButton.getSelection().getName());
+//		buffer.append('\n');
 		
 		buffer.append('\n');
 		
@@ -857,20 +744,20 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 	@Override
 	protected void next() {
 		if(getCurrentStep() == folderStep) {
-			if(importFolderField.getSelectedFile() == null) {
+			if(importFolderButton.getSelection() == null) {
 				showMessage("Please select folder for import");
 				return;
 			}
 			
-			if(outputFolderField.getSelectedFile() == null) {
+			if(outputFolderButton.getSelection() == null) {
 				showMessage("Please select output folder");
 				return;
 			} else {
-				File outputFolder = outputFolderField.getSelectedFile();
+				File outputFolder = outputFolderButton.getSelection();
 				
-				if(!outputFolder.exists()) {
-					outputFolder.mkdirs();
-				}
+//				if(!outputFolder.exists()) {
+//					outputFolder.mkdirs();
+//				}
 				
 				if(outputFolder.exists() && !outputFolder.isDirectory()) {
 					showMessage("Selected output path is not a folder");
@@ -883,12 +770,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 				}
 				
 			}
-			
-			if(projectNameField.getText().trim().length() == 0) {
-				showMessage("Please enter project name");
-				return;
-			}
-			
+
 			if(fileSelectionTree.getCheckedPaths().size() == 0) {
 				showMessage("Please select files for import");
 				return;
@@ -954,7 +836,7 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 		@Override
 		public void statusChanged(PhonTask task, TaskStatus oldStatus,
 				TaskStatus newStatus) {
-			final File inputFolder = importFolderField.getSelectedFile();
+			final File inputFolder = importFolderButton.getSelection();
 			final File inputFile = ((PhonTalkTask)task).getInputFile();
 			
 			final PhonTalkTask ptTask = (PhonTalkTask)task;
@@ -969,9 +851,9 @@ public class ImportProjectWizard extends BreadcrumbWizardFrame {
 					}
 					
 					String outputFilename = ptTask.getOutputFile().getAbsolutePath();
-					if(outputFilename.startsWith(outputFolderField.getSelectedFile().getAbsolutePath())) {
-						outputFilename = "\u2026" + File.separator + outputFolderField.getSelectedFile().toPath().relativize(ptTask.getOutputFile().toPath()).toString();
-					}
+//					if(outputFilename.startsWith(outputFolderField.getSelectedFile().getAbsolutePath())) {
+//						outputFilename = "\u2026" + File.separator + outputFolderField.getSelectedFile().toPath().relativize(ptTask.getOutputFile().toPath()).toString();
+//					}
 					
 					int taskRow = taskTableModel.rowForTask(ptTask);
 					if(taskRow >= 0) {

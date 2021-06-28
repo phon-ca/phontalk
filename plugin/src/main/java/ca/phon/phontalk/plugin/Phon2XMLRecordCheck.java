@@ -6,6 +6,7 @@ import ca.phon.phontalk.parser.*;
 import ca.phon.plugin.IPluginExtensionFactory;
 import ca.phon.plugin.IPluginExtensionPoint;
 import ca.phon.plugin.PhonPlugin;
+import ca.phon.plugin.Rank;
 import ca.phon.session.Participant;
 import ca.phon.session.Record;
 import ca.phon.session.Session;
@@ -26,7 +27,8 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-@PhonPlugin(name="Phon2Talkbank Check", comments="Check if each session can be exported to TalkBank XML individually")
+@PhonPlugin(name="Phon -> TalkBank XML Check", comments="Check if each session can be exported to TalkBank XML individually")
+@Rank(200)
 public class Phon2XMLRecordCheck implements SessionCheck, IPluginExtensionPoint<SessionCheck> {
 
 	@Override
@@ -37,6 +39,11 @@ public class Phon2XMLRecordCheck implements SessionCheck, IPluginExtensionPoint<
 	@Override
 	public IPluginExtensionFactory<SessionCheck> getFactory() {
 		return (args) -> this;
+	}
+
+	@Override
+	public boolean performCheckByDefault() {
+		return false;
 	}
 
 	@Override
@@ -83,11 +90,18 @@ public class Phon2XMLRecordCheck implements SessionCheck, IPluginExtensionPoint<
 
 			final TalkbankValidator xmlValidator = new TalkbankValidator();
 			final DefaultErrorHandler errHandler = new DefaultErrorHandler(tempXmlFile, msg -> {
-				validator.fireValidationEvent(ValidationEvent.Severity.ERROR, session, recordIndex, "", -1, "(Phon -> XML): " + msg.getMessage());
+				ValidationEvent ve = new ValidationEvent(ValidationEvent.Severity.ERROR, session,
+						"(Phon -> XML): " + msg.getMessage());
+				ve.setRecord(recordIndex);
+
+				validator.fireValidationEvent(ve);
 			});
 			xmlValidator.validate(tempXmlFile, errHandler);
 		} catch (IOException | ValidationException e) {
-			validator.fireValidationEvent(ValidationEvent.Severity.ERROR, session, recordIndex, "", -1, "(Phon -> XML): " + e.getMessage());
+			ValidationEvent ve = new ValidationEvent(ValidationEvent.Severity.ERROR, session,
+					"(Phon -> XML): " + e.getMessage());
+			ve.setRecord(recordIndex);
+			validator.fireValidationEvent(ve);
 		}
 
 		return false;
