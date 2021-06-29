@@ -275,7 +275,7 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 		importFolderButton.setSelectFolder(true);
 		importFolderButton.setSelectFile(false);
 		importFolderButton.setTopLabelText("Import folder (click to select)");
-		importFolderButton.setBorder(BorderFactory.createTitledBorder(""));
+		importFolderButton.setBorder(BorderFactory.createTitledBorder("Import Folder"));
 		importFolderButton.addPropertyChangeListener("selection", (e) -> {
 			if(importFolderButton.getSelection() != null) {
 				busyLabel.setBusy(true);
@@ -302,7 +302,7 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 		} );
 
 		projectButton = new ProjectSelectionButton();
-		projectButton.setBorder(BorderFactory.createTitledBorder(""));
+		projectButton.setBorder(BorderFactory.createTitledBorder("Project"));
 		projectButton.setVisible(getProject() != null);
 		projectButton.addPropertyChangeListener("selection", (e) -> outputFolderButton.setSelection(projectButton.getSelection()) );
 
@@ -310,7 +310,7 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 		outputFolderButton.setSelectFolder(true);
 		outputFolderButton.setSelectFile(false);
 		outputFolderButton.setTopLabelText("Output folder (root of export)");
-		outputFolderButton.setBorder(BorderFactory.createTitledBorder(""));
+		outputFolderButton.setBorder(BorderFactory.createTitledBorder("Output Folder"));
 		outputFolderButton.setVisible(false);
 
 		// setup project location if we have an open project

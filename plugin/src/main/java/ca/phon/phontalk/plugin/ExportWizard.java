@@ -338,11 +338,11 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 				projectSelectionButton.setSelection(new File(getProject().getLocation()));
 			});
 		}
-		projectSelectionButton.setBorder(BorderFactory.createTitledBorder(""));
+		projectSelectionButton.setBorder(BorderFactory.createTitledBorder("Project"));
 		
 		exportFolderButton = new FileHistorySelectionButton(EXPORTFOLDER_HISTORY_PROP);
 		exportFolderButton.setTopLabelText("Output folder (folder where project will be exported)");
-		exportFolderButton.setBorder(BorderFactory.createTitledBorder(""));
+		exportFolderButton.setBorder(BorderFactory.createTitledBorder("Output Folder"));
 		exportFolderButton.setSelectFile(false);
 		exportFolderButton.setSelectFolder(true);
 		if(exportFolderButton.getFiles().iterator().hasNext()) {

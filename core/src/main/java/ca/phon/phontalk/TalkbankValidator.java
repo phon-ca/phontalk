@@ -157,8 +157,6 @@ public class TalkbankValidator {
 	private Source loadLocalSchema() {
 		File localSchemaFile = new File(schemaFileName);
 		if(localSchemaFile.exists()) {
-//			LOGGER.info("Loading talkbank schema at " + localSchemaFile.getAbsolutePath());
-
 			Source schemaSource = new StreamSource(localSchemaFile);
 			return schemaSource;
 		} else {
@@ -174,9 +172,6 @@ public class TalkbankValidator {
 	private Source loadEmbeddedSchema() {
 		InputStream schemaURL = getClass().getClassLoader().getResourceAsStream(schemaFileName);
 		if(schemaURL != null) {
-//			LOGGER.info("Loading talkbank schema at " +
-//					getClass().getClassLoader().getResource(schemaFileName));
-
 			Source schemaSource = new StreamSource(schemaURL);
 			return schemaSource;
 		} else {
@@ -197,8 +192,6 @@ public class TalkbankValidator {
 			  connection.setDoOutput(true);
 			  connection.setReadTimeout(10000);
 			if(connection.getResponseCode() == 200) {
-//				LOGGER.info("Loading talkbank schema at " +
-//						defaultTalkbankSchemaLoc);
 				Source schemaSource = new StreamSource(connection.getInputStream());
 				return schemaSource;
 			} else {
@@ -214,32 +207,6 @@ public class TalkbankValidator {
 			return null;
 		}
 	}
-	
-//	/**
-//	 * Vaidate the given string.
-//	 */
-//	public boolean validate(String str) {
-//		// convert into a DOM tree
-//		try {
-//
-//			ByteArrayInputStream bin = new ByteArrayInputStream(str.getBytes("UTF-8"));
-//			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-//			builderFactory.setNamespaceAware(true);
-//			DocumentBuilder parser = builderFactory.newDocumentBuilder();
-//		    Document document = parser.parse(bin);
-//		    
-//		    return validate(document);
-//		} catch (ParserConfigurationException e) {
-//			PhonLogger.severe(e.toString());
-//			return false;
-//		} catch (SAXException e) {
-//			PhonLogger.severe(e.toString());
-//			return false;
-//		} catch (IOException e) {
-//			PhonLogger.severe(e.toString());
-//			return false;
-//		}
-//	}
 	
 	/**
 	 * Validate the given DOM doc.
