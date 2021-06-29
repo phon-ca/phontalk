@@ -14,6 +14,7 @@ import ca.phon.session.SessionFactory;
 import ca.phon.session.check.SessionCheck;
 import ca.phon.session.check.SessionValidator;
 import ca.phon.session.check.ValidationEvent;
+import ca.phon.util.OSInfo;
 import ca.phon.worker.PhonTask;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
@@ -21,15 +22,18 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.apache.logging.log4j.Level;
 
 import javax.xml.bind.ValidationException;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-@PhonPlugin(name="Phon -> TalkBank XML Check", comments="Check if each session can be exported to TalkBank XML individually")
+@PhonPlugin(name="Phon -> TalkBank Check", comments="Check if each record in a session can be exported to TalkBank individually")
 @Rank(200)
-public class Phon2XMLRecordCheck implements SessionCheck, IPluginExtensionPoint<SessionCheck> {
+public class Phon2TalkBankRecordCheck implements SessionCheck, IPluginExtensionPoint<SessionCheck> {
+
+	/**
+	 * Check export to CHAT using Chatter as well?
+	 */
+	private boolean checkExportToCHAT = false;
 
 	@Override
 	public Class<?> getExtensionType() {
@@ -39,6 +43,14 @@ public class Phon2XMLRecordCheck implements SessionCheck, IPluginExtensionPoint<
 	@Override
 	public IPluginExtensionFactory<SessionCheck> getFactory() {
 		return (args) -> this;
+	}
+
+	public boolean isCheckExportToCHAT() {
+		return checkExportToCHAT;
+	}
+
+	public void setCheckExportToCHAT(boolean checkExportToCHAT) {
+		this.checkExportToCHAT = checkExportToCHAT;
 	}
 
 	@Override
@@ -96,7 +108,32 @@ public class Phon2XMLRecordCheck implements SessionCheck, IPluginExtensionPoint<
 
 				validator.fireValidationEvent(ve);
 			});
-			xmlValidator.validate(tempXmlFile, errHandler);
+			if(xmlValidator.validate(tempXmlFile, errHandler)) {
+				if (isCheckExportToCHAT()) {
+					final File tempChaFile = File.createTempFile("chatter", ".cha");
+					tempChaFile.deleteOnExit();
+
+					Xml2CHATConverter chatConverter = new Xml2CHATConverter();
+					chatConverter.convertFile(tempXmlFile, tempChaFile, new PhonTalkListener() {
+						@Override
+						public void message(PhonTalkMessage msg) {
+							ValidationEvent ve = new ValidationEvent(ValidationEvent.Severity.ERROR, session,
+									"(XML -> CHAT): " + msg.getMessage());
+							ve.setRecord(recordIndex);
+
+							validator.fireValidationEvent(ve);
+						}
+					});
+					if (!tempChaFile.exists() || tempChaFile.length() == 0) {
+						// no data written
+						ValidationEvent ve = new ValidationEvent(ValidationEvent.Severity.ERROR, session,
+								"(XML -> CHAT): No data in CHAT output");
+						ve.setRecord(recordIndex);
+
+						validator.fireValidationEvent(ve);
+					}
+				}
+			}
 		} catch (IOException | ValidationException e) {
 			ValidationEvent ve = new ValidationEvent(ValidationEvent.Severity.ERROR, session,
 					"(Phon -> XML): " + e.getMessage());
