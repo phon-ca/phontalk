@@ -17,48 +17,10 @@ ca_element
     <!-- Tree Walker -->
     <buffer name="AST2Phon.g">
         <![CDATA[
-ca_element returns [OrthoElement caElement]
+ca_element returns [String val]
     :   ^(CA_ELEMENT_START CA_ELEMENT_ATTR_TYPE)
     {
-        OrthographyBuilder builder = new OrthographyBuilder();
-        switch($CA_ELEMENT_ATTR_TYPE.text().toLowerCase()) {
-        case "constriction":
-            builder.appendPunct(OrthoPunctType.CONSTRICTION);
-            break;
-
-        case "inhalation":
-            builder.appendPunct(OrthoPunctType.INHALATION);
-            break;
-
-        case "laugh in word":
-            builder.appendPunct(OrthoPunctType.LAUGH_IN_WORD);
-            break;
-
-        case "pitch down":
-            builder.appendPunct(OrthoPunctType.PITCH_DOWN);
-            break;
-
-        case "pitch reset":
-            builder.appendPunct(OrthoPunctType.PITCH_RESET);
-            break;
-
-        case "pitch up":
-            builder.appendPunct(OrthoPunctType.PITCH_UP);
-            break;
-
-        case "primary stress":
-            builder.appendPunct(OrthoPunctType.PRIMARY_STRESS);
-            break;
-
-        case "secondary stress":
-            builder.appendPunct(OrthoPunctType.SECONDARY_STRESS);
-            break;
-
-        default:
-            break;
-        }
-
-
+        $val = "(ca-element:" + $CA_ELEMENT_ATTR_TYPE.text + ")";
     }
     ;
 ]]>

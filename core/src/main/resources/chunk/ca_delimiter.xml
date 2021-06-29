@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+-->
+<chunk xmlns="https://www.phon.ca/ns/chunk">
+
+    <!-- Parser -->
+    <buffer name="TalkBank2AST.g">
+        <![CDATA[
+ca_delimiter
+    :    CA_DELIMITER_START CA_DELIMITER_ATTR_TYPE CA_DELIMITER_ATTR_LABEL CA_DELIMITER_END
+    ->    ^(CA_DELIMITER_START CA_DELIMITER_ATTR_TYPE CA_DELIMITER_ATTR_LABEL)
+    |   CA_DELIMITER_START CA_DELIMITER_ATTR_LABEL CA_DELIMITER_ATTR_TYPE CA_DELIMITER_END
+    ->    ^(CA_DELIMITER_START CA_DELIMITER_ATTR_TYPE CA_DELIMITER_ATTR_LABEL)
+    ;
+
+]]>
+    </buffer>
+
+    <!-- Tree Walker -->
+    <buffer name="AST2Phon.g">
+        <![CDATA[
+ca_delimiter returns [String val]
+    :   ^(CA_DELIMITER_START CA_DELIMITER_ATTR_TYPE CA_DELIMITER_ATTR_LABEL)
+    {
+        $val = "(ca-delimiter:" + $CA_DELIMITER_ATTR_TYPE.text + "," + $CA_DELIMITER_ATTR_LABEL.text + ")";
+    }
+    ;
+]]>
+    </buffer>
+
+    <buffer name="AST2TalkBank.g">
+        <![CDATA[
+ca_delimiter
+    :    ^(CA_DELIMITER_START CA_DELIMITER_ATTR_TYPE CA_DELIMITER_ATTR_LABEL)
+    ->    template(type={$CA_DELIMITER_ATTR_TYPE.text},label={$CA_DELIMITER_ATTR_LABEL.text})
+    <<\<ca-delimiter type="<type>" label="<label>"/\> >>
+    ;
+]]>
+    </buffer>
+
+</chunk>

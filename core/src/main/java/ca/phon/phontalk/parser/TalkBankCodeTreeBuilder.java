@@ -41,9 +41,21 @@ public class TalkBankCodeTreeBuilder {
 			}
 			cNode = (CommonTree)cNode.getParent();
 		}
+
+		// try to find last w node
+		CommonTree parentNode = tree;
+		// find the last 'w' node
+		int wTokenType = talkbankTokens.getTokenType("W_START");
+		CommonTree wNode = null;
+		for(int cIndex = parentNode.getChildCount()-1; cIndex >= 0; cIndex--) {
+			CommonTree tNode = (CommonTree)parentNode.getChild(cIndex);
+			if(tNode.getToken().getType() == wTokenType) {
+				wNode = tNode;
+				break;
+			}
+		}
 		
 		// handle special cases
-		
 		// overlaps
 		if(data.matches("<[0-9]*") || data.matches(">[0-9]*")) 
 		{
@@ -65,8 +77,7 @@ public class TalkBankCodeTreeBuilder {
 		// pauses
 		else if(data.equals(".")
 				|| data.equals("..")
-				|| data.equals("...")
-				|| data.matches("pause:[0-9]+"))
+				|| data.equals("..."))
 		{
 			addPause(tree, data);
 		}
@@ -113,6 +124,16 @@ public class TalkBankCodeTreeBuilder {
 					addAction(tree, eleData);
 				} else if(eleName.equals("error")) {
 					addError(tree, eleData);
+				} else if(eleName.equals("ca-element")) {
+					addCaElement(wNode, eleData);
+				} else if(eleName.equals("ca-delimiter")) {
+					addCaDelimiter(wNode, eleData);
+				} else if(eleName.equals("underline")) {
+					addUnderline(tree, eleData);
+				} else if(eleName.equals("italic")) {
+					addItalic(tree, eleData);
+				} else if(eleName.equals("pause")) {
+					addPause(tree, eleData);
 				} else if(eleName.equals("internal-media")) {
 					addInternalMedia(tree, eleData);
 				} else if(eleName.equals("overlap-point")) {
@@ -225,7 +246,69 @@ public class TalkBankCodeTreeBuilder {
 		
 		addTextNode(eNode, data);
 	}
-	
+
+	public void addUnderline(CommonTree parent, String data) {
+		CommonTree underlineNode =
+				AntlrUtils.createToken(talkbankTokens, "UNDERLINE_START");
+		underlineNode.setParent(parent);
+		parent.addChild(underlineNode);
+
+		CommonTree beginEndNode =
+				AntlrUtils.createToken(talkbankTokens, "UNDERLINE_ATTR_TYPE");
+		beginEndNode.setParent(underlineNode);
+		underlineNode.addChild(beginEndNode);
+		beginEndNode.getToken().setText(data);
+	}
+
+	public void addItalic(CommonTree parent, String data) {
+		CommonTree italicNode =
+				AntlrUtils.createToken(talkbankTokens, "ITALIC_START");
+		italicNode.setParent(parent);
+		parent.addChild(italicNode);
+
+		CommonTree beginEndNode =
+				AntlrUtils.createToken(talkbankTokens, "ITALIC_ATTR_TYPE");
+		beginEndNode.setParent(italicNode);
+		italicNode.addChild(beginEndNode);
+		beginEndNode.getToken().setText(data);
+	}
+
+	public void addCaElement(CommonTree parent, String data) {
+		CommonTree caNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_ELEMENT_START");
+		caNode.setParent(parent);
+		parent.insertChild(0, caNode);
+
+		CommonTree typeNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_ELEMENT_ATTR_TYPE");
+		typeNode.setParent(caNode);
+		caNode.addChild(typeNode);
+		typeNode.getToken().setText(data);
+	}
+
+	public void addCaDelimiter(CommonTree parent, String data) {
+		CommonTree caNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_DELIMITER_START");
+		caNode.setParent(parent);
+		parent.addChild(caNode);
+
+		String[] info = data.split(",");
+		if(info.length != 2)
+			throw new IllegalArgumentException("ca-delimiter requires type and label");
+
+		CommonTree typeNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_DELIMITER_ATTR_TYPE");
+		typeNode.setParent(caNode);
+		caNode.addChild(typeNode);
+		typeNode.getToken().setText(info[0]);
+
+		CommonTree labelNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_DELIMITER_ATTR_LABEL");
+		labelNode.setParent(caNode);
+		caNode.addChild(labelNode);
+		labelNode.getToken().setText(info[1]);
+	}
+
 	public void addInternalMedia(CommonTree parent, String data) {
 		CommonTree imNode =
 				AntlrUtils.createToken(talkbankTokens, "INTERNAL_MEDIA_START");
@@ -346,17 +429,14 @@ public class TalkBankCodeTreeBuilder {
 			slNode.getToken().setText("very long");
 			slNode.setParent(pNode);
 			pNode.addChild(slNode);
-		} else if(data.startsWith("pause:")) {
-			String numStr = data.substring(data.indexOf(':')+1);
+		} else {
 			CommonTree slNode = 
 				AntlrUtils.createToken(talkbankTokens, "PAUSE_ATTR_LENGTH");
-			slNode.getToken().setText(numStr);
+			Float fVal = Float.parseFloat(data);
+			slNode.getToken().setText(String.format("%.1f", fVal));
 			slNode.setParent(pNode);
 			pNode.addChild(slNode);
-		} else {
-			LOGGER.warning("Invalid pause type '" + data + "'");
 		}
-		
 	}
 	
 	/**

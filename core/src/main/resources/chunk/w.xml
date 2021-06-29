@@ -22,6 +22,8 @@ wele
 	|	shortening
 	|	p
 	|	long_feature
+	|	ca_element
+	|	ca_delimiter
 	|	wk 
 	|	pos
 	|	replacement
@@ -95,6 +97,14 @@ wele
 	|	long_feature
 	{
 		$w::elements += ($w::elements.length() > 0 ? " " : "") + $long_feature.val;
+	}
+	|	ca_element
+	{
+		$w::elements += ($w::elements.length() > 0 ? " " : "") + $ca_element.val;
+	}
+	|	ca_delimiter
+	{
+		$w::elements += ($w::elements.length() > 0 ? " " : "") + $ca_delimiter.val;
 	}
 	| 	wk
 	{
@@ -273,6 +283,12 @@ wele
 	|	long_feature
 	->	template( v={$long_feature.st.toString()} )
 		"<v>"
+	|	ca_element
+	->	template( v={$ca_element.st.toString()} )
+		"<v>"
+	|	ca_delimiter
+	->	template( v={$ca_delimiter.st.toString()} )
+		"<v>"
 	|	wk
 	->	template( v={$wk.st.toString()} )
 		"<v>"
@@ -321,6 +337,8 @@ wattr
 	<include>shortening.xml</include>
 	<include>p.xml</include>
 	<include>longfeature.xml</include>
+	<include>ca_element.xml</include>
+	<include>ca_delimiter.xml</include>
 	<include>wk.xml</include>
 	<include>replacement.xml</include>
 	<include>mor.xml</include>
