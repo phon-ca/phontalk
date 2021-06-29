@@ -43,22 +43,22 @@ s returns [String val]
 				$val = "(clause delimiter:" + $TEXT.text + ")";
 			} else if(type.equals("rising to high"))
 			{
-				$val = "0x21D7";
+				$val = "\u21D7";
 			} else if(type.equals("rising to mid"))
 			{
-				$val = "0x2197";
+				$val = "\u2197";
 			} else if(type.equals("level"))
 			{
-				$val = "0x2192";
+				$val = "\u2192";
 			} else if(type.equals("falling to mid"))
 			{
-				$val = "0x2198";
+				$val = "\u2198";
 			} else if(type.equals("falling to low"))
 			{
-				$val = "0x21D8";
+				$val = "\u21D8";
 			} else if(type.equals("latching"))
 			{
-				$val = "0x2261";
+				$val = "\u2261";
 			}
 		}
 	}

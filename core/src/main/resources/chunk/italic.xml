@@ -25,7 +25,7 @@ $val = "";
 	:	^(ITALIC_START type=ITALIC_ATTR_TYPE)
 	{
 		String uType = $type.text;
-		$val = "*italic:" + uType + "*";
+		$val = "(italic:" + uType + ")";
 	}
 	;	
 ]]>

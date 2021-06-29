@@ -25,7 +25,7 @@ $val = "";
 	:	^(UNDERLINE_START type=UNDERLINE_ATTR_TYPE)
 	{
 		String uType = $type.text;
-		$val = "*underline:" + uType + "*";
+		$val = "(underline:" + uType + ")";
 	}
 	;	
 ]]>

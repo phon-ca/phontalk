@@ -46,6 +46,9 @@ pause
 	:	^(PAUSE_START PAUSE_ATTR_SYMBOLIC_LENGTH?)
 	->    template( len={$PAUSE_ATTR_SYMBOLIC_LENGTH} )
 	"\<pause symbolic-length=\"<len>\"/\>"
+    |  ^(PAUSE_START PAUSE_ATTR_LENGTH)
+	->  template( len={$PAUSE_ATTR_LENGTH} )
+	"\<pause symbolic-length=\"simple\" length=\"<len>\"/\>"
 	;
 ]]>
     </buffer>
