@@ -34,6 +34,12 @@ public class Phon2TalkBankCheckUI extends JPanel implements SessionCheckUI {
 	}
 
 	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		checkCHATConversionBox.setEnabled(enabled);
+	}
+
+	@Override
 	public Component getComponent() {
 		return this;
 	}

@@ -341,7 +341,7 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 		projectSelectionButton.setBorder(BorderFactory.createTitledBorder("Project"));
 		
 		exportFolderButton = new FileHistorySelectionButton(EXPORTFOLDER_HISTORY_PROP);
-		exportFolderButton.setTopLabelText("Output folder (folder where project will be exported)");
+		exportFolderButton.setTopLabelText("Output folder (folder where project files will be exported)");
 		exportFolderButton.setBorder(BorderFactory.createTitledBorder("Output Folder"));
 		exportFolderButton.setSelectFile(false);
 		exportFolderButton.setSelectFolder(true);
