@@ -1,5 +1,6 @@
 package ca.phon.phontalk.plugin;
 
+import java.awt.*;
 import java.io.*;
 
 import ca.phon.app.log.LogUtil;
@@ -19,16 +20,29 @@ import ca.phon.session.io.*;
 )
 public class TalkBankSessionWriter implements SessionWriter, IPluginExtensionPoint<SessionWriter> {
 
+	private PhonTalkListener listener;
+
+	final PhonTalkListener defaultListener = (PhonTalkMessage msg) -> {
+		LogUtil.warning(msg.toString());
+	};
+
+	public TalkBankSessionWriter() {
+		this(null);
+	}
+
+	public TalkBankSessionWriter(PhonTalkListener listener) {
+		this.listener = listener;
+	}
+
+	public PhonTalkListener getListener() {
+		return (this.listener == null ? defaultListener : this.listener);
+	}
+
 	@Override
 	public void writeSession(Session session, OutputStream out)
 			throws IOException {
 		final Phon2XmlConverter converter = new Phon2XmlConverter();
-		
-		final PhonTalkListener listener = (PhonTalkMessage msg) -> {
-			LogUtil.info(msg.toString());
-		};
-		
-		converter.sessionToStream(session, out, listener);
+		converter.sessionToStream(session, out, getListener());
 	}
 
 	@Override
@@ -38,7 +52,7 @@ public class TalkBankSessionWriter implements SessionWriter, IPluginExtensionPoi
 
 	@Override
 	public IPluginExtensionFactory<SessionWriter> getFactory() {
-		return (args) -> { return new TalkBankSessionWriter(); };
+		return (args) -> { return new TalkBankSessionWriter(null); };
 	}
 
 }

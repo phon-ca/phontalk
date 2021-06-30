@@ -1,8 +1,10 @@
 package ca.phon.phontalk.plugin;
 
+import java.awt.*;
 import java.io.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import ca.phon.app.log.LogUtil;
 import ca.phon.phontalk.*;
 import ca.phon.plugin.IPluginExtensionFactory;
 import ca.phon.plugin.IPluginExtensionPoint;
@@ -19,7 +21,22 @@ import ca.phon.session.io.*;
 )
 public class CHATSessionWriter implements SessionWriter, IPluginExtensionPoint<SessionWriter> {
 
+	private PhonTalkListener listener;
+
+	final PhonTalkListener defaultListener = (PhonTalkMessage msg) -> {
+		LogUtil.warning(msg.toString());
+	};
+
 	public CHATSessionWriter() {
+		this(null);
+	}
+
+	public CHATSessionWriter(PhonTalkListener listener) {
+		this.listener = listener;
+	}
+
+	public PhonTalkListener getListener() {
+		return (this.listener == null ? defaultListener : this.listener);
 	}
 
 	@Override
@@ -27,7 +44,7 @@ public class CHATSessionWriter implements SessionWriter, IPluginExtensionPoint<S
 		final File tempXmlFile = File.createTempFile("phontalk", ".xml");
 		tempXmlFile.deleteOnExit();
 		// convert session to temporary xml file
-		final TalkBankSessionWriter tbWriter = new TalkBankSessionWriter();
+		final TalkBankSessionWriter tbWriter = new TalkBankSessionWriter(getListener());
 		tbWriter.writeSession(session, new FileOutputStream(tempXmlFile));
 		
 		// convert xml file to temp .cha file
@@ -74,6 +91,6 @@ public class CHATSessionWriter implements SessionWriter, IPluginExtensionPoint<S
 
 	@Override
 	public IPluginExtensionFactory<SessionWriter> getFactory() {
-		return (args) -> { return new CHATSessionWriter(); };
+		return (args) -> { return new CHATSessionWriter(null); };
 	}
 }

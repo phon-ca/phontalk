@@ -884,7 +884,6 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 						bufferPanel.getLogBuffer().append(msgText);
 					} else {
 						statusLabel.setText("");
-						bufferPanel.getLogBuffer().append("\n");
 						if(status == TaskStatus.FINISHED) {
 							if(task instanceof CopyFilePhonTalkTask) {
 								numFilesCopied++;
@@ -893,8 +892,13 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 							} else if (task instanceof Xml2PhonTask) {
 								numTBFilesProcessed++;
 							}
-						} else
+						} else {
+							if(task.getException() != null) {
+								bufferPanel.getLogBuffer().append("\t" + task.getException().getLocalizedMessage() + "\n");
+							}
 							numFilesFailed++;
+						}
+						bufferPanel.getLogBuffer().append("\n");
 					}
 				}
 			};
