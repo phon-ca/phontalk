@@ -97,17 +97,19 @@ public class Phon2TalkBankRecordCheck implements SessionCheck, IPluginExtensionP
 			final File tempXmlFile = File.createTempFile("phontalk", ".xml");
 			tempXmlFile.deleteOnExit();
 			// convert session to temporary xml file
-			final TalkBankSessionWriter tbWriter = new TalkBankSessionWriter();
-			tbWriter.writeSession(testSession, new FileOutputStream(tempXmlFile));
-
-			final TalkbankValidator xmlValidator = new TalkbankValidator();
-			final DefaultErrorHandler errHandler = new DefaultErrorHandler(tempXmlFile, msg -> {
+			final PhonTalkListener validationListener = msg -> {
 				ValidationEvent ve = new ValidationEvent(ValidationEvent.Severity.ERROR, session,
 						"(Phon -> XML): " + msg.getMessage());
 				ve.setRecord(recordIndex);
 
 				validator.fireValidationEvent(ve);
-			});
+			};
+
+			final TalkBankSessionWriter tbWriter = new TalkBankSessionWriter(validationListener);
+			tbWriter.writeSession(testSession, new FileOutputStream(tempXmlFile));
+
+			final TalkbankValidator xmlValidator = new TalkbankValidator();
+			final DefaultErrorHandler errHandler = new DefaultErrorHandler(tempXmlFile, validationListener);
 			if(xmlValidator.validate(tempXmlFile, errHandler)) {
 				if (isCheckExportToCHAT()) {
 					final File tempChaFile = File.createTempFile("chatter", ".cha");

@@ -128,6 +128,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		
 		String addWord = word.getWord();
 		String val = "";
+		boolean inSegmentRep = false;
 		for(char c:addWord.toCharArray()) {
 			// deal with shortenings
 			if(c == '<') {
@@ -135,9 +136,20 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					addTextNode(wParent, val);
 				val = "";
 			} else if(c == '>') {
-				if(val.length() > 0)
+				if (val.length() > 0)
 					addShortening(wParent, val);
 				val = "";
+			} else if(c == '\u21ab') {
+				if(inSegmentRep) {
+					addSegmentRepetition(wParent, val);
+					inSegmentRep = false;
+				} else {
+					if(val.length() > 0)
+						addTextNode(wParent, val);
+					inSegmentRep = true;
+				}
+				val = "";
+
 			} else {
 				val += c;
 			}
@@ -156,7 +168,20 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		
 		parent.addChild(shNode);
 	}
-	
+
+	private void addSegmentRepetition(CommonTree parent, String data) {
+		CommonTree segRepNode =
+				AntlrUtils.createToken(talkbankTokens, "SEGMENT_REPETITION_START");
+		segRepNode.setParent(parent);
+		parent.addChild(segRepNode);
+
+		CommonTree textNode =
+				AntlrUtils.createToken(talkbankTokens, "SEGMENT_REPETITION_ATTR_TEXT");
+		textNode.setParent(segRepNode);
+		segRepNode.addChild(textNode);
+		textNode.getToken().setText(data);
+	}
+
 	@Visits
 	public void visitEvent(OrthoEvent event) {
 		CommonTree parentNode = nodeStack.peek();

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+Shortening
+XPath - 
+-->
+<chunk xmlns="https://www.phon.ca/ns/chunk">
+
+    <!-- Parser -->
+    <buffer name="TalkBank2AST.g">
+        <![CDATA[
+segment_repetition
+	:	SEGMENT_REPETITION_START SEGMENT_REPETITION_ATTR_TEXT SEGMENT_REPETITION_END
+	->	^(SEGMENT_REPETITION_START SEGMENT_REPETITION_ATTR_TEXT)
+	;
+]]>
+    </buffer>
+
+    <!-- Tree Walker -->
+    <buffer name="AST2Phon.g">
+        <![CDATA[
+segment_repetition returns [String val]
+	:	^(SEGMENT_REPETITION_START v=SEGMENT_REPETITION_ATTR_TEXT)
+	{
+        $val = "\u21ab" + $v.text + "\u21ab";
+	}
+	;
+]]>
+    </buffer>
+
+    <buffer name="AST2TalkBank.g">
+        <![CDATA[
+segment_repetition
+    :    ^(SEGMENT_REPETITION_START SEGMENT_REPETITION_ATTR_TEXT)
+    ->    template( v={$SEGMENT_REPETITION_ATTR_TEXT.text} )
+    "\<segment-repetition text=\"<v>\"/\>"
+    ;
+]]>
+    </buffer>
+
+</chunk>
