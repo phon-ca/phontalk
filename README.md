@@ -6,3 +6,4 @@ application must be generated using the Chatter application available at
 http://www.talkbank.org/software. CHAT corpora can be downloaded from the 
 CHILDES website http://childes.psy.cmu.edu/data/. 
 
+This plug-in is provided with the release version of [Phon](https://www.phon.ca).

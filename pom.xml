@@ -1,136 +1,89 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>ca.phon</groupId>
-  <artifactId>phontalk</artifactId>
-  <version>3.5.4-SNAPSHOT</version>
-  <packaging>pom</packaging>
+	<groupId>ca.phon</groupId>
+	<artifactId>phontalk</artifactId>
+	<version>3.5.4-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-  <name>PhonTalk</name>
-  <url>http://phon.ling.mun.ca</url>
-  <description>Utility for converting files between Talkbank and Phon.  Includes a plug-in for Phon as well as a CLI.</description>
+	<name>PhonTalk</name>
+	<url>http://phon.ling.mun.ca</url>
+	<description>Utility for converting files between Talkbank and Phon.  Includes a plug-in for Phon as well as a CLI.</description>
 
-  <developers>
-    <developer>
-      <id>ghedlund</id>
-      <name>Greg Hedlund</name>
-      <email>greg.hedlund@gmail.com</email>
-      <timezone>-3.5</timezone>
-    </developer>
-    <developer>
-      <id>yrose</id>
-      <name>Yvan Rose</name>
-      <email>yrose@mun.ca</email>
-      <timezone>-3.5</timezone>
-    </developer>
-  </developers>
+	<developers>
+		<developer>
+			<id>ghedlund</id>
+			<name>Greg Hedlund</name>
+			<email>greg.hedlund@gmail.com</email>
+			<timezone>-3.5</timezone>
+		</developer>
+		<developer>
+			<id>yrose</id>
+			<name>Yvan Rose</name>
+			<email>yrose@mun.ca</email>
+			<timezone>-3.5</timezone>
+		</developer>
+	</developers>
 
-  <licenses>
-    <license>
-      <name>GNU GPL v3.0+</name>
-      <distribution>repo</distribution>
-      <url>http://www.gnu.org/copyleft/gpl.html</url>
-    </license>
-  </licenses>
-
-  <distributionManagement>
+	<distributionManagement>
 		<repository>
-			<id>phon.ca-release</id>
-			<name>Phon Release</name>
-			<url>http://phon.ucs.mun.ca/artifacts/libs-release-local</url>
+			<id>github</id>
+			<name>GitHub phon-ca Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/phon-ca/phontalk</url>
 		</repository>
-		<snapshotRepository>
-			<id>phon.ca-snapshot</id>
-			<name>Phon Snapshot</name>
-			<url>http://phon.ucs.mun.ca/artifacts/libs-snapshot-local</url>
-		</snapshotRepository>
 	</distributionManagement>
 
-  <repositories>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>central</id>
-      <name>libs-release</name>
-      <url>http://phon.ucs.mun.ca/artifacts/libs-release</url>
-    </repository>
-    <repository>
-      <snapshots/>
-      <id>snapshots</id>
-      <name>libs-snapshot</name>
-      <url>http://phon.ucs.mun.ca/artifacts/libs-snapshot</url>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>central</id>
-      <name>plugins-release</name>
-      <url>http://phon.ucs.mun.ca/artifacts/plugins-release</url>
-    </pluginRepository>
-    <pluginRepository>
-      <snapshots/>
-      <id>snapshots</id>
-      <name>plugins-snapshot</name>
-      <url>http://phon.ucs.mun.ca/artifacts/plugins-snapshot</url>
-    </pluginRepository>
-  </pluginRepositories>
-  
-  <properties>
-  	<ca.phon.version>3.3.1-SNAPSHOT</ca.phon.version>
-  	<junit.junit.version>4.13.1</junit.junit.version>
-  	
-    <!-- Project settings -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.sourceVersion>15</project.build.sourceVersion>
-    <project.build.targetVersion>15</project.build.targetVersion>
-  </properties>
+	<properties>
+		<ca.phon.version>3.3.7-SNAPSHOT</ca.phon.version>
+		<junit.junit.version>4.13.1</junit.junit.version>
 
-  <modules>
-	  <module>core</module>
-	  <module>cli</module>
-	  <module>plugin</module>
-  </modules>
+		<!-- Project settings -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceVersion>15</project.build.sourceVersion>
+		<project.build.targetVersion>15</project.build.targetVersion>
+	</properties>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
-        </plugin>
-      </plugins>
+	<modules>
+		<module>core</module>
+		<module>cli</module>
+		<module>plugin</module>
+	</modules>
 
-    </pluginManagement>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.0</version>
+				</plugin>
+			</plugins>
 
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-			<source>${project.build.sourceVersion}</source>
-			<target>${project.build.targetVersion}</target>
-			<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-			<release>${project.build.targetVersion}</release>
-		</configuration>
-      </plugin>
-    </plugins>
+		</pluginManagement>
 
-  </build>
-  
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${project.build.sourceVersion}</source>
+					<target>${project.build.targetVersion}</target>
+					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+					<release>${project.build.targetVersion}</release>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>
