@@ -14,17 +14,10 @@ import ca.phon.session.SessionFactory;
 import ca.phon.session.check.SessionCheck;
 import ca.phon.session.check.SessionValidator;
 import ca.phon.session.check.ValidationEvent;
-import ca.phon.util.OSInfo;
-import ca.phon.worker.PhonTask;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.apache.logging.log4j.Level;
+import jakarta.xml.bind.ValidationException;
 
-import javax.xml.bind.ValidationException;
 import java.io.*;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 @PhonPlugin(name="Phon -> TalkBank Check", comments="Check if each record in a session can be exported to TalkBank individually")
 @Rank(200)

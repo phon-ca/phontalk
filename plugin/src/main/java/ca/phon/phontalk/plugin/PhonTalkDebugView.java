@@ -12,8 +12,6 @@ import ca.phon.util.icons.IconManager;
 import ca.phon.util.icons.IconSize;
 
 public class PhonTalkDebugView extends EditorView {
-
-	private static final long serialVersionUID = -5514763970376504590L;
 	
 	private TalkBankInfoPanel infoPanel;
 	
@@ -27,7 +25,7 @@ public class PhonTalkDebugView extends EditorView {
 		init();
 		
 		editor.getEventManager().registerActionForEvent(
-				EditorEventType.RECORD_CHANGED_EVT, (e) -> infoPanel.setRecord(getEditor().currentRecord()) );
+				EditorEventType.RecordChanged, (e) -> infoPanel.setRecord(e.data().record()) );
 	}
 	
 	private void init() {

@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 import javax.swing.*;
@@ -457,13 +458,21 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 			PhonTalkTask task = ((PhonTalkTaskTableModel)taskTable.getModel()).taskForRow(row);
 			if(task != null) {
 				JPopupMenu menu = new JPopupMenu();
-				
-				PhonUIAction showInputFileAct = new PhonUIAction(Desktop.getDesktop(), "open", task.getInputFile());
+
+				final Consumer<File> openFile = (f) -> {
+					try {
+						Desktop.getDesktop().open(f);
+					} catch (IOException e) {
+						Toolkit.getDefaultToolkit().beep();
+						LogUtil.warning(e);
+					}
+				};
+				PhonUIAction<File> showInputFileAct = PhonUIAction.consumer(openFile, task.getInputFile());
 				showInputFileAct.putValue(PhonUIAction.NAME, "Open input file");
 				showInputFileAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Open input file: " + task.getInputFile().getAbsolutePath());
 				menu.add(showInputFileAct);
 				
-				PhonUIAction showOutputFileAct = new PhonUIAction(Desktop.getDesktop(), "open", task.getOutputFile());
+				PhonUIAction<File> showOutputFileAct = PhonUIAction.consumer(openFile, task.getOutputFile());
 				showOutputFileAct.putValue(PhonUIAction.NAME, "Open output file");
 				showOutputFileAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Open output file: " + task.getOutputFile().getAbsolutePath());
 				menu.add(showOutputFileAct).setEnabled(task.getStatus() == TaskStatus.FINISHED);

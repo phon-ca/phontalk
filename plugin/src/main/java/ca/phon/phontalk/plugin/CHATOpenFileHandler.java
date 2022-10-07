@@ -3,8 +3,7 @@ package ca.phon.phontalk.plugin;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -39,7 +38,7 @@ public class CHATOpenFileHandler implements OpenFileHandler, IPluginExtensionPoi
 	}
 
 	@Override
-	public void openFile(File file) throws IOException {
+	public void openFile(File file, Map<String, Object> args) throws IOException {
 		SessionEditor existingEditor = findEditorForFile(file);
 		if(existingEditor != null) {
 			existingEditor.toFront();
@@ -56,10 +55,10 @@ public class CHATOpenFileHandler implements OpenFileHandler, IPluginExtensionPoi
 			project = createTempProjectForFile(file);
 		}
 		
-		final EntryPointArgs args = new EntryPointArgs();
-		args.put(EntryPointArgs.PROJECT_OBJECT, project);
-		args.put(EntryPointArgs.SESSION_OBJECT, session);
-		PluginEntryPointRunner.executePluginInBackground(SessionEditorEP.EP_NAME, args);
+		final EntryPointArgs epArgs = new EntryPointArgs(args);
+		epArgs.put(EntryPointArgs.PROJECT_OBJECT, project);
+		epArgs.put(EntryPointArgs.SESSION_OBJECT, session);
+		PluginEntryPointRunner.executePluginInBackground(SessionEditorEP.EP_NAME, epArgs);
 	}
 	
 	private SessionEditor findEditorForFile(File file) {

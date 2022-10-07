@@ -5,7 +5,7 @@
 
 	<groupId>ca.phon</groupId>
 	<artifactId>phontalk</artifactId>
-	<version>3.5.4-SNAPSHOT</version>
+	<version>3.5.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>PhonTalk</name>
@@ -36,13 +36,13 @@
 	</distributionManagement>
 
 	<properties>
-		<ca.phon.version>3.3.7-SNAPSHOT</ca.phon.version>
+		<ca.phon.version>3.5.0-SNAPSHOT</ca.phon.version>
 		<junit.junit.version>4.13.1</junit.junit.version>
 
 		<!-- Project settings -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.sourceVersion>15</project.build.sourceVersion>
-		<project.build.targetVersion>15</project.build.targetVersion>
+		<project.build.sourceVersion>17</project.build.sourceVersion>
+		<project.build.targetVersion>17</project.build.targetVersion>
 	</properties>
 
 	<modules>

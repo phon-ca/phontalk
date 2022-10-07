@@ -21,11 +21,10 @@ package ca.phon.phontalk;
 import java.io.*;
 import java.util.logging.*;
 
-import javax.xml.bind.ValidationException;
 
+import jakarta.xml.bind.ValidationException;
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import ca.phon.phontalk.parser.*;
 import ca.phon.session.Session;

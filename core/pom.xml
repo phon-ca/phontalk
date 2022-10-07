@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>ca.phon</groupId>
 		<artifactId>phontalk</artifactId>
-		<version>3.5.4-SNAPSHOT</version>
+		<version>3.5.5-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>phontalk-core</artifactId>
@@ -14,11 +14,6 @@
 		<dependency>
 			<groupId>ca.phon</groupId>
 			<artifactId>phon-project</artifactId>
-			<version>${ca.phon.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ca.phon</groupId>
-			<artifactId>phon-ipa</artifactId>
 			<version>${ca.phon.version}</version>
 		</dependency>
 		<dependency>
