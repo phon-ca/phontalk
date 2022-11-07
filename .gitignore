@@ -9,3 +9,4 @@ dependency-reduced-pom.xml
 external-resources
 .idea/
 *.iml
+bin/
