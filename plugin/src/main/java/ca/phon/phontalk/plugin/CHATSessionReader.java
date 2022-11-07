@@ -92,7 +92,8 @@ public class CHATSessionReader implements SessionReader, IPluginExtensionPoint<S
 			retVal.putExtension(OriginalFormat.class, new OriginalFormat(getClass().getAnnotation(SessionIO.class)));
 			return retVal;
 		} else {
-			throw new IOException(buffer.toString());
+			LogUtil.severe(buffer.toString());
+			throw new IOException("Unable to open cha file, see log for details");
 		}
 		
 	}
