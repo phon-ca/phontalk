@@ -22,7 +22,6 @@ wele
 	|	shortening
 	|	p
 	|	long_feature
-	|	segment_repetition
 	|	ca_element
 	|	ca_delimiter
 	|	wk 
@@ -98,10 +97,6 @@ wele
 	|	long_feature
 	{
 		$w::elements += ($w::elements.length() > 0 ? " " : "") + $long_feature.val;
-	}
-	|	segment_repetition
-	{
-		$w::word += $segment_repetition.val;
 	}
 	|	ca_element
 	{
@@ -288,9 +283,6 @@ wele
 	|	long_feature
 	->	template( v={$long_feature.st.toString()} )
 		"<v>"
-	|	segment_repetition
-	->	template( v={$segment_repetition.st.toString()} )
-		"<v>"
 	|	ca_element
 	->	template( v={$ca_element.st.toString()} )
 		"<v>"
@@ -345,7 +337,6 @@ wattr
 	<include>shortening.xml</include>
 	<include>p.xml</include>
 	<include>longfeature.xml</include>
-	<include>segment_repetition.xml</include>
 	<include>ca_element.xml</include>
 	<include>ca_delimiter.xml</include>
 	<include>wk.xml</include>
