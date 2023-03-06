@@ -80,7 +80,7 @@ chat_content
 chat_attrs
 	:	CHAT_ATTR_VERSION
 	{
-		String expectedVersion = "2.16.0";
+		String expectedVersion = "2.19.0";
 		String ver = $CHAT_ATTR_VERSION.text;
 		// log warning if not version we expect
 		if(!ver.equals(expectedVersion)) {
