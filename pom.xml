@@ -70,7 +70,6 @@
 				<configuration>
 					<source>${project.build.sourceVersion}</source>
 					<target>${project.build.targetVersion}</target>
-					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<release>${project.build.targetVersion}</release>
 				</configuration>
 			</plugin>
