@@ -60,7 +60,14 @@ public class TalkBankCodeTreeBuilder {
 		if(data.matches("<[0-9]*") || data.matches(">[0-9]*")) 
 		{
 			addOverlap(tree, data);
-		} 
+		}
+
+		// tagMarkers
+		else if(data.equals(",")
+				|| data.equals("\u201e")
+				|| data.equals("\u2021")) {
+			addTagMarker(tree, data);
+		}
 		
 		// linkers
 		else if(data.equals("+\"")
@@ -233,6 +240,34 @@ public class TalkBankCodeTreeBuilder {
 				ovNode.addChild(indexNode);
 			}
 		}
+	}
+
+	public void addTagMarker(CommonTree parent, String data) {
+		CommonTree tagMarkerTree = AntlrUtils.createToken(talkbankTokens, "TAGMARKER_START");
+		tagMarkerTree.setParent(parent);
+		parent.addChild(tagMarkerTree);
+
+		CommonTree tagMarkerTypeTree = AntlrUtils.createToken(talkbankTokens, "TAGMARKER_ATTR_TYPE");
+		tagMarkerTypeTree.setParent(tagMarkerTree);
+		String type = "";
+		switch(data) {
+			case ",":
+				type = data;
+				break;
+
+			case "\u201e":
+				type = "tag";
+				break;
+
+			case "\u2021":
+				type = "vocative";
+				break;
+
+			default:
+				break;
+		}
+		tagMarkerTypeTree.getToken().setText(type);
+		tagMarkerTree.addChild(tagMarkerTypeTree);
 	}
 	
 	/**
