@@ -117,7 +117,7 @@ wele
 	}
 	|	mor
 	{
-		// mor is handled as a seperate dependent tier
+		// mor is handled as a separate dependent tier
 		String morVal = $mor.val;
 		String tierName = $mor.tierName;
 		
