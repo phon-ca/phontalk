@@ -125,15 +125,15 @@ pgele returns [String val, Map<String, Map<Integer, String>> tierMaps]
 	}
 	|	tagmarker
 	{
-		$val = $tagmarker.val;
+		$val = "(" + $tagmarker.val + ")";
 	}
 	|	long_feature
 	{
-		$val = $long_feature.val;
+		$val = "(" + $long_feature.val + ")";
 	}
 	|	nonvocal
 	{
-		$val = $nonvocal.val;
+		$val = "(" + $nonvocal.val + ")";
 	}
 	|	overlap_point
 	{
