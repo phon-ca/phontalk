@@ -123,12 +123,12 @@ wor
 	<postcodes; separator="">
 	<segment>
 	<annotations; separator="">
-\</u\>
+\</wor\>
 	>>
 	;
 
 worattr
-	|	U_ATTR_LANG
+	:	WOR_ATTR_LANG
 	->	template(lang={$WOR_ATTR_LANG.text})
 	<<xml:lang="<lang>" >>
 	;

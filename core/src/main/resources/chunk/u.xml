@@ -58,6 +58,7 @@ uendele
 	|	error
 	|	r
 	|	a
+	|	wor
 	;
 ]]>
     </buffer>
@@ -517,6 +518,9 @@ uendele
 	{
 		// sub-rule a performs necessary tier management
 	}
+	|	wor
+	{
+	}
 	;
 ]]>
     </buffer>
@@ -639,6 +643,9 @@ uendele
 	|	a
 	->	template( v={$a.st} )
 		"<v>"
+	|	wor
+	->	template( v={$wor.st} )
+		"<v>"
 	;
 ]]>
 	</buffer>
@@ -670,5 +677,6 @@ uendele
 	<include>error.xml</include>
 	<include>r.xml</include>
     <include>a.xml</include>
+	<include>wor.xml</include>
 
 </chunk>
