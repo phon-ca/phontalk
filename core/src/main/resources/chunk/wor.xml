@@ -1,30 +1,251 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
+wor tier
+Schema - http://www.talkbank.org/software/talkbank.xsd
+XPath -	/xs:schema/xs:element[@name="wor"]
 -->
 <chunk xmlns="https://www.phon.ca/ns/chunk">
 
     <!-- Parser -->
     <buffer name="TalkBank2AST.g">
         <![CDATA[
+wor
+    :   WOR_START worattr* linker* worele* t postcode* media? worendele* WOR_END
+    ->  ^(WOR_START worattr* linker* worele* t postcode* media? worendele*)
+    ;
 
+worattr
+    :   WOR_ATTR_LANG
+    ;
+
+worele
+    :   worgrp
+    |   worannotation
+    ;
+
+worgrp
+    :   w
+    |   g
+    |   pg
+    |   sg
+    ;
+
+worannotation
+    :   quotation
+    |   pause
+    |   internal_media
+    |   freecode
+    |   e
+    |   s
+    |   tagmarker
+    |   overlap_point
+    |   underline
+    |   italic
+    |   long_feature
+    |   nonvocal
+    ;
+
+worendele
+    :   k
+    |   error
+    |   r
+    |   a
+    ;
 ]]>
     </buffer>
 
     <!-- Tree Walker -->
     <buffer name="AST2Phon.g">
         <![CDATA[
+wor
+    :   ^(WOR_START worattr* linker* worele* t postcode* media? worendele*)
+    ;
 
+worattr
+    :   WOR_ATTR_LANG
+    ;
+
+worele
+    :   worgrp
+    |   worannotation
+    ;
+
+worgrp
+    :   w
+    |   g
+    |   pg
+    |   sg
+    ;
+
+worannotation
+    :   quotation
+    |   pause
+    |   internal_media
+    |   freecode
+    |   e
+    |   s
+    |   tagmarker
+    |   overlap_point
+    |   underline
+    |   italic
+    |   long_feature
+    |   nonvocal
+    ;
+
+worendele
+    :   k
+    |   error
+    |   r
+    |   a
+    ;
 ]]>
     </buffer>
 
     <buffer name="AST2TalkBank.g">
         <![CDATA[
+wor
+	:	^(WOR_START (attrs+=worattr)* (links+=linker)* (contentlist+=worele)* t (pcs+=postcode)* media? (annotationlist+=worendele)*)
+	->	template(
+			attrlist={$attrs},
+			worcontent={$contentlist},
+			linkers={$links},
+			terminator={$t.st},
+			postcodes={$pcs},
+			segment={$media.st},
+			annotations={$annotationlist}
+		)
+	<<
+\<wor <attrlist; separator=" "> \>
+	<linkers; separator="">
+	<worcontent; separator="">
+	<terminator>
+	<postcodes; separator="">
+	<segment>
+	<annotations; separator="">
+\</u\>
+	>>
+	;
 
+worattr
+	|	U_ATTR_LANG
+	->	template(lang={$WOR_ATTR_LANG.text})
+	<<xml:lang="<lang>" >>
+	;
+
+worele
+	:	worgrp
+	->	template( v={$worgrp.st} )
+		"<v>"
+	|	worannotation
+	->	template( v={$worannotation.st} )
+		"<v>"
+	;
+
+worannotation
+	: 	blob
+	->	template( v={$blob.st} )
+		"<v>"
+	|	quotation
+	->	template( v={$quotation.st} )
+		"<v>"
+	|	quotation2
+	->	template( v={$quotation2.st} )
+		"<v>"
+	|	pause
+	->	template( v={$pause.st} )
+		"<v>"
+	|	internal_media
+	->	template( v={$internal_media.st} )
+		"<v>"
+	|	freecode
+	->	template( v={$freecode.st} )
+		"<v>"
+	|	e
+	->	template( v={$e.st} )
+		"<v>"
+	|	s
+	->	template( v={$s.st} )
+		"<v>"
+	|	tagmarker
+	->	template( v={$tagmarker.st} )
+		"<v>"
+	|	overlap_point
+	->	template( v={$overlap_point.st} )
+		"<v>"
+	|	underline
+	->	template( v={$underline.st} )
+		"<v>"
+	|	italic
+	->	template( v={$italic.st} )
+		"<v>"
+	|	long_feature
+	->	template( v={$long_feature.st} )
+		"<v>"
+	|	nonvocal
+	->	template( v={$nonvocal.st} )
+		"<v>"
+	;
+
+
+worgrp
+	:	w
+	->	template( v={$w.st} )
+		"<v>"
+	|	pg
+	->	template( v={$pg.st} )
+		"<v>"
+	|	g
+	-> 	template( v={$g.st} )
+		"<v>"
+	|	sg
+	->	template( v={$sg.st} )
+		"<v>"
+	;
+
+worendele
+	:	k
+	->	template( v={$k.st} )
+		"<v>"
+	|	error
+	->	template( v={$error.st} )
+		"<v>"
+	|	r
+	->	template( v={$r.st} )
+		"<v>"
+	|	a
+	->	template( v={$a.st} )
+		"<v>"
+	;
 ]]>
     </buffer>
 
     <!-- Includes -->
-    <include></include>
+    <include>linker.xml</include>
+    <include>w.xml</include>
+    <include>blob.xml</include>
+    <include>g.xml</include>
+    <include>pg.xml</include>
+    <include>sg.xml</include>
+    <include>quotation.xml</include>
+    <include>quotation2.xml</include>
+    <include>pause.xml</include>
+    <include>internalmedia.xml</include>
+    <include>freecode.xml</include>
+    <include>e.xml</include>
+    <include>s.xml</include>
+    <include>tagmarker.xml</include>
+    <include>overlappoint.xml</include>
+    <include>underline.xml</include>
+    <include>italic.xml</include>
+    <include>longfeature.xml</include>
+    <include>nonvocal.xml</include>
+    <include>t.xml</include>
+    <include>postcode.xml</include>
+    <include>media.xml</include>
+    <include>k.xml</include>
+    <include>error.xml</include>
+    <include>r.xml</include>
+    <include>a.xml</include>
 
 </chunk>

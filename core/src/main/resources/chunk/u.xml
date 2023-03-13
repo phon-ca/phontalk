@@ -643,7 +643,6 @@ uendele
 ]]>
 	</buffer>
 
-    
     <!-- Includes -->
 	<include>linker.xml</include>
     <include>w.xml</include>
@@ -672,5 +671,4 @@ uendele
 	<include>r.xml</include>
     <include>a.xml</include>
 
-    
 </chunk>
