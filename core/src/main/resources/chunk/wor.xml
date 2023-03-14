@@ -58,8 +58,17 @@ worendele
     <!-- Tree Walker -->
     <buffer name="AST2Phon.g">
         <![CDATA[
-wor
+wor returns [List<Tuple<Float, Float>> val]
+scope {
+    List<Tuple<Float, Float>> mediaList;
+}
+@init {
+    $wor::mediaList = new ArrayList<>();
+}
     :   ^(WOR_START worattr* linker* worele* t postcode* media? worendele*)
+    {
+        $val = $wor::mediaList;
+    }
     ;
 
 worattr
@@ -81,7 +90,20 @@ worgrp
 worannotation
     :   quotation
     |   pause
-    |   internal_media
+    |   imedia=internal_media
+    {
+        Pattern pattern = Pattern.compile("\\(internal-media:(.+)\\)");
+        Matcher matcher = pattern.matcher($imedia.val);
+        if(matcher.matches()) {
+            String[] parts = matcher.group(1).split("-");
+            float startTime = Float.parseFloat(parts[0]);
+            float endTime = Float.parseFloat(parts[1]);
+
+            $wor::mediaList.add(new Tuple<Float, Float>(startTime, endTime));
+        } else {
+            throw new RuntimeException("Invalid media string " + $imedia.val);
+        }
+    }
     |   freecode
     |   e
     |   s

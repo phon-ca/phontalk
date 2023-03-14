@@ -520,6 +520,13 @@ uendele
 	}
 	|	wor
 	{
+		List<Tuple<Float, Float>> imediaList = $wor.val;
+		int recordWordCount = 0;
+		for(int gidx = 0; gidx < $u::r.numberOfGroups(); gidx++) {
+			Group g = $u::r.getGroup(gidx);
+			recordWordCount += g.getAlignedWordCount();
+		}
+		System.out.println(recordWordCount + " - " + imediaList.size());
 	}
 	;
 ]]>
