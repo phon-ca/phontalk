@@ -58,16 +58,21 @@ worendele
     <!-- Tree Walker -->
     <buffer name="AST2Phon.g">
         <![CDATA[
-wor returns [List<Tuple<Float, Float>> val]
+wor returns [List<Integer> indices, List<Tuple<Float, Float>> imedia]
 scope {
     List<Tuple<Float, Float>> mediaList;
+    List<Integer> wordIndices;
+    int wIdx;
 }
 @init {
     $wor::mediaList = new ArrayList<>();
+    $wor::wordIndices = new ArrayList<>();
+    $wor::wIdx = -1;
 }
     :   ^(WOR_START worattr* linker* worele* t postcode* media? worendele*)
     {
-        $val = $wor::mediaList;
+        $indices = $wor::wordIndices;
+        $imedia = $wor::mediaList;
     }
     ;
 
@@ -82,8 +87,17 @@ worele
 
 worgrp
     :   w
+    {
+        ++$wor::wIdx;
+    }
     |   g
+    {
+        ++$wor::wIdx;
+    }
     |   pg
+    {
+        ++$wor::wIdx;
+    }
     |   sg
     ;
 
@@ -99,6 +113,7 @@ worannotation
             float startTime = Float.parseFloat(parts[0]);
             float endTime = Float.parseFloat(parts[1]);
 
+            $wor::wordIndices.add($wor::wIdx);
             $wor::mediaList.add(new Tuple<Float, Float>(startTime, endTime));
         } else {
             throw new RuntimeException("Invalid media string " + $imedia.val);
