@@ -46,6 +46,9 @@ chat_attrs
     <buffer name="AST2Phon.g">
         <![CDATA[
 chat
+@init {
+    session.setDate(null);
+}
 	:	^(CHAT_START chat_attrs+ participants chat_content*)
 	;
 	

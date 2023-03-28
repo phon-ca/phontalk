@@ -216,7 +216,8 @@ public class Phon2XmlTreeBuilder {
 		DateTimeFormatter formatter = 
 				DateTimeFormatter.ofPattern("dd-LLL-yyyy");
 		LocalDate tDate = t.getDate();
-		
+		if(tDate == null) return;
+
 		String chatDateStr = formatter.format(tDate).toUpperCase().replaceAll("\\.", "");
 		
 		CommonTree commentTree = AntlrUtils.createToken(talkbankTokens, "COMMENT_START");
@@ -309,24 +310,15 @@ public class Phon2XmlTreeBuilder {
 		cNode.setParent(tree);
 		tree.addChild(cNode);
 		
-		/**
-		 * @Deprecated CHAT ID attribute
-		 */
-		/*
-		{
-			CommonTree idNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_ID");
-			idNode.getToken().setText(t.getName());
-			idNode.setParent(tree);
-			tree.addChild(idNode);
-		}
-		*/
-		
 		// date
-		String dString = DateFormatter.dateTimeToString(t.getDate());
-		CommonTree dateNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_DATE");
-		dateNode.getToken().setText(dString);
-		dateNode.setParent(tree);
-		tree.addChild(dateNode);
+		final LocalDate date = t.getDate();
+		if(date != null) {
+			String dString = DateFormatter.dateTimeToString(t.getDate());
+			CommonTree dateNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_DATE");
+			dateNode.getToken().setText(dString);
+			dateNode.setParent(tree);
+			tree.addChild(dateNode);
+		}
 		
 		// version
 		CommonTree vNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_VERSION");
@@ -396,15 +388,17 @@ public class Phon2XmlTreeBuilder {
 					pNode.addChild(pLang);
 				}
 			}
-			
-			Period age = p.getAge(t.getDate());
-			if(age != null && !age.isNegative() && !age.isZero()) {
-				CommonTree pAge = 
-					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_AGE");
-				
-				pAge.getToken().setText(String.format("P%dY%dM%dD", age.getYears(), age.getMonths(), age.getDays()));
-				pAge.setParent(pNode);
-				pNode.addChild(pAge);
+
+			if(t.getDate() != null) {
+				Period age = p.getAge(t.getDate());
+				if (age != null && !age.isNegative() && !age.isZero()) {
+					CommonTree pAge =
+							AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_AGE");
+
+					pAge.getToken().setText(String.format("P%dY%dM%dD", age.getYears(), age.getMonths(), age.getDays()));
+					pAge.setParent(pNode);
+					pNode.addChild(pAge);
+				}
 			}
 			
 			if(p.getBirthDate() != null) {
