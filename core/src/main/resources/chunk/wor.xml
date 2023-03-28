@@ -61,17 +61,17 @@ worendele
 wor returns [List<Integer> indices, List<Tuple<Float, Float>> imedia]
 scope {
     List<Tuple<Float, Float>> mediaList;
-    List<Integer> wordIndices;
-    int wIdx;
+    List<Integer> groupIndices;
+    int gIdx;
 }
 @init {
     $wor::mediaList = new ArrayList<>();
-    $wor::wordIndices = new ArrayList<>();
-    $wor::wIdx = -1;
+    $wor::groupIndices = new ArrayList<>();
+    $wor::gIdx = -1;
 }
     :   ^(WOR_START worattr* linker* worele* t postcode* media? worendele*)
     {
-        $indices = $wor::wordIndices;
+        $indices = $wor::groupIndices;
         $imedia = $wor::mediaList;
     }
     ;
@@ -88,15 +88,15 @@ worele
 worgrp
     :   w
     {
-        ++$wor::wIdx;
+        ++$wor::gIdx;
     }
     |   g
     {
-        ++$wor::wIdx;
+        ++$wor::gIdx;
     }
     |   pg
     {
-        ++$wor::wIdx;
+        ++$wor::gIdx;
     }
     |   sg
     ;
@@ -113,7 +113,7 @@ worannotation
             float startTime = Float.parseFloat(parts[0]);
             float endTime = Float.parseFloat(parts[1]);
 
-            $wor::wordIndices.add($wor::wIdx);
+            $wor::groupIndices.add($wor::gIdx);
             $wor::mediaList.add(new Tuple<Float, Float>(startTime, endTime));
         } else {
             throw new RuntimeException("Invalid media string " + $imedia.val);

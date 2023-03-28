@@ -27,15 +27,23 @@ internal_media returns [String val]
 scope {
 	String startAttr;
 	String endAttr;
+	MediaUnit unit;
 }
 @init {
 	$internal_media::startAttr = null;
 	$internal_media::endAttr = null;
+	$internal_media::unit = MediaUnit.Millisecond;
 }
     :   ^(INTERNAL_MEDIA_START internal_media_attr*)
     {
+        float startVal = Float.parseFloat($internal_media::startAttr);
+        float endVal = Float.parseFloat($internal_media::endAttr);
+        if($internal_media::unit == MediaUnit.Second) {
+            startVal *= 1000.0f;
+            endVal *= 1000.0f;
+        }
     	if($internal_media::startAttr != null && $internal_media::endAttr != null) {
-    		$val = "(internal-media:" + $internal_media::startAttr + "-" + $internal_media::endAttr + ")";
+    		$val = "(internal-media:" + startVal + "-" + endVal + ")";
     	}
     }
 	;
@@ -52,6 +60,16 @@ internal_media_attr
 			$INTERNAL_MEDIA_ATTR_END.text;
 	}
 	|	INTERNAL_MEDIA_ATTR_UNIT
+	{
+	    String unitType = $INTERNAL_MEDIA_ATTR_UNIT.text;
+		if(unitType.equalsIgnoreCase("s"))
+		{
+			$internal_media::unit = MediaUnit.Second;
+		} else if(unitType.equalsIgnoreCase("ms"))
+		{
+			$internal_media::unit = MediaUnit.Millisecond;
+		}
+	}
 	;
 ]]>
     </buffer>

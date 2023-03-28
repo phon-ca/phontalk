@@ -77,6 +77,9 @@ scope {
 	
 	String who;
 	String recordLang;
+
+	List<Integer> worGroupIndices;
+	List<Tuple<Float, Float>> worSegments;
 	
 	List<String> links;
 }
@@ -85,6 +88,8 @@ scope {
 	$u::useLastGroup = false;
 	$u::who = null;
 	$u::recordLang = null;
+	$u::worGroupIndices = new ArrayList<>();
+	$u::worSegments = new ArrayList<>();
 	$u::links = new ArrayList<>();
 }
 @after {
@@ -120,6 +125,29 @@ scope {
 		if($seg.val != null)
 		{
 			$u::r.getSegment().setGroup(0, $seg.val);
+
+			if($u::worGroupIndices.size() > 0) {
+				final Tier<GroupSegment> groupSegmentTier = $u::r.getGroupSegment();
+				float lastEnd = 0.0f;
+
+				for(int i = 0; i < $u::worGroupIndices.size(); i++) {
+					int gIdx = $u::worGroupIndices.get(i);
+					Tuple<Float, Float> segmentTimes = $u::worSegments.get(i);
+					while(groupSegmentTier.numberOfGroups() <= gIdx)
+						groupSegmentTier.addGroup(new GroupSegment($u::r, lastEnd, lastEnd));
+					GroupSegment gseg = groupSegmentTier.getGroup(gIdx);
+					gseg.setStartTime(segmentTimes.getObj1());
+					gseg.setEndTime(segmentTimes.getObj2());
+					lastEnd = gseg.getEnd();
+				}
+				while(groupSegmentTier.numberOfGroups() < $u::r.numberOfGroups()) {
+					groupSegmentTier.addGroup(new GroupSegment($u::r, lastEnd, lastEnd));
+				}
+				if($u::r.numberOfGroups() > 0) {
+					groupSegmentTier.getGroup(0).setStart(0.0f);
+					groupSegmentTier.getGroup(groupSegmentTier.numberOfGroups() - 1).setEnd(1.0f);
+				}
+			}
 		}
 		
 		if(isSyllabifyAndAlign()) {
@@ -520,6 +548,9 @@ uendele
 	}
 	|	wor
 	{
+		// import group segments after importing segment times for record (see above)
+		$u::worGroupIndices.addAll($wor.indices);
+		$u::worSegments.addAll($wor.imedia);
 	}
 	;
 ]]>
