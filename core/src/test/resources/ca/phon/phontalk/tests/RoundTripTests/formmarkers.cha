@@ -1,0 +1,32 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Child, MOT Mother
+@ID:	eng|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+@Comment:	test all the legal form markers
+*CHI:	a@a
+	a@b
+	a@c
+	a@d
+	a@e
+	a@f
+	a@fp
+	a@g
+	a@i
+	a@k
+	a@l
+	a@n
+	a@nv
+	a@o
+	a@p
+	a@q
+	a@sas
+	a@si
+	a@sl
+	a@t
+	a@wp
+	a@x
+	a@x$adj
+	.
+@End

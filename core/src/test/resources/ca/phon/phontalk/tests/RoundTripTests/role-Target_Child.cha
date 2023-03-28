@@ -1,0 +1,8 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Target_Child
+@ID:	eng|bates|CHI|1;08.|female|normal||Target_Child|||
+@Comment:	Test role Target_Child
+*CHI:	foo .
+@End

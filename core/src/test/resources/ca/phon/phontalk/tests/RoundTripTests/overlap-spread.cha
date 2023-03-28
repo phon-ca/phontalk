@@ -1,0 +1,16 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	JAMI JAMIE Speaker, HARO HAROLD Speaker, MILE MILES Speaker, PETE PETE Speaker, ENV ENV Environment
+@ID:	eng|SBCSAE|JAMI|||||Speaker|||
+@ID:	eng|SBCSAE|HARO|||||Speaker|||
+@ID:	eng|SBCSAE|MILE|||||Speaker|||
+@ID:	eng|SBCSAE|PETE|||||Speaker|||
+@ID:	eng|SBCSAE|ENV|||||Environment|||
+*MILE:	⌈ top ⌉ ⌈2 second top ⌉2 ⌈3 third top ⌉3 .
+*JAMI:	⌊ bottom begin .
+*JAMI:	bottom end ⌋ .
+*PETE:	⌊2 second bottom ⌋2 . 
+*JAMI:	⌊3 third bottom begin .
+*JAMI:	third bottom end ⌋3 . 
+@End

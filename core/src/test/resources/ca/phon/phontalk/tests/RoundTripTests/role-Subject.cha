@@ -1,0 +1,8 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Subject
+@ID:	eng|bates|CHI|1;08.|female|normal||Subject|||
+@Comment:	Test role Subject
+*CHI:	foo .
+@End

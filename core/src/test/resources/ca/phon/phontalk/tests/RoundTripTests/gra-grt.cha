@@ -1,0 +1,28 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Eve Target_Child, MOT Sue Mother, COL Colin Investigator, RIC Richard Investigator
+@ID:	eng|brown|CHI|1;06.|female|||Target_Child|||
+@ID:	eng|brown|MOT|||||Mother|||
+@ID:	eng|brown|COL|||||Investigator|||
+@ID:	eng|brown|RIC|||||Investigator|||
+@Date:	15-OCT-1962
+@Comment:	simplest gra
+*CHI:	more cookie . [+ IMP]
+%trn:	qn|more n|cookie .
+%grt:	1|2|QUANT 2|0|ROOT 3|2|PUNCT
+@Comment:	with postclitic
+*MOT:	where's your cup ?
+%mor:	adv:wh|where~v:cop|be&3S pro:poss:det|your n|cup ?
+%gra:	1|2|PRED 2|0|ROOT 3|4|MOD 4|2|SUBJ 5|2|PUNCT
+%trn:	adv:wh|where~v:cop|be&3S pro:poss:det|your n|cup ?
+%grt:	1|2|PRED 2|0|ROOT 3|4|MOD 4|2|SUBJ 5|2|PUNCT
+@Comment:	with compound
+*CHI:	ice+cream .
+%mor:	n|+n|ice+n|cream .
+%gra:	1|0|ROOT 2|1|PUNCT
+@Comment:	with compound and postclitic
+*MOT:	you gonna put the choo+choo's wheel on ?
+%mor:	pro|you part|go-PROG~inf|to v|put&ZERO det|the n|+on|choo+on|choo~v:cop|be&3S n|wheel adv:loc|on ?
+%gra:	1|2|SUBJ 2|0|ROOT 3|4|INF 4|2|XCOMP 5|6|DET 6|7|SUBJ 7|4|OBJ 8|7|PRED 9|8|JCT 10|2|PUNCT
+@End

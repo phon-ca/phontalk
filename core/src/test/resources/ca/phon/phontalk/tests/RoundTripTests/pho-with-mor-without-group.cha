@@ -1,0 +1,10 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Child, MOT Mother
+@ID:	eng|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+*CHI:	non ‹0il y a› pas d' Anaé dans ma classe <‹0il y a›> [//] c'est que Anouk .
+%mor:	co|non=no 0pro:subj|il pro:y|y v:aux|avoir&PRES&3s adv:neg|pas adv|de n:prop|Anaé prep|dans det:poss|ma&sg n|classe&f pro:dem|ce$v:aux|être&PRES&3s pro:int|que n:prop|Anouk .
+%pho:	nɑ̃ ja pa d anahe dɑ̃ ma klas ja sɛ k anuk
+@End

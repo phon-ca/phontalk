@@ -1,0 +1,13 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Child, MOT Mother
+@ID:	eng|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+@Comment:	Special form marker plural hack.
+@Comment:	Contrast with regular word plural with hyphen.
+*CHI:	boy-s .
+%mor:	n|boy-PL .
+*CHI:	a@l-s b@l-s .
+%mor:	n:let|a-PL n:let|b-PL .
+@End

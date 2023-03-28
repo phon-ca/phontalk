@@ -1,0 +1,8 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Therapist
+@ID:	eng|bates|CHI|1;08.|female|normal||Therapist|||
+@Comment:	Test role Therapist
+*CHI:	foo .
+@End

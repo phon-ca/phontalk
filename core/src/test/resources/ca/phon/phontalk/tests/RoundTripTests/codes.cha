@@ -1,0 +1,14 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Child, MOT Mother
+@ID:	eng|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+*CHI:	[^ freecode 1] this is child speaking .
+*CHI:	[^ freecode 2] this is child speaking .
+*CHI:	[^ freecode 1] [^ freecode 2] this is child speaking .
+*CHI:	this is child@x speaking . [+ post1 arg]
+*MOT:	this is [^ huh] mother [^ right] speaking .
+*CHI:	this is child@x speaking . [+ post2 arg]
+*CHI:	this is child@x speaking . [+ post1 arg] [+ post2 arg]
+@End

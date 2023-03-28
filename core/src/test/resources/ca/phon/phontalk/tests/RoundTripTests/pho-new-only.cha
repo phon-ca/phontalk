@@ -1,0 +1,73 @@
+@UTF8
+@Begin
+@Languages:	ind, jav
+@Participants:	CHI Ido Target_Child, MOT Rimi Mother, EXP Bety Investigator, ABA Praba Brother
+@ID:	ind, jav|IDO|CHI|4;05.21|male|||Target_Child|||
+@ID:	ind, jav|IDO|MOT||female|||Mother|||
+@ID:	ind, jav|IDO|EXP|25;01.14|female|||Investigator|||
+@ID:	ind, jav|IDO|ABA|5;07.22|male|||Brother|||
+@Birth of CHI:	01-JAN-1996
+@Birth of ABA:	31-OCT-1994
+@Date:	23-JUN-2000
+@Comment:	Test new pho
+*EXP:	entar Tante nggak mo maen lagi deh .
+%pho:	entar tante nggak mo maen lagi deh
+@Comment:	With pho groups
+*EXP:	entar Tante nggak mo maen lagi deh .
+%pho:	‹a b›  c ‹d e›  f g ‹h i›  j
+@Comment:	retrace without groups
+*EXP:	<mon> [<] [/] non !
+%pho:	mã nã
+@Comment:	retrace with groups
+*EXP:	<‹ah non›> [<] [/] ‹ah non›  !
+%pho:	anã anã
+@Comment:	1-1 group on main line
+*EXP:	‹c' est› lait .
+%pho:	se le
+@Comment:	1-1 group on main line for &=cri
+*EXP:	‹&=cri› lait .
+%pho:	se le
+@Comment:	1-1 group on npho line
+*EXP:	lait .
+%pho:	‹se le›
+%mod:	‹se le›
+%xpho:	‹se le›
+%xmod:	‹se le›
+@Comment:	compound
+*EXP:	foo+bar .
+%pho:	foo+bar
+@Comment:	retrace of simple word
+*EXP:	est [/] lait .
+%pho:	se le
+@Comment:	fragment retrace
+*EXP:	&est [/] lait .
+%pho:	se le
+@Comment:	pho group around regular group, and vice versa
+*EXP:	‹est <lait> [/]› <est ‹lait›> [/] .
+%pho:	a b c
+@Comment:	syllable stress
+*EXP:	hello world .
+%pho:	həˈloʊ ˈwʌɹld
+%mod:	həˈloʊ ˈwʌɹld
+@Comment:	omission etc.
+*EXP:	hello 0omitted .
+%pho:	a
+@Comment:	yyy has pho
+*EXP:	yyy .
+%pho:	a
+*EXP:	&notomitted .
+%pho:	a
+*EXP:	&-notomitted .
+%pho:	a
+*EXP:	&+notomitted .
+%pho:	a
+*EXP:	hello &=omitted .
+%pho:	a
+@Comment:	xxx has *
+*EXP:	Yvan watched TV xxx .
+%pho:	a b c *
+@Comment:	2011-04-08 Brian discussion of how to handle x
+@Comment:	fmc should check for number of pho words in group
+*EXP:	foo [x 4] .
+%pho:	‹a a a a›
+@End

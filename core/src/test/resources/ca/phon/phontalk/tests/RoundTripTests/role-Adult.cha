@@ -1,0 +1,8 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Adult
+@ID:	eng|bates|CHI|1;08.|female|normal||Adult|||
+@Comment:	Test role Adult
+*CHI:	foo .
+@End

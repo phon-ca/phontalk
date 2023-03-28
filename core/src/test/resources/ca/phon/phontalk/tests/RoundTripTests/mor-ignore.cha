@@ -1,0 +1,35 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Timmy Target_Child, LIN Linda Investigator, WIN Winnie Investigator, GEM Gemma Speaker
+@ID:	eng|timmy|CHI|2;||||Target_Child|||
+@ID:	eng|timmy|LIN|||||Investigator|||
+@ID:	eng|timmy|WIN|||||Investigator|||
+@ID:	eng|timmy|GEM|||||Speaker|||
+*CHI:	this is a mor [e] exclude .
+%mor:	pro:dem|this v|be&3S det|a n|exclude .
+*CHI:	this is a one [/] retrace .
+%mor:	pro:dem|this v|be&3S det|a n|retrace .
+*CHI:	this is a two [//] retrace .
+%mor:	pro:dem|this v|be&3S det|a n|retrace .
+*CHI:	this is a three [///] retrace .
+%mor:	pro:dem|this v|be&3S det|a n|retrace .
+*CHI:	this is a four [/-] retrace .
+%mor:	pro:dem|this v|be&3S det|a n|retrace .
+*CHI:	this is a five [/?] retrace .
+%mor:	pro:dem|this v|be&3S det|a n|retrace .
+*CHI:	this is a <four five six> [/?] retrace .
+%mor:	pro:dem|this v|be&3S det|a n|retrace .
+*CHI:	here is a (.) pause .
+%mor:	adv:loc|here v|be&3S det|a n|pause .
+*CHI:	here is a &=thing .
+%mor:	adv:loc|here v|be&3S det|a .
+*CHI:	here is a &frag .
+%mor:	adv:loc|here v|be&3S det|a .
+*CHI:	here is an 0for word .
+%mor:	adv:loc|here v|be&3S det|a 0prep|for n|word .
+@Comment:	The following have mor generating ?|0omitted etc.
+@Comment:	*CHI:here is an 0omitted word .
+@Comment:	*CHI:here is an 0*omitted word .
+@Comment:	*CHI:here is an 00omitted word .
+@End

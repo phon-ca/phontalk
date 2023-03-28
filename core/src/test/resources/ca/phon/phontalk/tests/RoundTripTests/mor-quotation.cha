@@ -1,0 +1,12 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Timmy Target_Child, LIN Linda Investigator, WIN Winnie Investigator, GEM Gemma Speaker
+@ID:	eng|timmy|CHI|2;||||Target_Child|||
+@ID:	eng|timmy|LIN|||||Investigator|||
+@ID:	eng|timmy|WIN|||||Investigator|||
+@ID:	eng|timmy|GEM|||||Speaker|||
+@Comment:	quotations with mor 1-1
+*CHI:	he is “ noisy ” .
+%mor:	pro|he v:aux|be&3S adj|noisy .
+@End

@@ -1,0 +1,37 @@
+@UTF8
+@Begin
+@Languages:	eng, deu
+@Participants:	CHI Child, MOT Mother
+@ID:	eng, deu|bates|CHI|1;08.02|female|normal|UC|Child|bleah||
+@ID:	eng, deu|bates|MOT|||||Mother|||
+@Birth of CHI:	28-JUN-2001
+@Birthplace of CHI:	Taipei, Taiwan
+@L1 of CHI:	ara
+@Media:	headers, video, unlinked
+@Comment:	Test all headers FAKE_WORD = ({ALNUM} | [\_\@\&\;\-\!\?\.\,\'\"\+\<\>\(\)\/\=\~\*\#\`\\\%\^\$] | {TAG_CHAR})+
+*CHI:	foo .
+@Location:	foo
+@Number:	2
+@Recording Quality:	4
+@Room Layout:	foo
+@Tape Location:	foo
+@Time Duration:	8:30:31
+@Time Start:	8:30:31
+@Transcriber:	foo
+@Transcription:	eye_dialect
+@Warning:	foo
+*MOT:	foo .
+@Activities:	foo
+@Bck:	foo
+@Bg
+@Bg:	foo
+@Blank
+@Comment:	foo
+@Date:	28-JUL-2001
+@Eg
+@Eg:	foo
+@G:	foo
+@New Episode
+@Situation:	foo
+@Page:	42
+@End

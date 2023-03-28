@@ -1,0 +1,12 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	MOT Mother, CHI Target_Child
+@ID:	eng|sample|MOT|||||Mother|||
+@ID:	eng|sample|CHI|1;10.04||||Target_Child|||
+@Media:	dependent-tier-multiple-media, video
+*CHI:	<ryoote agete> [=! singing] 2041689_2042652
+	stuff . [+ bch] [+ foo] 2042689_2043652
+%cod:	this is junk 2051689_2052652
+	and more 2062689_2063652
+@End

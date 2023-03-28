@@ -1,0 +1,13 @@
+@UTF8
+@Begin
+@Languages:	ita
+@Participants:	MAR Marco Child, MOT Mother
+@ID:	ita|tonelli|MAR|2;05.24|male|||Child|||
+@ID:	ita|tonelli|MOT|||||Mother|||
+@Birth of MAR:	12-JAN-1995
+@Location:	Udine
+@Date:	06-JUL-1997
+@Comment:	Italian mor with clitic
+*MOT:	bisogna metterne via ancora Marco .
+%mor:	v|bisogna-3S&PRES=need v:inf|mette-INF~pro:clit|part=put adv|via v|ancora-3S&PRES=anchor n:prop|Marco .
+@End

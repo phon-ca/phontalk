@@ -1,0 +1,8 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Doctor
+@ID:	eng|bates|CHI|1;08.|female|normal||Doctor|||
+@Comment:	Test role Doctor
+*CHI:	foo .
+@End

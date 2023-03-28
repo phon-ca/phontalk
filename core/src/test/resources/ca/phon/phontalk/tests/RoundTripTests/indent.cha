@@ -1,0 +1,17 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	MARI MARILYN Speaker, ROY ROY Speaker, PETE PETE Speaker
+@Options:	CA
+@ID:	eng|SBCSAE|MARI|||||Speaker|||
+@ID:	eng|SBCSAE|ROY|||||Speaker|||
+@ID:	eng|SBCSAE|PETE|||||Speaker|||
+*ROY:	⌈ one ⌉ ⌈2 two ⌉2 .
+*PETE:	⌊ one ⌋ .
+*MARI:	⌊2 two ⌋2 .
+*PETE:	⌈3 three ⌉3 .
+*MARI:	⌊3 three ⌋3 .
+*MARI:	⌈4 four ⌉4 .
+*ROY:	⌊4 four ⌋4 ⌈5 five ⌉5 .
+*PETE:	⌊4 four ⌋4 ⌊5 five ⌋5 .
+@End

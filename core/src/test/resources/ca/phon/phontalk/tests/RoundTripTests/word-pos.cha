@@ -1,0 +1,16 @@
+@UTF8
+@Begin
+@Languages:	zho, yue
+@Participants:	CHI Child, MOT Mother
+@ID:	zho, yue|bates|CHI|1;08.|female|normal||Child|||
+@ID:	zho, yue|bates|MOT|||||Mother|||
+@Date:	23-JUL-1964
+@Comment:	$n in words, with or without @s stuff
+*CHI:	foo bar$n baz .
+*CHI:	hey there what is hao3@s$n ?
+*CHI:	hey there what is hao3@s:zho$n ?
+*CHI:	hey there what is hao3@s:eng+zho+fra$n ?
+*CHI:	hey there what is hao3@s:eng&zho&fra$n ?
+@Comment:	with subcategories
+*CHI:	foo bar$n:m:l baz .
+@End

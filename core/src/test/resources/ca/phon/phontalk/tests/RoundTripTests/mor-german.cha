@@ -1,0 +1,12 @@
+@UTF8
+@Begin
+@Languages:	deu
+@Participants:	CHI Timmy Target_Child, LIN Linda Investigator, WIN Winnie Investigator, GEM Gemma Speaker
+@ID:	deu|timmy|CHI|2;09.08||||Target_Child|||
+@ID:	deu|timmy|LIN|||||Investigator|||
+@ID:	deu|timmy|WIN|||||Investigator|||
+@ID:	deu|timmy|GEM|||||Speaker|||
+@Comment:	test German mor
+*CHI:	ausgegangen .
+%mor:	prep|aus$PART#v|geh&PAST:PART=go .
+@End

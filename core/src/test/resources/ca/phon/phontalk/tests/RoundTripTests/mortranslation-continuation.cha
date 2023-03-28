@@ -1,0 +1,20 @@
+@UTF8
+@PID:	11312/c-00042910-1
+@Begin
+@Languages:	fra
+@Participants:	CHI Antoine Target_Child, FAT Mathieu Father, OBS Christophe Investigator, AUN Anne_Aunt Relative
+@ID:	fra|Paris|CHI|1;01.23|male|||Target_Child|||
+@ID:	fra|Paris|FAT|35;|male|||Father|||
+@ID:	fra|Paris|OBS|46;05.18|male|||Investigator|||
+@ID:	fra|Paris|AUN|32;00.28|female|||Relative|||
+@Birth of CHI:	10-APR-2006
+@Birth of FAT:	07-JUL-1978
+@Birth of OBS:	15-DEC-1960
+@Birth of AUN:	05-MAY-1975
+@Comment:	mor translation with continuation lines
+@Date:	03-JUN-2007
+*AUN:	ah oui alors je peux éteindre dans le couloir oui non elle va chercher xxx . 350255_354852
+%mor:	co|ah co|oui=yes adv|alors pro:subj|je v:mdl|pouvoir&PRES&12s
+	v|éteindre-INF prep|dans det:art|le&m&sg n|couloir&m co|oui=yes
+	co|non=no pro:subj|elle v:mdl|aller&PRES&3s v|chercher-INF .
+@End

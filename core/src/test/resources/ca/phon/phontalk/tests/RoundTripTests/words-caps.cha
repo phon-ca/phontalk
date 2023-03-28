@@ -1,0 +1,10 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Child, MOT Mother
+@ID:	eng|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+@Comment:	arbitrary caps in words
+*CHI:	hey man what in the world isn't this ?
+*MOT:	hey man what in the woRld isn't this ?
+@End

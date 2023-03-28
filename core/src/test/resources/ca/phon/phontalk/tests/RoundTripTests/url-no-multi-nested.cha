@@ -1,0 +1,13 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	MOT Mother, CHI Target_Child
+@ID:	eng|sample|MOT|||||Mother|||
+@ID:	eng|sample|CHI|1;10.04||||Target_Child|||
+@Media:	url-no-multi-nested, video
+@Comment:	bullets in an utterance in groups
+*CHI:	<one 2041689_2042652
+	two> [= foo] 2042652_2043653
+	three 2043653_2043654
+	end . 2043654_2043655
+@End

@@ -1,0 +1,10 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	123 Child, MOT Mother
+@ID:	eng|bates|123|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+@Comment:	Allow ID to start with number and not have letters at all
+*123:	hey man what in the world isn't this ?
+*MOT:	hey man what in the world isn't this ?
+@End

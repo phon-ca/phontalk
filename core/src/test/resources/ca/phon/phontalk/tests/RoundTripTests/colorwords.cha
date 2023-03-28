@@ -1,0 +1,10 @@
+@UTF8
+@Color words:	*TAI 1 32768 0 656 *TMO 1 656 33423 1311
+@Begin
+@Languages:	eng
+@Participants:	CHI Child, MOT Mother
+@ID:	eng|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+@Comment:	optional @Color words header
+*CHI:	hello there .
+@End

@@ -1,0 +1,15 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Child
+@ID:	eng|change_me_later|CHI|||||Child|||
+*CHI:	I want (s)ome cookies .
+%mor:	pro:sub|I v|want qn|some n|cookie-PL .
+%gra:	1|2|SUBJ 2|0|ROOT 3|4|QUANT 4|2|OBJ 5|2|PUNCT
+%com:	this is okay because parens can mark parts of words, just not whole
+	words
+*CHI:	I want 0some cookies .
+%mor:	pro:sub|I v|want 0adj|some n|cookie-PL .
+%gra:	1|2|SUBJ 2|0|ROOT 3|4|MOD 4|2|OBJ 5|2|PUNCT
+%com:	this one should pass, because it marks the omitted word correctly
+@End

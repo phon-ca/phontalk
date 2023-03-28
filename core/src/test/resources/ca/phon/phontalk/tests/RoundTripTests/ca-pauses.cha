@@ -1,0 +1,19 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	MOT Mother, CHI Target_Child
+@ID:	eng|sample|MOT|||||Mother|||
+@ID:	eng|sample|CHI|1;10.04||||Target_Child|||
+@Comment:	pauses
+*CHI:	a (.) b .
+*CHI:	a (..) b .
+*CHI:	a (...) b .
+*CHI:	a (3.) b .
+*CHI:	a (2:3.) b .
+*CHI:	a (2:3.4) b .
+*CHI:	a (3.4) b .
+@Comment:	pauses followed by stuff
+*CHI:	a (.) , b .
+@Comment:	pauses with annotations
+*CHI:	<a (3.4)> [/] a .
+@End

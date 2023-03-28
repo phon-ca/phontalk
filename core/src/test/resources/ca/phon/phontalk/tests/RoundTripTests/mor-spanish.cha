@@ -1,0 +1,12 @@
+@UTF8
+@Begin
+@Languages:	spa
+@Participants:	CHI Timmy Target_Child, LIN Linda Investigator, WIN Winnie Investigator, GEM Gemma Speaker
+@ID:	spa|timmy|CHI|2;09.08||||Target_Child|||
+@ID:	spa|timmy|LIN|||||Investigator|||
+@ID:	spa|timmy|WIN|||||Investigator|||
+@ID:	spa|timmy|GEM|||||Speaker|||
+@Comment:	mor with multiple postclitics, e.g., Spanish
+*CHI:	damelo .
+%mor:	v|da~pro|me&dat~pro|lo&acc=give .
+@End

@@ -1,0 +1,12 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Child, MOT Mother
+@ID:	eng|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+@Comment:	Simple example
+*MOT:	the people are making cakes .
+%mor:	det|the n|people v:aux|be&PRES v|make-ING n|cake-PL .
+*MOT:	hi .
+%mor:	co|hi .
+@End

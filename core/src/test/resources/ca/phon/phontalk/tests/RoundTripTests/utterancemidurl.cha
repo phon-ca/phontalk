@@ -1,0 +1,11 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Child, MOT Mother
+@Options:	multi
+@ID:	eng|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+@Media:	utterancemidurl, video
+*CHI:	foo bar 2041689_2042652 is dumb . 3041689_3042652
+%cod:	crap
+@End

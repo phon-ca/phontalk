@@ -1,0 +1,16 @@
+@UTF8
+@Begin
+@Languages:	eng, zho
+@Participants:	CHI Child, MOT Mother
+@ID:	eng, zho|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng, zho|bates|MOT|||||Mother|||
+@Date:	23-JUL-1964
+@Comment:	@s, default: round trip will generate explicit
+*CHI:	hey there what is hao3@s ?
+@Comment:	@s, one explicit lang
+*CHI:	hey there what is hao3@s:zho ?
+@Comment:	@s, two langs
+*CHI:	hey there what is hao3@s:eng+zho+fra ?
+@Comment:	@s, two langs, ambiguous
+*CHI:	hey@s:spa there what is hao3@s:eng&zho&fra ?
+@End

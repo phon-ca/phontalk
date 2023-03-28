@@ -1,0 +1,8 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Nurse
+@ID:	eng|bates|CHI|1;08.|female|normal||Nurse|||
+@Comment:	Test role Nurse
+*CHI:	foo .
+@End

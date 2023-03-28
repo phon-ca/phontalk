@@ -1,0 +1,12 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Timmy Target_Child, LIN Linda Investigator, WIN Winnie Investigator, GEM Gemma Speaker
+@ID:	eng|timmy|CHI|2;||||Target_Child|||
+@ID:	eng|timmy|LIN|||||Investigator|||
+@ID:	eng|timmy|WIN|||||Investigator|||
+@ID:	eng|timmy|GEM|||||Speaker|||
+@Comment:	inlined quotation, with or without group
+*CHI:	“&foo and more” .
+*CHI:	<“wij hebben een kikker gevangen”> [<] .
+@End

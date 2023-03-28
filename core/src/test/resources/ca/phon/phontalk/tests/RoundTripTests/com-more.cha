@@ -1,0 +1,19 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	TXT Target_Child
+@ID:	eng|providence|TXT|1;09.08|female|||Target_Child|||
+*TXT:	text.
+%com:	TTHIS can (happen) in "quotes" or even with !! sometimes.
+*TXT:	text.
+%com:	a-a-and - -- we get *** /this\ or #{this} with @^$ +  and the rest.
+*TXT:	text.
+%com:	then there is IPA ɟɮɬːɟɮːɬʉɨɤθ and so on
+*TXT:	text.
+%com:	and there are the CA characters ↓↑∆∇t☺ and so on (see manual)
+*TXT:	text.
+%com:	and CJK 阿萨德
+*TXT:	text.
+%com:	there are extended Latin characters ňŝâ, and Greek ζΫβ, Cyrillic
+	чДЋ, Hebrew דים, and some هإكآday we will have Arabic etc.
+@End

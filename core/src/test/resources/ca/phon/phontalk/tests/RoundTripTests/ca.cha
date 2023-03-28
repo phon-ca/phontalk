@@ -1,0 +1,95 @@
+@UTF8
+@Begin
+@Languages:	eng
+@Participants:	CHI Child, MOT Mother
+@Options:	CA
+@ID:	eng|bates|CHI|1;08.|female|normal||Child|||
+@ID:	eng|bates|MOT|||||Mother|||
+@Comment:	Elements
+*CHI:	blocked segments rub-b-b≠bber .
+*CHI:	a p↑itch up .
+*CHI:	a p↓itch down .
+*CHI:	a in∙halation .
+*CHI:	a constriction∾ .
+*CHI:	a ↻pitch reset .
+*CHI:	a lauἩgh in word .
+@Comment:	CA overlaps
+*CHI:	a ⌈ top begin overlap , top end overlap ⌉ here .
+*MOT:	a ⌊ bottom begin overlap , bottom end overlap ⌋ there .
+*CHI:	a ⌈ top begin overlap , top end overlap⌉ here .
+*MOT:	a ⌊ bottom begin overlap , bottom end overlap⌋ there .
+@Comment:	CA overlaps , inside groups
+*CHI:	<a ⌈ top begin overlap , top end overlap ⌉ here> [= foo] .
+*MOT:	<a ⌊ bottom begin overlap , bottom end overlap ⌋ there> [= foo] .
+*CHI:	<a ⌈ top begin overlap , top end overlap⌉ here> [= foo] .
+*MOT:	<a ⌊ bottom begin overlap , bottom end overlap⌋ there> [= foo] .
+@Comment:	Segment repetition
+*CHI:	↫s-s-s↫segment .
+*CHI:	↫s-s-s↫seg↫m-m-m-m↫ments .
+@Comment:	Unmatched delimiters
+*CHI:	a ∆faster∆ .
+*CHI:	a ∇slower∇ .
+*CHI:	a ⁎creaky⁎ .
+*CHI:	a °softer° .
+*CHI:	a ▁lowpitch▁ .
+*CHI:	a ▔highpitch▔ .
+*CHI:	a ☺smilevoice☺ .
+*CHI:	a ♋breathyvoice♋ .
+*CHI:	a ⁇unsure⁇ .
+*CHI:	a ∬whisper∬ .
+*CHI:	a ΫyawnΫ .
+*CHI:	a ∮singing∮ .
+@Comment:	Unmatched delimiters , in group
+*CHI:	<a ∆faster∆> [= foo] .
+*CHI:	<a ∇slower∇> [= foo] .
+*CHI:	<a ⁎creaky⁎> [= foo] .
+*CHI:	<°softer° [/]> [= foo] .
+*CHI:	<a °softer°> [= foo] .
+*CHI:	<a ▁lowpitch▁> [= foo] .
+*CHI:	<a ▔highpitch▔> [= foo] .
+*CHI:	<a ☺smilevoice☺> [= foo] .
+*CHI:	<a ♋breathyvoice♋> [= foo] .
+*CHI:	<a ⁇unsure⁇> [= foo] .
+*CHI:	<a ∬whisper∬> [= foo] .
+*CHI:	<a ΫyawnΫ> [= foo] .
+*CHI:	<a ∮singing∮> [= foo] .
+@Comment:	No terminator at end of utterance
+*CHI:	rising to high⇗
+*CHI:	rising to mid↗
+*CHI:	level→
+*CHI:	falling to mid↘
+*CHI:	falling to low⇘
+@Comment:	continuations
+*CHI:	rising to high with continuation⇗≋
+*MOT:	junk .
+*CHI:	+≋ continuation .
+*CHI:	rising to mid with continuation↗≋
+*MOT:	junk .
+*CHI:	+≋ continuation .
+*CHI:	level with continuation→≋
+*MOT:	junk .
+*CHI:	+≋ continuation .
+*CHI:	falling to mid with continuation↘≋
+*MOT:	junk .
+*CHI:	+≋ continuation .
+*CHI:	falling to low with continuation⇘≋
+*MOT:	junk .
+*CHI:	+≋ continuation .
+*CHI:	technical break TCU continuation≋
+*MOT:	junk .
+*CHI:	+≋ continuation .
+*CHI:	falling to low with no break TCU continuation⇘ ≈
+*MOT:	junk .
+*CHI:	+≈ no break TCU continuation .
+@Comment:	CA separators
+*CHI:	foo ⇗ rising to high⇗
+*CHI:	foo ↗ rising to mid↗
+*CHI:	foo → level→
+*CHI:	foo ↘ falling to mid↘
+*CHI:	foo ⇘ falling to low⇘
+*CHI:	þa⌈ð er svo liti⌉ langt síðan∞
+@Comment:	optional spaces
+*CHI:	technical break Tcu continuation≋
+*MOT:	junk .
+*CHI:	+≋ continuation .
+@End
