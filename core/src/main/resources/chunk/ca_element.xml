@@ -20,7 +20,18 @@ ca_element
 ca_element returns [String val]
     :   ^(CA_ELEMENT_START CA_ELEMENT_ATTR_TYPE)
     {
-        $val = "(ca-element:" + $CA_ELEMENT_ATTR_TYPE.text + ")";
+        $val = switch($CA_ELEMENT_ATTR_TYPE.text) {
+            case "blocked segments" -> "\u2260";
+            case "constriction" -> "\u223e";
+            case "inhalation" -> "\u2219";
+            case "laugh in word" -> "\u1f29";
+            case "pitch down" -> "\u2193";
+            case "pitch reset" -> "\u21bb";
+            case "pitch up" -> "\u2191";
+            case "primary stress" -> "\u02c8";
+            case "secondary stress" -> "\u02cc";
+            default -> "";
+        };
     }
     ;
 ]]>

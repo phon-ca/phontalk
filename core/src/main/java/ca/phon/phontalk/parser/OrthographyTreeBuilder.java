@@ -130,7 +130,10 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		String addWord = word.getWord();
 		String val = "";
 		boolean inSegmentRep = false;
-		for(char c:addWord.toCharArray()) {
+		boolean inUnderline = false;
+		char[] charArray = addWord.toCharArray();
+		for(int i = 0; i < charArray.length; i++) {
+			char c = charArray[i];
 			// deal with shortenings
 			if(c == '<') {
 				if(val.length() > 0)
@@ -139,6 +142,13 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			} else if(c == '>') {
 				if (val.length() > 0)
 					addShortening(wParent, val);
+				val = "";
+			} else if(c == '_' && i < charArray.length - 1 && charArray[i+1] == '_') {
+				if(val.length() > 0)
+					addTextNode(wParent, val);
+				addUnderline(wParent, !inUnderline);
+				inUnderline = !inUnderline;
+				i++;
 				val = "";
 			} else if(c == '\u21ab') {
 				if(inSegmentRep) {
@@ -150,14 +160,28 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					inSegmentRep = true;
 				}
 				val = "";
-
 			} else {
 				val += c;
 			}
 		}
-		addTextNode(wParent, val);
+		if(val.length() > 0)
+			addTextNode(wParent, val);
 	}
-	
+
+	private void addUnderline(CommonTree parent, boolean isStart) {
+		CommonTree uNode =
+				AntlrUtils.createToken(talkbankTokens, "UNDERLINE_START");
+		uNode.setParent(parent);
+
+		CommonTree uTypeNode =
+				AntlrUtils.createToken(talkbankTokens, "UNDERLINE_ATTR_TYPE");
+		uTypeNode.setParent(uNode);
+		uTypeNode.getToken().setText(isStart ? "begin" : "end");
+		uNode.addChild(uTypeNode);
+
+		parent.addChild(uNode);
+	}
+
 	/**
 	 * Add a shortenting element
 	 */
