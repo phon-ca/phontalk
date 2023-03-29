@@ -117,15 +117,18 @@ public class Phon2XmlTreeBuilder {
 		setupHeaderData(retVal, session);
 		setupParticipants(retVal, session);
 		
-		insertDate(retVal, session);
+		boolean dateInserted = false;
 		for(int cidx = 0; cidx < session.getMetadata().getNumberOfComments(); cidx++) {
 			final Comment comment = session.getMetadata().getComment(cidx);
 			if(comment.getTag().equals("LazyGem")) {
 				insertLazyGem(retVal, comment);
-			} else if(comment.getTag().equals("BeginGem")) { 
+			} else if(comment.getTag().equals("BeginGem")) {
 				insertBeginGem(retVal, comment);
 			} else if(comment.getTag().equals("Date")) {
 				// date is inserted before processing session
+				if(session.getDate() != null)
+					insertDate(retVal, session);
+				dateInserted = true;
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("pid")) {
 				insertPid(retVal, comment.getValue());
 			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@ActivityType")) {
@@ -160,7 +163,9 @@ public class Phon2XmlTreeBuilder {
 				insertComment(retVal, comment);
 			}
 		}
-		
+		if(!dateInserted && session.getDate() != null)
+			insertDate(retVal, session);
+
 		processTranscript(retVal, session);
 		
 		return retVal;
