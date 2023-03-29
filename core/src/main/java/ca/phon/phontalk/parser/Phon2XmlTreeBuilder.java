@@ -506,13 +506,8 @@ public class Phon2XmlTreeBuilder {
 		typeNode.setParent(cNode);
 		typeNode.getToken().setText(c.getTag());
 		cNode.addChild(typeNode);
-		
-		CommonTree textNode = 
-			AntlrUtils.createToken(talkbankTokens, "TEXT");
-		textNode.getToken().setText(c.getValue());
-		textNode.setParent(cNode);
-		cNode.addChild(textNode);
-		
+
+		addTextNode(cNode, c.getValue());
 		tree.addChild(cNode);
 	}
 	

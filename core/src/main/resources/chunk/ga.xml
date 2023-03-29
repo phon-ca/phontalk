@@ -51,7 +51,7 @@ ga returns [String val]
 
 		if($strs != null)
 		{
-		    $strs.stream().forEach((t) -> buffer.append(t.getText());
+		    $strs.stream().forEach((t) -> buffer.append(t.toString()));
 		}
 		
 		// escape parenthesis

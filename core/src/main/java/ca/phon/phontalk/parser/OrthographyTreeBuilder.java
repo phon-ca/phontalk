@@ -24,6 +24,7 @@ import ca.phon.orthography.WordPrefixType;
 import ca.phon.orthography.WordSuffixType;
 import ca.phon.visitor.VisitorAdapter;
 import ca.phon.visitor.annotation.Visits;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * Build contents of phonetic group tree from
@@ -278,7 +279,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	private void addTextNode(CommonTree parent, String data) {
 		CommonTree txtNode = 
 			AntlrUtils.createToken(talkbankTokens, "TEXT");
-		txtNode.getToken().setText(data);
+		txtNode.getToken().setText(StringEscapeUtils.escapeXml(data));
 		txtNode.setParent(parent);
 		parent.addChild(txtNode);
 	}
