@@ -586,7 +586,7 @@ public class TalkBankCodeTreeBuilder {
 	public void addTextNode(CommonTree parent, String data) {
 		CommonTree txtNode = 
 			AntlrUtils.createToken(talkbankTokens, "TEXT");
-		txtNode.getToken().setText(data);
+		txtNode.getToken().setText(StringEscapeUtils.escapeXml(data.trim()));
 		txtNode.setParent(parent);
 		parent.addChild(txtNode);
 	}

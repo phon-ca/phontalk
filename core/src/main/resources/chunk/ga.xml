@@ -10,8 +10,8 @@ XPath - /xs:schema/xs:element[@name="ga"]
     <buffer name="TalkBank2AST.g">
         <![CDATA[
 ga
-	:	GA_START GA_ATTR_TYPE? TEXT? GA_END
-	->	^(GA_START GA_ATTR_TYPE? TEXT?)
+	:	GA_START GA_ATTR_TYPE? TEXT* GA_END
+	->	^(GA_START GA_ATTR_TYPE? TEXT*)
 	;
 ]]>
 
@@ -24,7 +24,7 @@ ga returns [String val]
 @init{
 	$val = "";
 }
-	:	^(GA_START type=GA_ATTR_TYPE? v=TEXT?)
+	:	^(GA_START type=GA_ATTR_TYPE? strs+=TEXT*)
 	{
 		final StringBuffer buffer = new StringBuffer();
 		if($type != null)
@@ -49,9 +49,9 @@ ga returns [String val]
 		    }
 		}
 
-		if($v != null)
+		if($strs != null)
 		{
-			buffer.append(" " + $v.text);
+		    $strs.stream().forEach((t) -> buffer.append(t.getText());
 		}
 		
 		// escape parenthesis

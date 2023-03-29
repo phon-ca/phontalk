@@ -10,8 +10,8 @@ XPath - /xs:schema/xs:complexType[@name="happeningType"]
     <buffer name="TalkBank2AST.g">
         <![CDATA[
 happening
-	:	HAPPENING_START TEXT? HAPPENING_END 
-	->	^(HAPPENING_START TEXT?)
+	:	HAPPENING_START TEXT* HAPPENING_END
+	->	^(HAPPENING_START TEXT*)
 	;
 ]]>
     </buffer>
@@ -23,11 +23,11 @@ happening returns [String val]
 @init {
 	$val = null;
 }
-	:	^(HAPPENING_START v=TEXT?)
+	:	^(HAPPENING_START strs+=TEXT*)
 	{
-		if($v != null) 
+		if($strs != null)
 		{
-			$val = $v.text;
+			$val = $strs.stream().map(Object::toString).collect(Collectors.joining());
 		}
 	}
 	;
