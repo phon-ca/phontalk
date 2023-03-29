@@ -1,5 +1,6 @@
 package ca.phon.phontalk.tests;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -14,11 +15,11 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class RoundTripTests extends RoundTripTest {
 
-    public RoundTripTests(String inputFile, String outputFolder) {
+    public RoundTripTests(String name, String inputFile, String outputFolder) {
         super(inputFile, outputFolder);
     }
 
-    @Parameters
+    @Parameters(name = "{0}")
     public static Collection<Object[]> testData() {
         List<Object[]> retVal = new ArrayList<>();
 
@@ -27,7 +28,7 @@ public class RoundTripTests extends RoundTripTest {
 
         for(File testFile:testFolder.listFiles()) {
             if(!testFile.getName().endsWith(".cha")) continue;
-            retVal.add(new Object[]{testFile.getAbsolutePath(), outputFolder});
+            retVal.add(new Object[]{FilenameUtils.getBaseName(testFile.getName()), testFile.getAbsolutePath(), outputFolder});
         }
         retVal.sort(Comparator.comparing(c -> c[0].toString()));
 

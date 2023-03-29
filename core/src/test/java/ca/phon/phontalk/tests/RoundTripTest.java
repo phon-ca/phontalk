@@ -5,13 +5,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -74,6 +71,12 @@ public class RoundTripTest {
         final Xml2CHATConverter xml2CHATConverter = new Xml2CHATConverter();
         xml2CHATConverter.convertFile(phon2xmlFile, roundTripFile, listener);
         Assert.assertNull(lastError.get());
+
+        final Path origPath = Path.of(origFile.toURI());
+        final Path rtPath = Path.of(roundTripFile.toURI());
+
+        final long byteChange = Files.mismatch(origPath, rtPath);
+        Assert.assertEquals(-1, byteChange);
     }
 
 }
