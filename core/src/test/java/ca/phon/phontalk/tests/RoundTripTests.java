@@ -6,6 +6,7 @@ import org.junit.runners.Parameterized;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.runners.Parameterized.Parameters;
@@ -28,6 +29,7 @@ public class RoundTripTests extends RoundTripTest {
             if(!testFile.getName().endsWith(".cha")) continue;
             retVal.add(new Object[]{testFile.getAbsolutePath(), outputFolder});
         }
+        retVal.sort(Comparator.comparing(c -> c[0].toString()));
 
         return retVal;
     }

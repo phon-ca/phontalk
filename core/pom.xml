@@ -35,6 +35,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>ca.phon</groupId>
+			<artifactId>phon-app</artifactId>
+			<version>${ca.phon.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.talkbank</groupId>
 			<artifactId>chatter</artifactId>
 			<version>1.0.0-alpha-182</version>

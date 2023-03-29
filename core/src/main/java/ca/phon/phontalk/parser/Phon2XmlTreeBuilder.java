@@ -344,10 +344,6 @@ public class Phon2XmlTreeBuilder {
 			pNode.setParent(parent);
 			
 			String partId = p.getId();
-			// change p0 to CHI
-//			if(partId.equalsIgnoreCase("p0")) {
-//				partId = "CHI";
-//			}
 			CommonTree pId = 
 				AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_ID");
 			pId.getToken().setText(partId);
@@ -389,18 +385,16 @@ public class Phon2XmlTreeBuilder {
 				}
 			}
 
-			if(t.getDate() != null) {
-				Period age = p.getAge(t.getDate());
-				if (age != null && !age.isNegative() && !age.isZero()) {
-					CommonTree pAge =
-							AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_AGE");
+			Period age = (p.getAge(null) != null ? p.getAge(null) : p.getAge(t.getDate()));
+			if (age != null && !age.isNegative() && !age.isZero()) {
+				CommonTree pAge =
+						AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_AGE");
 
-					pAge.getToken().setText(String.format("P%dY%dM%dD", age.getYears(), age.getMonths(), age.getDays()));
-					pAge.setParent(pNode);
-					pNode.addChild(pAge);
-				}
+				pAge.getToken().setText(String.format("P%dY%dM%dD", age.getYears(), age.getMonths(), age.getDays()));
+				pAge.setParent(pNode);
+				pNode.addChild(pAge);
 			}
-			
+
 			if(p.getBirthDate() != null) {
 				DateFormatter dateFormat = new DateFormatter();
 				CommonTree pBday = 
@@ -418,7 +412,7 @@ public class Phon2XmlTreeBuilder {
 				pNode.addChild(pGroup);
 			}
 			
-			if(p.getSex() != null) {
+			if(p.getSex() != null && p.getSex() != Sex.UNSPECIFIED) {
 				CommonTree pSex =
 					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_SEX");
 				String sexType = 
