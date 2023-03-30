@@ -40,7 +40,7 @@ s returns [String val]
 				$val = ":";
 			} else if(type.equals("clause delimiter"))
 			{
-				$val = "(clause delimiter:" + $TEXT.text + ")";
+				$val = "(^c)";
 			} else if(type.equals("rising to high"))
 			{
 				$val = "\u21D7";

@@ -68,6 +68,11 @@ public class TalkBankCodeTreeBuilder {
 				|| data.equals("\u2021")) {
 			addTagMarker(tree, data);
 		}
+
+		// s
+		else if(data.equals("^c")) {
+			addS(tree, "clause delimiter");
+		}
 		
 		// linkers
 		else if(data.equals("+\"")
@@ -151,7 +156,20 @@ public class TalkBankCodeTreeBuilder {
 			}
 		}
 	}
-	
+
+	public void addS(CommonTree parent, String type) {
+		CommonTree sNode =
+				AntlrUtils.createToken(talkbankTokens, "S_START");
+		sNode.setParent(parent);
+		parent.addChild(sNode);
+
+		CommonTree sTypeNode =
+				AntlrUtils.createToken(talkbankTokens, "S_ATTR_TYPE");
+		sTypeNode.getToken().setText(type);
+		sTypeNode.setParent(sNode);
+		sNode.addChild(sTypeNode);
+	}
+
 	/**
 	 * Add a happening element
 	 */
