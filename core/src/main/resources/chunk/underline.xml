@@ -27,7 +27,7 @@ $val = "";
 		String uType = $type.text;
 		$val = "(underline:" + uType + ")";
 	}
-	;	
+	;
 ]]>
     </buffer>
     

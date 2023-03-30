@@ -79,7 +79,7 @@ wele
 	}
 	|	underline
 	{
-		$w::word += "__";
+		$w::word += "\u2500";
 	}
 	|	italic
 	{

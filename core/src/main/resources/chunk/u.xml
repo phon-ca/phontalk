@@ -78,6 +78,8 @@ scope {
 	String who;
 	String recordLang;
 
+	String wordPrefix;
+
 	List<Integer> worGroupIndices;
 	List<Tuple<Float, Float>> worSegments;
 	
@@ -88,6 +90,7 @@ scope {
 	$u::useLastGroup = false;
 	$u::who = null;
 	$u::recordLang = null;
+	$u::wordPrefix = "";
 	$u::worGroupIndices = new ArrayList<>();
 	$u::worSegments = new ArrayList<>();
 	$u::links = new ArrayList<>();
@@ -248,8 +251,9 @@ uele
 	:	w 
 	{	
 		OrthographyBuilder builder = new OrthographyBuilder();
-		builder.append($ugrp::g.getOrthography()).append($w.val);
+		builder.append($ugrp::g.getOrthography()).append($u::wordPrefix + $w.val);
 		$ugrp::g.setOrthography(builder.toOrthography());
+		$u::wordPrefix = "";
 	}
 	| 	pg 
 	{	
@@ -458,11 +462,7 @@ uannotation
 	}
 	|	underline
 	{
-		Group lastGroup = 
-			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
-		lastGroup.setOrthography(
-			(new OrthographyBuilder()).append(lastGroup.getOrthography())
-				.append($underline.val).toOrthography());
+		$u::wordPrefix = "\u2500";
 	}
 	|	italic
 	{
