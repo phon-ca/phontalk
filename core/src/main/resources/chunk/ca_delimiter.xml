@@ -23,7 +23,24 @@ ca_delimiter
 ca_delimiter returns [String val]
     :   ^(CA_DELIMITER_START CA_DELIMITER_ATTR_TYPE CA_DELIMITER_ATTR_LABEL)
     {
-        $val = "(ca-delimiter:" + $CA_DELIMITER_ATTR_TYPE.text + "," + $CA_DELIMITER_ATTR_LABEL.text + ")";
+        $val = switch($CA_DELIMITER_ATTR_LABEL.text) {
+            case "breathy voice" -> "\u264b";
+            case "creaky" -> "\u204e";
+            case "faster" -> "\u2206";
+            case "high-pitch" -> "\u2594";
+            case "louder" -> "\u25c9";
+            case "low-pitch" -> "\u2581";
+            case "precise" -> "\u00a7";
+            case "repeated-segment" -> "\u21ab";
+            case "singing" -> "\u222e";
+            case "slower" -> "\u2207";
+            case "smile voice" -> "\u263a";
+            case "softer" -> "\u00b0";
+            case "unsure" -> "\u2047";
+            case "whisper" -> "\u222c";
+            case "yawn" -> "\u03ab";
+            default -> "";
+        };
     }
     ;
 ]]>
@@ -34,7 +51,7 @@ ca_delimiter returns [String val]
 ca_delimiter
     :    ^(CA_DELIMITER_START CA_DELIMITER_ATTR_TYPE CA_DELIMITER_ATTR_LABEL)
     ->    template(type={$CA_DELIMITER_ATTR_TYPE.text},label={$CA_DELIMITER_ATTR_LABEL.text})
-    <<\<ca-delimiter type="<type>" label="<label>"/\> >>
+    "\<ca-delimiter type=\"<type>\" label=\"<label>\"/\>"
     ;
 ]]>
     </buffer>

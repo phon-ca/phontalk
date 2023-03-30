@@ -102,6 +102,7 @@ wele
 	}
 	|	ca_delimiter
 	{
+		$w::word += $ca_delimiter.val;
 	}
 	| 	wk
 	{

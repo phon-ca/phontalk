@@ -42,7 +42,7 @@ ca_element returns [String val]
 ca_element
     :    ^(CA_ELEMENT_START CA_ELEMENT_ATTR_TYPE)
     ->    template(type={$CA_ELEMENT_ATTR_TYPE.text})
-    <<\<ca-element type="<type>"/\> >>
+    "\<ca-element type=\"<type>\"/\>"
     ;
 ]]>
     </buffer>

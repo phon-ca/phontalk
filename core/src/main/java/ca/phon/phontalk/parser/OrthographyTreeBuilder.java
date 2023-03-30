@@ -129,7 +129,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		
 		String addWord = word.getWord();
 		String val = "";
-		boolean inSegmentRep = false;
+		boolean inCaDelim = false;
 		boolean inUnderline = false;
 		char[] charArray = addWord.toCharArray();
 		for(int i = 0; i < charArray.length; i++) {
@@ -143,8 +143,9 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				if (val.length() > 0)
 					addShortening(wParent, val);
 				val = "";
+			// underline
 			} else if(c == '\u2500') {
-				if(val.length() > 0) {
+				if (val.length() > 0) {
 					addTextNode(wParent, val);
 					addUnderline(wParent, !inUnderline);
 				} else {
@@ -152,16 +153,27 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				}
 				inUnderline = !inUnderline;
 				val = "";
-			} else if(c == '\u21ab') {
-				if(inSegmentRep) {
-					addSegmentRepetition(wParent, val);
-					inSegmentRep = false;
-				} else {
-					if(val.length() > 0)
-						addTextNode(wParent, val);
-					inSegmentRep = true;
+			// ca-element
+			} else if (c == '\u2260' || c == '\u223e' || c == '\u2219'
+					|| c == '\u1f29' || c == '\u2193' || c == '\u21bb'
+					|| c == '\u2191' || c == '\u02c8' || c == '\u02cc') {
+				if(val.length() > 0) {
+					addTextNode(wParent, val);
+					val = "";
 				}
-				val = "";
+				addCaElement(wParent, c + "");
+			// ca-delimiter
+			} else if(c == '\u264b' || c == '\u204e' || c == '\u2206'
+				   || c == '\u2594' || c == '\u25c9' || c == '\u2581'
+				   || c == '\u00a7' || c == '\u21ab' || c == '\u222e'
+				   || c == '\u2207' || c == '\u263a' || c == '\u00b0'
+				   || c == '\u2047' || c == '\u222c' || c == '\u03ab') {
+				if(val.length() > 0) {
+					addTextNode(wParent, val);
+					val = "";
+				}
+				addCaDelimiter(wParent, inCaDelim ? "end" : "begin", c+"");
+				inCaDelim = !inCaDelim;
 			} else {
 				val += c;
 			}
@@ -212,17 +224,68 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		parent.addChild(shNode);
 	}
 
-	private void addSegmentRepetition(CommonTree parent, String data) {
-		CommonTree segRepNode =
-				AntlrUtils.createToken(talkbankTokens, "SEGMENT_REPETITION_START");
-		segRepNode.setParent(parent);
-		parent.addChild(segRepNode);
+	private void addCaElement(CommonTree parent, String type) {
+		CommonTree caElementNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_ELEMENT_START");
+		caElementNode.setParent(parent);
+		parent.addChild(caElementNode);
 
-		CommonTree textNode =
-				AntlrUtils.createToken(talkbankTokens, "SEGMENT_REPETITION_ATTR_TEXT");
-		textNode.setParent(segRepNode);
-		segRepNode.addChild(textNode);
-		textNode.getToken().setText(data);
+		type = switch(type) {
+			case "\u2260" -> "blocked segments";
+			case "\u223e" -> "constriction";
+			case "\u2219" -> "inhalation";
+			case "\u1f29" -> "laugh in word";
+			case "\u2193" -> "pitch down";
+			case "\u21bb" -> "pitch reset";
+			case "\u2191" -> "pitch up";
+			case "\u02c8" -> "primary stress";
+			case "\u02cc" -> "secondary stress";
+			default -> type;
+		};
+
+		CommonTree caElementTypeNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_ELEMENT_ATTR_TYPE");
+		caElementTypeNode.getToken().setText(type);
+		caElementTypeNode.setParent(caElementNode);
+		caElementNode.addChild(caElementTypeNode);
+	}
+
+	private void addCaDelimiter(CommonTree parent, String type, String label) {
+		CommonTree caDelimNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_DELIMITER_START");
+		caDelimNode.setParent(parent);
+		parent.addChild(caDelimNode);
+
+		CommonTree caDelimBeginEndNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_DELIMITER_ATTR_TYPE");
+		caDelimBeginEndNode.getToken().setText(type);
+		caDelimBeginEndNode.setParent(caDelimNode);
+		caDelimNode.addChild(caDelimBeginEndNode);
+
+		label = switch(label) {
+			case "\u264b" -> "breathy voice";
+			case "\u204e" -> "creaky";
+			case "\u2206" -> "faster";
+			case "\u2594" -> "high-pitch";
+			case "\u25c9" -> "louder";
+			case "\u2581" -> "low-pitch";
+			case "\u00a7" -> "precise";
+			case "\u21ab" -> "repeated-segment";
+			case "\u222e" -> "singing";
+			case "\u2207" -> "slower";
+			case "\u263a" -> "smile voice";
+			case "\u00b0" -> "softer";
+			case "\u2047" -> "unsure";
+			case "\u222c" -> "whisper";
+			case "\u03ab" -> "yawn";
+			default -> label;
+		};
+
+		CommonTree caDelimTypeNode =
+				AntlrUtils.createToken(talkbankTokens, "CA_DELIMITER_ATTR_LABEL");
+		caDelimTypeNode.getToken().setText(label);
+		caDelimTypeNode.setParent(caDelimNode);
+		caDelimNode.addChild(caDelimTypeNode);
 	}
 
 	@Visits
