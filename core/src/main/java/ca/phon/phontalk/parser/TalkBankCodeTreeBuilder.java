@@ -73,6 +73,12 @@ public class TalkBankCodeTreeBuilder {
 		else if(data.equals("^c")) {
 			addS(tree, "clause delimiter");
 		}
+
+		// overlap-point
+		else if(data.equals("⌈") || data.equals("⌉")
+			|| data.equals("⌊") || data.equals("⌋")) {
+			addOverlapPoint(tree, data);
+		}
 		
 		// linkers
 		else if(data.equals("+\"")
@@ -537,28 +543,48 @@ public class TalkBankCodeTreeBuilder {
 				AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_START");
 		opNode.setParent(parent);
 		parent.addChild(opNode);
-		
-		String[] attrs = data.split(",");
-		
-		int atrIdx = 0;
-		if(attrs.length == 3) {
-			CommonTree idxNode = 
-					AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_INDEX");
-			idxNode.getToken().setText(attrs[atrIdx++]);
-			idxNode.setParent(opNode);
-			opNode.addChild(idxNode);
+
+		int index = -1;
+		String startEnd = "start";
+		String topBottom = "top";
+		if(data.equals("⌈")) {
+			startEnd = "start";
+			topBottom = "top";
+		} else if(data.equals("⌉")) {
+			startEnd = "end";
+			topBottom = "top";
+		} else if(data.equals("⌊")) {
+			startEnd = "start";
+			topBottom = "bottom";
+		} else if(data.equals("⌋")) {
+			startEnd = "end";
+			topBottom = "bottom";
+		} else if(data.matches("[0-9]+")) {
+			index = Integer.parseInt(data);
+		} else {
+			String[] attrs = data.split(",");
+			if (attrs.length == 2) {
+				startEnd = attrs[0];
+				topBottom = attrs[1];
+			}
 		}
-		
-		if(attrs.length - atrIdx == 2) {
+
+		if(index >= 0) {
+			CommonTree indexNode =
+					AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_INDEX");
+			indexNode.getToken().setText("" + index);
+			indexNode.setParent(opNode);
+			opNode.addChild(indexNode);
+		} else {
 			CommonTree startEndNode =
 					AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_START_END");
-			startEndNode.getToken().setText(attrs[atrIdx++]);
+			startEndNode.getToken().setText(startEnd);
 			startEndNode.setParent(opNode);
 			opNode.addChild(startEndNode);
-			
+
 			CommonTree topBtmNode =
 					AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_TOP_BOTTOM");
-			topBtmNode.getToken().setText(attrs[atrIdx++]);
+			topBtmNode.getToken().setText(topBottom);
 			topBtmNode.setParent(opNode);
 			opNode.addChild(topBtmNode);
 		}
