@@ -81,7 +81,7 @@ media_attr
 media
 	:	^(MEDIA_START (attrlist+=media_attr)*)
 	->	template( attrs={$attrlist} )
-	<<\<media <attrs; separator=" ">/\> >>
+	"\<media <attrs; separator=\" \">/\>"
 	;
 	
 media_attr

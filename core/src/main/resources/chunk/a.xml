@@ -170,8 +170,7 @@ aele
 			String addVal = "(" + 
 				MsFormatter.msToDisplayString((long)Math.round(m.getStartValue())) + "-" +
 				MsFormatter.msToDisplayString((long)Math.round(m.getEndValue())) + ")";
-			$a::buffer += ($a::buffer.length() > 0 ? " " : "") +
-				addVal;
+			$a::buffer += addVal;
 		}
 	}
 	;

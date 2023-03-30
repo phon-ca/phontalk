@@ -19,12 +19,15 @@
 package ca.phon.phontalk.parser;
 
 import java.io.File;
+import java.text.ParseException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.*;
 
+import ca.phon.formatter.Formatter;
+import ca.phon.formatter.FormatterFactory;
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -692,8 +695,8 @@ public class Phon2XmlTreeBuilder {
 		}
 		
 		// check if the utterance has a 'postcode' dependent tier
-		Tier<String> postcodeTier = 
-			utt.getTier("Postcode", String.class);
+		Tier<TierString> postcodeTier =
+			utt.getTier("Postcode", TierString.class);
 		if(postcodeTier != null) {
 			addPostcode(uNode, postcodeTier);
 		}
@@ -728,21 +731,21 @@ public class Phon2XmlTreeBuilder {
 				throw treeBuilderException;
 			}
 		}
-		List<String> handeledTiers = new ArrayList<String>();
+		List<String> handledTiers = new ArrayList<String>();
 		// add mor tiers to already handeled list
-		handeledTiers.add("Morphology");
-		handeledTiers.add("trn");
-		handeledTiers.add("GRASP");
-		handeledTiers.add("Postcode");
-		handeledTiers.add("uttlan");
-		handeledTiers.add("Markers");
-		handeledTiers.add("Errors");
-		handeledTiers.add("Repetition");
+		handledTiers.add("Morphology");
+		handledTiers.add("trn");
+		handledTiers.add("GRASP");
+		handledTiers.add("Postcode");
+		handledTiers.add("uttlan");
+		handledTiers.add("Markers");
+		handledTiers.add("Errors");
+		handledTiers.add("Repetition");
 		for(String depTierName:utt.getExtraTierNames()) {
 			Tier<String> depTier = utt.getTier(depTierName, String.class);
 			
-			if(handeledTiers.contains(depTierName)) continue;
-			handeledTiers.add(depTierName);
+			if(handledTiers.contains(depTierName)) continue;
+			handledTiers.add(depTierName);
 			
 			if(depTier.isGrouped()) {
 				CommonTree depTierNode =
@@ -768,8 +771,7 @@ public class Phon2XmlTreeBuilder {
 				String val = depTier.toString().trim();
 				// CHAT requires a space between the brackets
 				val = val.replaceAll("\\[\\]", "[ ]");
-				val = StringEscapeUtils.escapeXml(val);
-				addTextNode(depTierNode, val);
+				addDependentTierContent(depTierNode, val);
 			} else {
 				String tierVal = StringEscapeUtils.escapeXml(depTier.getGroup(0).trim());
 				if(tierVal.length() == 0) continue;
@@ -828,7 +830,7 @@ public class Phon2XmlTreeBuilder {
 					depTierNode.addChild(flavorNode);
 				}
 				
-				addTextNode(depTierNode, tierVal);
+				addDependentTierContent(depTierNode, tierVal);
 			}
 		}
 		
@@ -1119,7 +1121,39 @@ public class Phon2XmlTreeBuilder {
 			pwTree.setParent(parent);
 		}
 	}
-	
+
+	private void addDependentTierContent(CommonTree parent, String data) {
+		final String mediaElePattern = "\\(([0-9]{2,3}):([0-9]{2})\\.([0-9]{2,3})-([0-9]{2,3}):([0-9]{2})\\.([0-9]{2,3})\\)";
+		final Pattern mediaPattern = Pattern.compile(mediaElePattern);
+
+		final StringBuilder builder = new StringBuilder();
+		final String[] parts = data.split("\\s");
+		final Formatter<MediaSegment> segmentFormatter = FormatterFactory.createFormatter(MediaSegment.class);
+
+		for(String part:parts) {
+			final Matcher matcher = mediaPattern.matcher(part);
+			if(matcher.matches()) {
+				if(!builder.isEmpty()) {
+					addTextNode(parent, builder.toString());
+					builder.setLength(0);
+				}
+				try {
+					final MediaSegment segment = segmentFormatter.parse(part.substring(1, part.length()-1));
+					addMedia(parent, segment);
+				} catch (ParseException e) {
+					addTextNode(parent, StringEscapeUtils.escapeXml(part));
+				}
+			} else {
+				if(builder.length() > 0)
+					builder.append(' ');
+				builder.append(part);
+			}
+		}
+		if(!builder.isEmpty()) {
+			addTextNode(parent, StringEscapeUtils.escapeXml(builder.toString()));
+		}
+	}
+
 	/**
 	 * add a text node
 	 */
@@ -1134,15 +1168,17 @@ public class Phon2XmlTreeBuilder {
 	/**
 	 * Add a postcode element
 	 */
-	private void addPostcode(CommonTree parent, Tier<String> data) {
+	private void addPostcode(CommonTree parent, Tier<TierString> data) {
 		if(data.numberOfGroups() == 0 || data.getGroup(0).trim().length() == 0) return;
 
-		CommonTree pcNode = 
-			AntlrUtils.createToken(talkbankTokens, "POSTCODE_START");
-		pcNode.setParent(parent);
-		parent.addChild(pcNode);
-		
-		addTextNode(pcNode, data.getGroup(0));
+		final String[] codes = data.getGroup(0).trim().split("\\s");
+		for(String code:codes) {
+			CommonTree pcNode =
+					AntlrUtils.createToken(talkbankTokens, "POSTCODE_START");
+			pcNode.setParent(parent);
+			parent.addChild(pcNode);
+			addTextNode(pcNode, code);
+		}
 	}
 	
 	/**
