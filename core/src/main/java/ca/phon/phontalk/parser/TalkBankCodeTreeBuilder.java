@@ -273,23 +273,12 @@ public class TalkBankCodeTreeBuilder {
 
 		CommonTree tagMarkerTypeTree = AntlrUtils.createToken(talkbankTokens, "TAGMARKER_ATTR_TYPE");
 		tagMarkerTypeTree.setParent(tagMarkerTree);
-		String type = "";
-		switch(data) {
-			case ",":
-				type = data;
-				break;
-
-			case "\u201e":
-				type = "tag";
-				break;
-
-			case "\u2021":
-				type = "vocative";
-				break;
-
-			default:
-				break;
-		}
+		String type = switch(data) {
+			case "," -> "comma";
+			case "\u201e" -> "tag";
+			case "\u2021" -> "vocative";
+			default -> data;
+		};
 		tagMarkerTypeTree.getToken().setText(type);
 		tagMarkerTree.addChild(tagMarkerTypeTree);
 	}

@@ -85,7 +85,7 @@ overlap_point
     ->    template(
 			attrs={$attrlist}
 	)
-    <<\<overlap-point <attrs; separator=" "> /\> >>
+    "\<overlap-point <attrs; separator=\" \">/\>"
     ;
     
 overlap_pointattrs

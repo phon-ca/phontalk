@@ -622,6 +622,13 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	
 	private void addTagMarker(CommonTree parentNode, String type) {
     	CommonTree tgTree = AntlrUtils.createToken(talkbankTokens, "TAGMARKER_START");
+
+		type = switch(type) {
+			case "," -> "comma";
+			case "\u201e" -> "tag";
+			case "\u2021" -> "vocative";
+			default -> type;
+		};
     	
     	CommonTree tgTypeTree = AntlrUtils.createToken(talkbankTokens, "TAGMARKER_ATTR_TYPE");
     	tgTypeTree.getToken().setText(type);
