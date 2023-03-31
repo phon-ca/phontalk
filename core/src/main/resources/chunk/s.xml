@@ -26,40 +26,19 @@ s returns [String val]
 		if($S_ATTR_TYPE != null)
 		{
 			String type = $S_ATTR_TYPE.text;
-			if(type.equals("comma"))
-			{
-				$val = ",";
-			} else if(type.equals("tag question"))
-			{
-				$val = ",,";
-			} else if(type.equals("semicolon"))
-			{
-				$val = ";";
-			} else if(type.equals("colon")) 
-			{
-				$val = ":";
-			} else if(type.equals("clause delimiter"))
-			{
-				$val = "(^c)";
-			} else if(type.equals("rising to high"))
-			{
-				$val = "\u21D7";
-			} else if(type.equals("rising to mid"))
-			{
-				$val = "\u2197";
-			} else if(type.equals("level"))
-			{
-				$val = "\u2192";
-			} else if(type.equals("falling to mid"))
-			{
-				$val = "\u2198";
-			} else if(type.equals("falling to low"))
-			{
-				$val = "\u21D8";
-			} else if(type.equals("latching"))
-			{
-				$val = "\u2261";
-			}
+			$val = switch(type) {
+			    case "semicolon" -> ";";
+			    case "colon" -> ":";
+			    case "clause delimiter" -> "(^c)";
+			    case "rising to high" -> "\u21d7";
+			    case "rising to mid" -> "\u2197";
+			    case "level" -> "\u2192";
+			    case "falling to mid" -> "\u2198";
+			    case "falling to low" -> "\u21d8";
+			    case "unmarked ending" -> "\u221e";
+			    case "uptake" -> "\u2261";
+			    default -> "";
+			};
 		}
 	}
 	;

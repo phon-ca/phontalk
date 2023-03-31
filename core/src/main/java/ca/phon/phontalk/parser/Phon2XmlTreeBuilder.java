@@ -49,9 +49,11 @@ public class Phon2XmlTreeBuilder {
 	private final static Logger LOGGER = Logger.getLogger(Phon2XmlTreeBuilder.class.getName());
 	
 	private final static String TALKBANK_VERSION = "2.19.0";
-	
-	private static final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
-	
+
+	private final TalkBankCodeTreeBuilder treeBuilder = new TalkBankCodeTreeBuilder();
+
+	private final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
+
 	private Pattern langPattern = 
 		Pattern.compile("([a-zA-Z]{3}(-[a-zA-Z0-9]{1,8})*\\p{Space}?)+");
 	
@@ -221,13 +223,13 @@ public class Phon2XmlTreeBuilder {
 	private void insertDate(CommonTree tree, Session t) {
 		// date needs to be in CHAT format: dd-LL-yyyy e.g., 1-Jul-1865
 		// we need to use the US locale to get the correct format
-		DateTimeFormatter formatter = 
+		DateTimeFormatter formatter =
 				DateTimeFormatter.ofPattern("dd-LLL-yyyy");
 		LocalDate tDate = t.getDate();
 		if(tDate == null) return;
 
 		String chatDateStr = formatter.format(tDate).toUpperCase().replaceAll("\\.", "");
-		
+
 		CommonTree commentTree = AntlrUtils.createToken(talkbankTokens, "COMMENT_START");
 		commentTree.setParent(tree);
 		tree.addChild(commentTree);
@@ -237,9 +239,9 @@ public class Phon2XmlTreeBuilder {
 		attrTree.setParent(commentTree);
 		commentTree.addChild(attrTree);
 
-		addTextNode(commentTree, chatDateStr);
+		treeBuilder.addTextNode(commentTree, chatDateStr);
 	}
-	
+
 	/**
 	 * Setup transcript header data.
 	 */
@@ -510,7 +512,7 @@ public class Phon2XmlTreeBuilder {
 		typeNode.getToken().setText(c.getTag());
 		cNode.addChild(typeNode);
 
-		addTextNode(cNode, c.getValue());
+		treeBuilder.addTextNode(cNode, c.getValue());
 		tree.addChild(cNode);
 	}
 	
@@ -611,7 +613,7 @@ public class Phon2XmlTreeBuilder {
 		uNode.addChild(whoNode);
 		
 		// terminator type
-		String termType = "p";
+		String termType = "missing CA terminator";
 		
 		Stack<CommonTree> uttNodeStack = new Stack<CommonTree>();
 		uttNodeStack.push(uNode);
@@ -647,7 +649,7 @@ public class Phon2XmlTreeBuilder {
 			
 			if(gIdx == utt.numberOfGroups() - 1) {
 				if(orthoBuilder.getTerminator() == null) {
-					orthoBuilder.addTerminator(uNode, "p");
+					treeBuilder.addTerminator(uNode, "missing CA terminator");
 				}
 			}
 			
@@ -691,14 +693,14 @@ public class Phon2XmlTreeBuilder {
 		
 		if(AntlrUtils.findChildrenWithType(uNode, talkbankTokens.getTokenType("T_START")) == null) {
 			// add the terminator
-			addTerminator(uNode, termType);
+			treeBuilder.addTerminator(uNode, termType);
 		}
 		
 		// check if the utterance has a 'postcode' dependent tier
 		Tier<TierString> postcodeTier =
 			utt.getTier("Postcode", TierString.class);
 		if(postcodeTier != null) {
-			addPostcode(uNode, postcodeTier);
+			treeBuilder.addPostcode(uNode, postcodeTier);
 		}
 
 		// utterance language tier
@@ -713,7 +715,7 @@ public class Phon2XmlTreeBuilder {
 		
 		// add media
 		if(utt.getSegment() != null && utt.getSegment().getGroup(0) != null) {
-			addMedia(uNode, utt.getSegment().getGroup(0));
+			treeBuilder.addMedia(uNode, utt.getSegment().getGroup(0));
 		}
 
 		// process dependent tiers
@@ -771,7 +773,7 @@ public class Phon2XmlTreeBuilder {
 				String val = depTier.toString().trim();
 				// CHAT requires a space between the brackets
 				val = val.replaceAll("\\[\\]", "[ ]");
-				addDependentTierContent(depTierNode, val);
+				treeBuilder.addDependentTierContent(depTierNode, val);
 			} else {
 				String tierVal = StringEscapeUtils.escapeXml(depTier.getGroup(0).trim());
 				if(tierVal.length() == 0) continue;
@@ -830,7 +832,7 @@ public class Phon2XmlTreeBuilder {
 					depTierNode.addChild(flavorNode);
 				}
 				
-				addDependentTierContent(depTierNode, tierVal);
+				treeBuilder.addDependentTierContent(depTierNode, tierVal);
 			}
 		}
 		
@@ -906,7 +908,7 @@ public class Phon2XmlTreeBuilder {
 			typeNode.setParent(notesNode);
 			notesNode.addChild(typeNode);
 			
-			addTextNode(notesNode, utt.getNotes().getGroup(0).toString());
+			treeBuilder.addTextNode(notesNode, utt.getNotes().getGroup(0).toString());
 		}
 		
 		tree.addChild(uNode);
@@ -1122,117 +1124,12 @@ public class Phon2XmlTreeBuilder {
 		}
 	}
 
-	private void addDependentTierContent(CommonTree parent, String data) {
-		final String mediaElePattern = "\\(([0-9]{2,3}):([0-9]{2})\\.([0-9]{2,3})-([0-9]{2,3}):([0-9]{2})\\.([0-9]{2,3})\\)";
-		final Pattern mediaPattern = Pattern.compile(mediaElePattern);
 
-		final StringBuilder builder = new StringBuilder();
-		final String[] parts = data.split("\\s");
-		final Formatter<MediaSegment> segmentFormatter = FormatterFactory.createFormatter(MediaSegment.class);
 
-		for(String part:parts) {
-			final Matcher matcher = mediaPattern.matcher(part);
-			if(matcher.matches()) {
-				if(!builder.isEmpty()) {
-					addTextNode(parent, builder.toString());
-					builder.setLength(0);
-				}
-				try {
-					final MediaSegment segment = segmentFormatter.parse(part.substring(1, part.length()-1));
-					addMedia(parent, segment);
-				} catch (ParseException e) {
-					addTextNode(parent, StringEscapeUtils.escapeXml(part));
-				}
-			} else {
-				if(builder.length() > 0)
-					builder.append(' ');
-				builder.append(part);
-			}
-		}
-		if(!builder.isEmpty()) {
-			addTextNode(parent, StringEscapeUtils.escapeXml(builder.toString()));
-		}
-	}
 
-	/**
-	 * add a text node
-	 */
-	private void addTextNode(CommonTree parent, String data) {
-		CommonTree txtNode = 
-			AntlrUtils.createToken(talkbankTokens, "TEXT");
-		txtNode.getToken().setText(StringEscapeUtils.escapeXml(data));
-		txtNode.setParent(parent);
-		parent.addChild(txtNode);
-	}
 
-	/**
-	 * Add a postcode element
-	 */
-	private void addPostcode(CommonTree parent, Tier<TierString> data) {
-		if(data.numberOfGroups() == 0 || data.getGroup(0).trim().length() == 0) return;
 
-		final String[] codes = data.getGroup(0).trim().split("\\s");
-		for(String code:codes) {
-			CommonTree pcNode =
-					AntlrUtils.createToken(talkbankTokens, "POSTCODE_START");
-			pcNode.setParent(parent);
-			parent.addChild(pcNode);
-			addTextNode(pcNode, code);
-		}
-	}
 	
-	/**
-	 * Add a media element
-	 */
-	private void addMedia(CommonTree parent, MediaSegment media) {
-		// don't add media if len = 0
-		float len = media.getEndValue() - media.getStartValue();
-		if(len == 0.0f) {
-			return;
-		}
 
-		CommonTree mediaNode = 
-			AntlrUtils.createToken(talkbankTokens, "MEDIA_START");
-		mediaNode.setParent(parent);
-		parent.addChild(mediaNode);
-		
-		// we need to convert our units to s from ms
-		float startS = media.getStartValue() / 1000.0f;
-		float endS = media.getEndValue() / 1000.0f;
-		
-		CommonTree unitNode =
-			AntlrUtils.createToken(talkbankTokens, "MEDIA_ATTR_UNIT");
-		unitNode.getToken().setText("s");
-		unitNode.setParent(mediaNode);
-		mediaNode.addChild(unitNode);
-		
-		CommonTree startNode = 
-			AntlrUtils.createToken(talkbankTokens, "MEDIA_ATTR_START");
-		startNode.getToken().setText(""+startS);
-		startNode.setParent(mediaNode);
-		mediaNode.addChild(startNode);
-		
-		CommonTree endNode =
-			AntlrUtils.createToken(talkbankTokens, "MEDIA_ATTR_END");
-		endNode.getToken().setText(""+endS);
-		endNode.setParent(mediaNode);
-		mediaNode.addChild(endNode);
-	}
-	
-	/**
-	 * Add a terminator
-	 */
-	private void addTerminator(CommonTree parent, String type) {
-		CommonTree tNode =
-			AntlrUtils.createToken(talkbankTokens, "T_START");
-		tNode.setParent(parent);
-		parent.addChild(tNode);
-		
-		CommonTree ttNode = 
-			AntlrUtils.createToken(talkbankTokens, "T_ATTR_TYPE");
-		ttNode.getToken().setText(type);
-		ttNode.setParent(tNode);
-		tNode.addChild(ttNode);
-	}
 	
 }

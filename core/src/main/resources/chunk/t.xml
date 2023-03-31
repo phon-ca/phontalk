@@ -33,19 +33,32 @@ scope {
 	    if($wor.size() == 0) {
             // add terminator to last wordgroup
             String t = $T_ATTR_TYPE.text;
-            String append = "";
-            if(t.equals("p")) {
-               append = ".";
-            } else if(t.equals("q")) {
-                append = "?";
-            } else if(t.equals("e")) {
-                append = "!";
-            } else {
-                // wrap in paren
-                append = "(t:" + t + ")";
+            String append = switch(t) {
+                case "p" -> ".";
+                case "q" -> "?";
+                case "e" -> "!";
+                case "broken for coding" -> "+.";
+                case "trail off" -> "+...";
+                case "trail off question" -> "+..?";
+                case "question exclamation" -> "+!?";
+                case "interruption" -> "+/.";
+                case "interruption question" -> "+/?";
+                case "self interruption" -> "+//.";
+                case "self interruption question" -> "+//?";
+                case "quotation next line" -> "+\"/.";
+                case "quotation precedes" -> "+\".";
+                case "missing CA terminator" -> "";
+                case "technical break TCU continuation" -> "\u224b";
+                case "no break TCU continuation" -> "\u2248";
+                default -> "";
+            };
+            if(!append.equals(".") && !append.equals("?") && !append.equals("!") && append.length() > 0) {
+                append = "(" + append + ")";
             }
-            $t::g.setOrthography(
-                (new OrthographyBuilder()).append($t::g.getOrthography()).append(append).toOrthography());
+            if(append.length() > 0) {
+                $t::g.setOrthography(
+                    (new OrthographyBuilder()).append($t::g.getOrthography()).append(append).toOrthography());
+            }
 
             if($mor.val != null) {
                 // mor is handled as a separate dependent tier

@@ -46,15 +46,15 @@ scope {
         } else {
             if($overlap_point::startEnd.equals("start")) {
                 if($overlap_point::topBottom.equals("top")) {
-                    $val = "(⌈)";
+                    $val = "⌈";
                 } else {
-                    $val = "(⌊)";
+                    $val = "⌊";
                 }
             } else {
                 if($overlap_point::topBottom.equals("top")) {
-                    $val = "(⌉)";
+                    $val = "⌉";
                 } else {
-                    $val = "(⌋)";
+                    $val = "⌋";
                 }
             }
         }

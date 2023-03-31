@@ -76,6 +76,7 @@ wele
 	}
 	|	overlap_point
 	{
+		$w::word += $overlap_point.val;
 	}
 	|	underline
 	{

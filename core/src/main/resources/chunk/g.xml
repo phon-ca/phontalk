@@ -190,7 +190,7 @@ gele
 	|	overlap_point
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
-			$overlap_point.val;
+			"(" + $overlap_point.val + ")";
 	}
 	|	underline
 	{
