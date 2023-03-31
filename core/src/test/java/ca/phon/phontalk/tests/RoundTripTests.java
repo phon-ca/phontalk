@@ -16,7 +16,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class RoundTripTests extends RoundTripTest {
 
     public RoundTripTests(String name, String inputFile, String outputFolder) {
-        super(inputFile, outputFolder);
+        super(name, inputFile, outputFolder);
     }
 
     @Parameters(name = "{0}")

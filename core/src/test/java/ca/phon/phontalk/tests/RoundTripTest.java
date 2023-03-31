@@ -17,21 +17,26 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class RoundTripTest {
 
+    private String testName;
+
     private String inputFile;
 
     private String outputFolder;
 
-    public RoundTripTest(String inputFile, String outputFolder) {
+    public RoundTripTest(String testName, String inputFile, String outputFolder) {
         super();
 
+        this.testName = testName;
         this.inputFile = inputFile;
         this.outputFolder = outputFolder;
     }
 
     public File getOutputFolder() throws IOException {
-        final File retVal = new File(this.outputFolder);
-        if(!retVal.exists())
-            retVal.mkdirs();
+        final File retVal = new File(this.outputFolder, testName);
+        if(retVal.exists()) {
+            FileUtils.deleteDirectory(retVal);
+        }
+        retVal.mkdirs();
         return retVal;
     }
 
@@ -49,10 +54,11 @@ public class RoundTripTest {
         final File outputFolder = getOutputFolder();
 
         final File origFile = new File(outputFolder, basename + ".cha");
-        final File chat2xmlFile = new File(outputFolder, basename + "-xml.xml");
-        final File xml2phonFile = new File(outputFolder, basename + "-xml-phon.xml");
-        final File phon2xmlFile = new File(outputFolder, basename + "-xml-phon-xml.xml");
-        final File roundTripFile = new File(outputFolder, basename + "-xml-phon-xml-cha.cha");
+        final File chat2xmlFile = new File(outputFolder, basename + "-tb.xml");
+        final File expectedOutputFile = new File(outputFolder, basename + "-tb-cha.cha");
+        final File xml2phonFile = new File(outputFolder, basename + "-tb-phon.xml");
+        final File phon2xmlFile = new File(outputFolder, basename + "-tb-phon-tb.xml");
+        final File roundTripFile = new File(outputFolder, basename + "-tb-phon-tb-cha.cha");
 
         FileUtils.copyFile(new File(inputFile), origFile);
 
@@ -60,9 +66,14 @@ public class RoundTripTest {
         chat2XmlConverter.convertFile(origFile, chat2xmlFile, listener);
         Assert.assertNull(lastError.get());
 
+        final Xml2CHATConverter expectedOutputConverter = new Xml2CHATConverter();
+        expectedOutputConverter.convertFile(chat2xmlFile, expectedOutputFile, listener);
+        Assert.assertNull(lastError.get());
+
         final Xml2PhonConverter xml2PhonConverter = new Xml2PhonConverter();
         xml2PhonConverter.convertFile(chat2xmlFile, xml2phonFile, listener);
         Assert.assertNull(lastError.get());
+
 
         final Phon2XmlConverter phon2XmlConverter = new Phon2XmlConverter();
         phon2XmlConverter.convertFile(xml2phonFile, phon2xmlFile, listener);
@@ -72,10 +83,10 @@ public class RoundTripTest {
         xml2CHATConverter.convertFile(phon2xmlFile, roundTripFile, listener);
         Assert.assertNull(lastError.get());
 
-        final Path origPath = Path.of(origFile.toURI());
+        final Path expectedPath = Path.of(expectedOutputFile.toURI());
         final Path rtPath = Path.of(roundTripFile.toURI());
 
-        final long byteChange = Files.mismatch(origPath, rtPath);
+        final long byteChange = Files.mismatch(expectedPath, rtPath);
         Assert.assertEquals(-1, byteChange);
     }
 
