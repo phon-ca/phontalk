@@ -37,13 +37,16 @@ scope {
     :   ^(INTERNAL_MEDIA_START internal_media_attr*)
     {
         float startVal = Float.parseFloat($internal_media::startAttr);
-        float endVal = Float.parseFloat($internal_media::endAttr);
         if($internal_media::unit == MediaUnit.Second) {
             startVal *= 1000.0f;
+        }
+        float endVal = Float.parseFloat($internal_media::endAttr);
+        if($internal_media::unit == MediaUnit.Second) {
             endVal *= 1000.0f;
         }
+
     	if($internal_media::startAttr != null && $internal_media::endAttr != null) {
-    		$val = "(internal-media:" + startVal + "-" + endVal + ")";
+    		$val = "(internal-media:" + MsFormatter.msToDisplayString((long)startVal) + "-" + MsFormatter.msToDisplayString((long)endVal) + ")";
     	}
     }
 	;
@@ -81,7 +84,7 @@ internal_media
 	->	template(
 			attrs={$attrlist}
 	)
-	<<\<internal-media <attrs; separator=" "> /\> >>
+	"\<internal-media <attrs; separator=\" \"> /\>"
 	;
 	
 internal_media_attr

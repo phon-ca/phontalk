@@ -1,5 +1,6 @@
 package ca.phon.phontalk.tests;
 
+import ca.phon.app.log.LogUtil;
 import ca.phon.phontalk.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -74,7 +75,6 @@ public class RoundTripTest {
         xml2PhonConverter.convertFile(chat2xmlFile, xml2phonFile, listener);
         Assert.assertNull(lastError.get());
 
-
         final Phon2XmlConverter phon2XmlConverter = new Phon2XmlConverter();
         phon2XmlConverter.convertFile(xml2phonFile, phon2xmlFile, listener);
         Assert.assertNull(lastError.get());
@@ -86,7 +86,13 @@ public class RoundTripTest {
         final Path expectedPath = Path.of(expectedOutputFile.toURI());
         final Path rtPath = Path.of(roundTripFile.toURI());
 
-        final long byteChange = Files.mismatch(expectedPath, rtPath);
+        long byteChange = Files.mismatch(expectedPath, rtPath);
+        if(byteChange != -1) {
+            byteChange = Files.mismatch(origFile.toPath(), rtPath);
+            if(byteChange == -1) {
+                LogUtil.info("Round-trip file matches original.cha and not -tb-cha.cha file");
+            }
+        }
         Assert.assertEquals(-1, byteChange);
     }
 

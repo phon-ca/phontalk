@@ -185,7 +185,17 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					treeBuilder.addTextNode(wParent, val);
 					val = "";
 				}
-				treeBuilder.addSeparator(wParent, c+"");
+				if(i == 0) {
+					parentNode.getChildren().remove(parentNode.getChildCount()-1);
+				}
+				treeBuilder.addSeparator((CommonTree) wParent.getParent(), c+"");
+				if(i < charArray.length - 1) {
+					// new word node after separator
+					wParent =
+							AntlrUtils.createToken(talkbankTokens, "W_START");
+					wParent.setParent(parentNode);
+					parentNode.addChild(wParent);
+				}
 			// overlap-points (inside words)
 			} else if(c == '⌈' || c == '⌊' || c == '⌉' || c == '⌋') {
 				if(val.length() > 0) {
@@ -286,19 +296,20 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	@Visits
 	public void visitComment(OrthoComment comment) {
 		TalkBankCodeTreeBuilder chatCodeBuilder = new TalkBankCodeTreeBuilder();
-		String w = comment.toString();
+		String commentText = comment.toString();
+
 		// COMMENTS - including CHAT coding
 		Pattern commentPattern = Pattern.compile("\\(([^:]+):(.*)\\)");
-		Matcher m = commentPattern.matcher(w);
+		Matcher m = commentPattern.matcher(commentText);
 		if(m.matches()) {
 			String type = m.group(1);
-			String data = m.group(2);
+			String text = m.group(2);
 			
 			// some tags need special handling...
 			// TERMINATOR
 			if (type.equals("t")) {
-				terminator = treeBuilder.addTerminator(uttNodeStack.get(0), data);
-			} else if(type.equals("replacement")) { 
+				terminator = treeBuilder.addTerminator(uttNodeStack.get(0), text);
+			} else if(type.equals("replacement")) {
 
 				CommonTree parentNode = nodeStack.peek();
 				// find the last 'w' node
@@ -318,7 +329,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					parentNode.addChild(wNode);
 					attachToLastChild = true;
 				}
-				treeBuilder.addReplacement(wNode, data);
+				treeBuilder.addReplacement(wNode, text);
 			} else if(type.equals("langs")) {
 
 				CommonTree parentNode = nodeStack.peek();
@@ -339,12 +350,15 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					parentNode.addChild(wNode);
 					attachToLastChild = true;
 				}
-				treeBuilder.addLangs(wNode, data);
+				treeBuilder.addLangs(wNode, text);
 			} else {
-				chatCodeBuilder.handleParentheticData(nodeStack.peek(), w);
+				chatCodeBuilder.handleParentheticData(nodeStack.peek(), commentText);
 			}
 		} else {
-			chatCodeBuilder.handleParentheticData(nodeStack.peek(), w);
+			final CommonTree tree = chatCodeBuilder.handleParentheticData(nodeStack.peek(), commentText);
+			if(tree.getToken().getType() == talkbankTokens.getTokenType("T_START")) {
+				terminator = tree;
+			}
 		}
 	}
 

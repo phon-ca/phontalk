@@ -6,6 +6,7 @@ import ca.phon.orthography.Orthography;
 import ca.phon.session.MediaSegment;
 import ca.phon.session.Tier;
 import ca.phon.session.TierString;
+import ca.phon.util.MsFormatter;
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -28,10 +29,15 @@ public class TalkBankCodeTreeBuilder {
 
     private static final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
 
+    private final static String MS_DISPLAY_REGEX = "([0-9]{2,3}):([0-9]{2})\\.([0-9]{2,3})";
+    private final static String INTERNAL_MEDIA_REGEX = "\\((" + MS_DISPLAY_REGEX + ")-(" + MS_DISPLAY_REGEX + ")\\)";
+    private final static int INTERNAL_MEDIA_START_GROUP = 1;
+    private final static int INTERNAL_MEDIA_END_GROUP = 5;
+
     /**
-     * Handle data in parenthesis.
+     * Handle data in parentheses.
      */
-    public void handleParentheticData(CommonTree tree, String d) {
+    public CommonTree handleParentheticData(CommonTree tree, String d) {
         if (!d.startsWith("(") || !d.endsWith(")"))
             throw new IllegalArgumentException(d);
 
@@ -65,25 +71,25 @@ public class TalkBankCodeTreeBuilder {
         // handle special cases
         // overlaps
         if (data.matches("<[0-9]*") || data.matches(">[0-9]*")) {
-            addOverlap(tree, data);
+            return addOverlap(tree, data);
         }
 
         // tagMarkers
         else if (data.equals(",")
                 || data.equals("\u201e")
                 || data.equals("\u2021")) {
-            addTagMarker(tree, data);
+            return addTagMarker(tree, data);
         }
 
         // s
         else if (data.equals("^c")) {
-            addSeparator(tree, data);
+            return addSeparator(tree, data);
         }
 
         // overlap-point
         else if (data.equals("⌈") || data.equals("⌉")
                 || data.equals("⌊") || data.equals("⌋")) {
-            addOverlapPoint(tree, data);
+            return addOverlapPoint(tree, data);
         }
 
         // linkers
@@ -94,14 +100,14 @@ public class TalkBankCodeTreeBuilder {
                 || data.equals("++")
                 || data.equals("+\u224b")
                 || data.equals("+\u2248")) {
-            addLinker(uttNode, data);
+            return addLinker(uttNode, data);
         }
 
         // pauses
         else if (data.equals(".")
                 || data.equals("..")
                 || data.equals("...")) {
-            addPause(tree, data);
+            return addPause(tree, data);
         }
 
         // makers
@@ -113,33 +119,33 @@ public class TalkBankCodeTreeBuilder {
                 || data.equals("///")
                 || data.equals("/?")
                 || data.equals("/-")) {
-            addMarker(tree, data);
+            return addMarker(tree, data);
         }
 
         // ga
         else if (data.startsWith("=?")) {
-            addGa(tree, "alternative", data.substring(2).trim());
+            return addGa(tree, "alternative", data.substring(2).trim());
         } else if (data.startsWith("%")) {
-            addGa(tree, "comments", data.substring(1).trim());
+            return addGa(tree, "comments", data.substring(1).trim());
         } else if (data.startsWith("=!")) {
-            addGa(tree, "paralinguistics", data.substring(2).trim());
+            return addGa(tree, "paralinguistics", data.substring(2).trim());
         } else if (data.startsWith("=")) {
-            addGa(tree, "explanation", data.substring(1).trim());
+           return addGa(tree, "explanation", data.substring(1).trim());
         }
 
         // repeats
         else if (data.matches("x\\p{Space}?[0-9]+")) {
-            addRepetition(tree, data.substring(1).trim());
+            return addRepetition(tree, data.substring(1).trim());
         }
 
         // terminator
-//        else if (data.equals(".") || data.equals("?") || data.equals("!")
-//              || data.equals("+.") || data.equals("+...") || data.equals("+..?")
-//              || data.equals("+!?") || data.equals("+/.") || data.equals("+/?")
-//              || data.equals("+//.") || data.equals("+//?") || data.equals("+\"/.")
-//              || data.equals("+\".") || data.equals("\u224b") || data.equals("\u2248")) {
-//            addTerminator(uttNode, data);
-//        }
+        if (data.equals(".") || data.equals("?") || data.equals("!")
+                || data.equals("+.") || data.equals("+...") || data.equals("+..?")
+                || data.equals("+!?") || data.equals("+/.") || data.equals("+/?")
+                || data.equals("+//.") || data.equals("+//?") || data.equals("+\"/.")
+                || data.equals("+\".") || data.equals("\u224b") || data.equals("\u2248")) {
+            return addTerminator(uttNode, data);
+        }
 
         // everything else
         else {
@@ -149,30 +155,31 @@ public class TalkBankCodeTreeBuilder {
                 String eleData = data.substring(cIndex + 1);
 
                 if (eleName.equals("happening")) {
-                    addHappening(tree, eleData);
+                    return addHappening(tree, eleData);
                 } else if (eleName.equals("action")) {
-                    addAction(tree, eleData);
+                    return addAction(tree, eleData);
                 } else if (eleName.equals("error")) {
-                    addError(tree, eleData);
+                    return addError(tree, eleData);
                 } else if (eleName.equals("ca-element")) {
-                    addCaElement(wNode, eleData);
+                    return addCaElement(wNode, eleData);
                 } else if (eleName.equals("ca-delimiter")) {
-                    addCaDelimiter(wNode, eleData);
+                    return addCaDelimiter(wNode, eleData);
                 } else if (eleName.equals("underline")) {
-                    addUnderline(tree, eleData);
+                    return addUnderline(tree, eleData);
                 } else if (eleName.equals("italic")) {
-                    addItalic(tree, eleData);
+                    return addItalic(tree, eleData);
                 } else if (eleName.equals("pause")) {
-                    addPause(tree, eleData);
+                    return addPause(tree, eleData);
                 } else if (eleName.equals("internal-media")) {
-                    addInternalMedia(tree, eleData);
+                    return addInternalMedia(tree, eleData);
                 } else if (eleName.equals("overlap-point")) {
-                    addOverlapPoint(tree, eleData);
+                    return addOverlapPoint(tree, eleData);
                 } else {
-                    addGenericElement(tree, eleName, eleData);
+                    return addGenericElement(tree, eleName, eleData);
                 }
             }
         }
+        return null;
     }
 
     /**
@@ -522,13 +529,15 @@ public class TalkBankCodeTreeBuilder {
     /**
      * Add an error element
      */
-    public void addError(CommonTree parent, String data) {
+    public CommonTree addError(CommonTree parent, String data) {
         CommonTree eNode =
                 AntlrUtils.createToken(talkbankTokens, "ERROR_START");
         eNode.setParent(parent);
         parent.addChild(eNode);
 
         addTextNode(eNode, data);
+
+        return eNode;
     }
 
     public CommonTree addCaElement(CommonTree parent, String type) {
@@ -603,16 +612,34 @@ public class TalkBankCodeTreeBuilder {
         parent.addChild(imNode);
 
         String[] range = data.split("-");
+        if(range.length != 2) throw new IllegalArgumentException(data);
+
+        String startVal = range[0];
+        if(startVal.matches(MS_DISPLAY_REGEX)) {
+            try {
+                startVal = Float.toString(MsFormatter.displayStringToMs(startVal)/1000.0f);
+            } catch (ParseException e) {
+                throw new IllegalArgumentException(startVal);
+            }
+        }
+        String endVal = range[1];
+        if(endVal.matches(MS_DISPLAY_REGEX)) {
+            try {
+                endVal = Float.toString(MsFormatter.displayStringToMs(endVal)/1000.0f);
+            } catch (ParseException e) {
+                throw new IllegalArgumentException(endVal);
+            }
+        }
 
         CommonTree startAttrNode =
                 AntlrUtils.createToken(talkbankTokens, "INTERNAL_MEDIA_ATTR_START");
-        startAttrNode.getToken().setText(range[0]);
+        startAttrNode.getToken().setText(startVal);
         imNode.addChild(startAttrNode);
         startAttrNode.setParent(imNode);
 
         CommonTree endAttrNode =
                 AntlrUtils.createToken(talkbankTokens, "INTERNAL_MEDIA_ATTR_END");
-        endAttrNode.getToken().setText(range[1]);
+        endAttrNode.getToken().setText(endVal);
         imNode.addChild(endAttrNode);
         endAttrNode.setParent(imNode);
 
@@ -805,8 +832,7 @@ public class TalkBankCodeTreeBuilder {
     }
 
     public void addDependentTierContent(CommonTree parent, String data) {
-        final String mediaElePattern = "\\(([0-9]{2,3}):([0-9]{2})\\.([0-9]{2,3})-([0-9]{2,3}):([0-9]{2})\\.([0-9]{2,3})\\)";
-        final Pattern mediaPattern = Pattern.compile(mediaElePattern);
+        final Pattern mediaPattern = Pattern.compile(INTERNAL_MEDIA_REGEX);
 
         final StringBuilder builder = new StringBuilder();
         final String[] parts = data.split("\\s");
@@ -820,7 +846,9 @@ public class TalkBankCodeTreeBuilder {
                     builder.setLength(0);
                 }
                 try {
-                    final MediaSegment segment = segmentFormatter.parse(part.substring(1, part.length() - 1));
+                    String segmentStr = String.format("%s-%s",
+                            matcher.group(INTERNAL_MEDIA_START_GROUP), matcher.group(INTERNAL_MEDIA_END_GROUP));
+                    final MediaSegment segment = segmentFormatter.parse(segmentStr);
                     addMedia(parent, segment);
                 } catch (ParseException e) {
                     addTextNode(parent, StringEscapeUtils.escapeXml(part));
@@ -911,7 +939,7 @@ public class TalkBankCodeTreeBuilder {
         ttNode.setParent(tNode);
         tNode.addChild(ttNode);
 
-        return ttNode;
+        return tNode;
     }
 
     /**

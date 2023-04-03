@@ -249,6 +249,7 @@ public class Phon2XmlConverter {
 				v.st.toString();
 			} catch (TreeWalkerError e) {
 				if(e.getCause() instanceof RecognitionException) {
+					AntlrUtils.printTree(tTree);
 					final RecognitionException re = (RecognitionException)e.getCause();
 					final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2TalkBank.tokens"));
 					visitor.visit(re);

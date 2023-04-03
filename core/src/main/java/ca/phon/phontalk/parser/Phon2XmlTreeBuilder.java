@@ -910,7 +910,7 @@ public class Phon2XmlTreeBuilder {
 			
 			treeBuilder.addTextNode(notesNode, utt.getNotes().getGroup(0).toString());
 		}
-		
+
 		tree.addChild(uNode);
 	}
 	
