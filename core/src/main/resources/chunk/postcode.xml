@@ -24,14 +24,19 @@ postcode
 	{
 		// make a new tier in the session if necessary
 		TierDescription postcodeDesc = ensureTierExists("Postcode", false);
-		Tier<String> postcodeTier = $u::r.getTier("Postcode", String.class);
+		Tier<TierString> postcodeTier = $u::r.getTier("Postcode", TierString.class);
 		if(postcodeTier == null) {
-			postcodeTier = sessionFactory.createTier("Postcode", String.class, false);
+			postcodeTier = sessionFactory.createTier("Postcode", TierString.class, false);
 			$u::r.putTier(postcodeTier);
 		}
-		
-		postcodeTier.setGroup(0,
-			(new String(postcodeTier.getGroup(0) + " " + $v.text)).trim());
+
+		TierString currentVal = postcodeTier.getGroup(0);
+		TierString newVal = new TierString($v.text.trim());
+		if(currentVal.toString().trim().length() > 0) {
+		    newVal = new TierString("(" + currentVal + ") (" + newVal + ")");
+		}
+
+		postcodeTier.setGroup(0, newVal);
 	}
 	;
 ]]>
@@ -42,7 +47,7 @@ postcode
 postcode
 	:	^(POSTCODE_START TEXT?)
 	->	template( v={$TEXT.text} )
-	<<\<postcode\><v>\</postcode\> >>
+	"\<postcode\><v>\</postcode\>"
 	;
 ]]>
 	</buffer>

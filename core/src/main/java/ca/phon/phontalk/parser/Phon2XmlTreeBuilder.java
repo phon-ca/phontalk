@@ -265,7 +265,7 @@ public class Phon2XmlTreeBuilder {
 				fname = fname.substring(slashLocation+1);
 			}
 			
-			node.getToken().setText(fname);
+			node.getToken().setText(StringEscapeUtils.escapeXml(fname));
 			node.setParent(tree);
 			tree.addChild(node);
 			
@@ -316,7 +316,7 @@ public class Phon2XmlTreeBuilder {
 		
 		// corpus
 		CommonTree cNode = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_CORPUS");
-		cNode.getToken().setText(t.getCorpus());
+		cNode.getToken().setText(StringEscapeUtils.escapeXml(t.getCorpus()));
 		cNode.setParent(tree);
 		tree.addChild(cNode);
 		

@@ -33,7 +33,7 @@ freecode returns [String val]
 freecode
     :    ^(FREECODE_START TEXT)
     ->    template( txt={$TEXT.text} )
-    <<\<freecode\><txt>\</freecode\> >>
+    "\<freecode\><txt>\</freecode\>"
     ;
 ]]>
     </buffer>

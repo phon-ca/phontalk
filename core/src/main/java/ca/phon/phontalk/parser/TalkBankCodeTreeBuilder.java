@@ -800,13 +800,24 @@ public class TalkBankCodeTreeBuilder {
     public void addPostcode(CommonTree parent, Tier<TierString> data) {
         if (data.numberOfGroups() == 0 || data.getGroup(0).trim().length() == 0) return;
 
-        final String[] codes = data.getGroup(0).trim().split("\\s");
-        for (String code : codes) {
+        final String postcodeRegex = "\\([^)]+\\)( \\([^)]+\\))*";
+        final String postcodeData = data.getGroup(0).toString().trim();
+        if(postcodeData.matches(postcodeRegex)) {
+            final Pattern postcodePattern = Pattern.compile("\\(([^)]+)\\)");
+            final Matcher matcher = postcodePattern.matcher(postcodeData);
+            while(matcher.find()) {
+                CommonTree pcNode =
+                        AntlrUtils.createToken(talkbankTokens, "POSTCODE_START");
+                pcNode.setParent(parent);
+                parent.addChild(pcNode);
+                addTextNode(pcNode, matcher.group(1));
+            }
+        } else {
             CommonTree pcNode =
                     AntlrUtils.createToken(talkbankTokens, "POSTCODE_START");
             pcNode.setParent(parent);
             parent.addChild(pcNode);
-            addTextNode(pcNode, code);
+            addTextNode(pcNode, postcodeData);
         }
     }
 
