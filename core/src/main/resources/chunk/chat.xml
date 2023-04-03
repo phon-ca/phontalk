@@ -51,6 +51,15 @@ chat
     session.setDate(null);
 }
 	:	^(CHAT_START chat_attrs+ participants chat_content*)
+	{
+	    // unique use case where comments are at end of transcript
+	    if(nextRecordComments.size() > 0) {
+	        for(var c:nextRecordComments) {
+	            session.getMetadata().addComment(c);
+	        }
+	        nextRecordComments.clear();
+	    }
+	}
 	;
 	
 chat_content
@@ -214,7 +223,8 @@ chat
 	<if(md)><md><endif>
 	<parts>
 	<content; separator="">
-\</CHAT\> >>
+\</CHAT\>
+>>
 	;
 
 chat_content

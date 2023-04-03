@@ -478,7 +478,7 @@ public class Phon2XmlTreeBuilder {
 			}
 			
 			try {
-				insertRecord(parent, record);
+				insertRecord(parent, t, record);
 			} catch (TreeBuilderException e) {
 				throw new TreeBuilderException(
 						"Record #" + (recordIdx+1) + " " + e.getMessage());
@@ -595,7 +595,7 @@ public class Phon2XmlTreeBuilder {
 	/**
 	 * Insert a record.
 	 */
-	private void insertRecord(CommonTree tree, Record utt) 
+	private void insertRecord(CommonTree tree, Session session, Record utt)
 		throws TreeBuilderException {
 		CommonTree uNode = 
 			AntlrUtils.createToken(talkbankTokens, "U_START");
@@ -743,12 +743,16 @@ public class Phon2XmlTreeBuilder {
 		handledTiers.add("Markers");
 		handledTiers.add("Errors");
 		handledTiers.add("Repetition");
-		for(String depTierName:utt.getExtraTierNames()) {
-			Tier<String> depTier = utt.getTier(depTierName, String.class);
-			
+
+		for(TierViewItem tvi:session.getTierView()) {
+			if(SystemTierType.isSystemTier(tvi.getTierName())) continue;
+			String depTierName = tvi.getTierName();
+			Tier<TierString> depTier = utt.getTier(depTierName, TierString.class);
+			if(depTier == null) continue;
+
 			if(handledTiers.contains(depTierName)) continue;
 			handledTiers.add(depTierName);
-			
+
 			if(depTier.isGrouped()) {
 				CommonTree depTierNode =
 						AntlrUtils.createToken(talkbankTokens, "A_START");

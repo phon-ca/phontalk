@@ -196,7 +196,8 @@ a
 			attrs={$attrlist},
 			content={$contentlist}
 		)
-	<<\<a <attrs; separator=" ">\><content; separator="">\</a\> >>
+	<<\<a <attrs; separator=" ">\><content; separator="">\</a\>
+>>
 	;
 
 aele

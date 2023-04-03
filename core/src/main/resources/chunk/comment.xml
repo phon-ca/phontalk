@@ -70,7 +70,8 @@ comment
 			type={$ctype.text},
 			vals={$vals}
 		)
-	<<\<comment type="<type>"\><vals>\</comment\> >>
+	<<\<comment type="<type>"\><vals>\</comment\>
+>>
 	;
 	
 commentele

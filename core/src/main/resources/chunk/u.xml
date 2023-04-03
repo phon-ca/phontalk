@@ -570,8 +570,7 @@ u
 			annotations={$annotationlist},
 			uttid={recordIndex++}
 		)
-	<<
-\<u <attrlist; separator=" "> uID="u<uttid>"\>
+	<<\<u <attrlist; separator=" "> uID="u<uttid>"\>
 	<linkers; separator="">
 	<ucontent; separator="">
 	<terminator>
@@ -579,7 +578,7 @@ u
 	<segment>
 	<annotations; separator="">
 \</u\>
-	>>
+>>
 	;
 	
 u_attrs
