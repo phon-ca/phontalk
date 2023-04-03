@@ -21,23 +21,12 @@ p
 p returns [String val]
 	:	^(P_START type=P_ATTR_TYPE?)
 	{
-		if($type != null)
-		{
-			String pt = $type.text;
-			
-			if(pt.equals("stress"))
-				$val = "/";
-			else if(pt.equals("accented nucleus"))
-				$val = "//";
-			else if(pt.equals("contrastive stress"))
-				$val = "///";
-			else if(pt.equals("drawl"))
-				$val = ":";
-			else if(pt.equals("pause"))
-				$val = "^";
-			else if(pt.equals("blocking"))
-				$val = "^";
-		}
+	    $val = switch($type.text) {
+	        case "drawl" -> ":";
+	        case "pause" -> "^";
+	        case "blocking" -> "^";
+	        default -> "";
+	    };
 	}
 	;
 ]]>
@@ -48,7 +37,7 @@ p returns [String val]
 p
 	:	^(P_START P_ATTR_TYPE?)
 	->	template( type={$P_ATTR_TYPE} )
-	<<\<p type="<type>"/\> >>
+	"\<p type=\"<type>\"/\>"
 	;
 ]]>
 	</buffer>

@@ -783,6 +783,27 @@ public class TalkBankCodeTreeBuilder {
         }
     }
 
+    public CommonTree addProsody(CommonTree parent, String type) {
+        CommonTree prosodyNode =
+                AntlrUtils.createToken(talkbankTokens, "P_START");
+        prosodyNode.setParent(parent);
+        parent.addChild(prosodyNode);
+
+        type = switch (type) {
+            case ":" -> "drawl";
+            case "^" -> "pause";
+            default -> type;
+        };
+
+        CommonTree pTypeNode =
+                AntlrUtils.createToken(talkbankTokens, "P_ATTR_TYPE");
+        pTypeNode.getToken().setText(type);
+        pTypeNode.setParent(prosodyNode);
+        prosodyNode.addChild(pTypeNode);
+
+        return prosodyNode;
+    }
+
     public void addDependentTierContent(CommonTree parent, String data) {
         final String mediaElePattern = "\\(([0-9]{2,3}):([0-9]{2})\\.([0-9]{2,3})-([0-9]{2,3}):([0-9]{2})\\.([0-9]{2,3})\\)";
         final Pattern mediaPattern = Pattern.compile(mediaElePattern);

@@ -155,8 +155,30 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				}
 				inUnderline = !inUnderline;
 				val = "";
+			// blocking or pause
+			} else if(c == '^') {
+				if(val.length() > 0) {
+					treeBuilder.addTextNode(wParent, val);
+					val = "";
+				}
+				if(i == 0) {
+					treeBuilder.addProsody(wParent, "blocking");
+				} else {
+					treeBuilder.addProsody(wParent, "pause");
+				}
+			// separator or drawl
+			} else if(c == ':') {
+				if(val.length() > 0) {
+					treeBuilder.addTextNode(wParent, val);
+					val = "";
+				}
+				if(i == 0) {
+					treeBuilder.addSeparator(wParent, c+"");
+				} else {
+					treeBuilder.addProsody(wParent, c+"");
+				}
 			// separators
-			} else if(c == ';' || c == ':' || c == '\u21d7'
+			} else if(c == ';' || c == '\u21d7'
 				   || c == '\u2197' || c == '\u2192' || c == '\u2198'
 				   || c == '\u21d8' || c == '\u221e' || c == '\u2261') {
 				if(val.length() > 0) {
