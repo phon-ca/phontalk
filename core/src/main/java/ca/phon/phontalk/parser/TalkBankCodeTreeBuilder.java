@@ -871,7 +871,7 @@ public class TalkBankCodeTreeBuilder {
             }
         }
         if (!builder.isEmpty()) {
-            addTextNode(parent, StringEscapeUtils.escapeXml(builder.toString()));
+            addTextNode(parent, builder.toString());
         }
     }
 

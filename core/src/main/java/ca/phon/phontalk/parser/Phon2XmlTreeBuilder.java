@@ -187,7 +187,7 @@ public class Phon2XmlTreeBuilder {
 		
 		// if less than six chars, use the tier name
 		if(isChatTier || tierName.length() <= 6) {
-			tierNameMap.put(tierName, tierName.toLowerCase());
+			tierNameMap.put(tierName, tierName);
 		} else {
 			String[] tierWords = tierName.split("\\p{Space}");
 			
@@ -203,7 +203,6 @@ public class Phon2XmlTreeBuilder {
 				tierMapName += (tierWords[1].length() >= 2 ? tierWords[1].substring(0, 2) : tierWords[1]);
 				tierMapName += (tierWords[2].length() >= 2 ? tierWords[2].substring(0, 2) : tierWords[2]);
 			}
-			tierMapName = tierMapName.toLowerCase();
 			
 			int idx = 0;
 			while(tierNameMap.containsValue(tierMapName)) {
@@ -779,7 +778,7 @@ public class Phon2XmlTreeBuilder {
 				val = val.replaceAll("\\[\\]", "[ ]");
 				treeBuilder.addDependentTierContent(depTierNode, val);
 			} else {
-				String tierVal = StringEscapeUtils.escapeXml(depTier.getGroup(0).trim());
+				String tierVal = depTier.getGroup(0).trim();
 				if(tierVal.length() == 0) continue;
 			
 				CommonTree depTierNode =

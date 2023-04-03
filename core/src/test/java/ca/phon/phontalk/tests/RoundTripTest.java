@@ -6,6 +6,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.talkbank.ns.talkbank.P;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -83,8 +85,31 @@ public class RoundTripTest {
         xml2CHATConverter.convertFile(phon2xmlFile, roundTripFile, listener);
         Assert.assertNull(lastError.get());
 
-        final Path expectedPath = Path.of(expectedOutputFile.toURI());
-        final Path rtPath = Path.of(roundTripFile.toURI());
+        Path expectedPath = Path.of(expectedOutputFile.toURI());
+        Path rtPath = Path.of(roundTripFile.toURI());
+
+        if(testName.equals("dep-tiers")) {
+            final File sortedExpectedFile = new File(outputFolder, basename + "-tb-cha-sorted.cha");
+            final File sortedRtFile = new File(outputFolder, basename + "-tb-phon-tb-cha-sorted.cha");
+            // ignore ordering in this file
+            String[] p1Data = new String[]{"sort", expectedPath.toString()};
+            String[] p2Data = new String[]{"sort", rtPath.toString()};
+
+            try {
+                ProcessBuilder pb = new ProcessBuilder(p1Data);
+                pb.redirectOutput(sortedExpectedFile);
+                pb.start().waitFor();
+
+                pb = new ProcessBuilder(p2Data);
+                pb.redirectOutput(sortedRtFile);
+                pb.start().waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            expectedPath = sortedExpectedFile.toPath();
+            rtPath = sortedRtFile.toPath();
+        }
 
         long byteChange = Files.mismatch(expectedPath, rtPath);
         if(byteChange != -1) {
