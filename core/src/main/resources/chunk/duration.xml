@@ -18,9 +18,11 @@ duration
     <!-- Tree Walker -->
     <buffer name="AST2Phon.g">
         <![CDATA[
-duration
-    :    DURATION_START TEXT DURATION_END
-    ->    ^(DURATION_START TEXT)
+duration returns [Float val]
+    :   ^(DURATION_START TEXT)
+    {
+        $val = Float.parseFloat($TEXT.text);
+    }
     ;
 ]]>
     </buffer>
@@ -29,6 +31,8 @@ duration
         <![CDATA[
 duration
     :    ^(DURATION_START TEXT)
+    -> template( v={$TEXT.text} )
+    "\<duration\><v>\</duration\>"
     ;
 ]]>
     </buffer>

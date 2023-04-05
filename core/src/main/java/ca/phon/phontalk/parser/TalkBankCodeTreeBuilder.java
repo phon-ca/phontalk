@@ -4,12 +4,15 @@ import ca.phon.formatter.Formatter;
 import ca.phon.formatter.FormatterFactory;
 import ca.phon.orthography.Orthography;
 import ca.phon.session.MediaSegment;
+import ca.phon.session.MediaUnit;
 import ca.phon.session.Tier;
 import ca.phon.session.TierString;
 import ca.phon.util.MsFormatter;
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import javax.print.attribute.standard.Media;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +75,11 @@ public class TalkBankCodeTreeBuilder {
         // overlaps
         if (data.matches("<[0-9]*") || data.matches(">[0-9]*")) {
             return addOverlap(tree, data);
+        }
+
+        // duration
+        if(data.matches("# [0-9.]+(m?s)?")) {
+            return addDuration(tree, data);
         }
 
         // tagMarkers
@@ -414,6 +422,35 @@ public class TalkBankCodeTreeBuilder {
         }
 
         return pNode;
+    }
+
+    public CommonTree addDuration(CommonTree parent, String data) {
+        Pattern pattern = Pattern.compile("# ([0-9.]+)(m?s)?");
+        Matcher m = pattern.matcher(data);
+
+        if(m.matches()) {
+            String lengthText = m.group(1);
+            String unit = m.group(2);
+
+            Float length = Float.parseFloat(lengthText);
+            MediaUnit mediaUnit = unit != null ? (unit.equals("ms") ? MediaUnit.Millisecond : MediaUnit.Second) : MediaUnit.Second;
+
+            if(mediaUnit == MediaUnit.Millisecond) {
+                length /= 1000.0f;
+            }
+            NumberFormat numberFormat = NumberFormat.getInstance();
+            numberFormat.setMaximumFractionDigits(3);
+
+            CommonTree durationNode = AntlrUtils.createToken(talkbankTokens, "DURATION_START");
+            durationNode.setParent(parent);
+            parent.addChild(durationNode);
+
+            addTextNode(durationNode, numberFormat.format(length));
+
+            return durationNode;
+        } else {
+            return null;
+        }
     }
 
     /**

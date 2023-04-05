@@ -39,7 +39,7 @@ happening returns [String val]
 happening
 	:	^(HAPPENING_START TEXT?)
 	->    template( v={$TEXT.text} )
-	<<\<happening\><v>\</happening\> >>
+	"\<happening\><v>\</happening\>"
 	;
 ]]>
     </buffer>

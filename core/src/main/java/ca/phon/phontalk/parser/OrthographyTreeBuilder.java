@@ -96,19 +96,19 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 						AntlrUtils.createToken(talkbankTokens, "W_ATTR_SEPARATED_PREFIX");
 				spTree.getToken().setText("true");
 				spTree.setParent(wParent);
-				wParent.addChild(spTree);
+				wParent.insertChild(0, spTree);
 			} else if(suffixType == WordSuffixType.USER_SPECIAL_FORM) {
 				CommonTree usfTree =
 						AntlrUtils.createToken(talkbankTokens, "W_ATTR_USER_SPECIAL_FORM");
 				usfTree.getToken().setText(word.getSuffix().getCode());
 				usfTree.setParent(wParent);
-				wParent.addChild(usfTree);
+				wParent.insertChild(0, usfTree);
 			} else {
 				CommonTree formTypeNode = 
 						AntlrUtils.createToken(talkbankTokens, "W_ATTR_FORMTYPE");
 				formTypeNode.getToken().setText(suffixType.getDisplayName());
 				formTypeNode.setParent(wParent);
-				wParent.addChild(formTypeNode);
+				wParent.insertChild(0, formTypeNode);
 			}
 		}
 		
@@ -118,7 +118,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					AntlrUtils.createToken(talkbankTokens, "W_ATTR_TYPE");
 			typeNode.getToken().setText(prefixType.getDisplayName());
 			typeNode.setParent(wParent);
-			wParent.addChild(typeNode);
+			wParent.insertChild(0, typeNode);
 		}
 		
 		if(word.isUntranscribed()) {
@@ -126,7 +126,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					AntlrUtils.createToken(talkbankTokens, "W_ATTR_UNTRANSCRIBED");
 			utTree.getToken().setText(word.getUntranscribedType().getDisplayName());
 			utTree.setParent(wParent);
-			wParent.addChild(utTree);
+			wParent.insertChild(0, utTree);
 		}
 		
 		String addWord = word.getWord();

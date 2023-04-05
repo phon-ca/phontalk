@@ -221,6 +221,12 @@ gchoice
 			"(x" + $r.val + ")";	
 	}
 	|	duration
+	{
+		java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(3);
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
+			String.format("(# \%ss)", nf.format($duration.val));
+	}
 	|	ga
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
@@ -308,6 +314,8 @@ gchoice
 	->	template( v={$r.st} )
 		"<v>"
 	|	duration
+	->	template( v={$duration.st} )
+		"<v>"
 	|	ga
 	->	template( v={$ga.st} )
 		"<v>"

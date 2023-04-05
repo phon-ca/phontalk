@@ -117,6 +117,12 @@ echoice2
 		}
 	}
 	|	duration
+	{
+		java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(3);
+		$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
+			String.format("(# \%ss)", nf.format($duration.val));
+	}
 	;
 ]]>
     </buffer>
@@ -126,7 +132,7 @@ echoice2
 e
 	:	^(E_START req=echoice1 (contentlist+=echoice2)*)
 	->	template( required={$req.st}, econtent={$contentlist} )
-	<<\<e\><required><if(econtent)><econtent; separator=""><endif>\</e\> >>
+	"\<e\><required><if(econtent)><econtent; separator=\"\"><endif>\</e\>"
 	;
 
 echoice1
