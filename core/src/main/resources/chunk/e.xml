@@ -132,7 +132,8 @@ echoice2
 e
 	:	^(E_START req=echoice1 (contentlist+=echoice2)*)
 	->	template( required={$req.st}, econtent={$contentlist} )
-	"\<e\><required><if(econtent)><econtent; separator=\"\"><endif>\</e\>"
+	<<\<e\><required><if(econtent)><econtent; separator=""><endif>\</e\>
+>>
 	;
 
 echoice1

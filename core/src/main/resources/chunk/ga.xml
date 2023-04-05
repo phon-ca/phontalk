@@ -69,7 +69,7 @@ ga
 	        type={$GA_ATTR_TYPE.text},
 	        val={EscapeUtils.unescapeParenthesis($TEXT.text)}
 	      )
-	<<\<ga type="<type>"\><val>\</ga\> >>
+	"\<ga type=\"<type>\"\><val>\</ga\>"
 	;
 ]]>
 

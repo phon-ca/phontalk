@@ -162,6 +162,9 @@ gele
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $internal_media.val;
 	}
 	|	freecode
+	{
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $freecode.val;
+	}
 	|	e
 	{
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +

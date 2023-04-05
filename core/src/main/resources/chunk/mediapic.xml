@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+-->
+<chunk xmlns="https://www.phon.ca/ns/chunk">
+    
+    <!-- Parser -->
+    <buffer name="TalkBank2AST.g">
+        <![CDATA[
+mediapic
+    :   MEDIAPIC_START MEDIAPIC_ATTR_HREF MEDIAPIC_END
+    ->  ^(MEDIAPIC_START MEDIAPIC_ATTR_HREF)
+    ;
+]]>
+    </buffer>
+    
+    <!-- Tree Walker -->
+    <buffer name="AST2Phon.g">
+        <![CDATA[
+mediapic returns [String val]
+    :   ^(MEDIAPIC_START MEDIAPIC_ATTR_HREF)
+    {
+        $val = "(mediapic:" + $MEDIAPIC_ATTR_HREF.text + ")";
+    }
+    ;
+]]>
+    </buffer>
+    
+    <buffer name="AST2TalkBank.g">
+        <![CDATA[
+mediapic
+    :   ^(MEDIAPIC_START MEDIAPIC_ATTR_HREF)
+    ->  template( href={$MEDIAPIC_ATTR_HREF.text} )
+    "\<mediaPic href=\"<href>\"/\>"
+    ;
+]]>
+    </buffer>
+    
+    <!-- Includes -->
+    <include></include>
+    
+</chunk>

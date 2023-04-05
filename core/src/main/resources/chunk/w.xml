@@ -110,6 +110,9 @@ wele
 		$w::word += $wk.val;
 	}
 	|	pos
+	{
+		$w::suffix += "\$" + $pos.val;
+	}
 	|	replacement
 	{
 		$w::replacement = $replacement.val;

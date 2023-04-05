@@ -511,7 +511,7 @@ public class Phon2XmlTreeBuilder {
 		typeNode.getToken().setText(c.getTag());
 		cNode.addChild(typeNode);
 
-		treeBuilder.addTextNode(cNode, c.getValue());
+		treeBuilder.addDependentTierContent(cNode, c.getValue());
 		tree.addChild(cNode);
 	}
 	

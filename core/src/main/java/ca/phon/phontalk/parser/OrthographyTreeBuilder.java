@@ -118,6 +118,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					wParent.insertChild(0, formSuffixNode);
 				}
 
+
 				if(word.getSuffix().getCode() != null) {
 					// TODO
 				}
@@ -243,6 +244,10 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		}
 		if(val.length() > 0)
 			treeBuilder.addTextNode(wParent, val);
+
+		if(word.getSuffix() != null && word.getSuffix().getPos() != null) {
+			treeBuilder.addPos(wParent, word.getSuffix().getPos());
+		}
 	}
 
 	@Visits
@@ -282,7 +287,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		
 		final String evtData = eData.substring(0, lastIdx);
 		if(evtData.length() > 0) {
-			final Pattern osePattern = Pattern.compile("(.+)=(.+)");
+			final Pattern osePattern = Pattern.compile("(\\w+)=(.+)");
 			final Matcher oseMatcher = osePattern.matcher(evtData);
 			
 			if(oseMatcher.matches()) {
@@ -296,7 +301,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					final String htxt = evtData.substring(1);
 					chatCodeBuilder.addHappening(eNode, htxt);
 				} else {
-					chatCodeBuilder.addHappening(eNode, evtData);
+					chatCodeBuilder.addHappening(eNode, evtData.trim());
 				}
 			}
 		}

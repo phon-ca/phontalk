@@ -82,6 +82,11 @@ public class TalkBankCodeTreeBuilder {
             return addDuration(tree, data);
         }
 
+        // freecode
+        if(data.matches("\\^\\s.+")) {
+            return addFreecode(tree, data);
+        }
+
         // tagMarkers
         else if (data.equals(",")
                 || data.equals("\u201e")
@@ -182,6 +187,8 @@ public class TalkBankCodeTreeBuilder {
                     return addInternalMedia(tree, eleData);
                 } else if (eleName.equals("overlap-point")) {
                     return addOverlapPoint(tree, eleData);
+                } else if(eleName.equals("mediapic")) {
+                    return addMediaPic(tree, eleData);
                 } else {
                     return addGenericElement(tree, eleName, eleData);
                 }
@@ -737,7 +744,7 @@ public class TalkBankCodeTreeBuilder {
     public CommonTree addTextNode(CommonTree parent, String data) {
         CommonTree txtNode =
                 AntlrUtils.createToken(talkbankTokens, "TEXT");
-        txtNode.getToken().setText(StringEscapeUtils.escapeXml(data.trim()));
+        txtNode.getToken().setText(StringEscapeUtils.escapeXml(data));
         txtNode.setParent(parent);
         parent.addChild(txtNode);
         return txtNode;
@@ -881,6 +888,7 @@ public class TalkBankCodeTreeBuilder {
 
     public void addDependentTierContent(CommonTree parent, String data) {
         final Pattern mediaPattern = Pattern.compile(INTERNAL_MEDIA_REGEX);
+        final Pattern mediaPicPattern = Pattern.compile(("\\(mediapic:(.+)\\)"));
 
         final StringBuilder builder = new StringBuilder();
         final String[] parts = data.split("\\s");
@@ -888,6 +896,7 @@ public class TalkBankCodeTreeBuilder {
 
         for (String part : parts) {
             final Matcher matcher = mediaPattern.matcher(part);
+            final Matcher mediapicMatcher = mediaPicPattern.matcher(part);
             if (matcher.matches()) {
                 if (!builder.isEmpty()) {
                     addTextNode(parent, builder.toString());
@@ -901,6 +910,12 @@ public class TalkBankCodeTreeBuilder {
                 } catch (ParseException e) {
                     addTextNode(parent, StringEscapeUtils.escapeXml(part));
                 }
+            } else if(mediapicMatcher.matches()) {
+                if (!builder.isEmpty()) {
+                    addTextNode(parent, builder.toString() + " ");
+                    builder.setLength(0);
+                }
+                addMediaPic(parent, mediapicMatcher.group(1));
             } else {
                 if (builder.length() > 0)
                     builder.append(' ');
@@ -951,6 +966,22 @@ public class TalkBankCodeTreeBuilder {
 
         return mediaNode;
     }
+
+    public CommonTree addMediaPic(CommonTree parent, String data) {
+        CommonTree mediapicNode =
+                AntlrUtils.createToken(talkbankTokens, "MEDIAPIC_START");
+        mediapicNode.setParent(parent);
+        parent.addChild(mediapicNode);
+
+        CommonTree mediapicHrefNode =
+                AntlrUtils.createToken(talkbankTokens, "MEDIAPIC_ATTR_HREF");
+        mediapicHrefNode.getToken().setText(data);
+        mediapicHrefNode.setParent(mediapicNode);
+        mediapicNode.addChild(mediapicHrefNode);
+
+        return mediapicNode;
+    }
+
 
     /**
      * Add a terminator
@@ -1011,6 +1042,22 @@ public class TalkBankCodeTreeBuilder {
         }
 
         return rNode;
+    }
+
+    public CommonTree addFreecode(CommonTree parent, String data) {
+        CommonTree freecodeNode =
+                AntlrUtils.createToken(talkbankTokens, "FREECODE_START");
+        freecodeNode.setParent(parent);
+        parent.addChild(freecodeNode);
+
+        Pattern pattern = Pattern.compile("\\^\\s(.+)");
+        Matcher m = pattern.matcher(data);
+        if(m.matches()) {
+            data = m.group(1);
+        }
+        addTextNode(freecodeNode, data);
+
+        return freecodeNode;
     }
 
     /**
@@ -1095,6 +1142,22 @@ public class TalkBankCodeTreeBuilder {
         parent.addChild(wkNode);
 
         return wkNode;
+    }
+
+    public CommonTree addPos(CommonTree wParent, String pos) {
+        CommonTree posNode =
+                AntlrUtils.createToken(talkbankTokens, "POS_START");
+        posNode.setParent(wParent);
+
+        CommonTree cNode =
+                AntlrUtils.createToken(talkbankTokens, "C_START");
+        addTextNode(cNode, pos);
+        cNode.setParent(posNode);
+        posNode.addChild(cNode);
+
+        wParent.addChild(posNode);
+
+        return posNode;
     }
 
 }

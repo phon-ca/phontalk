@@ -22,7 +22,7 @@ freecode
 freecode returns [String val]
     :    ^(FREECODE_START TEXT)
     {
-        $val = "(freecode:" + $TEXT.text + ")";
+        $val = "(^ " + $TEXT.text + ")";
     }
     ;
 ]]>
