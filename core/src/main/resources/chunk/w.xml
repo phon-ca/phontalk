@@ -176,7 +176,7 @@ wattr
 	}
 	|	W_ATTR_FORMSUFFIX
 	{
-		$w::suffix += "-" + $W_ATTR_FORMSUFFIX.text;
+		$w::suffix += $W_ATTR_FORMSUFFIX.text;
 	}
 	|	W_ATTR_FORMTYPE
 	{
@@ -320,7 +320,7 @@ wattr
 	<<user-special-form="<v>" >>
 	|	W_ATTR_FORMSUFFIX
 	->	template( v={$W_ATTR_FORMSUFFIX.text} )
-	<<form-suffix="<v>" >>
+	<<formSuffix="<v>" >>
 	|	W_ATTR_UNTRANSCRIBED
 	->	template( v={$W_ATTR_UNTRANSCRIBED.text} )
 	<<untranscribed="<v>" >>

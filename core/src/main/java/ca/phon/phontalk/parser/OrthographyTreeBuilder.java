@@ -109,6 +109,19 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				formTypeNode.getToken().setText(suffixType.getDisplayName());
 				formTypeNode.setParent(wParent);
 				wParent.insertChild(0, formTypeNode);
+
+				if(word.getSuffix().getFormSuffix() != null) {
+					CommonTree formSuffixNode =
+							AntlrUtils.createToken(talkbankTokens, "W_ATTR_FORMSUFFIX");
+					formSuffixNode.getToken().setText("-" + word.getSuffix().getFormSuffix());
+					formSuffixNode.setParent(wParent);
+					wParent.insertChild(0, formSuffixNode);
+				}
+
+				if(word.getSuffix().getCode() != null) {
+					// TODO
+				}
+
 			}
 		}
 		
