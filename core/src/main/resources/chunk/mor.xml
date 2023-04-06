@@ -245,8 +245,9 @@ scope
 }
     :    ^(GRA_START graattrs+)
     {
+        final String tierName = "GRASP" +  ($gra::type.equals("gra") ? "" : " (" + $gra::type + ")");
         // make sure dep tier exists in session
-		TierDescription tierDesc = ensureTierExists("GRASP", true, $u::r);
+		TierDescription tierDesc = ensureTierExists(tierName, true, $u::r);
 		
 		// value
 		$val = $gra::index + "|" + $gra::head + "|" + $gra::relation;
@@ -260,11 +261,11 @@ scope
 		    group = $u::r.getGroup($u::r.numberOfGroups()-1);
 		}
 		
-		String tierValue = group.getTier("GRASP", String.class);
+		String tierValue = group.getTier(tierName, String.class);
 		if(tierValue == null) tierValue = new String();
-		tierValue += 
+		tierValue +=
 		    (tierValue.length() == 0 ? "" : " ") + $val;
-		group.setTier("GRASP", TierString.class, new TierString(tierValue));
+		group.setTier(tierName, TierString.class, new TierString(tierValue));
     }
     ;
     
