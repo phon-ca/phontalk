@@ -128,7 +128,7 @@ scope
 }
     :    ^(MOR_START morattr+ morchoice menx* gra* morseq*)
     {
-        $tierName = ($mor::morType.equals("mor") ? "Morphology" : "trn");
+        $tierName = $mor::morType;
  
         // build mor-string
 		String v = $morchoice.val;
@@ -245,7 +245,7 @@ scope
 }
     :    ^(GRA_START graattrs+)
     {
-        final String tierName = "GRASP" +  ($gra::type.equals("gra") ? "" : " (" + $gra::type + ")");
+        final String tierName = $gra::type == null ? "gra" : "grt";
         // make sure dep tier exists in session
 		TierDescription tierDesc = ensureTierExists(tierName, true, $u::r);
 		
