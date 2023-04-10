@@ -166,7 +166,14 @@ public class Phon2XmlTreeBuilder {
 				CommonTree optionsTree = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_FONT");
 				optionsTree.getToken().setText(comment.getValue().substring("@Font".length()).trim());
 				retVal.insertChild(0, optionsTree);
-			} else {					
+			} else if(comment.getTag().equals("Code") && comment.getValue().startsWith("@Mediatypes")) {
+				List<CommonTree> mediaTypesTrees = AntlrUtils.findChildrenWithType(retVal, talkbankTokens, "CHAT_ATTR_MEDIATYPES");
+				CommonTree optionsTree = mediaTypesTrees.size() > 0 ? mediaTypesTrees.get(0) : AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_MEDIATYPES");
+				if(mediaTypesTrees.size() == 0) {
+					retVal.insertChild(0, optionsTree);
+				}
+				optionsTree.getToken().setText(comment.getValue().substring("@Mediatypes".length()).trim());
+			} else {
 				insertComment(retVal, comment);
 			}
 		}
@@ -509,7 +516,7 @@ public class Phon2XmlTreeBuilder {
 					insertComment(parent, comment);
 				}
 			}
-			
+
 			try {
 				insertRecord(parent, t, record);
 			} catch (TreeBuilderException e) {

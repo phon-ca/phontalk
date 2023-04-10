@@ -122,12 +122,17 @@ chat_attrs
 	{
 		String suffix = ".wav";  // default media type
 		String type = $CHAT_ATTR_MEDIATYPES.text;
-		if(type.equals("video"))
+		if(type.startsWith("video"))
 		{
 			suffix = ".mov";
 		}
 		session.setMediaLocation(
 			(session.getMediaLocation() != null ? session.getMediaLocation() : "") + suffix);
+
+        Comment mediaTypesComment = sessionFactory.createComment();
+        mediaTypesComment.setTag("Code");
+        mediaTypesComment.setValue("@Mediatypes " + type);
+        session.getMetadata().addComment(mediaTypesComment);
 	}
 	|	CHAT_ATTR_LANG
 	{
