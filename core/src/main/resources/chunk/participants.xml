@@ -30,7 +30,7 @@ part_attr
 	|	PARTICIPANT_ATTR_SEX
 	|	PARTICIPANT_ATTR_SES
 	|	PARTICIPANT_ATTR_EDUCATION
-	|	PARTIICPANT_ATTR_CUSTOM_FIELD
+	|	PARTICIPANT_ATTR_CUSTOM_FIELD
 	|	PARTICIPANT_ATTR_BIRTHDAY
 	|	PARTICIPANT_ATTR_LANGUAGE
 	|	PARTICIPANT_ATTR_FIRST_LANGUAGE
@@ -97,11 +97,11 @@ part_attr
 	{	$participant::p.setEducation($PARTICIPANT_ATTR_EDUCATION.text);		}
 	|	PARTICIPANT_ATTR_FIRST_LANGUAGE
 	{	
-		LOGGER.warning("Attribute 'first-language' not supported.");
+		$participant::p.setFirstLanguage($PARTICIPANT_ATTR_FIRST_LANGUAGE.text);
 	}
 	|	PARTICIPANT_ATTR_BIRTHPLACE
 	{
-		LOGGER.warning("Attribute 'birthplace' not supported.");
+		$participant::p.setBirthplace($PARTICIPANT_ATTR_BIRTHPLACE.text);
 	}
 	|	PARTICIPANT_ATTR_BIRTHDAY
 	{
@@ -116,7 +116,7 @@ part_attr
 	}
 	|	PARTICIPANT_ATTR_CUSTOM_FIELD
 	{
-		// TODO
+		$participant::p.setOther($PARTICIPANT_ATTR_CUSTOM_FIELD.text);
 	}
 	;
 ]]>
@@ -169,7 +169,7 @@ part_attr
 		"sex=\"<sex>\""
 	|	PARTICIPANT_ATTR_SES
 	->	template(ses={$PARTICIPANT_ATTR_SES.text})
-		"ses=\"<ses>\""
+		"SES=\"<ses>\""
 	|	PARTICIPANT_ATTR_EDUCATION
 	->	template(edu={$PARTICIPANT_ATTR_EDUCATION.text})
 		"education=\"<edu>\""
