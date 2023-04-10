@@ -719,24 +719,74 @@ public class Phon2XmlTreeBuilder {
 
 		// process dependent tiers
 		// mor and grasp first
-		if(utt.getExtraTierNames().contains("Morphology")) {
-			try {
-				processMorphology(utt, uNode);
-				
-				if(utt.getExtraTierNames().contains("GRASP")) {
-					processGRASP(utt, uNode);
+		if(utt.getExtraTierNames().contains("Morphology") ||
+			utt.getExtraTierNames().contains("mor")) {
+			Tier<TierString> morTier = utt.getExtraTierNames().contains("mor")
+					? utt.getTier("mor", TierString.class)
+					: utt.getTier("Morphology", TierString.class);
+			if(morTier != null) {
+				try {
+					processMorphology(utt, uNode, morTier, "mor");
+				} catch (IllegalArgumentException e) {
+					final TreeBuilderException treeBuilderException = new TreeBuilderException(e);
+					treeBuilderException.setUtt(utt);
+					throw treeBuilderException;
 				}
-			} catch (IllegalArgumentException e) {
-				final TreeBuilderException treeBuilderException = new TreeBuilderException(e);
-				treeBuilderException.setUtt(utt);
-				throw treeBuilderException;
+			}
+
+			if(utt.getExtraTierNames().contains("GRASP") ||
+				utt.getExtraTierNames().contains("gra")) {
+				Tier<TierString> graTier = utt.getExtraTierNames().contains("gra")
+						? utt.getTier("gra", TierString.class)
+						: utt.getTier("GRASP", TierString.class);
+				if(graTier != null) {
+					try {
+						processGRASP(utt, uNode, graTier,"gra");
+					} catch (IllegalArgumentException e) {
+						final TreeBuilderException treeBuilderException = new TreeBuilderException(e);
+						treeBuilderException.setUtt(utt);
+						throw treeBuilderException;
+
+					}
+				}
 			}
 		}
+
+		if(utt.getExtraTierNames().contains("trn")) {
+			Tier<TierString> morTier = utt.getTier("trn", TierString.class);
+			if(morTier != null) {
+				try {
+					processMorphology(utt, uNode, morTier, "trn");
+				} catch (IllegalArgumentException e) {
+					final TreeBuilderException treeBuilderException = new TreeBuilderException(e);
+					treeBuilderException.setUtt(utt);
+					throw treeBuilderException;
+				}
+			}
+
+			if(utt.getExtraTierNames().contains("grt")) {
+				Tier<TierString> graTier = utt.getTier("grt", TierString.class);
+				if(graTier != null) {
+					try {
+						processGRASP(utt, uNode, graTier,"grt");
+					} catch (IllegalArgumentException e) {
+						final TreeBuilderException treeBuilderException = new TreeBuilderException(e);
+						treeBuilderException.setUtt(utt);
+						throw treeBuilderException;
+
+					}
+				}
+			}
+		}
+
 		List<String> handledTiers = new ArrayList<String>();
 		// add mor tiers to already handeled list
 		handledTiers.add("Morphology");
+		handledTiers.add("mor");
 		handledTiers.add("trn");
 		handledTiers.add("GRASP");
+		handledTiers.add("gra");
+		handledTiers.add("grt");
 		handledTiers.add("Postcode");
 		handledTiers.add("uttlan");
 		handledTiers.add("Markers");
@@ -924,7 +974,7 @@ public class Phon2XmlTreeBuilder {
 	 * @param utt
 	 * @param uNode
 	 */
-	private List<CommonTree> processMorphology(Record utt, CommonTree uNode) 
+	private List<CommonTree> processMorphology(Record utt, CommonTree uNode, Tier<TierString> morTier, String morType)
 		throws IllegalArgumentException {
 		
 		final List<CommonTree> retVal = new ArrayList<CommonTree>();
@@ -994,7 +1044,6 @@ public class Phon2XmlTreeBuilder {
 		}
 		
 		// get a listing of all mordata elements
-		final Tier<TierString> morTier = utt.getTier("Morphology", TierString.class);
 		final List<String> morWrdVals = new ArrayList<String>();
 		for(TierString grpVal:morTier) {
 			String cWrd = null;
@@ -1022,7 +1071,7 @@ public class Phon2XmlTreeBuilder {
 				continue;
 			}
 			final CommonTree morTypeTree = AntlrUtils.createToken(talkbankTokens, "MOR_ATTR_TYPE");
-			morTypeTree.getToken().setText("mor");
+			morTypeTree.getToken().setText(morType);
 			morTypeTree.setParent(mortree);
 			mortree.insertChild(0, morTypeTree);
 			mortree.freshenParentAndChildIndexes();
@@ -1076,27 +1125,59 @@ public class Phon2XmlTreeBuilder {
 	 * @param utt
 	 * @param uNode
 	 */
-	private void processGRASP(Record utt, CommonTree uNode) 
+	private void processGRASP(Record utt, CommonTree uNode, Tier<TierString> graTier, String graType)
 		throws IllegalArgumentException {
 		final MorBuilder mb = new MorBuilder();
 		final List<CommonTree> mortrees =  
-				AntlrUtils.findAllChildrenWithType(uNode, talkbankTokens, "MOR_START", "MOR_PRE_START", "MOR_POST_START");
-		final Tier<TierString> graTier = utt.getTier("GRASP", TierString.class);
+				AntlrUtils.findAllChildrenWithType(uNode, talkbankTokens, "MOR_START");
 		final List<CommonTree> graTrees = new ArrayList<CommonTree>();
 		for(TierString grpTierVal:graTier) {
 			for(TierString wrdVal:grpTierVal.getWords()) {
 				if(wrdVal.trim().length() == 0) continue;
-				final CommonTree graTree = mb.buildGraspTree(wrdVal.toString());
+				final CommonTree graTree = mb.buildGraspTree(wrdVal.toString(), graType);
 				graTrees.add(graTree);
 			}
 		}
-		
-		if(mortrees.size() != graTrees.size()) {
+		final Iterator<CommonTree> morTreeItr = mortrees.iterator();
+		final List<CommonTree> morTreeList = new ArrayList<>();
+		while(morTreeItr.hasNext()) {
+			final CommonTree morTree = morTreeItr.next();
+			final List<CommonTree> morTypeTrees =
+					AntlrUtils.findChildrenWithType(morTree, talkbankTokens, "MOR_ATTR_TYPE");
+			if(morTypeTrees.size() == 0)
+				throw new IllegalArgumentException("mor tree must have a type node");
+			final CommonTree morTypeTree = morTypeTrees.get(0);
+			final String morType = morTypeTree.getToken().getText();
+
+			boolean toRemove = false;
+			if("gra".equals(graType)) {
+				if(!morType.equals("mor"))
+					toRemove = true;
+			} else if("grt".equals(graType)) {
+				if(!morType.equals("trn"))
+					toRemove = true;
+			}
+			if(toRemove) {
+				morTreeItr.remove();
+			} else {
+				final List<CommonTree> morPreTree =
+						AntlrUtils.findChildrenWithType(morTree, talkbankTokens, "MOR_PRE_START");
+				if(morPreTree.size() > 0)
+					morTreeList.add(morPreTree.get(0));
+				morTreeList.add(morTree);
+				final List<CommonTree> morPostTree =
+						AntlrUtils.findChildrenWithType(morTree, talkbankTokens, "MOR_POST_START");
+				if(morPostTree.size() > 0)
+					morTreeList.add(morPostTree.get(0));
+			}
+		}
+
+		if(morTreeList.size() != graTrees.size()) {
 			throw new IllegalArgumentException("one-to-one alignment error: gra");
 		}
 		
-		for(int i = 0; i < mortrees.size(); i++) {
-			final CommonTree mortree = mortrees.get(i);
+		for(int i = 0; i < morTreeList.size(); i++) {
+			final CommonTree mortree = morTreeList.get(i);
 			final CommonTree gratree = graTrees.get(i);
 			
 			mb.attachGrasp(mortree, gratree);

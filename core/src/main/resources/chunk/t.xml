@@ -10,9 +10,13 @@ XPath -
     <buffer name="TalkBank2AST.g">
         <![CDATA[
 t
-	:	T_START T_ATTR_TYPE? mor? T_END 
-	->	^(T_START T_ATTR_TYPE? mor?)
+	:	T_START T_ATTR_TYPE? tcontent* T_END
+	->	^(T_START T_ATTR_TYPE? tcontent*)
 	;
+
+tcontent
+    :   mor
+    ;
 ]]>
     </buffer>
     
@@ -27,7 +31,7 @@ scope {
  	$t::g = 
  		($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
  }
-	:	^(T_START T_ATTR_TYPE? mor?)
+	:	^(T_START T_ATTR_TYPE? tcontent*)
 	{
 	    // only add terminator from main line
 	    if($wor.size() == 0) {
@@ -59,50 +63,59 @@ scope {
                 $t::g.setOrthography(
                     (new OrthographyBuilder()).append($t::g.getOrthography()).append(append).toOrthography());
             }
-
-            if($mor.val != null) {
-                // mor is handled as a separate dependent tier
-                String morVal = $mor.val;
-                String tierName = $mor.tierName;
-
-                // make sure dep tier exists in session
-                TierDescription tierDesc = ensureTierExists(tierName, true);
-
-                Tier<String> morTier = $u::r.getTier(tierName, String.class);
-                if(morTier == null) {
-                    morTier = sessionFactory.createTier(tierName, String.class, true);
-                    for(int i = 0; i < $u::r.numberOfGroups(); i++) morTier.addGroup();
-                    $u::r.putTier(morTier);
-                }
-
-                // add mor data as a dep tier of the current word(group)
-                Group group = null;
-                // get the correct word group holder
-                if($t.size() > 0 || $ugrp.size() > 0) {
-                    group = ($t.size() > 0 ? $t::g : $ugrp::g);
-                } else if($u.size() > 0) {
-                    group = $u::r.getGroup($u::r.numberOfGroups()-1);
-                }
-
-                String tierValue = group.getTier(tierDesc.getName(), String.class);
-                if(tierValue == null) tierValue = new String();
-                tierValue +=
-                    (tierValue.length() == 0 ? "" : " ") + morVal;
-                group.setTier(tierDesc.getName(), String.class, tierValue);
-            }
 		}
 	}
 	;
+
+tcontent
+    :   mor
+    {
+        String morVal = $mor.val;
+        String tierName = $mor.tierName;
+
+        // make sure dep tier exists in session
+        TierDescription tierDesc = ensureTierExists(tierName, true);
+
+        Tier<String> morTier = $u::r.getTier(tierName, String.class);
+        if(morTier == null) {
+            morTier = sessionFactory.createTier(tierName, String.class, true);
+            for(int i = 0; i < $u::r.numberOfGroups(); i++) morTier.addGroup();
+            $u::r.putTier(morTier);
+        }
+
+        // add mor data as a dep tier of the current word(group)
+        Group group = null;
+        // get the correct word group holder
+        if($t.size() > 0 || $ugrp.size() > 0) {
+            group = ($t.size() > 0 ? $t::g : $ugrp::g);
+        } else if($u.size() > 0) {
+            group = $u::r.getGroup($u::r.numberOfGroups()-1);
+        }
+
+        String tierValue = group.getTier(tierDesc.getName(), String.class);
+        if(tierValue == null) tierValue = new String();
+        tierValue +=
+            (tierValue.length() == 0 ? "" : " ") + morVal;
+        group.setTier(tierDesc.getName(), String.class, tierValue);
+    }
+    ;
 ]]>
     </buffer>
     
     <buffer name="AST2TalkBank.g">
         <![CDATA[
 t
-	:	^(T_START T_ATTR_TYPE? m=mor?)
-	->    template( type={$T_ATTR_TYPE}, morval={$m.st} )
-	<<\<t type="<type>"<if(morval)>\><morval>\</t\><else>/\><endif> >>
+	:	^(T_START T_ATTR_TYPE? (contentlist+=tcontent)* )
+	->    template( type={$T_ATTR_TYPE}, morcontent={$contentlist} )
+	<<\<t type="<type>"<if(morcontent)>\><morcontent>\</t\><else>/\><endif>
+>>
 	;
+
+tcontent
+    :   mor
+    ->  template( v={$mor.st} )
+    "<v>"
+    ;
 ]]>
     </buffer>
 	

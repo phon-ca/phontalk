@@ -245,7 +245,7 @@ scope
 }
     :    ^(GRA_START graattrs+)
     {
-        final String tierName = $gra::type == null ? "gra" : "grt";
+        final String tierName = $gra::type == null ? "gra" : $gra::type;
         // make sure dep tier exists in session
 		TierDescription tierDesc = ensureTierExists(tierName, true, $u::r);
 		

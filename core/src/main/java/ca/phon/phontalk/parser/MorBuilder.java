@@ -85,12 +85,12 @@ public class MorBuilder {
 	 * @param gra, must be a string of 4 values separated by pipes (i.e., 1|2|3|4)
 	 * @return the grasp tree
 	 */
-	public CommonTree buildGraspTree(String gra) 
+	public CommonTree buildGraspTree(String gra, String graType)
 		throws IllegalArgumentException {
 		
 		final CommonTree graTree = AntlrUtils.createToken(talkbankTokens, "GRA_START");
 		final CommonTree graTypeTree = AntlrUtils.createToken(talkbankTokens, "GRA_ATTR_TYPE");
-		graTypeTree.getToken().setText("gra");
+		graTypeTree.getToken().setText(graType);
 		graTree.addChild(graTypeTree);
 		graTypeTree.setParent(graTree);
 		
