@@ -40,7 +40,8 @@ lazy_gem returns [Comment lazyGem]
 lazy_gem
 	:	^(LAZY_GEM_START LAZY_GEM_ATTR_LABEL?)
 	->    template( label={$LAZY_GEM_ATTR_LABEL.text} )
-	<<\<lazy-gem label="<label>"/\> >>
+	<<\<lazy-gem label="<label>"/\>
+>>
 	;
 ]]>
     </buffer>

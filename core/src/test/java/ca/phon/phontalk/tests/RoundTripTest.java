@@ -88,7 +88,7 @@ public class RoundTripTest {
         Path expectedPath = Path.of(expectedOutputFile.toURI());
         Path rtPath = Path.of(roundTripFile.toURI());
 
-        if(testName.equals("dep-tiers") || testName.equals("commenturl") || testName.equals("gem")) {
+        if(testName.equals("dep-tiers") || testName.equals("commenturl") || testName.equals("gem") || testName.equals("headers")) {
             final File sortedExpectedFile = new File(outputFolder, basename + "-tb-cha-sorted.cha");
             final File sortedRtFile = new File(outputFolder, basename + "-tb-phon-tb-cha-sorted.cha");
             // ignore ordering in this file

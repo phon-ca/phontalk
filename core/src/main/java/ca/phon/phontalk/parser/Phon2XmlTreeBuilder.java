@@ -129,6 +129,8 @@ public class Phon2XmlTreeBuilder {
 				insertLazyGem(retVal, comment);
 			} else if(comment.getTag().equals("BeginGem")) {
 				insertBeginGem(retVal, comment);
+			} else if(comment.getTag().equals("EndGem")) {
+				insertEndGem(retVal, comment);
 			} else if(comment.getTag().equals("Date")) {
 				// date is inserted before processing session
 				if(session.getDate() != null)
@@ -394,6 +396,14 @@ public class Phon2XmlTreeBuilder {
 				}
 			}
 
+			if(p.getFirstLanguage() != null && p.getFirstLanguage().length() > 0) {
+				CommonTree pFirstLang =
+						AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_FIRST_LANGUAGE");
+				pFirstLang.getToken().setText(p.getFirstLanguage());
+				pFirstLang.setParent(pNode);
+				pNode.addChild(pFirstLang);
+			}
+
 			Period age = (p.getAge(null) != null ? p.getAge(null) : p.getAge(t.getDate()));
 			if (age != null && !age.isNegative() && !age.isZero()) {
 				CommonTree pAge =
@@ -411,6 +421,14 @@ public class Phon2XmlTreeBuilder {
 				pBday.getToken().setText(dateFormat.format(p.getBirthDate()));
 				pBday.setParent(pNode);
 				pNode.addChild(pBday);
+			}
+
+			if(p.getBirthplace() != null && p.getBirthplace().length() > 0) {
+				CommonTree pBirthplace =
+						AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_BIRTHPLACE");
+				pBirthplace.getToken().setText(p.getBirthplace());
+				pBirthplace.setParent(pNode);
+				pNode.addChild(pBirthplace);
 			}
 			
 			if(p.getGroup() != null && p.getGroup().length() > 0) {
@@ -430,6 +448,14 @@ public class Phon2XmlTreeBuilder {
 				pSex.setParent(pNode);
 				pNode.addChild(pSex);
 			}
+
+			if(p.getEducation() != null && p.getEducation().length() > 0) {
+				CommonTree pEdu =
+						AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_EDUCATION");
+				pEdu.getToken().setText(p.getEducation());
+				pEdu.setParent(pNode);
+				pNode.addChild(pEdu);
+			}
 			
 			if(p.getSES() != null && p.getSES().length() > 0) {
 				CommonTree pSes = 
@@ -437,6 +463,14 @@ public class Phon2XmlTreeBuilder {
 				pSes.getToken().setText(p.getSES());
 				pSes.setParent(pNode);
 				pNode.addChild(pSes);
+			}
+
+			if(p.getOther() != null && p.getOther().length() > 0) {
+				CommonTree pOther =
+					AntlrUtils.createToken(talkbankTokens, "PARTICIPANT_ATTR_CUSTOM_FIELD");
+				pOther.getToken().setText(p.getOther());
+				pOther.setParent(pNode);
+				pNode.addChild(pOther);
 			}
 		}
 	}

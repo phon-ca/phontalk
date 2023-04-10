@@ -32,7 +32,8 @@ begin_gem returns [Comment beginGem]
 begin_gem
     :    ^(BEGIN_GEM_START BEGIN_GEM_ATTR_LABEL)
     ->    template(lbl={$BEGIN_GEM_ATTR_LABEL.text})
-    <<\<begin-gem label="<lbl>"/\> >>
+    <<\<begin-gem label="<lbl>"/\>
+>>
     ;
 ]]>
     </buffer>

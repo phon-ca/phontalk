@@ -32,7 +32,8 @@ end_gem returns [Comment endGem]
 end_gem
     :    ^(END_GEM_START END_GEM_ATTR_LABEL)
     ->    template(lbl={$END_GEM_ATTR_LABEL.text})
-    <<\<end-gem label="<lbl>"/\> >>
+    <<\<end-gem label="<lbl>"/\>
+>>
     ;
 ]]>
     </buffer>
