@@ -116,6 +116,15 @@ scope {
 			}
 			
 		}
+
+		if($u::recordLang != null) {
+			try {
+				Language l = Language.parseLanguage($u::recordLang);
+				$u::r.setLanguage(l);
+			} catch (IllegalArgumentException e) {
+				LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+			}
+		}
 		
 		if($u::links.size() > 0) {
 			OrthographyBuilder builder = new OrthographyBuilder();
@@ -584,10 +593,10 @@ u
 u_attrs
 	:	U_ATTR_WHO
 	->	template(who={$U_ATTR_WHO.text})
-	<<who="<who>" >>
+	"who=\"<who>\""
 	|	U_ATTR_LANG
 	->	template(lang={$U_ATTR_LANG.text})
-	<<xml:lang="<lang>" >>
+	"xml:lang=\"<lang>\""
 	;
 	
 uele

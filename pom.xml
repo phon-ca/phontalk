@@ -36,7 +36,7 @@
 	</distributionManagement>
 
 	<properties>
-		<ca.phon.version>3.6.0-dev.3</ca.phon.version>
+		<ca.phon.version>3.6.0-SNAPSHOT</ca.phon.version>
 		<junit.junit.version>4.13.1</junit.junit.version>
 
 		<!-- Project settings -->

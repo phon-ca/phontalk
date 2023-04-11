@@ -91,7 +91,8 @@ public class RoundTripTest {
         // TODO comments are re-ordered in these files
         if(testName.equals("dep-tiers") || testName.equals("commenturl")
                 || testName.equals("gem") || testName.equals("headers")
-                || testName.equals("hebrew")) {
+                || testName.equals("hebrew") || testName.equals("lazygem")
+                || testName.equals("lazygembg") || testName.equals("lazygemwords")) {
             final File sortedExpectedFile = new File(outputFolder, basename + "-tb-cha-sorted.cha");
             final File sortedRtFile = new File(outputFolder, basename + "-tb-phon-tb-cha-sorted.cha");
             // ignore ordering in this file

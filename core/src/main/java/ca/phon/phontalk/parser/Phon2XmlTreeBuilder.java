@@ -19,15 +19,12 @@
 package ca.phon.phontalk.parser;
 
 import java.io.File;
-import java.text.ParseException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.*;
 
-import ca.phon.formatter.Formatter;
-import ca.phon.formatter.FormatterFactory;
 import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -651,6 +648,14 @@ public class Phon2XmlTreeBuilder {
 
 		whoNode.setParent(uNode);
 		uNode.addChild(whoNode);
+
+		if(utt.getLanguage() != null) {
+			CommonTree langNode =
+					AntlrUtils.createToken(talkbankTokens, "U_ATTR_LANG");
+			langNode.getToken().setText(utt.getLanguage().toString());
+			langNode.setParent(uNode);
+			uNode.addChild(langNode);
+		}
 		
 		// terminator type
 		String termType = "missing CA terminator";
