@@ -29,18 +29,16 @@ linker returns [String val]
 	:	^(LINKER_START type=LINKER_ATTR_TYPE)
 	{
 		String lkType = $type.text;
-		if(lkType.equals("quick uptake"))
-			$val += "+^";
-		else if(lkType.equals("lazy overlap mark"))
-			$val += "+<";
-		else if(lkType.equals("self completion"))
-			$val += "+,";
-		else if(lkType.equals("other completion"))
-			$val += "++";
-		else if(lkType.equals("technical break TCU completion"))
-			$val += "+\u224b";
-		else if(lkType.equals("no break TCU completion"))
-			$val += "+\u2248";
+		$val += switch(lkType) {
+		    case "quoted utterance next" -> "+\"";
+		    case "quick uptake" -> "+^";
+		    case "lazy overlap mark" -> "+<";
+		    case "self completion" -> "+,";
+		    case "other completion" -> "++";
+		    case "technical break TCU completion" -> "+\u224b";
+		    case "no break TCU completion" -> "+\u2248";
+		    default -> "";
+		};
 	}
 	;	
 ]]>

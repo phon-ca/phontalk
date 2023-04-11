@@ -374,20 +374,16 @@ public class TalkBankCodeTreeBuilder {
             parent.addChild(lkNode);
         }
 
-        String actualType = "";
-        if (lkType.equals("+^")) {
-            actualType = "quick uptake";
-        } else if (lkType.equals("+<")) {
-            actualType = "lazy overlap mark";
-        } else if (lkType.equals("+,")) {
-            actualType = "self completion";
-        } else if (lkType.equals("++")) {
-            actualType = "other completion";
-        } else if (lkType.equals("+\u224b")) {
-            actualType = "technical break TCU completion";
-        } else if (lkType.equals("+\u2248")) {
-            actualType = "no break TCU completion";
-        }
+        final String actualType = switch(lkType) {
+            case "+\"" -> "quoted utterance next";
+            case "+^" -> "quick uptake";
+            case "+<" -> "lazy overlap mark";
+            case "+," -> "self completion";
+            case "++" -> "other completion";
+            case "+\u224b" -> "technical break TCU completion";
+            case "+\u2248" -> "no break TCU completion";
+            default -> "";
+        };
         CommonTree typeNode =
                 AntlrUtils.createToken(talkbankTokens, "LINKER_ATTR_TYPE");
         typeNode.getToken().setText(actualType);
