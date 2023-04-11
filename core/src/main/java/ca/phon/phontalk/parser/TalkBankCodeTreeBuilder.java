@@ -165,10 +165,12 @@ public class TalkBankCodeTreeBuilder {
 
         // everything else
         else {
-            int cIndex = data.indexOf(':');
-            if (cIndex >= 0) {
-                String eleName = data.substring(0, cIndex);
-                String eleData = data.substring(cIndex + 1);
+            Pattern pattern = Pattern.compile("([-\\w_]+):(.+)");
+            Matcher matcher = pattern.matcher(data);
+
+            if (matcher.matches()) {
+                String eleName = matcher.group(1);
+                String eleData = matcher.group(2);
 
                 if (eleName.equals("happening")) {
                     return addHappening(tree, eleData);
@@ -190,6 +192,10 @@ public class TalkBankCodeTreeBuilder {
                     return addInternalMedia(tree, eleData);
                 } else if (eleName.equals("overlap-point")) {
                     return addOverlapPoint(tree, eleData);
+                } else if (eleName.equals("long-feature-begin")) {
+                    return addLongFeature(tree, "begin", eleData);
+                } else if (eleName.equals("long-feature-end")) {
+                    return addLongFeature(tree, "end", eleData);
                 } else if(eleName.equals("mediapic")) {
                     return addMediaPic(tree, eleData);
                 } else {
@@ -804,6 +810,23 @@ public class TalkBankCodeTreeBuilder {
         parent.addChild(shNode);
 
         return shNode;
+    }
+
+    public CommonTree addLongFeature(CommonTree parent, String type, String data) {
+        CommonTree lfNode =
+                AntlrUtils.createToken(talkbankTokens, "LONG_FEATURE_START");
+        lfNode.setParent(parent);
+        parent.addChild(lfNode);
+
+        CommonTree lfTypeNode =
+                AntlrUtils.createToken(talkbankTokens, "LONG_FEATURE_ATTR_TYPE");
+        lfTypeNode.getToken().setText(type);
+        lfTypeNode.setParent(lfNode);
+        lfNode.addChild(lfTypeNode);
+
+        addTextNode(lfNode, data);
+
+        return lfNode;
     }
 
     public CommonTree addUnderlineBefore(CommonTree parent, boolean isStart) {

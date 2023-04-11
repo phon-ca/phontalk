@@ -23,7 +23,7 @@ long_feature
 long_feature returns [String val]
     :    ^(LONG_FEATURE_START LONG_FEATURE_ATTR_TYPE TEXT)
     {
-        $val = "(long-feature," + $LONG_FEATURE_ATTR_TYPE.text + ":" + $TEXT.text + ")";
+        $val = "(long-feature-" + $LONG_FEATURE_ATTR_TYPE.text + ":" + $TEXT.text + ")";
     }
     ;
 ]]>
