@@ -22,7 +22,14 @@ nonvocal
 nonvocal returns [String val]
     :    ^(NONVOCAL_START NONVOCAL_ATTR_TYPE TEXT)
     {
-        $val = "(nonvocal," + $NONVOCAL_ATTR_TYPE.text + ":" + $TEXT.text + ")";
+        String type = $NONVOCAL_ATTR_TYPE.text;
+        if(type != null) {
+            type = switch(type) {
+                case "simple" -> "";
+                default -> "-" + type;
+            };
+            $val = "(nonvocal" + type + ":" + $TEXT.text + ")";
+        }
     }
     ;
 ]]>

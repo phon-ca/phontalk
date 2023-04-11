@@ -495,7 +495,7 @@ uannotation
 			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
 		lastGroup.setOrthography(
 			(new OrthographyBuilder()).append(lastGroup.getOrthography())
-				.append("(" + $nonvocal.val + ")").toOrthography());
+				.append($nonvocal.val).toOrthography());
 	}
 	;
 	

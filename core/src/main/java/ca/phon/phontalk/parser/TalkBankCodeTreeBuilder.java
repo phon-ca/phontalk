@@ -196,6 +196,12 @@ public class TalkBankCodeTreeBuilder {
                     return addLongFeature(tree, "begin", eleData);
                 } else if (eleName.equals("long-feature-end")) {
                     return addLongFeature(tree, "end", eleData);
+                } else if (eleName.equals("nonvocal-begin")) {
+                    return addNonvocal(tree, "begin", eleData);
+                } else if(eleName.equals("nonvocal-end")) {
+                    return addNonvocal(tree, "end", eleData);
+                } else if(eleName.equals("nonvocal")) {
+                    return addNonvocal(tree, "simple", eleData);
                 } else if(eleName.equals("mediapic")) {
                     return addMediaPic(tree, eleData);
                 } else {
@@ -204,6 +210,23 @@ public class TalkBankCodeTreeBuilder {
             }
         }
         return null;
+    }
+
+    public CommonTree addNonvocal(CommonTree parent, String type, String data) {
+        CommonTree nvNode =
+                AntlrUtils.createToken(talkbankTokens, "NONVOCAL_START");
+        nvNode.setParent(parent);
+        parent.addChild(nvNode);
+
+        CommonTree nvTypeNode =
+                AntlrUtils.createToken(talkbankTokens, "NONVOCAL_ATTR_TYPE");
+        nvTypeNode.getToken().setText(type);
+        nvTypeNode.setParent(nvNode);
+        nvNode.addChild(nvTypeNode);
+
+        addTextNode(nvNode, data);
+
+        return nvNode;
     }
 
     /**
