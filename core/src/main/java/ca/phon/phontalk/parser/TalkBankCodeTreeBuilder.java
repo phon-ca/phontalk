@@ -37,6 +37,10 @@ public class TalkBankCodeTreeBuilder {
     private final static int INTERNAL_MEDIA_START_GROUP = 1;
     private final static int INTERNAL_MEDIA_END_GROUP = 5;
 
+    private final static String OVERLAP_POINT_REGEX = "([⌈⌉⌊⌋])([0-9]+)?";
+    private final static int OVERLAP_POINT_SYMBOL_GROUP = 1;
+    private final static int OVERLAP_POINT_INDEX_GROUP = 2;
+
     /**
      * Handle data in parentheses.
      */
@@ -100,8 +104,7 @@ public class TalkBankCodeTreeBuilder {
         }
 
         // overlap-point
-        else if (data.equals("⌈") || data.equals("⌉")
-                || data.equals("⌊") || data.equals("⌋")) {
+        else if (data.matches(OVERLAP_POINT_REGEX)) {
             return addOverlapPoint(tree, data);
         }
 
@@ -291,23 +294,26 @@ public class TalkBankCodeTreeBuilder {
         opNode.setParent(parent);
         parent.addChild(opNode);
 
-        int index = -1;
+        final Pattern overlapPtPattern = Pattern.compile(OVERLAP_POINT_REGEX);
+        final Matcher matcher = overlapPtPattern.matcher(data);
+
         String startEnd = "start";
         String topBottom = "top";
-        if (data.equals("⌈")) {
-            startEnd = "start";
-            topBottom = "top";
-        } else if (data.equals("⌉")) {
-            startEnd = "end";
-            topBottom = "top";
-        } else if (data.equals("⌊")) {
-            startEnd = "start";
-            topBottom = "bottom";
-        } else if (data.equals("⌋")) {
-            startEnd = "end";
-            topBottom = "bottom";
-        } else if (data.matches("[0-9]+")) {
-            index = Integer.parseInt(data);
+        int index = -1;
+        if(matcher.matches()) {
+            final String symbol = matcher.group(OVERLAP_POINT_SYMBOL_GROUP);
+            startEnd = switch(symbol) {
+                case "⌈", "⌊"  -> "start";
+                case "⌉", "⌋" -> "end";
+                default -> "";
+            };
+            topBottom = switch(symbol) {
+                case "⌈", "⌉" -> "top";
+                case "⌊", "⌋" -> "bottom";
+                default -> "";
+            };
+            final String indexGrp = matcher.group(OVERLAP_POINT_INDEX_GROUP);
+            index = indexGrp != null ? Integer.parseInt(indexGrp) : -1;
         } else {
             String[] attrs = data.split(",");
             if (attrs.length == 2) {
@@ -316,24 +322,24 @@ public class TalkBankCodeTreeBuilder {
             }
         }
 
+        CommonTree startEndNode =
+                AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_START_END");
+        startEndNode.getToken().setText(startEnd);
+        startEndNode.setParent(opNode);
+        opNode.addChild(startEndNode);
+
+        CommonTree topBtmNode =
+                AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_TOP_BOTTOM");
+        topBtmNode.getToken().setText(topBottom);
+        topBtmNode.setParent(opNode);
+        opNode.addChild(topBtmNode);
+
         if (index >= 0) {
             CommonTree indexNode =
                     AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_INDEX");
             indexNode.getToken().setText(String.valueOf(index));
             indexNode.setParent(opNode);
             opNode.addChild(indexNode);
-        } else {
-            CommonTree startEndNode =
-                    AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_START_END");
-            startEndNode.getToken().setText(startEnd);
-            startEndNode.setParent(opNode);
-            opNode.addChild(startEndNode);
-
-            CommonTree topBtmNode =
-                    AntlrUtils.createToken(talkbankTokens, "OVERLAP_POINT_ATTR_TOP_BOTTOM");
-            topBtmNode.getToken().setText(topBottom);
-            topBtmNode.setParent(opNode);
-            opNode.addChild(topBtmNode);
         }
 
         return opNode;

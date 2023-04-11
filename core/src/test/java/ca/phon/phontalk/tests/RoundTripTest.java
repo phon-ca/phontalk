@@ -88,6 +88,7 @@ public class RoundTripTest {
         Path expectedPath = Path.of(expectedOutputFile.toURI());
         Path rtPath = Path.of(roundTripFile.toURI());
 
+        // TODO comments are re-ordered in these files
         if(testName.equals("dep-tiers") || testName.equals("commenturl")
                 || testName.equals("gem") || testName.equals("headers")
                 || testName.equals("hebrew")) {

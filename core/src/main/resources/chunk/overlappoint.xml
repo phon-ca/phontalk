@@ -38,25 +38,22 @@ scope {
 }
     :    ^(OVERLAP_POINT_START overlap_pointattrs+)
     {
-        if($overlap_point::index != null) {
-            $val = "(overlap-point:";
-            String attrs =
-                ($overlap_point::index != null ?  $overlap_point::index : "");
-            $val += attrs + ")";
-        } else {
-            if($overlap_point::startEnd.equals("start")) {
-                if($overlap_point::topBottom.equals("top")) {
-                    $val = "⌈";
-                } else {
-                    $val = "⌊";
-                }
+        if($overlap_point::startEnd.equals("start")) {
+            if($overlap_point::topBottom.equals("top")) {
+                $val = "⌈";
             } else {
-                if($overlap_point::topBottom.equals("top")) {
-                    $val = "⌉";
-                } else {
-                    $val = "⌋";
-                }
+                $val = "⌊";
             }
+        } else {
+            if($overlap_point::topBottom.equals("top")) {
+                $val = "⌉";
+            } else {
+                $val = "⌋";
+            }
+        }
+
+        if($overlap_point::index != null) {
+            $val += $overlap_point::index;
         }
     }
     ;
