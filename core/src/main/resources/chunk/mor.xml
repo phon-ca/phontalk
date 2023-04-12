@@ -488,7 +488,7 @@ mor_pre
     ->   template( choice={$morchoice.st}, mpenxlist={$mplist1}, mpgralist={$mplist2} )
     "\<mor-pre\><choice><if(mpenxlist)><mpenxlist><endif><if(mpgralist)><mpgralist><endif>\</mor-pre\>"
     ;
-    
+
 mor_post 
     :    ^(MOR_POST_START morchoice (mpstlist1+=menx)* (mpstlist2+=gra)*)
     ->   template( choice={$morchoice.st}, mpstenxlist={$mpstlist1}, mpstgralist={$mpstlist2} )
@@ -523,15 +523,15 @@ graattrs
     ;
     
 mw
-    :   ^(MW_START (list1+=mpfx)* pos stem (list2+=mk)*)
-    ->    template( mpfxlist={$list1}, mwp={$pos.st}, mws={$stem.st}, mklist={$list2} )
-    "\<mw\><if(mpfxlist)><mpfxlist><endif><mwp><mws><if(mklist)><mklist><endif>\</mw\>"
+    :   ^(MW_START (mwlist1+=mpfx)* pos stem (mwlist2+=mk)*)
+    ->    template( mwmpfxlist={$mwlist1}, mwp={$pos.st}, mws={$stem.st}, mwmklist={$mwlist2} )
+    "\<mw\><if(mwmpfxlist)><mwmpfxlist><endif><mwp><mws><if(mwmklist)><mwmklist><endif>\</mw\>"
     ;
     
 mwc
-    :    ^(MWC_START (list1+=mpfx)* pos (list2+=mw)+)
-    ->    template( mpfxlist={$list1}, mwcp={$pos.st}, mwlist={$list2} )
-    "\<mwc\><if(mpfxlist)><mpfxlist><endif><mwcp><mwlist>\</mwc\>"
+    :    ^(MWC_START (mwclist1+=mpfx)* pos (mwclist2+=mw)+)
+    ->    template( mwcmpfxlist={$mwclist1}, mwcp={$pos.st}, mwcmklist={$mwclist2} )
+    "\<mwc\><if(mwcmpfxlist)><mwcmpfxlist><endif><mwcp><mwcmklist>\</mwc\>"
     ;
     
 mt
