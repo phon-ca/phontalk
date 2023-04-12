@@ -1061,11 +1061,17 @@ public class TalkBankCodeTreeBuilder {
     /**
      * Add a replacement element
      */
-    public CommonTree addReplacement(CommonTree parent, String data) {
+    public CommonTree addReplacement(CommonTree parent, boolean real, String data) {
         CommonTree rNode =
                 AntlrUtils.createToken(talkbankTokens, "REPLACEMENT_START");
         rNode.setParent(parent);
         parent.addChild(rNode);
+
+        CommonTree realNode =
+                AntlrUtils.createToken(talkbankTokens, "REPLACEMENT_ATTR_REAL");
+        realNode.getToken().setText(Boolean.toString(real));
+        realNode.setParent(rNode);
+        rNode.addChild(realNode);
 
         try {
             OrthographyTreeBuilder innerBuilder = new OrthographyTreeBuilder();

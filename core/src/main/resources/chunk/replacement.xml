@@ -10,8 +10,8 @@ XPath -
     <buffer name="TalkBank2AST.g">
         <![CDATA[
 replacement
-	:	REPLACEMENT_START replacementele* REPLACEMENT_END 
-	->	^(REPLACEMENT_START replacementele*)
+	:	REPLACEMENT_START REPLACEMENT_ATTR_REAL? replacementele* REPLACEMENT_END
+	->	^(REPLACEMENT_START REPLACEMENT_ATTR_REAL? replacementele*)
 	;
 	
 replacementele
@@ -30,10 +30,15 @@ scope {
 @init {
     $replacement::buffer = "";
 }
-@after {
-    $val = "(replacement:" + $replacement::buffer.toString() + ")";
-}
-	:	^(REPLACEMENT_START replacementele*)
+	:	^(REPLACEMENT_START REPLACEMENT_ATTR_REAL? replacementele*)
+	{
+	    boolean real = false;
+	    if($REPLACEMENT_ATTR_REAL != null) {
+	        real = Boolean.parseBoolean($REPLACEMENT_ATTR_REAL.text);
+	    }
+	    final String type = "replacement" + (real ? "-real" : "");
+	    $val = String.format("(\%s:\%s)", type, $replacement::buffer.toString());
+	}
 	;
 	
 replacementele
@@ -48,9 +53,9 @@ replacementele
     <buffer name="AST2TalkBank.g">
         <![CDATA[
 replacement
-    :    ^(REPLACEMENT_START (rcontentlist+=replacementele)*)
-    ->    template( rcontent={$rcontentlist} )
-    "\<replacement\><rcontent; separator=\"\">\</replacement\>"
+    :    ^(REPLACEMENT_START REPLACEMENT_ATTR_REAL? (rcontentlist+=replacementele)*)
+    ->    template( rreal={$REPLACEMENT_ATTR_REAL.text}, rcontent={$rcontentlist} )
+    "\<replacement<if(rreal)> real=\"<rreal>\"<endif>\><rcontent; separator=\"\">\</replacement\>"
     ;
     
 replacementele

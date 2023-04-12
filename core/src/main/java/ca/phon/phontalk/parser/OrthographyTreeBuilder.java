@@ -327,7 +327,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			// TERMINATOR
 			if (type.equals("t")) {
 				terminator = treeBuilder.addTerminator(uttNodeStack.get(0), text);
-			} else if(type.equals("replacement")) {
+			} else if(type.equals("replacement") || type.equals("replacement-real")) {
 
 				CommonTree parentNode = nodeStack.peek();
 				// find the last 'w' node
@@ -347,7 +347,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					parentNode.addChild(wNode);
 					attachToLastChild = true;
 				}
-				treeBuilder.addReplacement(wNode, text);
+				treeBuilder.addReplacement(wNode, type.endsWith("-real"), text);
 			} else if(type.equals("langs")) {
 
 				CommonTree parentNode = nodeStack.peek();

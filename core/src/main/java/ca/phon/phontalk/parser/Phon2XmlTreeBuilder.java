@@ -1046,12 +1046,25 @@ public class Phon2XmlTreeBuilder {
 
 		for(CommonTree wordTree:allWordTrees) {
 			if(wordTree.getToken().getType() == talkbankTokens.getTokenType("W_START")) {
+				boolean insideReplacement =
+						((CommonTree)wordTree.getParent()).getToken().getType() == talkbankTokens.getTokenType("REPLACEMENT_START");
+
+				boolean replacement = false;
 				List<CommonTree> replNodes = 
 						AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "REPLACEMENT_START");
+				if(replNodes.size() > 0) {
+					CommonTree replNode = replNodes.get(0);
+					if(replNode.getChildCount() > 0) {
+						CommonTree replRealNode = (CommonTree) replNode.getChild(0);
+						if(replRealNode.getToken().getType() == talkbankTokens.getTokenType("REPLACEMENT_ATTR_REAL")) {
+							replacement = !Boolean.parseBoolean(replRealNode.getToken().getText());
+						}
+					}
+				}
 
 				// check for mor exclude marker
 				boolean morExclude = false;
-				if(wordTree.getParent().getChildCount() >= wordTree.getChildIndex() + 1) {
+				if(wordTree.getParent().getChildCount() > wordTree.getChildIndex() + 1) {
 					CommonTree sibling = (CommonTree) wordTree.getParent().getChild(wordTree.getChildIndex()+1);
 					if(sibling.getToken().getType() == talkbankTokens.getTokenType("K_START")) {
 						if(sibling.getChildCount() == 1) {
@@ -1063,7 +1076,7 @@ public class Phon2XmlTreeBuilder {
 						}
 					}
 				}
-				if(replNodes.size() > 0 || morExclude) {
+				if(insideReplacement || replacement || morExclude) {
 					// don't add this tree
 					continue;
 				} else {
