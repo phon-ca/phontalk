@@ -165,7 +165,7 @@ public class TalkBankCodeTreeBuilder {
 
         // everything else
         else {
-            Pattern pattern = Pattern.compile("([-\\w_]+):(.+)");
+            Pattern pattern = Pattern.compile("([-\\w_]+):(.*)");
             Matcher matcher = pattern.matcher(data);
 
             if (matcher.matches()) {
