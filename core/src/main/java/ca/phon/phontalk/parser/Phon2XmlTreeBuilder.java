@@ -19,6 +19,8 @@
 package ca.phon.phontalk.parser;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -255,39 +257,50 @@ public class Phon2XmlTreeBuilder {
 		if(t.getMediaLocation() != null
 				&& t.getMediaLocation().length() > 0) {
 			CommonTree node = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_MEDIA");
-			
-			File mediaFile = new File(t.getMediaLocation());
-			String mediaName = mediaFile.getName();
-			
-			int extIdx = mediaName.lastIndexOf('.');
-			String fname = 
-				(extIdx >= 0 ? mediaName.substring(0, extIdx) : mediaName);
-			String fext = 
-				(extIdx >= 0 ? mediaName.substring(extIdx+1) : "");
-			
-			int slashLocation = fname.lastIndexOf('\\');
-			if(slashLocation >= 0) {
-				fname = fname.substring(slashLocation+1);
-			}
-			
-			node.getToken().setText(StringEscapeUtils.escapeXml(fname));
 			node.setParent(tree);
 			tree.addChild(node);
-			
-			CommonTree node2 = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_MEDIATYPES");
-			if(fext.equals("aif") || fext.equals("aiff") ||
-					fext.equals("wav")) {
-				node2.getToken().setText("audio");
-			} else {
-				node2.getToken().setText("video");
+
+			String mediaLocation = t.getMediaLocation();
+			try {
+				final URL url = new URL(mediaLocation);
+				// if an external url, use entire url
+				if(url.getProtocol() != null && !url.getProtocol().equals("file://")) {
+					node.getToken().setText(mediaLocation);
+				}
+			} catch (MalformedURLException e) {}
+
+			if(node.getToken().getText() == null || node.getToken().getText().length() == 0) {
+				File mediaFile = new File(t.getMediaLocation());
+				String mediaName = mediaFile.getName();
+
+				int extIdx = mediaName.lastIndexOf('.');
+				String fname =
+						(extIdx >= 0 ? mediaName.substring(0, extIdx) : mediaName);
+				String fext =
+						(extIdx >= 0 ? mediaName.substring(extIdx + 1) : "");
+
+				int slashLocation = fname.lastIndexOf('\\');
+				if (slashLocation >= 0) {
+					fname = fname.substring(slashLocation + 1);
+				}
+
+				node.getToken().setText(StringEscapeUtils.escapeXml(fname));
+
+				CommonTree node2 = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_MEDIATYPES");
+				if (fext.equals("aif") || fext.equals("aiff") ||
+						fext.equals("wav")) {
+					node2.getToken().setText("audio");
+				} else {
+					node2.getToken().setText("video");
+				}
+
+				if (t.getRecordCount() == 0) {
+					node2.getToken().setText(node2.getToken().getText() + " notrans");
+				}
+
+				node2.setParent(tree);
+				tree.addChild(node2);
 			}
-			
-			if(t.getRecordCount() == 0) {
-				node2.getToken().setText(node2.getToken().getText() + " notrans");
-			}
-			
-			node2.setParent(tree);
-			tree.addChild(node2);
 		} else {
 			CommonTree node = AntlrUtils.createToken(talkbankTokens, "CHAT_ATTR_MEDIATYPES");
 			node.getToken().setText("missing");

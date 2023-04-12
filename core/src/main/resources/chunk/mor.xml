@@ -484,15 +484,15 @@ morseq
     ;
     
 mor_pre
-    :    ^(MOR_PRE_START morchoice (list1+=menx)* (list2+=gra)*)
-    ->   template( choice={$morchoice.st}, enxlist={$list1}, gralist={$list2} )
-    "\<mor-pre\><choice><if(enxlist)><enxlist><endif><if(gralist)><gralist><endif>\</mor-pre\>"
+    :    ^(MOR_PRE_START morchoice (mplist1+=menx)* (mplist2+=gra)*)
+    ->   template( choice={$morchoice.st}, mpenxlist={$mplist1}, mpgralist={$mplist2} )
+    "\<mor-pre\><choice><if(mpenxlist)><mpenxlist><endif><if(mpgralist)><mpgralist><endif>\</mor-pre\>"
     ;
     
 mor_post 
-    :    ^(MOR_POST_START morchoice (list1+=menx)* (list2+=gra)*)
-    ->   template( choice={$morchoice.st}, enxlist={$list1}, gralist={$list2} )
-    "\<mor-post\><choice><if(enxlist)><enxlist><endif><if(gralist)><gralist><endif>\</mor-post\>"
+    :    ^(MOR_POST_START morchoice (mpstlist1+=menx)* (mpstlist2+=gra)*)
+    ->   template( choice={$morchoice.st}, mpstenxlist={$mpstlist1}, mpstgralist={$mpstlist2} )
+    "\<mor-post\><choice><if(mpstenxlist)><mpstenxlist><endif><if(mpstgralist)><mpstgralist><endif>\</mor-post\>"
     ;
     
 menx
