@@ -1048,7 +1048,22 @@ public class Phon2XmlTreeBuilder {
 			if(wordTree.getToken().getType() == talkbankTokens.getTokenType("W_START")) {
 				List<CommonTree> replNodes = 
 						AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "REPLACEMENT_START");
-				if(replNodes.size() > 0) {
+
+				// check for mor exclude marker
+				boolean morExclude = false;
+				if(wordTree.getParent().getChildCount() >= wordTree.getChildIndex() + 1) {
+					CommonTree sibling = (CommonTree) wordTree.getParent().getChild(wordTree.getChildIndex()+1);
+					if(sibling.getToken().getType() == talkbankTokens.getTokenType("K_START")) {
+						if(sibling.getChildCount() == 1) {
+							CommonTree kTypeNode = (CommonTree) sibling.getChild(0);
+							if (kTypeNode.getToken().getType() == talkbankTokens.getTokenType("K_ATTR_TYPE")
+								&& kTypeNode.getToken().getText().equals("mor exclude")) {
+								morExclude = true;
+							}
+						}
+					}
+				}
+				if(replNodes.size() > 0 || morExclude) {
 					// don't add this tree
 					continue;
 				} else {

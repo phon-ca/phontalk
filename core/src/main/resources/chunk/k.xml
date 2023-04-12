@@ -25,24 +25,18 @@ k returns [String val]
 		if($type != null)
 		{
 		    String t = $K_ATTR_TYPE.text;
-		    
-		    if(t.equals("stressing")) {
-		        $val = "!";
-		    } else if(t.equals("contrastive stressing")) {
-		        $val = "!!";
-		    } else if(t.equals("best guess")) {
-		        $val = "?";
-		    } else if(t.equals("retracing")) {
-		        $val = "/";
-		    } else if(t.equals("retracing with correction")) {
-		        $val = "//";
-		    } else if(t.equals("retracing reformulation")) {
-		        $val = "///";
-		    } else if(t.equals("retracing unclear")) {
-		        $val = "/?";
-		    } else if(t.equals("false start")) {
-		        $val = "/-";
-		    }
+		    $val = switch(t) {
+		        case "stressing" -> "!";
+		        case "contrastive stressing" -> "!!";
+		        case "best guess" -> "?";
+		        case "retracing" -> "/";
+		        case "retracing with correction" -> "//";
+		        case "retracing reformulation" -> "///";
+		        case "retracing unclear" -> "/?";
+		        case "false start" -> "/-";
+		        case "mor exclude" -> "e";
+		        default -> "";
+		    };
 		}
 	}
 	;
@@ -54,7 +48,8 @@ k returns [String val]
 k
 	:    ^(K_START K_ATTR_TYPE?)
 	->    template( type={$K_ATTR_TYPE} )
-	<<\<k type="<type>"/\> >>
+	<<\<k type="<type>"/\>
+>>
 	;
 ]]>
     </buffer>

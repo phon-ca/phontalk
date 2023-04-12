@@ -134,7 +134,8 @@ public class TalkBankCodeTreeBuilder {
                 || data.equals("//")
                 || data.equals("///")
                 || data.equals("/?")
-                || data.equals("/-")) {
+                || data.equals("/-")
+                || data.equals("e")) {
             return addMarker(tree, data);
         }
 
@@ -495,43 +496,31 @@ public class TalkBankCodeTreeBuilder {
      * Add a marker <k> element
      */
     public CommonTree addMarker(CommonTree parent, String data) {
-        String type = null;
+        String type = switch(data) {
+            case "!" -> "stressing";
+            case "!!" -> "contrastive stressing";
+            case "?" -> "best guess";
+            case "/" -> "retracing";
+            case "//" -> "retracing with correction";
+            case "///" -> "retracing reformulation";
+            case "/?" -> "retracing unclear";
+            case "/-" -> "false start";
+            case "e" -> "mor exclude";
+            default -> data;
+        };
 
-        if (data.equals("!")) {
-            type = "stressing";
-        } else if (data.equals("!!")) {
-            type = "contrastive stressing";
-        } else if (data.equals("?")) {
-            type = "best guess";
-        } else if (data.equals("/")) {
-            type = "retracing";
-        } else if (data.equals("//")) {
-            type = "retracing with correction";
-        } else if (data.equals("///")) {
-            type = "retracing reformulation";
-        } else if (data.equals("/?")) {
-            type = "retracing unclear";
-        } else if (data.equals("/-")) {
-            type = "false start";
-        } else {
-            LOGGER.warning("Invalid marker type '" + data + "'");
-        }
+        CommonTree markerNode =
+                AntlrUtils.createToken(talkbankTokens, "K_START");
+        markerNode.setParent(parent);
+        parent.addChild(markerNode);
 
-        if (type != null) {
-            CommonTree markerNode =
-                    AntlrUtils.createToken(talkbankTokens, "K_START");
-            markerNode.setParent(parent);
-            parent.addChild(markerNode);
+        CommonTree typeNode =
+                AntlrUtils.createToken(talkbankTokens, "K_ATTR_TYPE");
+        typeNode.getToken().setText(type);
+        typeNode.setParent(markerNode);
+        markerNode.addChild(typeNode);
 
-            CommonTree typeNode =
-                    AntlrUtils.createToken(talkbankTokens, "K_ATTR_TYPE");
-            typeNode.getToken().setText(type);
-            typeNode.setParent(markerNode);
-            markerNode.addChild(typeNode);
-
-            return markerNode;
-        }
-        return null;
+        return markerNode;
     }
 
     /**

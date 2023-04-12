@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -88,11 +89,13 @@ public class RoundTripTest {
         Path expectedPath = Path.of(expectedOutputFile.toURI());
         Path rtPath = Path.of(roundTripFile.toURI());
 
+        final String[] ignoreOrderTests = {
+          "dep-tiers", "commenturl", "gem", "headers", "hebrew", "lazygem", "lazygembg" , "lazygemwords",
+          "mor-ignore"
+        };
+        Arrays.sort(ignoreOrderTests);
         // TODO comments are re-ordered in these files
-        if(testName.equals("dep-tiers") || testName.equals("commenturl")
-                || testName.equals("gem") || testName.equals("headers")
-                || testName.equals("hebrew") || testName.equals("lazygem")
-                || testName.equals("lazygembg") || testName.equals("lazygemwords")) {
+        if(Arrays.binarySearch(ignoreOrderTests, testName) >= 0) {
             final File sortedExpectedFile = new File(outputFolder, basename + "-tb-cha-sorted.cha");
             final File sortedRtFile = new File(outputFolder, basename + "-tb-phon-tb-cha-sorted.cha");
             // ignore ordering in this file
