@@ -1048,16 +1048,20 @@ public class Phon2XmlTreeBuilder {
 			if(wordTree.getToken().getType() == talkbankTokens.getTokenType("W_START")) {
 				boolean insideReplacement =
 						((CommonTree)wordTree.getParent()).getToken().getType() == talkbankTokens.getTokenType("REPLACEMENT_START");
+				boolean insideRealReplacement =
+						insideReplacement && Boolean.parseBoolean(((CommonTree)wordTree.getParent().getChild(0)).getToken().getText());
 
-				boolean replacement = false;
+				boolean hasReplacement = false;
+				boolean hasRealReplacement = false;
 				List<CommonTree> replNodes = 
 						AntlrUtils.findAllChildrenWithType(wordTree, talkbankTokens, "REPLACEMENT_START");
 				if(replNodes.size() > 0) {
 					CommonTree replNode = replNodes.get(0);
 					if(replNode.getChildCount() > 0) {
 						CommonTree replRealNode = (CommonTree) replNode.getChild(0);
+						hasReplacement = true;
 						if(replRealNode.getToken().getType() == talkbankTokens.getTokenType("REPLACEMENT_ATTR_REAL")) {
-							replacement = !Boolean.parseBoolean(replRealNode.getToken().getText());
+							hasRealReplacement = Boolean.parseBoolean(replRealNode.getToken().getText());
 						}
 					}
 				}
@@ -1076,7 +1080,7 @@ public class Phon2XmlTreeBuilder {
 						}
 					}
 				}
-				if(insideReplacement || replacement || morExclude) {
+				if((insideReplacement && insideRealReplacement) || (hasReplacement && !hasRealReplacement) || morExclude) {
 					// don't add this tree
 					continue;
 				} else {
