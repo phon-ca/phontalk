@@ -90,8 +90,16 @@ public class RoundTripTest {
         Path rtPath = Path.of(roundTripFile.toURI());
 
         final String[] ignoreOrderTests = {
-          "dep-tiers", "commenturl", "gem", "headers", "hebrew", "lazygem", "lazygembg" , "lazygemwords",
-          "mor-ignore", "pic"
+            "dep-tiers",
+            "commenturl",
+            "gem",
+            "headers",
+            "hebrew",
+            "lazygem",
+            "lazygembg" ,
+            "lazygemwords",
+            "mor-ignore",
+            "pic"
         };
         Arrays.sort(ignoreOrderTests);
         // TODO comments are re-ordered in these files
