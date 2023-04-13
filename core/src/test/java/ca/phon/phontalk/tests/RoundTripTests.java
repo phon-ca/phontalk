@@ -24,7 +24,7 @@ public class RoundTripTests extends RoundTripTest {
         List<Object[]> retVal = new ArrayList<>();
 
         final File testFolder = new File("src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good/");
-        final String outputFolder = "target/test/ca/phon/phontalk/tests/RoundTripTests/";
+        final String outputFolder = "target/test/ca/phon/phontalk/tests/RoundTripTests/good/";
 
         for(File testFile:testFolder.listFiles()) {
             if(!testFile.getName().endsWith(".cha")) continue;

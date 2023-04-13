@@ -376,9 +376,9 @@ mt returns [String val]
 mpfx returns [String val]
 @after {
     if($mw.size() > 0) {
-        $mw::mpfxVals.add($val);
+        $mw::mpfxVals.add(0, $val);
     } else if($mwc.size() > 0) {
-        $mwc::mpfxVals.add($val);
+        $mwc::mpfxVals.add(0, $val);
     }
 }
     :    ^(MPFX_START TEXT)

@@ -478,7 +478,12 @@ uannotation
 	}
 	|	underline
 	{
-		$u::wordPrefix = "\u2500";
+		$u::useLastGroup = true;
+		Group lastGroup =
+			($u::r.numberOfGroups() > 0 ? $u::r.getGroup($u::r.numberOfGroups()-1) : $u::r.addGroup());
+		lastGroup.setOrthography(
+			(new OrthographyBuilder()).append(lastGroup.getOrthography())
+				.append("\u2500").toOrthography());
 	}
 	|	italic
 	{

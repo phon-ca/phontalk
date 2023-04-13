@@ -72,13 +72,18 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		attachToLastChild = true;
 		visit(wordnet.getWord2());
 	}
-	
+
+	boolean inUnderline = false;
 	@Visits
 	public void visitWord(OrthoWord word) {
 		CommonTree parentNode = nodeStack.peek();
 
 		if(word.getWord().matches("[“”]")) {
 			treeBuilder.addQuotation(parentNode, word.getWord());
+			return;
+		} else if(word.getWord().equals("\u2500")) {
+			this.inUnderline = !this.inUnderline;
+			treeBuilder.addUnderline(parentNode, this.inUnderline);
 			return;
 		}
 
@@ -151,7 +156,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		String addWord = word.getWord();
 		String val = "";
 		boolean inCaDelim = false;
-		boolean inUnderline = false;
+		boolean inUnderline = this.inUnderline;
 		char[] charArray = addWord.toCharArray();
 		for(int i = 0; i < charArray.length; i++) {
 			char c = charArray[i];
