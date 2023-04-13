@@ -91,7 +91,7 @@ public class RoundTripTest {
 
         final String[] ignoreOrderTests = {
           "dep-tiers", "commenturl", "gem", "headers", "hebrew", "lazygem", "lazygembg" , "lazygemwords",
-          "mor-ignore"
+          "mor-ignore", "pic"
         };
         Arrays.sort(ignoreOrderTests);
         // TODO comments are re-ordered in these files

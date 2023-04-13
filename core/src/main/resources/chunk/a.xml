@@ -17,6 +17,7 @@ a
 aele
 	:	TEXT
 	|	media
+	|   mediapic
 	;
 	
 a_attr
@@ -173,6 +174,10 @@ aele
 			$a::buffer += addVal;
 		}
 	}
+	|   mediapic
+	{
+	    $a::buffer += $mediapic.val;
+	}
 	;
 
 a_attr
@@ -207,6 +212,9 @@ aele
 	|	media
 	->	template( v={$media.st} )
 		"<v>"
+    |   mediapic
+    ->  template( v={$mediapic.st} )
+        "<v>"
 	;
 	
 a_attr

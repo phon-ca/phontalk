@@ -269,6 +269,10 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	@Visits
 	public void visitEvent(OrthoEvent event) {
 		CommonTree parentNode = nodeStack.peek();
+		if(parentNode.getToken().getType() == talkbankTokens.getTokenType("PG_START")
+			&& parentNode.getChildCount() > 0) {
+			parentNode = (CommonTree) parentNode.getParent();
+		}
 		insertEvent(parentNode, (event.getType() != null ? event.getType() + ":" : "") + event.getData());
 	}
 

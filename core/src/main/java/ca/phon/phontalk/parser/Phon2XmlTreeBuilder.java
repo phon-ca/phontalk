@@ -1019,8 +1019,8 @@ public class Phon2XmlTreeBuilder {
 			typeNode.getToken().setText("comments");
 			typeNode.setParent(notesNode);
 			notesNode.addChild(typeNode);
-			
-			treeBuilder.addTextNode(notesNode, utt.getNotes().getGroup(0).toString());
+
+			treeBuilder.addDependentTierContent(notesNode, utt.getNotes().getGroup(0).toString());
 		}
 
 		tree.addChild(uNode);
