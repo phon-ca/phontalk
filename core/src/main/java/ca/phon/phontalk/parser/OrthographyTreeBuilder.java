@@ -73,6 +73,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		visit(wordnet.getWord2());
 	}
 
+	boolean isBlocking = false;
 	boolean inUnderline = false;
 	@Visits
 	public void visitWord(OrthoWord word) {
@@ -152,11 +153,17 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			utTree.setParent(wParent);
 			wParent.insertChild(0, utTree);
 		}
+
+		if(isBlocking) {
+			treeBuilder.addProsody(wParent, "blocking");
+			isBlocking = false;
+		}
 		
 		String addWord = word.getWord();
 		String val = "";
 		boolean inCaDelim = false;
 		boolean inUnderline = this.inUnderline;
+		String pos = "";
 		char[] charArray = addWord.toCharArray();
 		for(int i = 0; i < charArray.length; i++) {
 			char c = charArray[i];
@@ -184,6 +191,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					treeBuilder.addUnderlineBefore((CommonTree) wParent, !inUnderline);
 				}
 				inUnderline = !inUnderline;
+				this.inUnderline = inUnderline;
 				val = "";
 			// blocking or pause
 			} else if(c == '^') {
@@ -248,18 +256,30 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				   || c == '\u00a7' || c == '\u21ab' || c == '\u222e'
 				   || c == '\u2207' || c == '\u263a' || c == '\u00b0'
 				   || c == '\u2047' || c == '\u222c' || c == '\u03ab') {
-				if(val.length() > 0) {
+				if (val.length() > 0) {
 					treeBuilder.addTextNode(wParent, val);
 					val = "";
 				}
-				treeBuilder.addCaDelimiter(wParent, inCaDelim ? "end" : "begin", c+"");
+				treeBuilder.addCaDelimiter(wParent, inCaDelim ? "end" : "begin", c + "");
 				inCaDelim = !inCaDelim;
+			// pos
+			} else if(c == '$') {
+				if (val.length() > 0) {
+					treeBuilder.addTextNode(wParent, val);
+					val = "";
+				}
+				pos = addWord.substring(i+1);
+				i = addWord.length();
 			} else {
 				val += c;
 			}
 		}
 		if(val.length() > 0)
 			treeBuilder.addTextNode(wParent, val);
+
+		if(pos.length() > 0) {
+			treeBuilder.addPos(wParent, pos);
+		}
 
 		if(word.getSuffix() != null && word.getSuffix().getPos() != null) {
 			treeBuilder.addPos(wParent, word.getSuffix().getPos());
@@ -403,7 +423,11 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	@Visits
 	public void visitPunct(OrthoPunct punct) {
 		switch(punct.getType()) {
-		
+
+		case CARET:
+			isBlocking = true;
+			break;
+
 		case COMMA:
 			treeBuilder.addTagMarker(nodeStack.peek(), "comma");
 			break;

@@ -1192,11 +1192,22 @@ public class TalkBankCodeTreeBuilder {
                 AntlrUtils.createToken(talkbankTokens, "POS_START");
         posNode.setParent(wParent);
 
+        String[] parts = pos.split(":");
+        String c = parts[0];
+
         CommonTree cNode =
                 AntlrUtils.createToken(talkbankTokens, "C_START");
-        addTextNode(cNode, pos);
+        addTextNode(cNode, c);
         cNode.setParent(posNode);
         posNode.addChild(cNode);
+
+        for(int i = 1; i < parts.length; i++) {
+            CommonTree sNode =
+                    AntlrUtils.createToken(talkbankTokens, "S_START");
+            addTextNode(sNode, parts[i]);
+            sNode.setParent(posNode);
+            posNode.addChild(sNode);
+        }
 
         wParent.addChild(posNode);
 

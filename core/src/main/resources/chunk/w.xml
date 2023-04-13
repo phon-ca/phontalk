@@ -49,17 +49,19 @@ w returns [String val]
 scope {
 	String word;
 	String replacement;
+	String pos;
 	String suffix;
 	String prefix;
 }
 @init {
 	$w::word = new String();
 	$w::replacement = null;
+	$w::pos = "";
 	$w::suffix = "";
 	$w::prefix = "";
 }
 @after {
-	$val = $w::prefix + $w::word + $w::suffix + ($w::replacement != null ? " " + $w::replacement : "");
+	$val = $w::prefix + $w::word + $w::suffix + $w::pos + ($w::replacement != null ? " " + $w::replacement : "");
 }
 	:	^(W_START wattr* ls=langs? wele*)
 	{
@@ -111,7 +113,7 @@ wele
 	}
 	|	pos
 	{
-		$w::suffix += "\$" + $pos.val;
+		$w::pos += "\$" + $pos.val;
 	}
 	|	replacement
 	{
