@@ -18,8 +18,16 @@ quotation
     <!-- Tree Walker -->
     <buffer name="AST2Phon.g">
         <![CDATA[
-quotation
+quotation returns [String val, String type]
     :    ^(QUOTATION_START QUOTATION_ATTR_TYPE mor*)
+    {
+        $type = $QUOTATION_ATTR_TYPE.text;
+        $val = switch($type) {
+            case "begin" -> "“";
+            case "end" -> "”";
+            default -> "";
+        };
+    }
     ;
 ]]>
     </buffer>
@@ -28,6 +36,8 @@ quotation
         <![CDATA[
 quotation
     :    ^(QUOTATION_START QUOTATION_ATTR_TYPE mor*)
+    ->  template ( qtype={$QUOTATION_ATTR_TYPE.text} )
+    "\<quotation type=\"<qtype>\"/\>"
     ;
 ]]>
     </buffer>

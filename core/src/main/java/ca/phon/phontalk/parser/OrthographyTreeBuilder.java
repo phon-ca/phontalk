@@ -76,7 +76,12 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	@Visits
 	public void visitWord(OrthoWord word) {
 		CommonTree parentNode = nodeStack.peek();
-		
+
+		if(word.getWord().matches("[“”]")) {
+			treeBuilder.addQuotation(parentNode, word.getWord());
+			return;
+		}
+
 		CommonTree wParent = null;
 		if(attachToLastChild) {
 			wParent = 
@@ -159,6 +164,12 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				if (val.length() > 0)
 					treeBuilder.addShortening(wParent, val);
 				val = "";
+			} else if(c == '“' || c == '”') {
+				if(val.length() > 0) {
+					treeBuilder.addTextNode(wParent, val);
+					val = "";
+				}
+				treeBuilder.addQuotation(wParent, c+"");
 			// underline
 			} else if(c == '\u2500') {
 				if (val.length() > 0) {

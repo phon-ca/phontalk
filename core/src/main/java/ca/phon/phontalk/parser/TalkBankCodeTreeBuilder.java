@@ -1203,4 +1203,25 @@ public class TalkBankCodeTreeBuilder {
         return posNode;
     }
 
+    public CommonTree addQuotation(CommonTree wParent, String data) {
+        CommonTree quotationNode =
+                AntlrUtils.createToken(talkbankTokens, "QUOTATION_START");
+        quotationNode.setParent(wParent);
+        wParent.addChild(quotationNode);
+
+        String type = switch(data) {
+            case "“" -> "begin";
+            case "”" -> "end";
+            default -> data;
+        };
+
+        CommonTree quotationTypeNode =
+                AntlrUtils.createToken(talkbankTokens, "QUOTATION_ATTR_TYPE");
+        quotationTypeNode.getToken().setText(type);
+        quotationTypeNode.setParent(quotationNode);
+        quotationNode.addChild(quotationTypeNode);
+
+        return quotationNode;
+    }
+
 }

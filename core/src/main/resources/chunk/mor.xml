@@ -450,16 +450,16 @@ mor
     :    ^(MOR_START (attrlist+=morattr)+ morchoice (list1+=menx)* (list2+=gra)* (list3+=morseq)*)
     ->    template( attrs={$attrlist}, choice={$morchoice.st}, enxlist={$list1},
             gralist={$list2}, seqlist={$list3} )
-    "\<mor <attrs>\><choice><if(enxlist)><enxlist><endif><if(gralist)><gralist><endif><if(seqlist)><seqlist><endif>\</mor\>"
+    "\<mor <attrs; separator=\" \">\><choice><if(enxlist)><enxlist><endif><if(gralist)><gralist><endif><if(seqlist)><seqlist><endif>\</mor\>"
     ;
     
 morattr
     :    MOR_ATTR_TYPE
     ->    template ( type={$MOR_ATTR_TYPE.text} )
-    <<type="<type>" >>
+    "type=\"<type>\""
     |    MOR_ATTR_OMITTED
     ->    template ( om={$MOR_ATTR_OMITTED.text} )
-    <<omitted="<om>" >>
+    "omitted=\"<om>\""
     ;
     
 morchoice
@@ -504,7 +504,7 @@ menx
 gra
     :    ^(GRA_START (attrlist+=graattrs)+)
     ->    template( attrs={$attrlist} )
-    "\<gra <attrs>/\>"
+    "\<gra <attrs; separator=\" \">/\>"
     ;
     
 graattrs
