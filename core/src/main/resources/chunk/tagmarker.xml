@@ -19,21 +19,20 @@ tagmarker
     <!-- Tree Walker -->
     <buffer name="AST2Phon.g">
         <![CDATA[
-tagmarker returns [String val]
+tagmarker returns [String val, String type]
 @init {
 	List<Tuple<String, String>> morvals = new ArrayList<Tuple<String, String>>();
 }
 	:	^(TAGMARKER_START TAGMARKER_ATTR_TYPE (mor {morvals.add(new Tuple($mor.tierName, $mor.val));})*)
 	{
-	    String tmType = $TAGMARKER_ATTR_TYPE.text;
-	    if(tmType.equals("comma")) {
-	        $val = ",";
-	    } else if(tmType.equals("tag")) {
-	        $val = "\u201E";
-	    } else if(tmType.equals("vocative")) {
-	        $val = "\u2021";
-	    }
-	    
+	    $type = $TAGMARKER_ATTR_TYPE.text;
+	    $val = switch($type) {
+	        case "comma" -> ",";
+	        case "tag" -> "\u201E";
+	        case "vocative" -> "\u2021";
+	        default -> "";
+	    };
+
 	    // add mor to mor tier as necessary
 	    for(Tuple<String, String> morData:morvals) {
 	    	// mor is handled as a seperate dependent tier

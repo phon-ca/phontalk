@@ -407,13 +407,21 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		case COMMA:
 			treeBuilder.addTagMarker(nodeStack.peek(), "comma");
 			break;
-		
+
+		case COLON:
+			treeBuilder.addSeparator(nodeStack.peek(), "colon");
+			break;
+
+		case SEMICOLON:
+			treeBuilder.addSeparator(nodeStack.peek(), "semicolon");
+			break;
+
 		case DOUBLE_DAGGER:
-			treeBuilder.addTagMarker(nodeStack.peek(), "tag");
+			treeBuilder.addTagMarker(nodeStack.peek(), "vocative");
 			break;
 			
 		case DOUBLE_COMMA:
-			treeBuilder.addTagMarker(nodeStack.peek(), "vocative");
+			treeBuilder.addTagMarker(nodeStack.peek(), "tag");
 			break;
 			
 		case EXCLAMATION:

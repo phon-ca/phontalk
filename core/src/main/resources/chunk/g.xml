@@ -145,8 +145,7 @@ gele
 	}
 	|	quotation
 	{
-		// TODO quotation
-		LOGGER.warning("quotation not supported");
+		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + $quotation.val;
 	}
 	|	quotation2
 	{
