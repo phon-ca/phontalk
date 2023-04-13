@@ -23,7 +23,7 @@ public class RoundTripTests extends RoundTripTest {
     public static Collection<Object[]> testData() {
         List<Object[]> retVal = new ArrayList<>();
 
-        final File testFolder = new File("src/test/resources/ca/phon/phontalk/tests/RoundTripTests/");
+        final File testFolder = new File("src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good/");
         final String outputFolder = "target/test/ca/phon/phontalk/tests/RoundTripTests/";
 
         for(File testFile:testFolder.listFiles()) {
