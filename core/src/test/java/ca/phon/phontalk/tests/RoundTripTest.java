@@ -99,7 +99,8 @@ public class RoundTripTest {
             "lazygembg" ,
             "lazygemwords",
             "mor-ignore",
-            "pic"
+            "pic",
+            "snd-multiple"
         };
         Arrays.sort(ignoreOrderTests);
         // TODO comments are re-ordered in these files

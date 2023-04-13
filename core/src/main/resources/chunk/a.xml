@@ -73,7 +73,7 @@ scope {
 			|| $a::t.equals("time stamp") )
 		{
 			String tierName = $a::t;
-			if(tierName.equals("orthography")) tierName = "ort"; // change tier name for orthpgraphy to avoid collisions
+			if(tierName.equals("orthography")) tierName = "ort"; // change tier name to avoid collisions
 			
 			TierDescription tierDesc = ensureTierExists(tierName, false);
 			Tier<TierString> userTier = $u::r.getTier(tierName, TierString.class);
@@ -95,7 +95,7 @@ scope {
 		// and then add the data to the utterance
 		else if($a::t.equals("extension"))
 		{
-			String tierName = $a::f;
+			String tierName = "x" + $a::f;
 			
 			boolean isGrouped =
 			 	(tierVal.startsWith("[") && tierVal.endsWith("]"));

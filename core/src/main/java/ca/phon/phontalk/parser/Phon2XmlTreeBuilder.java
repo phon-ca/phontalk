@@ -194,34 +194,15 @@ public class Phon2XmlTreeBuilder {
 				isChatTier = true;
 		
 		// if less than six chars, use the tier name
-		if(isChatTier || tierName.length() <= 6) {
+		if(isChatTier) {
 			tierNameMap.put(tierName, tierName);
 		} else {
-			String[] tierWords = tierName.split("\\p{Space}");
-			
-			String tierMapName = "";
-			if(tierWords.length == 1) {
-				tierMapName = tierWords[0].substring(0, 6); // we know we enough data from the if
-			} else if(tierWords.length == 2) {
-				// take the start of each word
-				tierMapName += (tierWords[0].length() >= 3 ? tierWords[0].substring(0, 3) : tierWords[0]);
-				tierMapName += (tierWords[1].length() >= 3 ? tierWords[1].substring(0, 3) : tierWords[1]);
-			} else if(tierWords.length > 2) {
-				tierMapName += (tierWords[0].length() >= 2 ? tierWords[0].substring(0, 2) : tierWords[0]);
-				tierMapName += (tierWords[1].length() >= 2 ? tierWords[1].substring(0, 2) : tierWords[1]);
-				tierMapName += (tierWords[2].length() >= 2 ? tierWords[2].substring(0, 2) : tierWords[2]);
+			String mappedTierName = tierName;
+			if(tierName.startsWith("x")) {
+				mappedTierName = tierName.substring(1);
 			}
-			
-			int idx = 0;
-			while(tierNameMap.containsValue(tierMapName)) {
-				tierMapName = tierMapName.substring(0, 5) + (++idx);
-			}
-			
-			tierNameMap.put(tierName, tierMapName);
-			
-			LOGGER.info("Using name '" + tierMapName + "' for tier '" + tierName + "'");
+			tierNameMap.put(tierName, mappedTierName);
 		}
-
 	}
 	
 	/**
@@ -928,7 +909,6 @@ public class Phon2XmlTreeBuilder {
 					typeNode.getToken().setText("orthography");
 				} else {
 					typeNode.getToken().setText("extension");
-	//				continue;
 				}
 				uNode.addChild(depTierNode);
 				
