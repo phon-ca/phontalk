@@ -36,8 +36,8 @@ scope {
 	    if($REPLACEMENT_ATTR_REAL != null) {
 	        real = Boolean.parseBoolean($REPLACEMENT_ATTR_REAL.text);
 	    }
-	    final String type = "replacement" + (real ? "-real" : "");
-	    $val = String.format("(\%s:\%s)", type, $replacement::buffer.toString());
+	    final String type = (real ? "::" : ":");
+	    $val = String.format("(\%s \%s)", type, $replacement::buffer.toString());
 	}
 	;
 	

@@ -41,6 +41,10 @@ public class TalkBankCodeTreeBuilder {
     private final static int OVERLAP_POINT_SYMBOL_GROUP = 1;
     private final static int OVERLAP_POINT_INDEX_GROUP = 2;
 
+    private final static String REPLACEMENT_REGEX = "(::?) (.+)";
+    private final static int REPLACEMENT_REAL_GROUP = 1;
+    private final static int REPLACEMENT_DATA_GROUP = 2;
+
     /**
      * Handle data in parentheses.
      */
@@ -79,6 +83,11 @@ public class TalkBankCodeTreeBuilder {
         // overlaps
         if (data.matches("<[0-9]*") || data.matches(">[0-9]*")) {
             return addOverlap(tree, data);
+        }
+
+        // replacement
+        if (data.matches(REPLACEMENT_REGEX)) {
+            return addReplacement(wNode, data);
         }
 
         // duration
@@ -1056,6 +1065,18 @@ public class TalkBankCodeTreeBuilder {
         tNode.addChild(ttNode);
 
         return tNode;
+    }
+
+    public CommonTree addReplacement(CommonTree parent, String data) {
+        final Pattern pattern = Pattern.compile(REPLACEMENT_REGEX);
+        final Matcher matcher = pattern.matcher(data);
+        if(matcher.matches()) {
+            final String realGrp = matcher.group(REPLACEMENT_REAL_GROUP);
+            final boolean real = "::".matches(realGrp);
+            return addReplacement(parent, real, matcher.group(REPLACEMENT_DATA_GROUP));
+        } else {
+            return addReplacement(parent, false, data);
+        }
     }
 
     /**
