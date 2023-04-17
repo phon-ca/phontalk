@@ -127,14 +127,14 @@ import org.apache.commons.lang3.*;
 	public Session getSession() { 
 		// fix tier view
         sessionFactory.setupDefaultTierView(session);
-        TierViewItem groupSegTvi = SessionFactory.newFactory().createTierViewItem("Group Segment", true, true);
+        //TierViewItem groupSegTvi = SessionFactory.newFactory().createTierViewItem("Group Segment", true, true);
         final List<TierViewItem> tierView = new ArrayList<>();
         final List<TierViewItem> currentTierView = session.getTierView();
         for(TierViewItem tvi:currentTierView) {
             tierView.add(tvi);
-            if(tvi.getTierName().equals(SystemTierType.Segment.getName())) {
-                tierView.add(groupSegTvi);
-            }
+            //if(tvi.getTierName().equals(SystemTierType.Segment.getName())) {
+            //    tierView.add(groupSegTvi);
+            //}
         }
         session.setTierView(tierView);
 		return session;
