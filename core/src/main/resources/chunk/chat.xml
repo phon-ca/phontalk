@@ -55,7 +55,7 @@ chat
 	    // unique use case where comments are at end of transcript
 	    if(nextRecordComments.size() > 0) {
 	        for(var c:nextRecordComments) {
-	            session.getMetadata().addComment(c);
+	            session.getMetadata().addTrailingComment(c);
 	        }
 	        nextRecordComments.clear();
 	    }
