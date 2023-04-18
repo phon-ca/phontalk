@@ -10,3 +10,4 @@ external-resources
 .idea/
 *.iml
 bin/
+.run/
