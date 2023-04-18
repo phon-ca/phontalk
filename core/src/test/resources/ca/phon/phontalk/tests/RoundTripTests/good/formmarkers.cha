@@ -5,28 +5,28 @@
 @ID:	eng|bates|CHI|1;08.|female|normal||Child|||
 @ID:	eng|bates|MOT|||||Mother|||
 @Comment:	test all the legal form markers
-*CHI:	a@a
-	a@b
-	a@c
-	a@d
-	a@e
-	a@f
-	a@fp
-	a@g
-	a@i
-	a@k
-	a@l
-	a@n
-	a@nv
-	a@o
-	a@p
-	a@q
-	a@sas
-	a@si
-	a@sl
-	a@t
-	a@wp
-	a@x
-	a@x$adj
-	.
+*CHI:	a@a .
+*CHI:	a@b .
+*CHI:	a@c .
+*CHI:	a@d .
+*CHI:	a@e .
+*CHI:	a@f .
+*CHI:	a@fp .
+*CHI:	a@g .
+*CHI:	a@i .
+*CHI:	a@k .
+*CHI:	a@l .
+*CHI:	a@n .
+*CHI:	a@nv .
+*CHI:	a@o .
+*CHI:	a@p .
+*CHI:	a@q .
+*CHI:	a@q-s .
+*CHI:	a@sas .
+*CHI:	a@si .
+*CHI:	a@sl .
+*CHI:	a@t .
+*CHI:	a@wp .
+*CHI:	a@x .
+*CHI:	a@x$adj .
 @End
