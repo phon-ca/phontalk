@@ -42,7 +42,7 @@ scope {
 	$e::buffer = new String();
 }
 @after {
-	$val = "*" + $e::buffer + "*";
+	$val = ($e::buffer.startsWith("0") ? $e::buffer : "*" + $e::buffer + "*");
 }
 	:	^(E_START echoice1 echoice2*)
 	;
@@ -51,13 +51,12 @@ scope {
 echoice1
 	:	action
 	{
-		$e::buffer += ($e::buffer.length() > 0 ? " " : "") + "(action:";
-		
-		if($action.val != null)
-		{
-			$e::buffer += $action.val;
+		if($e::buffer.length() == 0 && $action.val == null) {
+			$e::buffer = "0";
+		} else if($action.val != null) {
+			$e::buffer += ($e::buffer.length() > 0 ? " " : "");
+			$e::buffer += "(action:" + $action.val + ")";
 		}
-		$e::buffer += ")";
 	}
 	|	happening
 	{

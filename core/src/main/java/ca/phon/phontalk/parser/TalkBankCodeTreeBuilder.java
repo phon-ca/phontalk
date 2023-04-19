@@ -243,6 +243,8 @@ public class TalkBankCodeTreeBuilder {
      * Add an overlap element
      */
     public CommonTree addOverlap(CommonTree parent, String ovdata) {
+        parent = findGorE(parent);
+
         CommonTree ovNode =
                 AntlrUtils.createToken(talkbankTokens, "OVERLAP_START");
         ovNode.setParent(parent);
@@ -473,6 +475,8 @@ public class TalkBankCodeTreeBuilder {
     }
 
     public CommonTree addDuration(CommonTree parent, String data) {
+        parent = findGorE(parent);
+
         Pattern pattern = Pattern.compile("# ([0-9.]+)(m?s)?");
         Matcher m = pattern.matcher(data);
 
@@ -532,10 +536,22 @@ public class TalkBankCodeTreeBuilder {
         return markerNode;
     }
 
+    private CommonTree findGorE(CommonTree tree) {
+        if(tree.getToken().getType() != talkbankTokens.getTokenType("G_START")
+            && tree.getToken().getType() != talkbankTokens.getTokenType("E_START")) {
+            List<CommonTree> gAndETrees = AntlrUtils.findAllChildrenWithType(tree, talkbankTokens, "G_START", "E_START");
+            if(gAndETrees.size() > 0)
+                tree = gAndETrees.get(gAndETrees.size()-1);
+        }
+        return tree;
+    }
+
     /**
      * Add a 'ga' element
      */
     public CommonTree addGa(CommonTree parent, String type, String data) {
+        parent = findGorE(parent);
+
         CommonTree gaNode =
                 AntlrUtils.createToken(talkbankTokens, "GA_START");
         gaNode.setParent(parent);
@@ -556,6 +572,8 @@ public class TalkBankCodeTreeBuilder {
      * Add a repetition element
      */
     public CommonTree addRepetition(CommonTree parent, String times) {
+        parent = findGorE(parent);
+
         CommonTree rNode =
                 AntlrUtils.createToken(talkbankTokens, "R_START");
         rNode.setParent(parent);
@@ -603,6 +621,8 @@ public class TalkBankCodeTreeBuilder {
      * Add an error element
      */
     public CommonTree addError(CommonTree parent, String data) {
+        parent = findGorE(parent);
+
         CommonTree eNode =
                 AntlrUtils.createToken(talkbankTokens, "ERROR_START");
         eNode.setParent(parent);

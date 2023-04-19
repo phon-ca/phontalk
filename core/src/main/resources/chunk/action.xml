@@ -39,7 +39,7 @@ action returns [String val]
 action
     :    ^(ACTION_START TEXT?)
     ->    template( v={$TEXT.text} )
-    <<\<action<if(v)>\><v>\</action\><else>/\><endif> >>
+    "\<action<if(v)>\><v>\</action\><else>/\><endif>"
     ;
 ]]>
     </buffer>

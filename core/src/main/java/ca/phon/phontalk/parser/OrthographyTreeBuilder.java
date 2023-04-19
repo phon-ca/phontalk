@@ -32,7 +32,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
  *
  */
 public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
-	
+
 	private final static Logger LOGGER = Logger.getLogger(OrthographyTreeBuilder.class.getName());
 
 	private final TalkBankCodeTreeBuilder treeBuilder = new TalkBankCodeTreeBuilder();
@@ -40,15 +40,15 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	private final AntlrTokens talkbankTokens = new AntlrTokens("TalkBank2AST.tokens");
 
 	private Stack<CommonTree> uttNodeStack = new Stack<CommonTree>();
-	
+
 	private Stack<CommonTree> nodeStack = new Stack<CommonTree>();
-	
+
 	private boolean attachToLastChild = false;
-	
+
 	private Orthography ortho;
-	
+
 	private CommonTree terminator;
-	
+
 	public void buildTree(Stack<CommonTree> uttNodeStack, CommonTree parent, Orthography ortho) {
 		this.uttNodeStack = uttNodeStack;
 		nodeStack.push(uttNodeStack.get(0));
@@ -57,16 +57,16 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		this.ortho = ortho;
 		ortho.accept(this);
 	}
-	
+
 	@Override
 	public void fallbackVisit(OrthoElement obj) {
 		LOGGER.severe("Unknown element type " + obj.getClass() + " for " + obj.text());
 	}
-	
+
 	@Visits
 	public void visitWordnet(OrthoWordnet wordnet) {
 		visit(wordnet.getWord1());
-		String wkType = 
+		String wkType =
 				(wordnet.getMarker() == OrthoWordnetMarker.COMPOUND ? "cmp" : "cli");
 		treeBuilder.addWordnet((CommonTree)nodeStack.peek().getChild(nodeStack.peek().getChildCount()-1), wkType);
 		attachToLastChild = true;
@@ -75,6 +75,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 
 	boolean isBlocking = false;
 	boolean inUnderline = false;
+
 	@Visits
 	public void visitWord(OrthoWord word) {
 		CommonTree parentNode = nodeStack.peek();
@@ -86,20 +87,23 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			this.inUnderline = !this.inUnderline;
 			treeBuilder.addUnderline(parentNode, this.inUnderline);
 			return;
+		} else if (word.toString().equals("0")) {
+			insertEvent(parentNode, "0");
+			return;
 		}
 
 		CommonTree wParent = null;
 		if(attachToLastChild) {
-			wParent = 
-				(CommonTree)parentNode.getChild(parentNode.getChildCount()-1);
+			wParent =
+					(CommonTree)parentNode.getChild(parentNode.getChildCount()-1);
 			attachToLastChild = false;
 		} else {
-			wParent = 
-				AntlrUtils.createToken(talkbankTokens, "W_START");
+			wParent =
+					AntlrUtils.createToken(talkbankTokens, "W_START");
 			wParent.setParent(parentNode);
 			parentNode.addChild(wParent);
 		}
-		
+
 		if(word.getSuffix() != null) {
 			WordSuffixType suffixType = word.getSuffix().getType();
 			if(suffixType == WordSuffixType.SEPARATED_PREFIX) {
@@ -115,7 +119,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				usfTree.setParent(wParent);
 				wParent.insertChild(0, usfTree);
 			} else {
-				CommonTree formTypeNode = 
+				CommonTree formTypeNode =
 						AntlrUtils.createToken(talkbankTokens, "W_ATTR_FORMTYPE");
 				formTypeNode.getToken().setText(suffixType.getDisplayName());
 				formTypeNode.setParent(wParent);
@@ -136,16 +140,16 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 
 			}
 		}
-		
+
 		if(word.getPrefix() != null) {
 			WordPrefixType prefixType = word.getPrefix().getType();
-			CommonTree typeNode = 
+			CommonTree typeNode =
 					AntlrUtils.createToken(talkbankTokens, "W_ATTR_TYPE");
 			typeNode.getToken().setText(prefixType.getDisplayName());
 			typeNode.setParent(wParent);
 			wParent.insertChild(0, typeNode);
 		}
-		
+
 		if(word.isUntranscribed()) {
 			CommonTree utTree =
 					AntlrUtils.createToken(talkbankTokens, "W_ATTR_UNTRANSCRIBED");
@@ -158,7 +162,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 			treeBuilder.addProsody(wParent, "blocking");
 			isBlocking = false;
 		}
-		
+
 		String addWord = word.getWord();
 		String val = "";
 		boolean inCaDelim = false;
@@ -182,7 +186,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					val = "";
 				}
 				treeBuilder.addQuotation(wParent, c+"");
-			// underline
+				// underline
 			} else if(c == '\u2500') {
 				if (val.length() > 0) {
 					treeBuilder.addTextNode(wParent, val);
@@ -193,7 +197,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				inUnderline = !inUnderline;
 				this.inUnderline = inUnderline;
 				val = "";
-			// blocking or pause
+				// blocking or pause
 			} else if(c == '^') {
 				if(val.length() > 0) {
 					treeBuilder.addTextNode(wParent, val);
@@ -204,7 +208,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				} else {
 					treeBuilder.addProsody(wParent, "pause");
 				}
-			// separator or drawl
+				// separator or drawl
 			} else if(c == ':') {
 				if(val.length() > 0) {
 					treeBuilder.addTextNode(wParent, val);
@@ -215,10 +219,10 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				} else {
 					treeBuilder.addProsody(wParent, c+"");
 				}
-			// separators
+				// separators
 			} else if(c == ';' || c == '\u21d7'
-				   || c == '\u2197' || c == '\u2192' || c == '\u2198'
-				   || c == '\u21d8' || c == '\u221e' || c == '\u2261') {
+					|| c == '\u2197' || c == '\u2192' || c == '\u2198'
+					|| c == '\u21d8' || c == '\u221e' || c == '\u2261') {
 				if(val.length() > 0) {
 					treeBuilder.addTextNode(wParent, val);
 					val = "";
@@ -234,14 +238,14 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					wParent.setParent(parentNode);
 					parentNode.addChild(wParent);
 				}
-			// overlap-points (inside words)
+				// overlap-points (inside words)
 			} else if(c == '⌈' || c == '⌊' || c == '⌉' || c == '⌋') {
 				if(val.length() > 0) {
 					treeBuilder.addTextNode(wParent, val);
 					val = "";
 				}
 				treeBuilder.addOverlapPoint(wParent, c+"");
-			// ca-element
+				// ca-element
 			} else if (c == '\u2260' || c == '\u223e' || c == '\u2219'
 					|| c == '\u1f29' || c == '\u2193' || c == '\u21bb'
 					|| c == '\u2191' || c == '\u02c8' || c == '\u02cc') {
@@ -250,19 +254,19 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 					val = "";
 				}
 				treeBuilder.addCaElement(wParent, c + "");
-			// ca-delimiter
+				// ca-delimiter
 			} else if(c == '\u264b' || c == '\u204e' || c == '\u2206'
-				   || c == '\u2594' || c == '\u25c9' || c == '\u2581'
-				   || c == '\u00a7' || c == '\u21ab' || c == '\u222e'
-				   || c == '\u2207' || c == '\u263a' || c == '\u00b0'
-				   || c == '\u2047' || c == '\u222c' || c == '\u03ab') {
+					|| c == '\u2594' || c == '\u25c9' || c == '\u2581'
+					|| c == '\u00a7' || c == '\u21ab' || c == '\u222e'
+					|| c == '\u2207' || c == '\u263a' || c == '\u00b0'
+					|| c == '\u2047' || c == '\u222c' || c == '\u03ab') {
 				if (val.length() > 0) {
 					treeBuilder.addTextNode(wParent, val);
 					val = "";
 				}
 				treeBuilder.addCaDelimiter(wParent, inCaDelim ? "end" : "begin", c + "");
 				inCaDelim = !inCaDelim;
-			// pos
+				// pos
 			} else if(c == '$') {
 				if (val.length() > 0) {
 					treeBuilder.addTextNode(wParent, val);
@@ -290,46 +294,56 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	public void visitEvent(OrthoEvent event) {
 		CommonTree parentNode = nodeStack.peek();
 		if(parentNode.getToken().getType() == talkbankTokens.getTokenType("PG_START")
-			&& parentNode.getChildCount() > 0) {
+				&& parentNode.getChildCount() > 0) {
 			parentNode = (CommonTree) parentNode.getParent();
 		}
 		insertEvent(parentNode, (event.getType() != null ? event.getType() + ":" : "") + event.getData());
 	}
 
+	/**
+	 * Insert event into utterance
+	 * Formats for eData
+	 *  <ul>
+	 *      <li><pre>0</pre> - action (no data)</li>
+	 *      <li><pre>*something*</pre> - action</li>
+	 *      <li><pre>*=something*</pre> - happening</li>
+	 *      <li><pre>*PART_ID=something* - otherSpokenEvent</pre></li>
+	 *  </ul>
+	 *
+	 * @param parent
+	 * @param eData
+	 */
 	private void insertEvent(CommonTree parent, String eData) {
-		// event formats
-		// 1) *something* - action
-		// 2) *=something* - happening 
-		// 3) *PART_ID=something* - otherSpokenEvent
-		//
 		// each of the above can be followed by one or more
 		// or markers, overlaps, repetition, etc.
 		final Pattern subElePattern = Pattern.compile("(\\(.*?\\))");
 		final Matcher subEleMatcher = subElePattern.matcher(eData);
-		
+
 		TalkBankCodeTreeBuilder chatCodeBuilder = new TalkBankCodeTreeBuilder();
-		
+
 		int lastIdx = eData.length();
 		final List<String> subData = new ArrayList<String>();
 		while(subEleMatcher.find()) {
 			final String eleData = subEleMatcher.group(1);
 			subData.add(eleData);
-			
+
 			if(lastIdx > subEleMatcher.start()) {
 				lastIdx = subEleMatcher.start();
 			}
 		}
-		
-		final CommonTree eNode = 
+
+		final CommonTree eNode =
 				AntlrUtils.createToken(talkbankTokens, "E_START");
 		eNode.setParent(parent);
 		parent.addChild(eNode);
-		
+
 		final String evtData = eData.substring(0, lastIdx);
-		if(evtData.length() > 0) {
+		if("0".equals(evtData)) {
+			treeBuilder.addAction(eNode, null);
+		} else if(evtData.length() > 0) {
 			final Pattern osePattern = Pattern.compile("(\\w+)=(.+)");
 			final Matcher oseMatcher = osePattern.matcher(evtData);
-			
+
 			if(oseMatcher.matches()) {
 				final String participantId = oseMatcher.group(1);
 				final String oseWord = oseMatcher.group(2);
@@ -345,7 +359,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				}
 			}
 		}
-		
+
 		for(String subEle:subData) {
 			chatCodeBuilder.handleParentheticData(eNode, subEle);
 		}
@@ -362,7 +376,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 		if(m.matches()) {
 			String type = m.group(1);
 			String text = m.group(2);
-			
+
 			// some tags need special handling...
 			// TERMINATOR
 			if (type.equals("t")) {
@@ -394,7 +408,7 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 				// find the last 'w' node
 //				int wTokenType = tokens.getTokenType("W_START");
 				CommonTree wNode = null;
-				/*for(int cIndex = parentNode.getChildCount()-1; cIndex >= 0; cIndex--) {
+                /*for(int cIndex = parentNode.getChildCount()-1; cIndex >= 0; cIndex--) {
 					CommonTree cNode = (CommonTree)parentNode.getChild(cIndex);
 					if(cNode.getToken().getType() == wTokenType) {
 						wNode = cNode;
@@ -424,90 +438,90 @@ public class OrthographyTreeBuilder extends VisitorAdapter<OrthoElement> {
 	public void visitPunct(OrthoPunct punct) {
 		switch(punct.getType()) {
 
-		case CARET:
-			isBlocking = true;
-			break;
+			case CARET:
+				isBlocking = true;
+				break;
 
-		case COMMA:
-			treeBuilder.addTagMarker(nodeStack.peek(), "comma");
-			break;
+			case COMMA:
+				treeBuilder.addTagMarker(nodeStack.peek(), "comma");
+				break;
 
-		case COLON:
-			treeBuilder.addSeparator(nodeStack.peek(), "colon");
-			break;
+			case COLON:
+				treeBuilder.addSeparator(nodeStack.peek(), "colon");
+				break;
 
-		case SEMICOLON:
-			treeBuilder.addSeparator(nodeStack.peek(), "semicolon");
-			break;
+			case SEMICOLON:
+				treeBuilder.addSeparator(nodeStack.peek(), "semicolon");
+				break;
 
-		case DOUBLE_DAGGER:
-			treeBuilder.addTagMarker(nodeStack.peek(), "vocative");
-			break;
-			
-		case DOUBLE_COMMA:
-			treeBuilder.addTagMarker(nodeStack.peek(), "tag");
-			break;
-			
-		case EXCLAMATION:
-			terminator = treeBuilder.addTerminator(uttNodeStack.get(0), "e");
-			break;
-			
-		case QUESTION:
-			terminator = treeBuilder.addTerminator(uttNodeStack.get(0), "q");
-			break;
-			
-		case PERIOD:
-			terminator = treeBuilder.addTerminator(uttNodeStack.get(0), "p");
-			break;
-			
-		case OPEN_BRACE:
-			long numPunctAndWords =
-				StreamSupport.stream(ortho.spliterator(), true)
-					.filter( (ele) -> (ele instanceof OrthoPunct) || (ele instanceof OrthoWord) )
-					.count();
-			if(numPunctAndWords == 1) {
-				// create a super-<g> node
-				CommonTree superG = 
-						new CommonTree(new CommonToken(talkbankTokens.getTokenType("G_START")));
-				superG.setParent(uttNodeStack.peek());
-				uttNodeStack.peek().addChild(superG);
-				
-				uttNodeStack.push(superG);
-			} else {
-				CommonTree parentNode = nodeStack.peek();
-				if(attachToLastChild) {
-					parentNode = 
-						(CommonTree)parentNode.getChild(parentNode.getChildCount()-1);
-					attachToLastChild = false;
+			case DOUBLE_DAGGER:
+				treeBuilder.addTagMarker(nodeStack.peek(), "vocative");
+				break;
+
+			case DOUBLE_COMMA:
+				treeBuilder.addTagMarker(nodeStack.peek(), "tag");
+				break;
+
+			case EXCLAMATION:
+				terminator = treeBuilder.addTerminator(uttNodeStack.get(0), "e");
+				break;
+
+			case QUESTION:
+				terminator = treeBuilder.addTerminator(uttNodeStack.get(0), "q");
+				break;
+
+			case PERIOD:
+				terminator = treeBuilder.addTerminator(uttNodeStack.get(0), "p");
+				break;
+
+			case OPEN_BRACE:
+				long numPunctAndWords =
+						StreamSupport.stream(ortho.spliterator(), true)
+								.filter( (ele) -> (ele instanceof OrthoPunct) || (ele instanceof OrthoWord) )
+								.count();
+				if(numPunctAndWords == 1) {
+					// create a super-<g> node
+					CommonTree superG =
+							new CommonTree(new CommonToken(talkbankTokens.getTokenType("G_START")));
+					superG.setParent(uttNodeStack.peek());
+					uttNodeStack.peek().addChild(superG);
+
+					uttNodeStack.push(superG);
+				} else {
+					CommonTree parentNode = nodeStack.peek();
+					if(attachToLastChild) {
+						parentNode =
+								(CommonTree)parentNode.getChild(parentNode.getChildCount()-1);
+						attachToLastChild = false;
+					}
+					CommonTree gNode =
+							AntlrUtils.createToken(talkbankTokens, "G_START");
+					gNode.setParent(parentNode);
+					parentNode.addChild(gNode);
+
+					// push new group onto stack
+					nodeStack.push(gNode);
 				}
-				CommonTree gNode = 
-					AntlrUtils.createToken(talkbankTokens, "G_START");
-				gNode.setParent(parentNode);
-				parentNode.addChild(gNode);
-				
-				// push new group onto stack
-				nodeStack.push(gNode);
-			}
-			break;
-			
-		case CLOSE_BRACE:
-			numPunctAndWords =
-				StreamSupport.stream(ortho.spliterator(), true)
-					.filter( (ele) -> (ele instanceof OrthoPunct) || (ele instanceof OrthoWord) )
-					.count();
-			if(numPunctAndWords == 1) {
-				// pop the group from the uttstack
-	    		uttNodeStack.pop();
-	    		nodeStack.pop();
-			} else {
-				nodeStack.pop();
-			}
-			break;
-			
-		default:
+				break;
+
+			case CLOSE_BRACE:
+				numPunctAndWords =
+						StreamSupport.stream(ortho.spliterator(), true)
+								.filter( (ele) -> (ele instanceof OrthoPunct) || (ele instanceof OrthoWord) )
+								.count();
+				if(numPunctAndWords == 1) {
+					// pop the group from the uttstack
+					uttNodeStack.pop();
+					nodeStack.pop();
+				} else {
+					nodeStack.pop();
+				}
+				break;
+
+			default:
 		};
 	}
-	
+
 	public CommonTree getTerminator() {
 		return this.terminator;
 	}
