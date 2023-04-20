@@ -159,11 +159,6 @@ public class TalkBankCodeTreeBuilder {
            return addGa(tree, "explanation", data.substring(1).trim());
         }
 
-        // repeats
-        else if (data.matches("x\\p{Space}?[0-9]+")) {
-            return addRepetition(tree, data.substring(1).trim());
-        }
-
         // terminator
         if (data.equals(".") || data.equals("?") || data.equals("!")
                 || data.equals("+.") || data.equals("+...") || data.equals("+..?")
@@ -566,26 +561,6 @@ public class TalkBankCodeTreeBuilder {
         addTextNode(gaNode, data);
 
         return gaNode;
-    }
-
-    /**
-     * Add a repetition element
-     */
-    public CommonTree addRepetition(CommonTree parent, String times) {
-        parent = findGorE(parent);
-
-        CommonTree rNode =
-                AntlrUtils.createToken(talkbankTokens, "R_START");
-        rNode.setParent(parent);
-        parent.addChild(rNode);
-
-        CommonTree timesNode =
-                AntlrUtils.createToken(talkbankTokens, "R_ATTR_TIMES");
-        timesNode.getToken().setText(times);
-        timesNode.setParent(rNode);
-        rNode.addChild(timesNode);
-
-        return rNode;
     }
 
     /**
