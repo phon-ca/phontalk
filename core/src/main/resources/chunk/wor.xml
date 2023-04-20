@@ -31,7 +31,7 @@ worgrp
     |   sg
     ;
 
-worannotatione
+worannotation
     :   quotation
     |   pause
     |   internal_media
@@ -59,11 +59,20 @@ worendele
         <![CDATA[
 wor returns [List<Integer> indices, List<Tuple<Float, Float>> imedia]
 scope {
+    Tier<TierString> worTier;
+    int worGrpIdx;
+
     List<Tuple<Float, Float>> mediaList;
     List<Integer> groupIndices;
     int gIdx;
 }
 @init {
+    $wor::worTier = sessionFactory.createTier("wor", TierString.class, true);
+    for(int i = 0; i < $u::r.numberOfGroups(); i++) {
+        $wor::worTier.addGroup(new TierString());
+    }
+    $wor::worGrpIdx = 0;
+
     $wor::mediaList = new ArrayList<>();
     $wor::groupIndices = new ArrayList<>();
     $wor::gIdx = -1;
@@ -72,6 +81,9 @@ scope {
     {
         $indices = $wor::groupIndices;
         $imedia = $wor::mediaList;
+
+        TierDescription worTd = ensureTierExists("wor", true);
+        $u::r.putTier($wor::worTier);
     }
     ;
 
@@ -88,20 +100,34 @@ worgrp
     :   w
     {
         ++$wor::gIdx;
+
+        TierString worData = new TierString($w.val);
+        $wor::worTier.setGroup($wor::worGrpIdx++, worData);
     }
     |   g
     {
         ++$wor::gIdx;
+
+        TierString worData = new TierString($g.val);
+        $wor::worTier.setGroup($wor::worGrpIdx++, worData);
     }
     |   pg
     {
         ++$wor::gIdx;
+
+        TierString worData = new TierString($pg.val);
+        $wor::worTier.setGroup($wor::worGrpIdx++, worData);
     }
     |   sg
     ;
 
 worannotation
     :   quotation
+    {
+       // TierString cVal = $wor::worTier.getGroup($wor::worGrpIdx);
+       // TierString newVal = new TierString($quotation.val + cVal.toString());
+       // $wor::worTier.setGroup($wor::worGrpIdx, newVal);
+    }
     |   pause
     |   imedia=internal_media
     {
@@ -109,14 +135,22 @@ worannotation
         Matcher matcher = pattern.matcher($imedia.val);
         if(matcher.matches()) {
             String[] parts = matcher.group(1).split("-");
-            float startTime = Float.parseFloat(parts[0]);
-            float endTime = Float.parseFloat(parts[1]);
+            try {
+                long startTimeMs = MsFormatter.displayStringToMs(parts[0]);
+                long endTimeMs = MsFormatter.displayStringToMs(parts[1]);
 
-            $wor::groupIndices.add($wor::gIdx);
-            $wor::mediaList.add(new Tuple<Float, Float>(startTime, endTime));
+                $wor::groupIndices.add($wor::gIdx);
+                $wor::mediaList.add(new Tuple<Float, Float>((float)startTimeMs, (float)endTimeMs));
+            } catch (ParseException pe) {
+                throw new RuntimeException(pe);
+            }
         } else {
             throw new RuntimeException("Invalid media string " + $imedia.val);
         }
+
+       TierString cVal = $wor::worTier.getGroup($wor::worGrpIdx-1);
+       TierString newVal = new TierString(cVal.toString() + " " + $imedia.val);
+       $wor::worTier.setGroup($wor::worGrpIdx-1, newVal);
     }
     |   freecode
     |   e

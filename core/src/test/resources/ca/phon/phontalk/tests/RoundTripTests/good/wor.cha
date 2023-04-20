@@ -1,0 +1,36 @@
+@UTF8
+@PID:	11312/a-00054835-1
+@Window:	257_1118_770_1024_-1_-1_15518_0_15518_0
+@Begin
+@Languages:	eng
+@Participants:	PAR UCL04 Participant, INV UCL Investigator
+@Options:	multi
+@ID:	eng|UCL|PAR|42;00.00|male|Anomic||Participant||77.4|
+@ID:	eng|UCL|INV||female|||Investigator|||
+@Media:	wor, audio
+@Comment:	PAR has neurogenic stutter
+@G:	Speech
+*INV:	yeah ‡ so ‡ I'm going to be asking you to do some talking . 50_3610
+%wor:	yeah 50_200 so 200_390 I'm 420_970 going 1010_1280 to 1280_1380 be 1380_1580 asking 1620_2180 you 2180_2520 to 2550_2610 do 2670_2820 some 2820_3060 talking 3060_3610 .
+%mor:	co|yeah beg|beg co|so beg|beg pro:sub|I~aux|be&1S part|go-PRESP
+	inf|to aux|be part|ask-PRESP pro:per|you inf|to v|do pro:indef|some
+	part|talk-PRESP .
+%gra:	1|0|BEG 2|1|BEGP 3|0|BEG 4|3|BEGP 5|7|SUBJ 6|7|AUX 7|0|ROOT
+	8|10|INF 9|10|AUX 10|7|COMP 11|10|OBJ 12|13|INF 13|10|COMP 14|13|OBJ
+	15|13|XJCT 16|7|PUNCT
+*INV:	&-um how do you think your speech is these days ? 5090_8060
+%wor:	&-um 5090_5530 how 5710_5900 do 5900_6030 you 6030_6150 think 6150_6660 your 6660_6790 speech 6790_7310 is 7310_7660 these 7690_7920 days 7920_8060 ?
+%mor:	pro:int|how mod|do pro:per|you v|think det:poss|your n|speech
+	cop|be&3S det:dem|these n|day-PL ?
+%gra:	1|4|JCT 2|4|AUX 3|4|SUBJ 4|0|ROOT 5|6|DET 6|7|SUBJ 7|4|COMP 8|9|DET
+	9|7|PRED 10|4|PUNCT
+*PAR:	&-um my [/] my [/] my [/] my [/] my [/] my [/] my [/] my [/] my [/]
+	my [/] my [/] my [/] my [/] my [/] my auntie said my [/] my [/] my
+	[/] my [/] my speech <is getting> [//] is it ↫w-w-w↫worse . [+ gram]
+	11284_29354
+%wor:	&-um 11284_11664 my 11774_12234 my 12354_12644 my 12834_12954 my 12954_13294 my 13984_14114 my 14114_14884 my 15364_15454 my 15454_16304 my 16944_17054 my 17054_17784 my 18294_18364 my 18364_19204 my 19824_20414 my 21074_21134 my 21134_21584 auntie 21584_22214 said 22864_23244 my 24434_24614 my 25184_25314 my 25314_25754 my 26014_26104 my 26104_26554 speech 26824_27054 is 27054_27324 getting 27854_28444 is 28624_28894 it 28894_29054 ↫w-w-w↫worse 29054_29354 .
+%mor:	det:poss|my n|aunt-DIM v|say&PAST det:poss|my n|speech cop|be&3S
+	pro:per|it adj|bad&CP .
+%gra:	1|2|DET 2|3|SUBJ 3|0|ROOT 4|5|DET 5|6|SUBJ 6|3|COMP 7|6|PRED
+	8|7|POSTMOD 9|3|PUNCT
+@End
