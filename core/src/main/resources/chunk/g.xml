@@ -37,7 +37,6 @@ gele
 gchoice
 	:	k
 	|	error
-	|	r
 	|	duration
 	|	ga
 	|	overlap
@@ -217,11 +216,6 @@ gchoice
 		$g::buffer += ($g::buffer.length() > 0 ? " " : "") +
 			$error.val;
 	}
-	| 	r 
-	{	
-		$g::buffer += ($g::buffer.length() > 0 ? " " : "") + 
-			"(x" + $r.val + ")";	
-	}
 	|	duration
 	{
 		java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
@@ -312,9 +306,6 @@ gchoice
 	|	error
 	->	template( v={$error.st} )
 		"<v>"
-	|	r 
-	->	template( v={$r.st} )
-		"<v>"
 	|	duration
 	->	template( v={$duration.st} )
 		"<v>"
@@ -347,7 +338,6 @@ gchoice
 	<include>italic.xml</include>
 	<include>k.xml</include>
 	<include>error.xml</include>
-	<include>r.xml</include>
 	<include>duration.xml</include>
 	<include>ga.xml</include>
 	<include>overlap.xml</include>

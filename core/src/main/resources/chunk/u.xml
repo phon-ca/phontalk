@@ -56,7 +56,6 @@ uannotation
 uendele
 	:	k
 	|	error
-	|	r
 	|	a
 	|	wor
 	;
@@ -546,23 +545,6 @@ uendele
 		buffer.append($error.val);
 		errorsTier.setGroup(0, buffer.toString());
 	}
-	|	r
-	{
-		TierDescription tierDesc = ensureTierExists("Repetition", false);
-		
-		Tier<String> repTier = $u::r.getTier(tierDesc.getName(), String.class);
-		if(repTier == null) {
-			repTier = sessionFactory.createTier(tierDesc.getName(), String.class, tierDesc.isGrouped());
-			$u::r.putTier(repTier);
-		}
-		
-		StringBuffer buffer = new StringBuffer();
-		if(repTier.getGroup(0) != null) {
-			buffer.append(repTier.getGroup(0)).append(" ");
-		}
-		buffer.append($r.val);
-		repTier.setGroup(0, buffer.toString());
-	}
 	|	a
 	{
 		// sub-rule a performs necessary tier management
@@ -688,9 +670,6 @@ uendele
 	|	error
 	->	template( v={$error.st} )
 		"<v>"
-	|	r
-	->	template( v={$r.st} )
-		"<v>"
 	|	a
 	->	template( v={$a.st} )
 		"<v>"
@@ -726,7 +705,6 @@ uendele
     <include>media.xml</include>
 	<include>k.xml</include>
 	<include>error.xml</include>
-	<include>r.xml</include>
     <include>a.xml</include>
 	<include>wor.xml</include>
 

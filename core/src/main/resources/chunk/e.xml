@@ -23,7 +23,6 @@ echoice1
 echoice2
 	:	k
 	|	error
-	|	r
 	|	overlap
 	|	ga
 	|	duration
@@ -91,13 +90,6 @@ echoice2
 					$error.val;
 		}
 	}
-	|	r
-	{
-		if($r.val != null) {
-			$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
-					"(x" + $r.val + ")";
-		}
-	}
 	|	overlap
 	{
 		$e::buffer += ($e::buffer.length() > 0 ? " " : "") +
@@ -153,9 +145,6 @@ echoice2
 		"<v>"
 	|	error
 	->	template( v={$error.st} )
-		"<v>"
-	|	r
-	->	template( v={$r.st} )
 		"<v>"
 	|	overlap
 	->	template( v={$overlap.st} )

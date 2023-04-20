@@ -31,7 +31,7 @@ worgrp
     |   sg
     ;
 
-worannotation
+worannotatione
     :   quotation
     |   pause
     |   internal_media
@@ -49,7 +49,6 @@ worannotation
 worendele
     :   k
     |   error
-    |   r
     |   a
     ;
 ]]>
@@ -133,7 +132,6 @@ worannotation
 worendele
     :   k
     |   error
-    |   r
     |   a
     ;
 ]]>
@@ -247,9 +245,6 @@ worendele
 	|	error
 	->	template( v={$error.st} )
 		"<v>"
-	|	r
-	->	template( v={$r.st} )
-		"<v>"
 	|	a
 	->	template( v={$a.st} )
 		"<v>"
@@ -282,7 +277,6 @@ worendele
     <include>media.xml</include>
     <include>k.xml</include>
     <include>error.xml</include>
-    <include>r.xml</include>
     <include>a.xml</include>
 
 </chunk>
