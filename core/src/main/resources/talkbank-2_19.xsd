@@ -9,7 +9,7 @@ xmlns:tb="http://www.talkbank.org/ns/talkbank" xmlns="http://www.talkbank.org/ns
 targetNamespace="http://www.talkbank.org/ns/talkbank" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 jaxb:version="2.1" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
 jaxb:extensionBindingPrefixes="xjc" xmlns:xhtml="http://www.w3.org/1999/xhtml"
-elementFormDefault="qualified" version="2.20.0" id="Talkbank">
+elementFormDefault="qualified" version="2.19.0" id="Talkbank">
 
 <xs:import namespace="http://www.w3.org/XML/1998/namespace"
            schemaLocation="http://www.w3.org/2001/xml.xsd"/>
@@ -683,6 +683,7 @@ elementFormDefault="qualified" version="2.20.0" id="Talkbank">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="k"/>
                 <xs:element ref="error"/>
+                <xs:element ref="r"/>
                 <xs:element ref="overlap"/>
                 <xs:element ref="ga"/>
                 <xs:element ref="duration"/>
@@ -1229,6 +1230,20 @@ elementFormDefault="qualified" version="2.20.0" id="Talkbank">
     </xs:attribute>
 </xs:complexType>
 
+
+
+<xs:element name="r">
+    <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+        <xs:documentation>[x number] in CHAT</xs:documentation>
+        <xs:documentation>
+            <a href="https://talkbank.org/manuals/CHAT.html#MultipleRepetition_Scope">CHAT manual
+            section on this topic...</a>
+        </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="false">
+        <xs:attribute name="times" type="xs:nonNegativeInteger"/>
+    </xs:complexType>
+</xs:element>
 
 
 <xs:complexType name="baseTerminatorType" mixed="false">
@@ -3029,11 +3044,11 @@ elementFormDefault="qualified" version="2.20.0" id="Talkbank">
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
-                    <xs:enumeration value="nonword">
+                    <xs:enumeration value="fragment">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                            <xs:documentation>&amp;~; nonword</xs:documentation>
+                            <xs:documentation>&amp;; phonological fragment</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#Nonword"
+                                <a href="https://talkbank.org/manuals/CHAT.html#PhonologicalFragment_Code"
                                    >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
@@ -3047,11 +3062,11 @@ elementFormDefault="qualified" version="2.20.0" id="Talkbank">
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
-                    <xs:enumeration value="fragment">
+                    <xs:enumeration value="incomplete">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>&amp;+; incomplete</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#PhonologicalFragment_Code"
+                                <a href="https://talkbank.org/manuals/CHAT.html#Incomplete_Code"
                                    >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
@@ -3136,6 +3151,7 @@ elementFormDefault="qualified" version="2.20.0" id="Talkbank">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="k"/>
                 <xs:element ref="error"/>
+                <xs:element ref="r"/>
                 <xs:element ref="duration"/>
                 <xs:element ref="ga"/>
                 <xs:element ref="overlap"/>
@@ -3572,6 +3588,15 @@ elementFormDefault="qualified" version="2.20.0" id="Talkbank">
             </xs:annotation>
         </xs:enumeration>
 
+        <xs:enumeration value="notarget">
+            <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+                <xs:documentation> This option tells CHECK not to look for the presence of a Target_Child in the @Participants line. </xs:documentation>
+                <xs:documentation>
+                    <a href="https://talkbank.org/manuals/CHAT.html#Notarget_Option">CHAT manual section
+                    on this topic...</a>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:enumeration>
     </xs:restriction>
 </xs:simpleType>
 
@@ -3990,6 +4015,7 @@ elementFormDefault="qualified" version="2.20.0" id="Talkbank">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="k"/>
                 <xs:element ref="error"/>
+                <xs:element ref="r"/>
                 <xs:element ref="a"/>
                 <xs:element ref="wor"/>
             </xs:choice>
@@ -4076,6 +4102,7 @@ elementFormDefault="qualified" version="2.20.0" id="Talkbank">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="k"/>
                 <xs:element ref="error"/>
+                <xs:element ref="r"/>
                 <xs:element ref="a"/>
             </xs:choice>
         </xs:sequence>
