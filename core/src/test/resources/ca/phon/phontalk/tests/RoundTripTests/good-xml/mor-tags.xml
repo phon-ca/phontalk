@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="timmy"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="eng"
+      age="P2Y"
+
+    />
+  </Participants>
+  <comment type="Generic">tag markers, including comma</comment>
+  <u who="CHI" uID="u0">
+    <w>it<mor type="mor"><mw><pos><c>pro</c></pos><stem>it</stem></mw></mor></w>
+    <w>was<mor type="mor"><mw><pos><c>aux</c></pos><stem>be</stem><mk type="sfxf">PAST</mk><mk type="sfxf">13S</mk></mw></mor></w>
+    <w>lowering<mor type="mor"><mw><pos><c>part</c></pos><stem>lower</stem><mk type="sfx">PROG</mk></mw></mor></w>
+    <g><w>concrete</w>
+    <w>posts</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>wasn't</w>
+    <w>it</w>
+    <w>off</w>
+    <w>a</w><k type="retracing with correction"/></g>
+    <w>concrete<mor type="mor"><mw><pos><c>v</c></pos><stem>concrete</stem></mw></mor></w>
+    <w>girders<mor type="mor"><mw><pos><c>n</c><s>v</s></pos><stem>gird</stem><mk type="sfx">AGT</mk><mk type="sfx">PL</mk></mw></mor></w>
+    <g><w>off</w>
+    <w>a</w><k type="retracing"/></g>
+    <w>off<mor type="mor"><mw><pos><c>prep</c></pos><stem>off</stem></mw></mor></w>
+    <w>a<mor type="mor"><mw><pos><c>det</c></pos><stem>a</stem></mw></mor></w>
+    <w>lorry<mor type="mor"><mw><pos><c>n</c></pos><stem>lorry</stem></mw></mor></w>
+    <tagMarker type="tag"><mor type="mor"><mw><pos><c>end</c></pos><stem>end</stem></mw></mor></tagMarker>
+    <w>wasn't<mor type="mor"><mw><pos><c>v</c></pos><stem>be</stem><mk type="sfxf">PAST</mk><mk type="sfxf">13S</mk></mw><mor-post><mw><pos><c>neg</c></pos><stem>not</stem></mw></mor-post></mor></w>
+    <w>it<mor type="mor"><mw><pos><c>pro</c></pos><stem>it</stem></mw></mor></w>
+    <t type="q"><mor type="mor"><mt type="q"/></mor></t>
+
+  </u>
+  <u who="CHI" uID="u1">
+    <w>it<mor type="mor"><mw><pos><c>pro</c></pos><stem>it</stem></mw></mor></w>
+    <w>was<mor type="mor"><mw><pos><c>aux</c></pos><stem>be</stem><mk type="sfxf">PAST</mk><mk type="sfxf">13S</mk></mw></mor></w>
+    <w>lowering<mor type="mor"><mw><pos><c>part</c></pos><stem>lower</stem><mk type="sfx">PROG</mk></mw></mor></w>
+    <g><w>concrete</w>
+    <w>posts</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>wasn't</w>
+    <w>it</w>
+    <w>off</w>
+    <w>a</w><k type="retracing with correction"/></g>
+    <w>concrete<mor type="mor"><mw><pos><c>v</c></pos><stem>concrete</stem></mw></mor></w>
+    <w>girders<mor type="mor"><mw><pos><c>n</c><s>v</s></pos><stem>gird</stem><mk type="sfx">AGT</mk><mk type="sfx">PL</mk></mw></mor></w>
+    <g><w>off</w>
+    <w>a</w><k type="retracing"/></g>
+    <w>off<mor type="mor"><mw><pos><c>prep</c></pos><stem>off</stem></mw></mor></w>
+    <w>a<mor type="mor"><mw><pos><c>det</c></pos><stem>a</stem></mw></mor></w>
+    <w>lorry<mor type="mor"><mw><pos><c>n</c></pos><stem>lorry</stem></mw></mor></w>
+    <tagMarker type="vocative"><mor type="mor"><mw><pos><c>beg</c></pos><stem>beg</stem></mw></mor></tagMarker>
+    <w>wasn't<mor type="mor"><mw><pos><c>v</c></pos><stem>be</stem><mk type="sfxf">PAST</mk><mk type="sfxf">13S</mk></mw><mor-post><mw><pos><c>neg</c></pos><stem>not</stem></mw></mor-post></mor></w>
+    <w>it<mor type="mor"><mw><pos><c>pro</c></pos><stem>it</stem></mw></mor></w>
+    <t type="q"><mor type="mor"><mt type="q"/></mor></t>
+
+    <a type="intonation">„ ‡</a>
+  </u>
+  <u who="CHI" uID="u2">
+    <w>it<mor type="mor"><mw><pos><c>pro</c></pos><stem>it</stem></mw></mor></w>
+    <w>was<mor type="mor"><mw><pos><c>aux</c></pos><stem>be</stem><mk type="sfxf">PAST</mk><mk type="sfxf">13S</mk></mw></mor></w>
+    <w>lowering<mor type="mor"><mw><pos><c>part</c></pos><stem>lower</stem><mk type="sfx">PROG</mk></mw></mor></w>
+    <g><w>concrete</w>
+    <w>posts</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>wasn't</w>
+    <w>it</w>
+    <w>off</w>
+    <w>a</w><k type="retracing with correction"/></g>
+    <w>concrete<mor type="mor"><mw><pos><c>v</c></pos><stem>concrete</stem></mw></mor></w>
+    <w>girders<mor type="mor"><mw><pos><c>n</c><s>v</s></pos><stem>gird</stem><mk type="sfx">AGT</mk><mk type="sfx">PL</mk></mw></mor></w>
+    <g><w>off</w>
+    <w>a</w><k type="retracing"/></g>
+    <w>off<mor type="mor"><mw><pos><c>prep</c></pos><stem>off</stem></mw></mor></w>
+    <w>a<mor type="mor"><mw><pos><c>det</c></pos><stem>a</stem></mw></mor></w>
+    <w>lorry<mor type="mor"><mw><pos><c>n</c></pos><stem>lorry</stem></mw></mor></w>
+    <tagMarker type="comma"><mor type="mor"><mw><pos><c>cm</c></pos><stem>cm</stem></mw></mor></tagMarker>
+    <w>wasn't<mor type="mor"><mw><pos><c>v</c></pos><stem>be</stem><mk type="sfxf">PAST</mk><mk type="sfxf">13S</mk></mw><mor-post><mw><pos><c>neg</c></pos><stem>not</stem></mw></mor-post></mor></w>
+    <w>it<mor type="mor"><mw><pos><c>pro</c></pos><stem>it</stem></mw></mor></w>
+    <t type="q"><mor type="mor"><mt type="q"/></mor></t>
+
+  </u>
+</CHAT>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="spa"
+      Corpus="Nebrija-INMIGRA"
+      >
+  <Participants>
+    <participant
+      id="PAR"
+      role="Participant"
+      language="spa"
+      sex="male"
+
+    />
+  </Participants>
+  <comment type="Transcriber">Marta Gallego</comment>
+  <comment type="Situation">Examen LETRA Escrito</comment>
+  <comment type="Location">Madrid</comment>
+  <comment type="Generic">2 095 China</comment>
+  <u who="PAR" uID="u0">
+    <w>cómo</w>
+    <w>estás</w>
+    <t type="q"></t>
+
+    <a type="extension" flavor="ort">¿comó estás?</a>
+  </u>
+  <u who="PAR" uID="u1">
+    <w>hace</w>
+    <w>mucho</w>
+    <w>sin</w>
+    <w>verte</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="ort">hace mucho sin verte.</a>
+  </u>
+  <u who="PAR" uID="u2">
+    <w>todo</w>
+    <w>bien</w>
+    <t type="q"></t>
+
+    <a type="extension" flavor="ort">ʕtodo bien?</a>
+  </u>
+  <u who="PAR" uID="u3">
+    <w>no</w>
+    <g><w>la</w><k type="retracing with correction"/></g>
+    <w>lo</w>
+    <w>conozco</w>
+    <w>la</w>
+    <w>gente</w>
+    <w>de</w>
+    <w>curso</w>
+    <w>de</w>
+    <w>español</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="ort">no &lt;la&gt; [//] lo conozco la gente de curso de español.</a>
+  </u>
+  <u who="PAR" uID="u4">
+    <w>pero</w>
+    <w>me</w>
+    <w>interesa</w>
+    <w>mucho</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="ort">pero me interesa mucho.</a>
+  </u>
+  <u who="PAR" uID="u5">
+    <w>yo</w>
+    <w>puedo</w>
+    <g><w>venir</w><k type="retracing with correction"/></g>
+    <w>ir</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="ort">yo puedo &lt;venir&gt; [//] ir.</a>
+  </u>
+  <u who="PAR" uID="u6">
+    <w>yo</w>
+    <w>puedo</w>
+    <w>traer</w>
+    <w>una</w>
+    <w>campaña</w>
+    <w>un</w>
+    <w>pastón</w>
+    <w>y</w>
+    <g><w>las</w>
+    <w>comidas</w><k type="retracing with correction"/></g>
+    <w>las</w>
+    <w>comidas</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="ort">Yo puedo traer una campaña, un paston y &lt;las comidas&gt; [//] las comidas.</a>
+  </u>
+  <u who="PAR" uID="u7">
+    <w>es</w>
+    <w>suficiente</w>
+    <t type="q"></t>
+
+    <a type="extension" flavor="ort">¿es sufisiente?</a>
+  </u>
+  <u who="PAR" uID="u8">
+    <w>dime</w>
+    <w>que</w>
+    <w>más</w>
+    <w>tengo</w>
+    <w>que</w>
+    <w>traer</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="ort">Dime que más tengo que traer.</a>
+  </u>
+  <u who="PAR" uID="u9">
+    <w>también</w>
+    <w>dime</w>
+    <w>la</w>
+    <w>ficha</w>
+    <g><w untranscribed="unintelligible">xxx</w><k type="retracing with correction"/></g>
+    <w>concreta</w>
+    <w>para</w>
+    <g><w untranscribed="unintelligible">xxx</w><k type="retracing with correction"/></g>
+    <w>quedarrnos</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="ort">también Dime la ficha &lt;xxx&gt; [//] concleta para &lt;xxx&gt; [//] quidernos.</a>
+  </u>
+  <u who="PAR" uID="u10">
+    <w>un</w>
+    <w>saludo</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="ort">un saludo.</a>
+  </u>
+  <u who="PAR" uID="u11">
+    <w>Sanem</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="ort">Sanem</a>
+  </u>
+</CHAT>

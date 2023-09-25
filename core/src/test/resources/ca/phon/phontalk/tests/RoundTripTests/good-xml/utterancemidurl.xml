@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="utterancemidurl" Mediatypes="video"
+      Version="2.19.0"
+      Lang="eng"
+      Options="multi"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <w>foo</w>
+    <w>bar</w>
+    <internal-media
+      start="2041.689"
+      end="2042.652"
+      unit="s"
+    />
+    <w>is</w>
+    <w>dumb</w>
+    <t type="p"></t>
+    <media
+      start="3041.689"
+      end="3042.652"
+      unit="s"
+    />
+    <a type="coding">crap</a>
+  </u>
+</CHAT>

@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="wor" Mediatypes="audio"
+      PID="11312/a-00054835-1"
+      Window="257_1118_770_1024_-1_-1_15518_0_15518_0"
+      Version="2.19.0"
+      Lang="eng"
+      Options="multi"
+      Corpus="UCL"
+      >
+  <Participants>
+    <participant
+      id="PAR"
+    name="UCL04"
+      role="Participant"
+      language="eng"
+      age="P42Y00M00D"
+      sex="male"
+      group="Anomic"
+      custom-field="77.4"
+    />
+    <participant
+      id="INV"
+    name="UCL"
+      role="Investigator"
+      language="eng"
+      sex="female"
+
+    />
+  </Participants>
+  <comment type="Generic">PAR has neurogenic stutter</comment>
+  <lazy-gem label="Speech"/>
+  <u who="INV" uID="u0">
+    <w>yeah<mor type="mor"><mw><pos><c>co</c></pos><stem>yeah</stem></mw><gra type="gra" index="1" head="0" relation="BEG"/></mor></w>
+    <tagMarker type="vocative"><mor type="mor"><mw><pos><c>beg</c></pos><stem>beg</stem></mw><gra type="gra" index="2" head="1" relation="BEGP"/></mor></tagMarker>
+    <w>so<mor type="mor"><mw><pos><c>co</c></pos><stem>so</stem></mw><gra type="gra" index="3" head="0" relation="BEG"/></mor></w>
+    <tagMarker type="vocative"><mor type="mor"><mw><pos><c>beg</c></pos><stem>beg</stem></mw><gra type="gra" index="4" head="3" relation="BEGP"/></mor></tagMarker>
+    <w>I'm<mor type="mor"><mw><pos><c>pro</c><s>sub</s></pos><stem>I</stem></mw><gra type="gra" index="5" head="7" relation="SUBJ"/><mor-post><mw><pos><c>aux</c></pos><stem>be</stem><mk type="sfxf">1S</mk></mw><gra type="gra" index="6" head="7" relation="AUX"/></mor-post></mor></w>
+    <w>going<mor type="mor"><mw><pos><c>part</c></pos><stem>go</stem><mk type="sfx">PRESP</mk></mw><gra type="gra" index="7" head="0" relation="ROOT"/></mor></w>
+    <w>to<mor type="mor"><mw><pos><c>inf</c></pos><stem>to</stem></mw><gra type="gra" index="8" head="10" relation="INF"/></mor></w>
+    <w>be<mor type="mor"><mw><pos><c>aux</c></pos><stem>be</stem></mw><gra type="gra" index="9" head="10" relation="AUX"/></mor></w>
+    <w>asking<mor type="mor"><mw><pos><c>part</c></pos><stem>ask</stem><mk type="sfx">PRESP</mk></mw><gra type="gra" index="10" head="7" relation="COMP"/></mor></w>
+    <w>you<mor type="mor"><mw><pos><c>pro</c><s>per</s></pos><stem>you</stem></mw><gra type="gra" index="11" head="10" relation="OBJ"/></mor></w>
+    <w>to<mor type="mor"><mw><pos><c>inf</c></pos><stem>to</stem></mw><gra type="gra" index="12" head="13" relation="INF"/></mor></w>
+    <w>do<mor type="mor"><mw><pos><c>v</c></pos><stem>do</stem></mw><gra type="gra" index="13" head="10" relation="COMP"/></mor></w>
+    <w>some<mor type="mor"><mw><pos><c>pro</c><s>indef</s></pos><stem>some</stem></mw><gra type="gra" index="14" head="13" relation="OBJ"/></mor></w>
+    <w>talking<mor type="mor"><mw><pos><c>part</c></pos><stem>talk</stem><mk type="sfx">PRESP</mk></mw><gra type="gra" index="15" head="13" relation="XJCT"/></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/><gra type="gra" index="16" head="7" relation="PUNCT"/></mor></t>
+    <media
+      start="0.050"
+      end="3.610"
+      unit="s"
+    />
+    <wor>
+      <w>yeah</w>
+      <internal-media
+        start="0.050"
+        end="0.200"
+        unit="s"
+      />
+      <w>so</w>
+      <internal-media
+        start="0.200"
+        end="0.390"
+        unit="s"
+      />
+      <w>I'm</w>
+      <internal-media
+        start="0.420"
+        end="0.970"
+        unit="s"
+      />
+      <w>going</w>
+      <internal-media
+        start="1.010"
+        end="1.280"
+        unit="s"
+      />
+      <w>to</w>
+      <internal-media
+        start="1.280"
+        end="1.380"
+        unit="s"
+      />
+      <w>be</w>
+      <internal-media
+        start="1.380"
+        end="1.580"
+        unit="s"
+      />
+      <w>asking</w>
+      <internal-media
+        start="1.620"
+        end="2.180"
+        unit="s"
+      />
+      <w>you</w>
+      <internal-media
+        start="2.180"
+        end="2.520"
+        unit="s"
+      />
+      <w>to</w>
+      <internal-media
+        start="2.550"
+        end="2.610"
+        unit="s"
+      />
+      <w>do</w>
+      <internal-media
+        start="2.670"
+        end="2.820"
+        unit="s"
+      />
+      <w>some</w>
+      <internal-media
+        start="2.820"
+        end="3.060"
+        unit="s"
+      />
+      <w>talking</w>
+      <internal-media
+        start="3.060"
+        end="3.610"
+        unit="s"
+      />
+      <t type="p"></t>
+
+    </wor>
+  </u>
+  <u who="INV" uID="u1">
+    <w type="filler">um</w>
+    <w>how<mor type="mor"><mw><pos><c>pro</c><s>int</s></pos><stem>how</stem></mw><gra type="gra" index="1" head="4" relation="JCT"/></mor></w>
+    <w>do<mor type="mor"><mw><pos><c>mod</c></pos><stem>do</stem></mw><gra type="gra" index="2" head="4" relation="AUX"/></mor></w>
+    <w>you<mor type="mor"><mw><pos><c>pro</c><s>per</s></pos><stem>you</stem></mw><gra type="gra" index="3" head="4" relation="SUBJ"/></mor></w>
+    <w>think<mor type="mor"><mw><pos><c>v</c></pos><stem>think</stem></mw><gra type="gra" index="4" head="0" relation="ROOT"/></mor></w>
+    <w>your<mor type="mor"><mw><pos><c>det</c><s>poss</s></pos><stem>your</stem></mw><gra type="gra" index="5" head="6" relation="DET"/></mor></w>
+    <w>speech<mor type="mor"><mw><pos><c>n</c></pos><stem>speech</stem></mw><gra type="gra" index="6" head="7" relation="SUBJ"/></mor></w>
+    <w>is<mor type="mor"><mw><pos><c>cop</c></pos><stem>be</stem><mk type="sfxf">3S</mk></mw><gra type="gra" index="7" head="4" relation="COMP"/></mor></w>
+    <w>these<mor type="mor"><mw><pos><c>det</c><s>dem</s></pos><stem>these</stem></mw><gra type="gra" index="8" head="9" relation="DET"/></mor></w>
+    <w>days<mor type="mor"><mw><pos><c>n</c></pos><stem>day</stem><mk type="sfx">PL</mk></mw><gra type="gra" index="9" head="7" relation="PRED"/></mor></w>
+    <t type="q"><mor type="mor"><mt type="q"/><gra type="gra" index="10" head="4" relation="PUNCT"/></mor></t>
+    <media
+      start="5.090"
+      end="8.060"
+      unit="s"
+    />
+    <wor>
+      <w type="filler">um</w>
+      <internal-media
+        start="5.090"
+        end="5.530"
+        unit="s"
+      />
+      <w>how</w>
+      <internal-media
+        start="5.710"
+        end="5.900"
+        unit="s"
+      />
+      <w>do</w>
+      <internal-media
+        start="5.900"
+        end="6.030"
+        unit="s"
+      />
+      <w>you</w>
+      <internal-media
+        start="6.030"
+        end="6.150"
+        unit="s"
+      />
+      <w>think</w>
+      <internal-media
+        start="6.150"
+        end="6.660"
+        unit="s"
+      />
+      <w>your</w>
+      <internal-media
+        start="6.660"
+        end="6.790"
+        unit="s"
+      />
+      <w>speech</w>
+      <internal-media
+        start="6.790"
+        end="7.310"
+        unit="s"
+      />
+      <w>is</w>
+      <internal-media
+        start="7.310"
+        end="7.660"
+        unit="s"
+      />
+      <w>these</w>
+      <internal-media
+        start="7.690"
+        end="7.920"
+        unit="s"
+      />
+      <w>days</w>
+      <internal-media
+        start="7.920"
+        end="8.060"
+        unit="s"
+      />
+      <t type="q"></t>
+
+    </wor>
+  </u>
+  <u who="PAR" uID="u2">
+    <w type="filler">um</w>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <w>my<mor type="mor"><mw><pos><c>det</c><s>poss</s></pos><stem>my</stem></mw><gra type="gra" index="1" head="2" relation="DET"/></mor></w>
+    <w>auntie<mor type="mor"><mw><pos><c>n</c></pos><stem>aunt</stem><mk type="sfx">DIM</mk></mw><gra type="gra" index="2" head="3" relation="SUBJ"/></mor></w>
+    <w>said<mor type="mor"><mw><pos><c>v</c></pos><stem>say</stem><mk type="sfxf">PAST</mk></mw><gra type="gra" index="3" head="0" relation="ROOT"/></mor></w>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <g><w>my</w><k type="retracing"/></g>
+    <w>my<mor type="mor"><mw><pos><c>det</c><s>poss</s></pos><stem>my</stem></mw><gra type="gra" index="4" head="5" relation="DET"/></mor></w>
+    <w>speech<mor type="mor"><mw><pos><c>n</c></pos><stem>speech</stem></mw><gra type="gra" index="5" head="6" relation="SUBJ"/></mor></w>
+    <g><w>is</w>
+    <w>getting</w><k type="retracing with correction"/></g>
+    <w>is<mor type="mor"><mw><pos><c>cop</c></pos><stem>be</stem><mk type="sfxf">3S</mk></mw><gra type="gra" index="6" head="3" relation="COMP"/></mor></w>
+    <w>it<mor type="mor"><mw><pos><c>pro</c><s>per</s></pos><stem>it</stem></mw><gra type="gra" index="7" head="6" relation="PRED"/></mor></w>
+    <w><ca-delimiter type="begin" label="repeated-segment"/>w-w-w<ca-delimiter type="end" label="repeated-segment"/>worse<mor type="mor"><mw><pos><c>adj</c></pos><stem>bad</stem><mk type="sfxf">CP</mk></mw><gra type="gra" index="8" head="7" relation="POSTMOD"/></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/><gra type="gra" index="9" head="3" relation="PUNCT"/></mor></t>
+    <postcode>gram</postcode>
+    <media
+      start="11.284"
+      end="29.354"
+      unit="s"
+    />
+    <wor>
+      <w type="filler">um</w>
+      <internal-media
+        start="11.284"
+        end="11.664"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="11.774"
+        end="12.234"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="12.354"
+        end="12.644"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="12.834"
+        end="12.954"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="12.954"
+        end="13.294"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="13.984"
+        end="14.114"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="14.114"
+        end="14.884"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="15.364"
+        end="15.454"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="15.454"
+        end="16.304"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="16.944"
+        end="17.054"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="17.054"
+        end="17.784"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="18.294"
+        end="18.364"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="18.364"
+        end="19.204"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="19.824"
+        end="20.414"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="21.074"
+        end="21.134"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="21.134"
+        end="21.584"
+        unit="s"
+      />
+      <w>auntie</w>
+      <internal-media
+        start="21.584"
+        end="22.214"
+        unit="s"
+      />
+      <w>said</w>
+      <internal-media
+        start="22.864"
+        end="23.244"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="24.434"
+        end="24.614"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="25.184"
+        end="25.314"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="25.314"
+        end="25.754"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="26.014"
+        end="26.104"
+        unit="s"
+      />
+      <w>my</w>
+      <internal-media
+        start="26.104"
+        end="26.554"
+        unit="s"
+      />
+      <w>speech</w>
+      <internal-media
+        start="26.824"
+        end="27.054"
+        unit="s"
+      />
+      <w>is</w>
+      <internal-media
+        start="27.054"
+        end="27.324"
+        unit="s"
+      />
+      <w>getting</w>
+      <internal-media
+        start="27.854"
+        end="28.444"
+        unit="s"
+      />
+      <w>is</w>
+      <internal-media
+        start="28.624"
+        end="28.894"
+        unit="s"
+      />
+      <w>it</w>
+      <internal-media
+        start="28.894"
+        end="29.054"
+        unit="s"
+      />
+      <w><ca-delimiter type="begin" label="repeated-segment"/>w-w-w<ca-delimiter type="end" label="repeated-segment"/>worse</w>
+      <internal-media
+        start="29.054"
+        end="29.354"
+        unit="s"
+      />
+      <t type="p"></t>
+
+    </wor>
+  </u>
+</CHAT>

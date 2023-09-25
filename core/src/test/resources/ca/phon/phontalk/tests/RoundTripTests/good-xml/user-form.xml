@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Generic">@z:foo user special form</comment>
+  <u who="CHI" uID="u0">
+    <w>this</w>
+    <w user-special-form="foo">is</w>
+    <w>a</w>
+    <w user-special-form="bar">word<pos><c>pos</c></pos></w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

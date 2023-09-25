@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>ca.phon</groupId>
 		<artifactId>phontalk</artifactId>
-		<version>3.6.0-181-SNAPSHOT</version>
+		<version>4.0.0-181-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>phontalk-core</artifactId>
@@ -59,51 +59,8 @@
 					<include>catalog.cat</include>
 				</includes>
 			</resource>
-			<resource>
-				<directory>target/generated-sources/antlr3</directory>
-				<includes>
-					<include>*.tokens</include>
-				</includes>
-			</resource>
 		</resources>
 		<plugins>
-				<plugin>
-				<groupId>ca.phon</groupId>
-				<artifactId>chunker</artifactId>
-				<version>9</version>
-				<executions>
-					<execution>
-						<id>chunk-parsers</id>
-						<goals>
-							<goal>chunk</goal>
-						</goals>
-						<phase>generate-sources</phase>
-						<configuration>
-							<outputDirectory>target/generated-sources/antlr3/ca/phon/phontalk/parser</outputDirectory>
-							<libDirectory>src/main/resources/chunk</libDirectory>
-							<startFile>prefix.xml</startFile>
-						</configuration>
-					</execution>
-				</executions>
-
-			</plugin>
-			<plugin>
-				<groupId>org.antlr</groupId>
-				<artifactId>antlr3-maven-plugin</artifactId>
-				<version>3.5.2</version>
-				<executions>
-					<execution>
-						<id>antlr</id>
-						<goals>
-							<goal>antlr</goal>
-						</goals>
-						<configuration>
-							<sourceDirectory>target/generated-sources/antlr3</sourceDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -118,34 +75,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>ca.phon</groupId>
-										<artifactId>chunker</artifactId>
-										<versionRange> [0.0.1-SNAPSHOT,) </versionRange>
-										<goals>
-											<goal>chunk</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore/>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 </project>

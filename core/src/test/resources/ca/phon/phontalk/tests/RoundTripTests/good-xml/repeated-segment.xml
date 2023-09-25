@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Window="85_1024_770_1024_-1_-1_460_0_460_0"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="change_me_later"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Target_Child"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Generic">segment repetition inside word</comment>
+  <u who="CHI" uID="u0">
+    <w>an<ca-delimiter type="begin" label="repeated-segment"/>d-d-d-d-d-d<ca-delimiter type="end" label="repeated-segment"/>d</w>
+    <w>the</w>
+    <w>lion</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u1">
+    <w>mommy</w>
+    <g><w type="incomplete"><ca-element type="blocked segments"/>w</w><k type="retracing with correction"/></g>
+    <g><w>we</w><k type="retracing with correction"/></g>
+    <w><ca-delimiter type="begin" label="repeated-segment"/>a<ca-delimiter type="end" label="repeated-segment"/>and</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u2">
+    <w><ca-delimiter type="begin" label="repeated-segment"/>w<p type="drawl"/><ca-delimiter type="end" label="repeated-segment"/>what's</w>
+    <w>this</w>
+    <w>daddy</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u3">
+    <g><w><ca-delimiter type="begin" label="repeated-segment"/>bo<p type="drawl"/>-bo<p type="drawl"/><ca-delimiter type="end" label="repeated-segment"/>both</w><k type="retracing"/></g>
+    <w>bo<p type="drawl"/>th</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u4">
+    <w><ca-delimiter type="begin" label="repeated-segment"/>h-h<ca-delimiter type="end" label="repeated-segment"/>hit</w>
+    <w><ca-delimiter type="begin" label="repeated-segment"/>som<p type="drawl"/><ca-delimiter type="end" label="repeated-segment"/>somebod<shortening>y</shortening><ca-delimiter type="begin" label="repeated-segment"/>body<ca-delimiter type="end" label="repeated-segment"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u5">
+    <w><ca-element type="blocked segments"/><ca-delimiter type="begin" label="repeated-segment"/>i<ca-delimiter type="end" label="repeated-segment"/>it</w>
+    <w>was</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u6">
+    <w><ca-delimiter type="begin" label="repeated-segment"/>the-the<ca-delimiter type="end" label="repeated-segment"/><ca-element type="blocked segments"/>then</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

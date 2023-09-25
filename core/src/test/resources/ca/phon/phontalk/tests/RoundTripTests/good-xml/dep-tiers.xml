@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Generic">All the dependent tiers besides 1-1</comment>
+  <u who="CHI" uID="u0">
+    <w>hey</w>
+    <w>man</w>
+    <w>what</w>
+    <w>in</w>
+    <w>the</w>
+    <w>world</w>
+    <w>isn't</w>
+    <w>this</w>
+    <t type="q"></t>
+
+    <a type="actions">actions</a>
+    <a type="addressee">addressee</a>
+    <a type="alternative">alternative</a>
+    <a type="cohesion">cohesion</a>
+    <a type="comments">comments [foo]</a>
+    <a type="SALT">salt</a>
+    <a type="english translation">english translation</a>
+    <a type="errcoding">errcoding</a>
+    <a type="explanation">explanation</a>
+    <a type="facial">facial</a>
+    <a type="flow">flow.</a>
+    <a type="target gloss">target gloss</a>
+    <a type="gesture">gesture</a>
+    <a type="intonation">intonation</a>
+    <a type="orthography">orthography</a>
+    <a type="paralinguistics">paralinguistics</a>
+    <a type="situation">situation</a>
+    <a type="speech act">speech act</a>
+    <a type="time stamp">23:12:33</a>
+    <a type="coding">coding</a>
+    <a type="extension" flavor="foo">/"{: o/</a>
+    <a type="extension" flavor="ch">this is xch stuff</a>
+    <a type="extension" flavor="RES">In this opening segment the class reviews what they studied last time. In fact, the whole lesson is devoted to reviewing previously learned material. In the Czech data set, 25% of the lessons were entirely review (Hiebert et al., 2003, Mathematics Teaching in Seven Countries: Results from the TIMSS 1999 Video Study [hereafter Video Report], figure 3.9).</a>
+    <a type="extension" flavor="abcdef">max length of 7 total</a>
+  </u>
+  <comment type="Generic">note need to put bracketed material on same line above</comment>
+</CHAT>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="W"
+      >
+  <Participants>
+    <participant
+      id="SUB"
+    name="20_01_G"
+      role="Participant"
+      language="eng"
+
+    />
+    <participant
+      id="EXA"
+    name="Investigator"
+      role="Investigator"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="SUB" uID="u0">
+    <w>lil<replacement><w>little<mor type="mor"><mw><pos><c>adj</c></pos><stem>little</stem></mw></mor></w></replacement></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+
+  </u>
+</CHAT>

@@ -11,3 +11,4 @@ external-resources
 *.iml
 bin/
 .run/
+core/old-src

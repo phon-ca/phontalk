@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="com-ipa" Mediatypes="video"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="providence"
+      Date="2003-04-29"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Target_Child"
+      language="eng"
+      age="P2Y04M25D"
+      sex="male"
+
+      birthday="2000-12-04"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="OPE"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="GRA"
+      role="Grandmother"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Date">29-APR-2003</comment>
+  <comment type="Transcriber">chris harris, mike jackson</comment>
+  <comment type="Generic">Language of Caregivers Mother Southeastern Massachusetts, Father Southeastern Massachusetts, Grandmother Southeastern Massachusetts; Speaker is Manuela</comment>
+  <u who="CHI" uID="u0">
+    <w>Mommy</w>
+    <w>open</w>
+    <w>this</w>
+    <t type="q"></t>
+    <media
+      start="620.128"
+      end="621.843"
+      unit="s"
+    />
+    <a type="extension" flavor="pho">əˈmaɪs ɛmˈpʊʃ</a>
+    <a type="comments">after transcribing the entire file, I realized that pʊʃ and similar sounding things might mean "open this ." Things that sound like əˈmaɪ or ʊˈmaɪ seem to connote desire roughly, "I want Mommy to" or "I want you to" or something like that: this is what CHI usually says when he's asking his mom to do something for him . I've transcribed it as "Mommy" .</a>
+  </u>
+</CHAT>

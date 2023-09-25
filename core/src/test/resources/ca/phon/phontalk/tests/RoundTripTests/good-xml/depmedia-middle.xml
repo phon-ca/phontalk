@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="depmedia-middle" Mediatypes="video"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="stevens"
+      >
+  <Participants>
+    <participant
+      id="EN1"
+    name="Engineer1"
+      role="Student"
+      language="eng"
+
+    />
+    <participant
+      id="AR1"
+    name="Architect1"
+      role="Student"
+      language="eng"
+
+    />
+    <participant
+      id="EN2"
+    name="Enginneer2"
+      role="Student"
+      language="eng"
+
+    />
+    <participant
+      id="AR2"
+    name="Architect2"
+      role="Student"
+      language="eng"
+
+    />
+    <participant
+      id="PR1"
+    name="Preservationist"
+      role="Student"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Generic">bullet inside a dependent tier</comment>
+  <u who="EN2" uID="u0">
+    <w>and</w>
+    <w>I'm</w>
+    <w>getting</w>
+    <w>demand</w>
+    <w>capacity</w>
+    <w>ratios</w>
+    <w>of</w>
+    <w>one</w>
+    <w>point</w>
+    <w>five</w>
+    <t type="p"></t>
+    <media
+      start="32.221"
+      end="37.628"
+      unit="s"
+    />
+  </u>
+  <u who="AR1" uID="u1">
+    <w>hmmm</w>
+    <t type="p"></t>
+    <media
+      start="37.628"
+      end="38.893"
+      unit="s"
+    />
+  </u>
+  <u who="EN2" uID="u2">
+    <w>and</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>uh</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>one</w>
+    <w>point</w>
+    <w>one</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ok</w>
+    <t type="q"></t>
+    <media
+      start="38.893"
+      end="42.173"
+      unit="s"
+    />
+  </u>
+  <u who="EN2" uID="u3">
+    <w>we</w>
+    <w>need</w>
+    <w>to</w>
+    <underline type="begin"/>
+    <w>do<underline type="end"/></w>
+    <w>something</w>
+    <underline type="begin"/>
+    <w>to<underline type="end"/></w>
+    <w>that</w>
+    <w>wall</w>
+    <t type="p"></t>
+    <media
+      start="47.685"
+      end="50.005"
+      unit="s"
+    />
+    <a type="coding">palm down hand opens, and bobs up and down over the west wall <media
+      start="48.908"
+      end="50.441"
+      unit="s"
+    /></a>
+  </u>
+</CHAT>

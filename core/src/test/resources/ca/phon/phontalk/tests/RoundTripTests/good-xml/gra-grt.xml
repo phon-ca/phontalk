@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="brown"
+      Date="1962-10-15"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Eve"
+      role="Target_Child"
+      language="eng"
+      age="P1Y06M"
+      sex="female"
+
+    />
+    <participant
+      id="MOT"
+    name="Sue"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="COL"
+    name="Colin"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="RIC"
+    name="Richard"
+      role="Investigator"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Date">15-OCT-1962</comment>
+  <comment type="Generic">simplest gra</comment>
+  <u who="CHI" uID="u0">
+    <w>more<mor type="trn"><mw><pos><c>qn</c></pos><stem>more</stem></mw><gra type="grt" index="1" head="2" relation="QUANT"/></mor></w>
+    <w>cookie<mor type="trn"><mw><pos><c>n</c></pos><stem>cookie</stem></mw><gra type="grt" index="2" head="0" relation="ROOT"/></mor></w>
+    <t type="p"><mor type="trn"><mt type="p"/><gra type="grt" index="3" head="2" relation="PUNCT"/></mor></t>
+    <postcode>IMP</postcode>
+
+  </u>
+  <comment type="Generic">with postclitic</comment>
+  <u who="MOT" uID="u1">
+    <w>where's<mor type="mor"><mw><pos><c>adv</c><s>wh</s></pos><stem>where</stem></mw><gra type="gra" index="1" head="2" relation="PRED"/><mor-post><mw><pos><c>v</c><s>cop</s></pos><stem>be</stem><mk type="sfxf">3S</mk></mw><gra type="gra" index="2" head="0" relation="ROOT"/></mor-post></mor><mor type="trn"><mw><pos><c>adv</c><s>wh</s></pos><stem>where</stem></mw><gra type="grt" index="1" head="2" relation="PRED"/><mor-post><mw><pos><c>v</c><s>cop</s></pos><stem>be</stem><mk type="sfxf">3S</mk></mw><gra type="grt" index="2" head="0" relation="ROOT"/></mor-post></mor></w>
+    <w>your<mor type="mor"><mw><pos><c>pro</c><s>poss</s><s>det</s></pos><stem>your</stem></mw><gra type="gra" index="3" head="4" relation="MOD"/></mor><mor type="trn"><mw><pos><c>pro</c><s>poss</s><s>det</s></pos><stem>your</stem></mw><gra type="grt" index="3" head="4" relation="MOD"/></mor></w>
+    <w>cup<mor type="mor"><mw><pos><c>n</c></pos><stem>cup</stem></mw><gra type="gra" index="4" head="2" relation="SUBJ"/></mor><mor type="trn"><mw><pos><c>n</c></pos><stem>cup</stem></mw><gra type="grt" index="4" head="2" relation="SUBJ"/></mor></w>
+    <t type="q"><mor type="mor"><mt type="q"/><gra type="gra" index="5" head="2" relation="PUNCT"/></mor><mor type="trn"><mt type="q"/><gra type="grt" index="5" head="2" relation="PUNCT"/></mor></t>
+
+  </u>
+  <comment type="Generic">with compound</comment>
+  <u who="CHI" uID="u2">
+    <w>ice<wk type="cmp"/>cream<mor type="mor"><mwc><pos><c>n</c></pos><mw><pos><c>n</c></pos><stem>ice</stem></mw><mw><pos><c>n</c></pos><stem>cream</stem></mw></mwc><gra type="gra" index="1" head="0" relation="ROOT"/></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/><gra type="gra" index="2" head="1" relation="PUNCT"/></mor></t>
+
+  </u>
+  <comment type="Generic">with compound and postclitic</comment>
+  <u who="MOT" uID="u3">
+    <w>you<mor type="mor"><mw><pos><c>pro</c></pos><stem>you</stem></mw><gra type="gra" index="1" head="2" relation="SUBJ"/></mor></w>
+    <w>gonna<mor type="mor"><mw><pos><c>part</c></pos><stem>go</stem><mk type="sfx">PROG</mk></mw><gra type="gra" index="2" head="0" relation="ROOT"/><mor-post><mw><pos><c>inf</c></pos><stem>to</stem></mw><gra type="gra" index="3" head="4" relation="INF"/></mor-post></mor></w>
+    <w>put<mor type="mor"><mw><pos><c>v</c></pos><stem>put</stem><mk type="sfxf">ZERO</mk></mw><gra type="gra" index="4" head="2" relation="XCOMP"/></mor></w>
+    <w>the<mor type="mor"><mw><pos><c>det</c></pos><stem>the</stem></mw><gra type="gra" index="5" head="6" relation="DET"/></mor></w>
+    <w>choo<wk type="cmp"/>choo's<mor type="mor"><mwc><pos><c>n</c></pos><mw><pos><c>on</c></pos><stem>choo</stem></mw><mw><pos><c>on</c></pos><stem>choo</stem></mw></mwc><gra type="gra" index="6" head="7" relation="SUBJ"/><mor-post><mw><pos><c>v</c><s>cop</s></pos><stem>be</stem><mk type="sfxf">3S</mk></mw><gra type="gra" index="7" head="4" relation="OBJ"/></mor-post></mor></w>
+    <w>wheel<mor type="mor"><mw><pos><c>n</c></pos><stem>wheel</stem></mw><gra type="gra" index="8" head="7" relation="PRED"/></mor></w>
+    <w>on<mor type="mor"><mw><pos><c>adv</c><s>loc</s></pos><stem>on</stem></mw><gra type="gra" index="9" head="8" relation="JCT"/></mor></w>
+    <t type="q"><mor type="mor"><mt type="q"/><gra type="gra" index="10" head="2" relation="PUNCT"/></mor></t>
+
+  </u>
+</CHAT>

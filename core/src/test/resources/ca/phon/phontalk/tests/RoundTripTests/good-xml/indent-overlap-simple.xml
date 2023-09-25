@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Options="CA"
+      Corpus="SBCSAE"
+      >
+  <Participants>
+    <participant
+      id="CAM"
+    name="CAM"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="JO"
+    name="JO"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="WESS"
+    name="WESS"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="FRED"
+    name="FRED"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="DOG"
+    name="DOG"
+      role="Environment"
+      language="eng"
+
+    />
+    <participant
+      id="ENV"
+    name="ENV"
+      role="Environment"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="JO" uID="u0">
+    <w>h<overlap-point start-end="start" top-bottom="top" index="2"/>j</w>
+    <w>i</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

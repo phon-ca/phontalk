@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="depmedia" Mediatypes="video"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="sample"
+      >
+  <Participants>
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="CHI"
+      role="Target_Child"
+      language="eng"
+      age="P1Y10M04D"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <g><w>ryoote</w>
+    <w>agete</w><ga type="paralinguistics">singing</ga></g>
+    <t type="p"></t>
+    <postcode>bch</postcode><postcode>foo</postcode>
+    <media
+      start="2041.689"
+      end="2042.652"
+      unit="s"
+    />
+    <a type="coding">this is junk <media
+      start="2041.689"
+      end="2042.652"
+      unit="s"
+    /></a>
+  </u>
+</CHAT>

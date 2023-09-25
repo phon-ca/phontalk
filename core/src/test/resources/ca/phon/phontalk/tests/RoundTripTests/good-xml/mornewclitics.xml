@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="belfast"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Courtney"
+      role="Target_Child"
+      language="eng"
+      age="P3Y06M18D"
+      SES="UC"
+
+      birthday="1992-09-08"
+
+    />
+    <participant
+      id="MOT"
+    name="Tracy"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="INV"
+    name="Rose"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="FAT"
+    name="Tom"
+      role="Father"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Generic">Test ~ clitics; not actually correct language here, manually put</comment>
+  <u who="INV" uID="u0">
+    <w>Ethan's<mor type="mor"><mw><pos><c>n</c><s>prop</s></pos><stem>Ethan</stem><mk type="sfx">POSS</mk></mw></mor></w>
+    <w>fast<mor type="mor"><mw><pos><c>n</c></pos><stem>fast</stem></mw></mor></w>
+    <w>da<wk type="cli"/>me<wk type="cli"/>lo<mor type="mor"><mw><pos><c>pro</c></pos><stem>me</stem><mk type="sfxf">dat</mk><mk type="sfx">me</mk></mw><mor-pre><mw><pos><c>v</c></pos><stem>da</stem><mk type="sfx">give</mk></mw></mor-pre><mor-post><mw><pos><c>pro</c></pos><stem>lo</stem><mk type="sfxf">acc</mk><mk type="sfx">it</mk></mw></mor-post></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+
+  </u>
+</CHAT>

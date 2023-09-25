@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <g><w>when</w><ga type="paralinguistics">foo bar</ga><ga type="alternative">ah+er</ga></g>
+    <w>will</w>
+    <w>you</w>
+    <w>go</w>
+    <t type="q"></t>
+
+  </u>
+  <comment type="Generic">Do compound also</comment>
+  <u who="CHI" uID="u1">
+    <g><w>when<wk type="cmp"/>ever</w><ga type="paralinguistics">foo bar</ga><ga type="alternative">ah+er</ga></g>
+    <w>will</w>
+    <w>you</w>
+    <w>go</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u2">
+    <g><w>rocking<wk type="cmp"/>house<replacement><w>rocking<wk type="cmp"/>horse</w></replacement></w><error/></g>
+    <t type="q"></t>
+
+  </u>
+  <comment type="Generic">All the ones</comment>
+  <u who="CHI" uID="u3">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child</w><ga type="paralinguistics">a+er b</ga></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u4">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child</w><ga type="alternative">a+er b</ga></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u5">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child</w><ga type="explanation">a+er b</ga></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u6">
+    <w>this</w>
+    <w>is</w>
+    <w>child<replacement><w>a<wk type="cmp"/>er</w><w>b</w></replacement></w>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u7">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child</w><ga type="comments">a+er b</ga></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u8">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child</w><k type="best guess"/></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u9">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child</w><k type="stressing"/></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u10">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child</w><k type="contrastive stressing"/></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u11">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child</w><error>a+er b</error></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u12">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child</w><error/></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">Scoped (with compounds)</comment>
+  <u who="CHI" uID="u13">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child<wk type="cmp"/>child</w><ga type="paralinguistics">a b</ga></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u14">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child<wk type="cmp"/>child</w><ga type="alternative">a b</ga></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u15">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child<wk type="cmp"/>child</w><ga type="explanation">a b</ga></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u16">
+    <w>this</w>
+    <w>is</w>
+    <w>child<wk type="cmp"/>child<replacement><w>a</w><w>b</w></replacement></w>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u17">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child<wk type="cmp"/>child</w><ga type="comments">a b</ga></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u18">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child<wk type="cmp"/>child</w><k type="best guess"/></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u19">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child<wk type="cmp"/>child</w><k type="stressing"/></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u20">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child<wk type="cmp"/>child</w><k type="contrastive stressing"/></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u21">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child<wk type="cmp"/>child</w><error>a b</error></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u22">
+    <w>this</w>
+    <w>is</w>
+    <g><w>child<wk type="cmp"/>child</w><error/></g>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

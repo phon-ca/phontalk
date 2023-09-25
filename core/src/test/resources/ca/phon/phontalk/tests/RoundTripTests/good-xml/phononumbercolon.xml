@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="zho eng"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="zho eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="zho eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <w>ooh</w>
+    <w type="fragment">pinb</w>
+    <w type="fragment">k<p type="drawl"/>3</w>
+    <w type="fragment">grr<p type="drawl"/>5</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

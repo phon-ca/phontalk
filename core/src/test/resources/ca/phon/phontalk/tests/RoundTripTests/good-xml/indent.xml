@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Options="CA"
+      Corpus="SBCSAE"
+      >
+  <Participants>
+    <participant
+      id="MARI"
+    name="MARILYN"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="ROY"
+    name="ROY"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="PETE"
+    name="PETE"
+      role="Speaker"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="ROY" uID="u0">
+    <overlap-point start-end="start" top-bottom="top"/>
+    <w>one</w>
+    <overlap-point start-end="end" top-bottom="top"/>
+    <overlap-point start-end="start" top-bottom="top" index="2"/>
+    <w>two</w>
+    <overlap-point start-end="end" top-bottom="top" index="2"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="PETE" uID="u1">
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <w>one</w>
+    <overlap-point start-end="end" top-bottom="bottom"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="MARI" uID="u2">
+    <overlap-point start-end="start" top-bottom="bottom" index="2"/>
+    <w>two</w>
+    <overlap-point start-end="end" top-bottom="bottom" index="2"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="PETE" uID="u3">
+    <overlap-point start-end="start" top-bottom="top" index="3"/>
+    <w>three</w>
+    <overlap-point start-end="end" top-bottom="top" index="3"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="MARI" uID="u4">
+    <overlap-point start-end="start" top-bottom="bottom" index="3"/>
+    <w>three</w>
+    <overlap-point start-end="end" top-bottom="bottom" index="3"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="MARI" uID="u5">
+    <overlap-point start-end="start" top-bottom="top" index="4"/>
+    <w>four</w>
+    <overlap-point start-end="end" top-bottom="top" index="4"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="ROY" uID="u6">
+    <overlap-point start-end="start" top-bottom="bottom" index="4"/>
+    <w>four</w>
+    <overlap-point start-end="end" top-bottom="bottom" index="4"/>
+    <overlap-point start-end="start" top-bottom="top" index="5"/>
+    <w>five</w>
+    <overlap-point start-end="end" top-bottom="top" index="5"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="PETE" uID="u7">
+    <overlap-point start-end="start" top-bottom="bottom" index="4"/>
+    <w>four</w>
+    <overlap-point start-end="end" top-bottom="bottom" index="4"/>
+    <overlap-point start-end="start" top-bottom="bottom" index="5"/>
+    <w>five</w>
+    <overlap-point start-end="end" top-bottom="bottom" index="5"/>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

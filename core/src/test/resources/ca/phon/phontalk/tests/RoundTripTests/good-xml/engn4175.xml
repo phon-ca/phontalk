@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="engn4175" Mediatypes="audio"
+      Version="2.19.0"
+      Lang="eng"
+      Options="CA"
+      Corpus="cf"
+      >
+  <Participants>
+    <participant
+      id="M1"
+      role="Male"
+      language="eng"
+
+    />
+    <participant
+      id="M2"
+      role="Male"
+      language="eng"
+
+    />
+    <participant
+      id="F1"
+      role="Female"
+      language="eng"
+
+    />
+    <participant
+      id="F2"
+      role="Female"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Generic">M1 is 31 w 25yrs of school, Pittsburgh, F1 speaks only for the last two minutes, F2 in the last minute, F1 is M2's wife, F2 is M1's wife.</comment>
+  <comment type="Transcriber">Sarah Longstaff</comment>
+  <comment type="Generic">Probably because one of them is on a digital phone, the signal during overlap is often broken up. This is indicated with [% broken].</comment>
+  <u who="M2" uID="u0">
+    <w><ca-delimiter type="begin" label="softer"/><ca-element type="inhalation"/>hhh<ca-delimiter type="end" label="softer"/></w>
+    <w>actually</w>
+    <w>met</w>
+    <w>him<p type="drawl"/></w>
+    <s type="level"/>
+    <t type="missing CA terminator"></t>
+    <media
+      start="94.531"
+      end="95.651"
+      unit="s"
+    />
+  </u>
+</CHAT>

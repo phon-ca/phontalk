@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="headers" Mediatypes="video unlinked"
+      Version="2.19.0"
+      Lang="eng deu"
+      Corpus="bates"
+      Date="2001-07-28"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng deu"
+      age="P1Y08M02D"
+      sex="female"
+      group="normal"
+      SES="UC"
+      education="bleah"
+
+      birthday="2001-06-28"
+       birthplace="Taipei, Taiwan"
+       first-language="ara"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng deu"
+
+    />
+  </Participants>
+  <comment type="Generic">Test all headers FAKE_WORD = ({ALNUM} | [\_\@\&amp;\;\-\!\?\.\,\'\"\+\&lt;\&gt;\(\)\/\=\~\*\#\`\\\%\^\$] | {TAG_CHAR})+</comment>
+  <u who="CHI" uID="u0">
+    <w>foo</w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Location">foo</comment>
+  <comment type="Number">2</comment>
+  <comment type="Recording Quality">4</comment>
+  <comment type="Room Layout">foo</comment>
+  <comment type="Tape Location">foo</comment>
+  <comment type="Time Duration">8:30:31</comment>
+  <comment type="Time Start">8:30:31</comment>
+  <comment type="Transcriber">foo</comment>
+  <comment type="Transcription">eye_dialect</comment>
+  <comment type="Warning">foo</comment>
+  <u who="MOT" uID="u1">
+    <w>foo</w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Activities">foo</comment>
+  <comment type="Bck">foo</comment>
+  <begin-gem label=""/>
+  <begin-gem label="foo"/>
+  <comment type="Blank"></comment>
+  <comment type="Generic">foo</comment>
+  <comment type="Date">28-JUL-2001</comment>
+  <end-gem label=""/>
+  <end-gem label="foo"/>
+  <lazy-gem label="foo"/>
+  <comment type="New Episode"></comment>
+  <comment type="Situation">foo</comment>
+  <comment type="Page">42</comment>
+</CHAT>

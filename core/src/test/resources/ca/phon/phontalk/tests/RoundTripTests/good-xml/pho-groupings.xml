@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="ind jav"
+      Corpus="IDO"
+      Date="2000-06-23"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Ido"
+      role="Target_Child"
+      language="ind jav"
+      age="P4Y05M21D"
+      sex="male"
+
+      birthday="1996-01-01"
+
+    />
+    <participant
+      id="MOT"
+    name="Rimi"
+      role="Mother"
+      language="ind jav"
+      sex="female"
+
+    />
+    <participant
+      id="EXP"
+    name="Bety"
+      role="Investigator"
+      language="ind jav"
+      age="P25Y01M14D"
+      sex="female"
+
+    />
+    <participant
+      id="ABA"
+    name="Praba"
+      role="Brother"
+      language="ind jav"
+      age="P5Y07M22D"
+      sex="male"
+
+      birthday="1994-10-31"
+
+    />
+  </Participants>
+  <comment type="Date">23-JUN-2000</comment>
+  <comment type="Generic">Test Brian's problem</comment>
+  <u who="CHI" uID="u0">
+    <pg><w>mais</w><actual><pw><ph id="ph0">m</ph><ph id="ph1">ɛ</ph></pw></actual></pg>
+    <g><pg><w>c'est</w><actual><pw><ph id="ph0">s</ph><ph id="ph1">ɛ</ph></pw></actual></pg><k type="retracing with correction"/></g>
+    <g><pg><w>ce<wk type="cmp"/>qu'</w><actual><pw><ph id="ph0">s</ph><ph id="ph1">k</ph></pw></actual></pg>
+    <pg><w>y<wk type="cmp"/>a</w><actual><pw><ph id="ph0">j</ph><ph id="ph1">a</ph></pw></actual></pg>
+    <pg><w>en</w>
+    <w>haut</w><actual><pw><ph id="ph0">ɑ</ph><ph id="ph1">̃</ph><ph id="ph2">o</ph></pw></actual></pg><overlap type="overlap follows"/></g>
+    <t type="interruption"></t>
+
+  </u>
+</CHAT>

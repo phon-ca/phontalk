@@ -1,0 +1,3098 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="videos" Mediatypes="video"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="Scale"
+      >
+  <Participants>
+    <participant
+      id="PAR1"
+    name="Alison"
+      role="Participant"
+      language="eng"
+      sex="female"
+      custom-field="Alison"
+    />
+    <participant
+      id="PAR2"
+    name="Don"
+      role="Participant"
+      language="eng"
+      sex="male"
+      custom-field="Don"
+    />
+    <participant
+      id="PAR3"
+    name="Larry"
+      role="Participant"
+      language="eng"
+      sex="male"
+      custom-field="Larry"
+    />
+    <participant
+      id="PAR4"
+    name="Barry"
+      role="Participant"
+      language="eng"
+      sex="male"
+      custom-field="Barry"
+    />
+    <participant
+      id="PAR5"
+    name="Chris"
+      role="Participant"
+      language="eng"
+      sex="female"
+      custom-field="Chris"
+    />
+    <participant
+      id="INV1"
+    name="Christopher"
+      role="Investigator"
+      language="eng"
+      sex="male"
+      custom-field="Christopher"
+    />
+    <participant
+      id="INV2"
+    name="Denise"
+      role="Investigator"
+      language="eng"
+      sex="female"
+      custom-field="Denise"
+    />
+    <participant
+      id="INV3"
+    name="Margie"
+      role="Investigator"
+      language="eng"
+      sex="female"
+      custom-field="Margie"
+    />
+  </Participants>
+  <u who="INV1" uID="u0">
+    <w>alright</w>
+    <t type="p"></t>
+    <media
+      start="1.600"
+      end="2.364"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u1">
+    <w>now</w>
+    <w>we're</w>
+    <w>rolling</w>
+    <t type="p"></t>
+    <media
+      start="2.364"
+      end="3.421"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u2">
+    <w>now</w>
+    <w>we're</w>
+    <w>gonna</w>
+    <w>share</w>
+    <w>the</w>
+    <w>story</w>
+    <t type="p"></t>
+    <media
+      start="3.421"
+      end="5.344"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u3">
+    <w>this</w>
+    <w>is</w>
+    <w>a</w>
+    <w>story</w>
+    <w>trove</w>
+    <t type="p"></t>
+    <media
+      start="5.344"
+      end="7.852"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u4">
+    <w>this</w>
+    <w>was</w>
+    <w>found</w>
+    <w>in</w>
+    <w>an</w>
+    <w>attic</w>
+    <t type="interruption"></t>
+    <media
+      start="7.852"
+      end="9.841"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u5">
+    <w>mhm</w>
+    <t type="p"></t>
+    <media
+      start="9.841"
+      end="10.205"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u6">
+    <linker type="self completion"/>
+    <w>in</w>
+    <w>an</w>
+    <w>old</w>
+    <w>building</w>
+    <t type="p"></t>
+    <media
+      start="10.205"
+      end="11.640"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u7">
+    <w>so</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>that's</w>
+    <w>all</w>
+    <w>we</w>
+    <w>know</w>
+    <t type="p"></t>
+    <media
+      start="11.640"
+      end="13.494"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u8">
+    <w>your</w>
+    <w>job</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>help</w>
+    <w>us</w>
+    <w>figure</w>
+    <w>out</w>
+    <w>what</w>
+    <w>this</w>
+    <w>story's</w>
+    <w>about</w>
+    <t type="p"></t>
+    <media
+      start="13.494"
+      end="16.562"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u9">
+    <linker type="lazy overlap mark"/>
+    <e><happening>raises:hand</happening></e>
+    <t type="p"></t>
+    <media
+      start="14.494"
+      end="16.562"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u10">
+    <w>yes</w>
+    <t type="q"></t>
+    <media
+      start="16.562"
+      end="17.380"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u11">
+    <linker type="lazy overlap mark"/>
+    <w type="fragment">d</w>
+    <w>did</w>
+    <w>you</w>
+    <w>pick</w>
+    <w>it</w>
+    <w>up</w>
+    <e><happening>points:table</happening></e>
+    <t type="q"></t>
+    <media
+      start="16.562"
+      end="19.625"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u12">
+    <w>it's</w>
+    <g><w>in</w><k type="retracing with correction"/></g>
+    <w>from</w>
+    <w>an</w>
+    <w>attic</w>
+    <t type="p"></t>
+    <media
+      start="19.625"
+      end="21.507"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u13">
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="21.507"
+      end="22.223"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u14">
+    <linker type="lazy overlap mark"/>
+    <w>in</w>
+    <w>a</w>
+    <w>house</w>
+    <t type="p"></t>
+    <media
+      start="21.507"
+      end="22.812"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u15">
+    <e><happening>points:inv1</happening></e>
+    <w type="fragment">y</w>
+    <w>you</w>
+    <t type="q"></t>
+    <media
+      start="22.812"
+      end="23.616"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u16">
+    <linker type="lazy overlap mark"/>
+    <w>and</w>
+    <w>he</w>
+    <w>picked</w>
+    <w>it</w>
+    <w>up</w>
+    <t type="p"></t>
+    <media
+      start="22.812"
+      end="23.926"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u17">
+    <w>you</w>
+    <t type="interruption question"></t>
+    <media
+      start="23.926"
+      end="24.466"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u18">
+    <linker type="lazy overlap mark"/>
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="23.926"
+      end="25.089"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u19">
+    <w>now</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>I</w>
+    <w>have_to</w>
+    <w>say</w>
+    <w>in</w>
+    <w>full</w>
+    <w>disclosure</w>
+    <w>it's</w>
+    <w>actually</w>
+    <w>a</w>
+    <w>fictional</w>
+    <w>story</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>okay</w>
+    <t type="q"></t>
+    <media
+      start="25.089"
+      end="31.678"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u20">
+    <e><happening>giggles</happening></e>
+    <t type="p"></t>
+    <media
+      start="31.678"
+      end="32.909"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u21">
+    <w>so</w>
+    <w>not</w>
+    <w>to</w>
+    <w>worry</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>okay</w>
+    <t type="q"></t>
+    <media
+      start="32.909"
+      end="35.284"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u22">
+    <w>so</w>
+    <w>you</w>
+    <w>can</w>
+    <w>be</w>
+    <w type="fragment">sus</w>
+    <w>as</w>
+    <w>suspicious</w>
+    <w>as</w>
+    <w>you</w>
+    <w>want</w>
+    <w>of</w>
+    <w>these</w>
+    <w>characters</w>
+    <t type="p"></t>
+    <media
+      start="35.284"
+      end="39.665"
+      unit="s"
+    />
+    <a type="comments">general laughter.</a>
+  </u>
+  <u who="INV2" uID="u23">
+    <w>mm</w>
+    <t type="p"></t>
+    <media
+      start="39.665"
+      end="40.530"
+      unit="s"
+    />
+    <a type="comments">exaggeratedly suspicious tone.</a>
+  </u>
+  <u who="INV1" uID="u24">
+    <w>but</w>
+    <w>the</w>
+    <w>game</w>
+    <w>is</w>
+    <w>to</w>
+    <w>find</w>
+    <w>the</w>
+    <w>story</w>
+    <t type="p"></t>
+    <media
+      start="40.530"
+      end="43.363"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u25">
+    <linker type="lazy overlap mark"/>
+    <e><happening>chuckles</happening></e>
+    <t type="p"></t>
+    <media
+      start="40.530"
+      end="43.363"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u26">
+    <w>and</w>
+    <w>there's</w>
+    <w>no</w>
+    <w>wrong</w>
+    <w>answers</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>okay</w>
+    <t type="q"></t>
+    <media
+      start="43.363"
+      end="45.295"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u27">
+    <g><w>working</w><k type="retracing with correction"/></g>
+    <w>work</w>
+    <w>together</w>
+    <w>too</w>
+    <t type="p"></t>
+    <media
+      start="45.295"
+      end="49.688"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u28">
+    <w>yeah</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>everybody</w>
+    <t type="interruption"></t>
+    <media
+      start="49.688"
+      end="50.784"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u29">
+    <w>please</w>
+    <w>Denise</w>
+    <w>join</w>
+    <w>in</w>
+    <t type="e"></t>
+    <media
+      start="50.784"
+      end="52.228"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u30">
+    <e><happening>raises:hand</happening></e>
+    <w type="fragment">uh</w>
+    <w>where</w>
+    <w>are</w>
+    <w>you</w>
+    <w>from</w>
+    <t type="q"></t>
+    <media
+      start="52.228"
+      end="53.995"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u31">
+    <w>I</w>
+    <w>am</w>
+    <w>from</w>
+    <w>Orlando_Florida</w>
+    <t type="p"></t>
+    <media
+      start="53.995"
+      end="56.127"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u32">
+    <w>oh</w>
+    <w>yeah</w>
+    <t type="q"></t>
+    <media
+      start="56.127"
+      end="56.870"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u33">
+    <linker type="lazy overlap mark"/>
+    <w>okay</w>
+    <t type="p"></t>
+    <media
+      start="56.127"
+      end="57.159"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u34">
+    <w>yeah</w>
+    <t type="e"></t>
+    <media
+      start="57.159"
+      end="57.700"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u35">
+    <e><happening>points:par4</happening></e>
+    <w>he</w>
+    <w>does</w>
+    <w>too</w>
+    <t type="p"></t>
+    <media
+      start="57.700"
+      end="58.799"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u36">
+    <linker type="lazy overlap mark"/>
+    <g><w>I</w>
+    <w>used</w>
+    <w>to</w><k type="retracing with correction"/></g>
+    <g><w>I</w><k type="retracing"/></g>
+    <w>I</w>
+    <w>used</w>
+    <w>to</w>
+    <w>make</w>
+    <w>theme</w>
+    <w>parks</w>
+    <w>for</w>
+    <w>Universal_Studios</w>
+    <w>and</w>
+    <w>Disney</w>
+    <t type="p"></t>
+    <media
+      start="58.399"
+      end="63.333"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u37">
+    <w>yeah<p type="drawl"/></w>
+    <e><happening>chuckles</happening></e>
+    <t type="p"></t>
+    <media
+      start="63.333"
+      end="64.709"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u38">
+    <w>you_know</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>y<shortening>ou</shortening></w>
+    <w>ever</w>
+    <w>go</w>
+    <w>on</w>
+    <w>a</w>
+    <w>dark</w>
+    <w>ride</w>
+    <t type="q"></t>
+    <media
+      start="64.709"
+      end="66.599"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u39">
+    <e><happening>raises:hand</happening></e>
+    <w>oh</w>
+    <w>yeah</w>
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="66.599"
+      end="67.787"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u40">
+    <e><happening>fingers:four</happening></e>
+    <w type="fragment">f</w>
+    <w type="fragment">f</w>
+    <pause symbolic-length="simple"/>
+    <w>four</w>
+    <w>times</w>
+    <t type="p"></t>
+    <media
+      start="67.787"
+      end="70.915"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u41">
+    <w>oh</w>
+    <w>wow</w>
+    <t type="e"></t>
+    <media
+      start="70.915"
+      end="71.325"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u42">
+    <w>yep</w>
+    <t type="p"></t>
+    <media
+      start="71.325"
+      end="71.609"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u43">
+    <w>well</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>this</w>
+    <w>is</w>
+    <w>like</w>
+    <g><w>a</w><k type="retracing"/></g>
+    <w>a</w>
+    <t type="self interruption"></t>
+    <media
+      start="71.609"
+      end="73.661"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u44">
+    <linker type="lazy overlap mark"/>
+    <w>wha<shortening>t</shortening></w>
+    <t type="q"></t>
+    <media
+      start="72.661"
+      end="73.696"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u45">
+    <w>this</w>
+    <w>is</w>
+    <w>like</w>
+    <w>a</w>
+    <w>theme</w>
+    <w>park</w>
+    <w>attraction</w>
+    <w>in</w>
+    <w>a</w>
+    <w>box</w>
+    <t type="p"></t>
+    <media
+      start="73.696"
+      end="77.144"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u46">
+    <e><happening>chuckles</happening></e>
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="77.144"
+      end="77.623"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u47">
+    <linker type="self completion"/>
+    <w>that</w>
+    <w>tells</w>
+    <w>a</w>
+    <w>story</w>
+    <t type="p"></t>
+    <media
+      start="77.623"
+      end="78.757"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u48">
+    <linker type="lazy overlap mark"/>
+    <w>so</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>let's</w>
+    <w>do</w>
+    <w>this</w>
+    <w>and</w>
+    <w>I</w>
+    <w>will</w>
+    <w>give</w>
+    <w>you</w>
+    <w>time</w>
+    <t type="self interruption"></t>
+    <media
+      start="77.623"
+      end="80.249"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u49">
+    <w>we're</w>
+    <w>gonna</w>
+    <w>do</w>
+    <w>a</w>
+    <w>focus</w>
+    <w>group</w>
+    <w>with</w>
+    <w>Christopher</w>
+    <w>so</w>
+    <w>you</w>
+    <w>can</w>
+    <w>get</w>
+    <w>to</w>
+    <w>know</w>
+    <w>him</w>
+    <w>and</w>
+    <w>he</w>
+    <w>can</w>
+    <w>get</w>
+    <w>to</w>
+    <w>know</w>
+    <w>you</w>
+    <t type="p"></t>
+    <media
+      start="80.249"
+      end="85.861"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u50">
+    <w>but</w>
+    <w>I</w>
+    <w>didn't</w>
+    <w>want</w>
+    <w>you</w>
+    <w>to</w>
+    <w>know</w>
+    <w>him</w>
+    <w>too</w>
+    <w>well</w>
+    <w>because</w>
+    <w>I</w>
+    <w>wanted</w>
+    <w>to</w>
+    <w>just</w>
+    <w>start</w>
+    <w>with</w>
+    <w>the</w>
+    <w>story</w>
+    <t type="p"></t>
+    <media
+      start="85.861"
+      end="91.059"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u51">
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="91.059"
+      end="91.405"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u52">
+    <w>and</w>
+    <w>then</w>
+    <w>we'll</w>
+    <w>spend</w>
+    <w>some</w>
+    <w>time</w>
+    <w>with</w>
+    <w>him</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>okay</w>
+    <t type="q"></t>
+    <media
+      start="91.405"
+      end="93.407"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u53">
+    <w>any</w>
+    <w>tools</w>
+    <w>you're</w>
+    <w>used</w>
+    <w>to</w>
+    <w>working</w>
+    <w>with</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>feel</w>
+    <w>free</w>
+    <w>to</w>
+    <w>use</w>
+    <t type="p"></t>
+    <media
+      start="93.407"
+      end="97.111"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u54">
+    <w>to</w>
+    <w>writing</w>
+    <w>and</w>
+    <w>sharing</w>
+    <w>or</w>
+    <w>the</w>
+    <w>Iphone</w>
+    <t type="p"></t>
+    <media
+      start="97.111"
+      end="99.980"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u55">
+    <linker type="lazy overlap mark"/>
+    <w>and</w>
+    <e><happening>ges</happening></e>
+    <w>I'm</w>
+    <t type="interruption"></t>
+    <media
+      start="98.500"
+      end="100.256"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u56">
+    <linker type="lazy overlap mark"/>
+    <w>yeah</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>go</w>
+    <t type="e"></t>
+    <media
+      start="100.056"
+      end="100.921"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u57">
+    <w>this</w>
+    <w>is</w>
+    <w>based</w>
+    <w>upon</w>
+    <w>historical</w>
+    <w>facts</w>
+    <t type="p"></t>
+    <media
+      start="100.921"
+      end="104.413"
+      unit="s"
+    />
+    <a type="comments">participants begin opening the trove.</a>
+  </u>
+  <u who="INV1" uID="u58">
+    <w>but</w>
+    <w>a_lot_of</w>
+    <w>it's</w>
+    <w>fictional</w>
+    <w>so</w>
+    <w>you</w>
+    <w>can</w>
+    <w>research</w>
+    <w>anything</w>
+    <w>in</w>
+    <w>there</w>
+    <t type="p"></t>
+    <media
+      start="104.413"
+      end="108.313"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u59">
+    <w>mm</w>
+    <t type="p"></t>
+    <media
+      start="108.313"
+      end="109.475"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u60">
+    <e><action/></e>
+    <t type="p"></t>
+    <media
+      start="109.475"
+      end="114.307"
+      unit="s"
+    />
+    <a type="explanation">takes a paper off the top of the trove and examines it.</a>
+  </u>
+  <u who="INV2" uID="u61">
+    <w>teamwork</w>
+    <t type="p"></t>
+    <media
+      start="114.307"
+      end="115.425"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u62">
+    <e><happening>chuckles</happening></e>
+    <t type="p"></t>
+    <media
+      start="115.425"
+      end="116.828"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u63">
+    <w>now</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w type="fragment">w</w>
+    <w>what</w>
+    <w>does</w>
+    <w>that</w>
+    <w>package</w>
+    <t type="interruption question"></t>
+    <media
+      start="116.828"
+      end="121.598"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u64">
+    <linker type="lazy overlap mark"/>
+    <w>okay</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>this</w>
+    <w>one</w>
+    <w>here</w>
+    <w>says</w>
+    <t type="interruption"></t>
+    <media
+      start="121.398"
+      end="122.833"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u65">
+    <linker type="lazy overlap mark"/>
+    <w>what</w>
+    <w>does</w>
+    <w>that</w>
+    <w>package</w>
+    <w>itself</w>
+    <w>say</w>
+    <t type="q"></t>
+    <media
+      start="122.433"
+      end="124.284"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u66">
+    <e><happening>chuckles</happening></e>
+    <t type="p"></t>
+    <media
+      start="124.284"
+      end="125.293"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u67">
+    <w>this</w>
+    <w>is</w>
+    <w>old</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>huh</w>
+    <t type="q"></t>
+    <media
+      start="125.293"
+      end="127.923"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u68">
+    <linker type="lazy overlap mark"/>
+    <w>old</w>
+    <t type="p"></t>
+    <media
+      start="126.223"
+      end="127.639"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u69">
+    <w untranscribed="unintelligible">xxx</w>
+    <w>oh</w>
+    <t type="p"></t>
+    <media
+      start="127.923"
+      end="131.047"
+      unit="s"
+    />
+    <a type="comments">reading his paper.</a>
+  </u>
+  <u who="PAR1" uID="u70">
+    <w>what</w>
+    <w>you</w>
+    <t type="trail off question"></t>
+    <media
+      start="131.047"
+      end="134.589"
+      unit="s"
+    />
+    <a type="comments">taking PAR2's paper.</a>
+  </u>
+  <u who="PAR3" uID="u71">
+    <w>okay</w>
+    <t type="p"></t>
+    <media
+      start="134.589"
+      end="136.031"
+      unit="s"
+    />
+    <a type="comments">also leaning in to read the paper.</a>
+  </u>
+  <u who="PAR3" uID="u72">
+    <w type="fragment">b</w>
+    <w>Bob</w>
+    <e><happening>chuckles</happening></e>
+    <w>and</w>
+    <w type="fragment">s<p type="drawl"/></w>
+    <w type="fragment">ste</w>
+    <w type="fragment">s</w>
+    <w>your</w>
+    <w>stairs</w>
+    <t type="p"></t>
+    <media
+      start="136.031"
+      end="145.793"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u73">
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="145.793"
+      end="147.730"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u74">
+    <g><w>are</w>
+    <w>we</w>
+    <w>good</w><k type="best guess"/></g>
+    <t type="q"></t>
+    <media
+      start="147.730"
+      end="149.531"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u75">
+    <pause symbolic-length="simple"/>
+    <w>mom</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>mom</w>
+    <e><happening>head:yes</happening></e>
+    <t type="p"></t>
+    <media
+      start="149.531"
+      end="154.990"
+      unit="s"
+    />
+  </u>
+  <u who="PAR4" uID="u76">
+    <linker type="lazy overlap mark"/>
+    <w untranscribed="unintelligible">xxx</w>
+    <w>good</w>
+    <w>things</w>
+    <t type="p"></t>
+    <media
+      start="154.090"
+      end="155.373"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u77">
+    <w>mom</w>
+    <t type="q"></t>
+    <media
+      start="155.373"
+      end="155.835"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u78">
+    <w>yeah</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>mom</w>
+    <w>that</w>
+    <w>is</w>
+    <w>there</w>
+    <e><happening>points:paper</happening></e>
+    <t type="p"></t>
+    <media
+      start="155.835"
+      end="157.298"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u79">
+    <linker type="lazy overlap mark"/>
+    <w>mom</w>
+    <w>oh</w>
+    <t type="p"></t>
+    <media
+      start="157.098"
+      end="158.279"
+      unit="s"
+    />
+  </u>
+  <u who="PAR4" uID="u80">
+    <linker type="lazy overlap mark"/>
+    <w untranscribed="unintelligible">xxx</w>
+    <w>put</w>
+    <w>things</w>
+    <w>in</w>
+    <w>the</w>
+    <pause symbolic-length="simple"/>
+    <g><w>part</w>
+    <w>two</w><k type="best guess"/></g>
+    <w>safekeeping</w>
+    <t type="p"></t>
+    <media
+      start="157.298"
+      end="164.021"
+      unit="s"
+    />
+    <a type="comments">reading off the paper.</a>
+  </u>
+  <u who="PAR4" uID="u81">
+    <w>the</w>
+    <w>mom</w>
+    <t type="p"></t>
+    <media
+      start="164.021"
+      end="165.186"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u82">
+    <w>mm</w>
+    <w>okay</w>
+    <t type="p"></t>
+    <media
+      start="165.186"
+      end="169.667"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u83">
+    <w>I</w>
+    <w>got</w>
+    <t type="quotation next line"></t>
+    <media
+      start="169.667"
+      end="171.348"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u84">
+    <linker type="quoted utterance next"/>
+    <w>something</w>
+    <w>for</w>
+    <w>safekeeping</w>
+    <g><w>for</w>
+    <w>Mom</w><k type="retracing with correction"/></g>
+    <w>from</w>
+    <w>Mom</w>
+    <t type="p"></t>
+    <media
+      start="171.348"
+      end="175.320"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u85">
+    <linker type="quoted utterance next"/>
+    <w>love</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>Mom</w>
+    <t type="p"></t>
+    <media
+      start="175.320"
+      end="176.424"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u86">
+    <w type="fragment">um</w>
+    <t type="trail off"></t>
+    <media
+      start="176.424"
+      end="179.687"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u87">
+    <w>yeah</w>
+    <t type="q"></t>
+    <media
+      start="179.687"
+      end="181.631"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u88">
+    <w>want</w>
+    <w>some</w>
+    <w>help</w>
+    <t type="q"></t>
+    <media
+      start="181.631"
+      end="182.750"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u89">
+    <w>yeah</w>
+    <e><happening>points:paper</happening></e>
+    <t type="p"></t>
+    <media
+      start="182.750"
+      end="183.601"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u90">
+    <w>okay</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>it</w>
+    <w>says</w>
+    <t type="quotation next line"></t>
+    <media
+      start="183.601"
+      end="185.255"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u91">
+    <g><w>lower</w><k type="best guess"/></g>
+    <t type="p"></t>
+    <media
+      start="185.255"
+      end="185.899"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u92">
+    <w>yeah</w>
+    <t type="q"></t>
+    <media
+      start="185.899"
+      end="186.524"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u93">
+    <linker type="lazy overlap mark"/>
+    <w untranscribed="unintelligible">xxx</w>
+    <t type="p"></t>
+    <media
+      start="186.255"
+      end="186.856"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u94">
+    <w>good</w>
+    <t type="p"></t>
+    <media
+      start="186.856"
+      end="187.334"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u95">
+    <linker type="quoted utterance next"/>
+    <w>I</w>
+    <t type="interruption"></t>
+    <media
+      start="187.334"
+      end="190.296"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u96">
+    <linker type="quoted utterance next"/>
+    <w>I</w>
+    <w>put</w>
+    <w type="fragment">y</w>
+    <w>your</w>
+    <t type="interruption"></t>
+    <media
+      start="187.334"
+      end="192.233"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u97">
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="192.233"
+      end="192.658"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u98">
+    <linker type="quoted utterance next"/>
+    <w>things</w>
+    <w>in</w>
+    <w>the</w>
+    <w>pub</w>
+    <w>for</w>
+    <w>safekeeping</w>
+    <t type="p"></t>
+    <media
+      start="192.658"
+      end="200.208"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u99">
+    <w>ah</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>a</w>
+    <w>pub</w>
+    <t type="p"></t>
+    <media
+      start="200.208"
+      end="201.926"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u100">
+    <w>pub</w>
+    <t type="p"></t>
+    <media
+      start="201.926"
+      end="203.797"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u101">
+    <linker type="lazy overlap mark"/>
+    <w>pub</w>
+    <t type="p"></t>
+    <media
+      start="201.926"
+      end="203.797"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u102">
+    <linker type="lazy overlap mark"/>
+    <w>pub</w>
+    <t type="p"></t>
+    <media
+      start="201.926"
+      end="203.797"
+      unit="s"
+    />
+  </u>
+  <u who="PAR4" uID="u103">
+    <linker type="lazy overlap mark"/>
+    <w>pub</w>
+    <t type="p"></t>
+    <media
+      start="201.926"
+      end="203.797"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u104">
+    <w>huh</w>
+    <t type="e"></t>
+    <media
+      start="203.797"
+      end="204.308"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u105">
+    <linker type="lazy overlap mark"/>
+    <w>a</w>
+    <w>pub</w>
+    <t type="p"></t>
+    <media
+      start="203.797"
+      end="204.596"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u106">
+    <w>that</w>
+    <w>makes</w>
+    <w>me</w>
+    <w>think</w>
+    <w>it</w>
+    <w>wasn't</w>
+    <w>from</w>
+    <w>the</w>
+    <w>U_S</w>
+    <t type="p"></t>
+    <media
+      start="204.596"
+      end="207.331"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u107">
+    <w>what</w>
+    <w>do</w>
+    <w>you</w>
+    <w>think</w>
+    <t type="q"></t>
+    <media
+      start="207.331"
+      end="208.523"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u108">
+    <w type="fragment">uh</w>
+    <t type="trail off"></t>
+    <media
+      start="208.523"
+      end="209.462"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u109">
+    <w>mm</w>
+    <t type="p"></t>
+    <media
+      start="209.462"
+      end="210.058"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u110">
+    <w>oh</w>
+    <t type="e"></t>
+    <media
+      start="210.058"
+      end="211.196"
+      unit="s"
+    />
+    <a type="comments">in response to another document shown by par5.</a>
+  </u>
+  <u who="INV2" uID="u111">
+    <w>what</w>
+    <w><shortening>doe</shortening>s</w>
+    <w>it</w>
+    <w>say</w>
+    <t type="q"></t>
+    <media
+      start="211.196"
+      end="212.392"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u112">
+    <w>Vancouver_British_Columbia</w>
+    <t type="p"></t>
+    <media
+      start="212.392"
+      end="215.227"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u113">
+    <w>ah<p type="drawl"/></w>
+    <t type="p"></t>
+    <media
+      start="215.227"
+      end="217.195"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u114">
+    <linker type="lazy overlap mark"/>
+    <w>ah</w>
+    <t type="p"></t>
+    <media
+      start="216.227"
+      end="217.420"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u115">
+    <linker type="lazy overlap mark"/>
+    <w>ah</w>
+    <t type="p"></t>
+    <media
+      start="216.227"
+      end="217.269"
+      unit="s"
+    />
+  </u>
+  <u who="PAR4" uID="u116">
+    <linker type="lazy overlap mark"/>
+    <w>ah</w>
+    <w untranscribed="unintelligible">xxx</w>
+    <t type="p"></t>
+    <media
+      start="216.227"
+      end="218.295"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u117">
+    <w>an<shortening>d</shortening></w>
+    <t type="interruption"></t>
+    <media
+      start="218.295"
+      end="219.043"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u118">
+    <w>ah</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>we</w>
+    <w>got</w>
+    <w>a_lot_of</w>
+    <w>stuff</w>
+    <t type="p"></t>
+    <media
+      start="219.043"
+      end="220.827"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u119">
+    <linker type="lazy overlap mark"/>
+    <w>what's</w>
+    <w type="fragment">t</w>
+    <t type="interruption question"></t>
+    <media
+      start="219.043"
+      end="220.226"
+      unit="s"
+    />
+    <a type="comments">picking up a new document.</a>
+  </u>
+  <u who="PAR3" uID="u120">
+    <linker type="lazy overlap mark"/>
+    <w>oh</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>okay</w>
+    <t type="p"></t>
+    <media
+      start="220.226"
+      end="221.925"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u121">
+    <linker type="lazy overlap mark"/>
+    <w>what's</w>
+    <w>this</w>
+    <t type="q"></t>
+    <media
+      start="220.925"
+      end="222.161"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u122">
+    <w>what</w>
+    <w>do</w>
+    <w>you</w>
+    <w>got</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>Larry</w>
+    <t type="q"></t>
+    <media
+      start="222.161"
+      end="225.270"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u123">
+    <w>okay</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>there's</w>
+    <w>a</w>
+    <w type="fragment">uh</w>
+    <t type="trail off"></t>
+    <media
+      start="225.270"
+      end="229.989"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u124">
+    <w>let's</w>
+    <w>see</w>
+    <t type="p"></t>
+    <media
+      start="229.989"
+      end="231.119"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u125">
+    <w>nails</w>
+    <w>a<p type="drawl"/>nd</w>
+    <w type="fragment">uh</w>
+    <w>there's</w>
+    <w>a</w>
+    <w type="fragment">uh</w>
+    <w>nineteen</w>
+    <w>nine</w>
+    <w>three</w>
+    <t type="p"></t>
+    <media
+      start="231.119"
+      end="240.333"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u126">
+    <w>and</w>
+    <w>what's</w>
+    <w>there</w>
+    <t type="q"></t>
+    <media
+      start="240.333"
+      end="243.505"
+      unit="s"
+    />
+    <a type="comments">examining more material that the participants are removing.</a>
+  </u>
+  <u who="PAR3" uID="u127">
+    <w>okay</w>
+    <t type="p"></t>
+    <media
+      start="243.505"
+      end="248.931"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u128">
+    <w>mm</w>
+    <t type="p"></t>
+    <media
+      start="248.931"
+      end="251.299"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u129">
+    <w>New_York</w>
+    <t type="p"></t>
+    <media
+      start="251.299"
+      end="252.792"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u130">
+    <w>mhm</w>
+    <t type="p"></t>
+    <media
+      start="252.792"
+      end="253.934"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u131">
+    <w>New_York</w>
+    <t type="e"></t>
+    <media
+      start="253.934"
+      end="255.260"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u132">
+    <e><happening>head:yes</happening></e>
+    <w>New_York</w>
+    <t type="p"></t>
+    <media
+      start="255.260"
+      end="257.549"
+      unit="s"
+    />
+    <a type="comments">holding up a print.</a>
+  </u>
+  <u who="INV2" uID="u133">
+    <w>New_York</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>okay</w>
+    <t type="p"></t>
+    <media
+      start="257.549"
+      end="259.151"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u134">
+    <w>okay</w>
+    <t type="p"></t>
+    <media
+      start="259.151"
+      end="259.878"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u135">
+    <linker type="lazy overlap mark"/>
+    <e><happening>counts</happening></e>
+    <w>so</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>now</w>
+    <w>we've</w>
+    <w>got</w>
+    <w>pub</w>
+    <w>and</w>
+    <w>New_York</w>
+    <t type="p"></t>
+    <media
+      start="259.151"
+      end="262.585"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u136">
+    <w>what</w>
+    <w>else</w>
+    <w>ha<shortening>ve</shortening></w>
+    <w>we</w>
+    <w>got</w>
+    <t type="q"></t>
+    <media
+      start="262.585"
+      end="263.568"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u137">
+    <w>oh</w>
+    <t type="e"></t>
+    <media
+      start="263.568"
+      end="264.760"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u138">
+    <w>oh</w>
+    <w untranscribed="unintelligible">xxx</w>
+    <w>what</w>
+    <t type="q"></t>
+    <media
+      start="264.760"
+      end="266.475"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u139">
+    <w>what's</w>
+    <w>that</w>
+    <w>one</w>
+    <t type="q"></t>
+    <media
+      start="266.475"
+      end="268.314"
+      unit="s"
+    />
+    <a type="comments">handing a document to par5.</a>
+  </u>
+  <u who="PAR5" uID="u140">
+    <w>Sanford</w>
+    <t type="interruption"></t>
+    <media
+      start="268.314"
+      end="269.723"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u141">
+    <w>New_York</w>
+    <t type="p"></t>
+    <media
+      start="269.723"
+      end="270.277"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u142">
+    <linker type="self completion"/>
+    <w>Florida</w>
+    <t type="p"></t>
+    <media
+      start="270.277"
+      end="271.159"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u143">
+    <g><w>I</w><k type="retracing"/></g>
+    <w>I</w>
+    <w>think</w>
+    <w>I</w>
+    <e><happening>ges</happening></e>
+    <t type="trail off"></t>
+    <media
+      start="271.159"
+      end="273.546"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u144">
+    <g><w>out</w><k type="best guess"/></g>
+    <t type="p"></t>
+    <media
+      start="273.546"
+      end="274.452"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u145">
+    <w type="fragment">uh</w>
+    <w type="fragment">f</w>
+    <w>is</w>
+    <w type="fragment">um</w>
+    <pause symbolic-length="simple"/>
+    <e><happening>points:document</happening></e>
+    <w type="fragment">uh</w>
+    <e><happening>ges</happening></e>
+    <t type="trail off"></t>
+    <media
+      start="274.452"
+      end="283.037"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u146">
+    <w>Stanford</w>
+    <t type="q"></t>
+    <media
+      start="283.037"
+      end="284.050"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u147">
+    <w>Sanford</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>not</w>
+    <w>Stanford</w>
+    <t type="p"></t>
+    <media
+      start="284.050"
+      end="286.362"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u148">
+    <w>Sanford</w>
+    <tagMarker type="comma"></tagMarker>
+    <g><w>you</w><k type="retracing"/></g>
+    <w>you</w>
+    <w>don't</w>
+    <w>know</w>
+    <w>of</w>
+    <w>it</w>
+    <t type="q"></t>
+    <media
+      start="286.362"
+      end="288.363"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u149">
+    <linker type="lazy overlap mark"/>
+    <g><w>that</w><r times="3"/></g>
+    <w>looks</w>
+    <w>like</w>
+    <t type="trail off"></t>
+    <media
+      start="286.362"
+      end="289.293"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u150">
+    <w>pictures</w>
+    <w>or</w>
+    <t type="trail off"></t>
+    <media
+      start="289.293"
+      end="292.349"
+      unit="s"
+    />
+    <a type="comments">handing a document to par3.</a>
+  </u>
+  <u who="PAR3" uID="u151">
+    <w>no</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>I</w>
+    <w>got</w>
+    <w>one</w>
+    <w>here</w>
+    <t type="p"></t>
+    <media
+      start="292.349"
+      end="293.626"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u152">
+    <w>Sanford</w>
+    <t type="p"></t>
+    <media
+      start="293.626"
+      end="294.338"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u153">
+    <linker type="lazy overlap mark"/>
+    <w>oh</w>
+    <e><happening>laughs</happening></e>
+    <t type="p"></t>
+    <media
+      start="293.626"
+      end="295.319"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u154">
+    <w type="fragment">ich</w>
+    <w>it's</w>
+    <w>in</w>
+    <w>Florida</w>
+    <t type="p"></t>
+    <media
+      start="295.319"
+      end="297.550"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u155">
+    <w>it's</w>
+    <w>in</w>
+    <w>Florida</w>
+    <t type="p"></t>
+    <media
+      start="297.550"
+      end="298.749"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u156">
+    <w>and</w>
+    <w>it's</w>
+    <w>in</w>
+    <w type="fragment">um</w>
+    <e><happening>ges</happening></e>
+    <t type="trail off"></t>
+    <media
+      start="298.749"
+      end="300.734"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u157">
+    <w>southern</w>
+    <t type="q"></t>
+    <media
+      start="300.734"
+      end="302.570"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u158">
+    <w>oh</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w type="fragment">th</w>
+    <w>this</w>
+    <t type="interruption"></t>
+    <media
+      start="302.570"
+      end="303.817"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u159">
+    <w>it's</w>
+    <w>golf</w>
+    <t type="p"></t>
+    <media
+      start="303.817"
+      end="305.264"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u160">
+    <linker type="lazy overlap mark"/>
+    <w>this</w>
+    <w>is</w>
+    <w type="fragment">n</w>
+    <w type="fragment">n</w>
+    <w untranscribed="unintelligible">xxx</w>
+    <t type="p"></t>
+    <media
+      start="303.817"
+      end="306.598"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u161">
+    <linker type="lazy overlap mark"/>
+    <w>in</w>
+    <w>the</w>
+    <w>golf</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>okay</w>
+    <t type="p"></t>
+    <media
+      start="305.317"
+      end="306.598"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u162">
+    <g><w>so</w><k type="retracing"/></g>
+    <w>so</w>
+    <t type="interruption"></t>
+    <media
+      start="306.598"
+      end="308.538"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u163">
+    <linker type="lazy overlap mark"/>
+    <w>I</w>
+    <w>think</w>
+    <t type="p"></t>
+    <media
+      start="306.598"
+      end="308.223"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u164">
+    <linker type="lazy overlap mark"/>
+    <w>remember</w>
+    <w>this</w>
+    <t type="q"></t>
+    <media
+      start="306.598"
+      end="308.418"
+      unit="s"
+    />
+    <a type="comments">showing a document to par2.</a>
+  </u>
+  <u who="PAR2" uID="u165">
+    <e><happening>head:yes</happening></e>
+    <w>uhhuh</w>
+    <t type="p"></t>
+    <media
+      start="308.418"
+      end="309.555"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u166">
+    <w>ooh</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>that</w>
+    <w>kinda</w>
+    <w>goes</w>
+    <w>together</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>right</w>
+    <t type="q"></t>
+    <media
+      start="309.555"
+      end="312.024"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u167">
+    <linker type="lazy overlap mark"/>
+    <g><w>I</w>
+    <w untranscribed="unintelligible">xxx</w><k type="retracing with correction"/></g>
+    <w>I've</w>
+    <w>got</w>
+    <w type="fragment">th</w>
+    <w>the</w>
+    <w>other</w>
+    <t type="trail off"></t>
+    <media
+      start="309.555"
+      end="312.926"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u168">
+    <linker type="lazy overlap mark"/>
+    <w>what</w>
+    <w>is</w>
+    <w>that</w>
+    <t type="q"></t>
+    <media
+      start="312.126"
+      end="313.296"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u169">
+    <linker type="lazy overlap mark"/>
+    <g><w>nope</w><k type="best guess"/></g>
+    <t type="p"></t>
+    <media
+      start="312.796"
+      end="313.932"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u170">
+    <w type="fragment">uh</w>
+    <w>sugar</w>
+    <w>cookie</w>
+    <t type="p"></t>
+    <media
+      start="313.932"
+      end="317.189"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u171">
+    <g><w>sugar</w>
+    <w>cookie</w><ga type="paralinguistics">laughing</ga></g>
+    <t type="p"></t>
+    <media
+      start="317.189"
+      end="318.322"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u172">
+    <w>yeah</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>sometimes</w>
+    <t type="p"></t>
+    <media
+      start="318.322"
+      end="319.631"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u173">
+    <w>sometimes</w>
+    <w>yeah</w>
+    <t type="q"></t>
+    <media
+      start="319.631"
+      end="320.557"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u174">
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="320.557"
+      end="321.071"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u175">
+    <g><w>I</w><k type="retracing"/></g>
+    <g><w>I</w><k type="retracing with correction"/></g>
+    <e><happening>points:par3</happening></e>
+    <w>that</w>
+    <w>is</w>
+    <w type="fragment">uh</w>
+    <w type="fragment">oh</w>
+    <w>something</w>
+    <w type="fragment">um</w>
+    <w>water</w>
+    <t type="p"></t>
+    <media
+      start="321.071"
+      end="328.516"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u176">
+    <e><happening>head:yes</happening></e>
+    <w>water</w>
+    <t type="p"></t>
+    <media
+      start="328.516"
+      end="329.566"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u177">
+    <linker type="lazy overlap mark"/>
+    <w>water</w>
+    <t type="p"></t>
+    <media
+      start="329.366"
+      end="329.961"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u178">
+    <w>in</w>
+    <w untranscribed="unintelligible">xxx</w>
+    <t type="trail off"></t>
+    <media
+      start="329.961"
+      end="330.870"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u179">
+    <g><w>in</w><k type="retracing"/></g>
+    <w type="fragment">uh</w>
+    <w>in</w>
+    <w>the</w>
+    <w>golf</w>
+    <t type="p"></t>
+    <media
+      start="330.870"
+      end="332.688"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u180">
+    <w>golf</w>
+    <t type="p"></t>
+    <media
+      start="332.688"
+      end="333.394"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u181">
+    <linker type="lazy overlap mark"/>
+    <w>golf</w>
+    <t type="p"></t>
+    <media
+      start="332.688"
+      end="333.678"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u182">
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="333.678"
+      end="334.089"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u183">
+    <linker type="lazy overlap mark"/>
+    <w>and</w>
+    <w type="fragment">th</w>
+    <w>Sanford</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>she</w>
+    <w>says</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>is</w>
+    <w>into</w>
+    <w>golf</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>she</w>
+    <w>thinks</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>too</w>
+    <t type="p"></t>
+    <media
+      start="333.889"
+      end="336.958"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u184">
+    <w>it</w>
+    <w>has</w>
+    <w>the</w>
+    <w>guy's</w>
+    <w>full</w>
+    <w>name</w>
+    <w>on</w>
+    <w>here</w>
+    <t type="p"></t>
+    <media
+      start="336.958"
+      end="339.081"
+      unit="s"
+    />
+    <a type="comments">shows her document to par5.</a>
+  </u>
+  <u who="INV2" uID="u185">
+    <w>can</w>
+    <w>you</w>
+    <w>read</w>
+    <w>it</w>
+    <t type="q"></t>
+    <media
+      start="339.081"
+      end="341.566"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u186">
+    <w>Thomas_Hallman</w>
+    <t type="p"></t>
+    <media
+      start="341.566"
+      end="344.214"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u187">
+    <w>okay</w>
+    <t type="p"></t>
+    <media
+      start="344.214"
+      end="345.404"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u188">
+    <e><happening>points:document</happening></e>
+    <w type="fragment">h</w>
+    <w>P_O</w>
+    <w>box</w>
+    <w>thirty</w>
+    <w>seven</w>
+    <t type="p"></t>
+    <media
+      start="345.404"
+      end="348.402"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u189">
+    <w>in</w>
+    <w>Sanford</w>
+    <t type="p"></t>
+    <media
+      start="348.402"
+      end="350.652"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u190">
+    <linker type="lazy overlap mark"/>
+    <w>yeah</w>
+    <w>she</w>
+    <w>knows</w>
+    <w>how</w>
+    <w>to</w>
+    <w>do</w>
+    <w>it</w>
+    <t type="p"></t>
+    <media
+      start="348.402"
+      end="351.365"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u191">
+    <linker type="lazy overlap mark"/>
+    <e><happening>head:yes</happening></e>
+    <w>Sanford</w>
+    <t type="p"></t>
+    <media
+      start="350.765"
+      end="351.450"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u192">
+    <linker type="lazy overlap mark"/>
+    <w>so</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>we</w>
+    <w>know</w>
+    <w>this</w>
+    <w>guy</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>Thomas_Hallman</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>must</w>
+    <w>be</w>
+    <w>who</w>
+    <w>this</w>
+    <w>belonged</w>
+    <w>to</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>right</w>
+    <t type="q"></t>
+    <media
+      start="350.765"
+      end="356.263"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u193">
+    <linker type="lazy overlap mark"/>
+    <w>hmm</w>
+    <t type="p"></t>
+    <media
+      start="353.981"
+      end="354.831"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u194">
+    <e><happening>points:document</happening></e>
+    <w><shortening>be</shortening>cause</w>
+    <w>we've</w>
+    <w>got</w>
+    <w>Thomas</w>
+    <t type="p"></t>
+    <media
+      start="356.263"
+      end="358.578"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u195">
+    <linker type="lazy overlap mark"/>
+    <w>this</w>
+    <w>is</w>
+    <t type="self interruption"></t>
+    <media
+      start="358.078"
+      end="358.971"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u196">
+    <w>oh</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>they're</w>
+    <w>over</w>
+    <w>here</w>
+    <t type="q"></t>
+    <media
+      start="358.971"
+      end="359.867"
+      unit="s"
+    />
+  </u>
+  <u who="PAR4" uID="u197">
+    <g><w>Harley</w><k type="best guess"/></g>
+    <t type="p"></t>
+    <media
+      start="359.867"
+      end="360.661"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u198">
+    <w>this</w>
+    <w>one</w>
+    <w>here</w>
+    <w>is</w>
+    <w>somebody</w>
+    <w untranscribed="unintelligible">xxx</w>
+    <w>too</w>
+    <t type="p"></t>
+    <media
+      start="360.661"
+      end="362.726"
+      unit="s"
+    />
+  </u>
+  <u who="PAR4" uID="u199">
+    <w>yeah</w>
+    <t type="p"></t>
+    <media
+      start="362.726"
+      end="363.104"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u200">
+    <w>Thomas</w>
+    <t type="e"></t>
+    <media
+      start="363.104"
+      end="364.194"
+      unit="s"
+    />
+    <a type="comments">holding up a document.</a>
+  </u>
+  <u who="PAR4" uID="u201">
+    <w untranscribed="unintelligible">xxx</w>
+    <e><happening>guffaws</happening></e>
+    <t type="e"></t>
+    <media
+      start="363.894"
+      end="365.829"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u202">
+    <w>oh</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>you</w>
+    <w>found</w>
+    <w>more</w>
+    <w>evidence</w>
+    <w>about</w>
+    <w>him</w>
+    <t type="q"></t>
+    <media
+      start="365.829"
+      end="367.642"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u203">
+    <g><w>yep</w><k type="best guess"/></g>
+    <t type="p"></t>
+    <media
+      start="367.642"
+      end="368.294"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u204">
+    <linker type="lazy overlap mark"/>
+    <w>uhhuh</w>
+    <t type="p"></t>
+    <media
+      start="367.642"
+      end="368.327"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u205">
+    <w>read</w>
+    <w>it</w>
+    <w>for</w>
+    <w>us</w>
+    <t type="e"></t>
+    <media
+      start="368.327"
+      end="369.343"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u206">
+    <linker type="quoted utterance next"/>
+    <w>hello</w>
+    <t type="self interruption"></t>
+    <media
+      start="369.343"
+      end="371.364"
+      unit="s"
+    />
+    <a type="comments">reading document.</a>
+  </u>
+  <u who="PAR2" uID="u207">
+    <w type="fragment">uh</w>
+    <e><happening>head:shakes</happening></e>
+    <t type="p"></t>
+    <media
+      start="371.364"
+      end="372.312"
+      unit="s"
+    />
+    <a type="comments">seemingly gives up on reading and offers it elsewhere.</a>
+  </u>
+  <u who="INV2" uID="u208">
+    <w>you</w>
+    <w>can</w>
+    <w>read</w>
+    <w>it</w>
+    <t type="p"></t>
+    <media
+      start="372.312"
+      end="373.437"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u209">
+    <linker type="lazy overlap mark"/>
+    <w>China</w>
+    <t type="p"></t>
+    <media
+      start="372.312"
+      end="373.829"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u210">
+    <w>you're</w>
+    <w>good</w>
+    <w>at</w>
+    <w>reading</w>
+    <t type="p"></t>
+    <media
+      start="373.829"
+      end="374.764"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u211">
+    <w>go</w>
+    <w>ahead</w>
+    <t type="p"></t>
+    <media
+      start="374.764"
+      end="375.065"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u212">
+    <w>this</w>
+    <w>one</w>
+    <w>is</w>
+    <w type="fragment">h</w>
+    <w>here</w>
+    <t type="p"></t>
+    <media
+      start="375.065"
+      end="376.491"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u213">
+    <w>Lieutenant</w>
+    <t type="trail off"></t>
+    <media
+      start="376.491"
+      end="377.964"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u214">
+    <w>yeah</w>
+    <t type="q"></t>
+    <media
+      start="377.964"
+      end="378.664"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u215">
+    <w>Private</w>
+    <w type="fragment">um</w>
+    <t type="interruption"></t>
+    <media
+      start="378.664"
+      end="380.191"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u216">
+    <w>happy</w>
+    <t type="trail off"></t>
+    <media
+      start="380.191"
+      end="380.976"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u217">
+    <w>I</w>
+    <w>don't</w>
+    <w>know</w>
+    <t type="p"></t>
+    <media
+      start="380.976"
+      end="383.558"
+      unit="s"
+    />
+    <a type="comments">hands the document to par1.</a>
+  </u>
+  <u who="PAR1" uID="u218">
+    <w>Lieutenant</w>
+    <t type="interruption"></t>
+    <media
+      start="383.558"
+      end="385.886"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u219">
+    <linker type="lazy overlap mark"/>
+    <w>happy</w>
+    <t type="trail off"></t>
+    <media
+      start="385.586"
+      end="386.471"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u220">
+    <linker type="self completion"/>
+    <w>Thomas</w>
+    <t type="trail off"></t>
+    <media
+      start="386.471"
+      end="387.534"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u221">
+    <g><w>oh</w>
+    <w>wow</w><ga type="paralinguistics">hushed voice</ga></g>
+    <t type="p"></t>
+    <media
+      start="387.534"
+      end="389.394"
+      unit="s"
+    />
+    <a type="comments">inspecting the box itself along with par5.</a>
+  </u>
+  <u who="PAR5" uID="u222">
+    <w>wait</w>
+    <w>a</w>
+    <w>minute</w>
+    <t type="p"></t>
+    <media
+      start="389.394"
+      end="390.091"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u223">
+    <linker type="self completion"/>
+    <w>Hall<p type="pause"/>mark<replacement><w>Hallman</w></replacement></w>
+    <t type="trail off"></t>
+    <media
+      start="390.091"
+      end="391.662"
+      unit="s"
+    />
+  </u>
+  <u who="PAR5" uID="u224">
+    <w>oo</w>
+    <t type="p"></t>
+    <media
+      start="391.662"
+      end="392.153"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u225">
+    <w untranscribed="unintelligible">xxx</w>
+    <t type="p"></t>
+    <media
+      start="392.153"
+      end="392.722"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u226">
+    <linker type="self completion"/>
+    <w>of</w>
+    <t type="trail off"></t>
+    <media
+      start="392.722"
+      end="393.261"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u227">
+    <w>Hallman</w>
+    <t type="p"></t>
+    <media
+      start="393.261"
+      end="394.292"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u228">
+    <linker type="self completion"/>
+    <w>Geneva</w>
+    <t type="trail off"></t>
+    <media
+      start="394.292"
+      end="396.352"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u229">
+    <e><happening>points:document</happening></e>
+    <w>Florida</w>
+    <t type="p"></t>
+    <media
+      start="396.352"
+      end="397.682"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u230">
+    <linker type="lazy overlap mark"/>
+    <w>Florida</w>
+    <t type="p"></t>
+    <media
+      start="396.352"
+      end="398.331"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u231">
+    <w>Geneva_Florida</w>
+    <t type="p"></t>
+    <media
+      start="398.331"
+      end="399.500"
+      unit="s"
+    />
+  </u>
+  <u who="INV1" uID="u232">
+    <w>what's</w>
+    <w>that</w>
+    <w>right</w>
+    <w>there</w>
+    <e><happening>points:document</happening></e>
+    <t type="q"></t>
+    <media
+      start="399.500"
+      end="400.633"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u233">
+    <w type="fragment">um</w>
+    <t type="trail off"></t>
+    <media
+      start="400.633"
+      end="405.557"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u234">
+    <w>want</w>
+    <w>a</w>
+    <w>little</w>
+    <w>help</w>
+    <t type="q"></t>
+    <media
+      start="405.557"
+      end="407.524"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u235">
+    <w type="fragment">um</w>
+    <t type="trail off"></t>
+    <media
+      start="407.524"
+      end="410.901"
+      unit="s"
+    />
+    <a type="comments">shares the document with inv2.</a>
+  </u>
+  <u who="INV2" uID="u236">
+    <w type="fragment">l</w>
+    <t type="interruption"></t>
+    <media
+      start="410.901"
+      end="412.120"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u237">
+    <w>local</w>
+    <w>hero</w>
+    <w>runs</w>
+    <w>for</w>
+    <t type="trail off"></t>
+    <media
+      start="412.120"
+      end="417.757"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u238">
+    <w type="fragment">off</w>
+    <t type="interruption"></t>
+    <media
+      start="417.757"
+      end="418.763"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u239">
+    <linker type="self completion"/>
+    <g><w>officer</w><error>s:r</error></g>
+    <t type="p"></t>
+    <media
+      start="418.763"
+      end="419.916"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u240">
+    <linker type="lazy overlap mark"/>
+    <w untranscribed="unintelligible">xxx</w>
+    <t type="p"></t>
+    <media
+      start="418.763"
+      end="419.890"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u241">
+    <w>office</w>
+    <t type="p"></t>
+    <media
+      start="419.890"
+      end="420.490"
+      unit="s"
+    />
+  </u>
+  <u who="PAR2" uID="u242">
+    <w>office</w>
+    <t type="p"></t>
+    <media
+      start="420.490"
+      end="421.826"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u243">
+    <linker type="lazy overlap mark"/>
+    <w>it's</w>
+    <w>a</w>
+    <w>war</w>
+    <w>hero</w>
+    <tagMarker type="tag"></tagMarker>
+    <w>huh</w>
+    <t type="q"></t>
+    <media
+      start="420.490"
+      end="422.939"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u244">
+    <w>running</w>
+    <w>for</w>
+    <w>office</w>
+    <t type="p"></t>
+    <media
+      start="422.939"
+      end="425.187"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u245">
+    <w>is</w>
+    <w>it</w>
+    <w>Hallman</w>
+    <t type="q"></t>
+    <media
+      start="425.187"
+      end="426.793"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u246">
+    <w>see</w>
+    <w>if</w>
+    <w>it's</w>
+    <w>Hallman</w>
+    <t type="p"></t>
+    <media
+      start="426.793"
+      end="427.866"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u247">
+    <w>okay</w>
+    <w untranscribed="unintelligible">xxx</w>
+    <t type="interruption"></t>
+    <media
+      start="427.866"
+      end="430.622"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u248">
+    <linker type="lazy overlap mark"/>
+    <w>is</w>
+    <w>it</w>
+    <w>Hallman</w>
+    <t type="q"></t>
+    <media
+      start="429.866"
+      end="430.923"
+      unit="s"
+    />
+  </u>
+  <u who="PAR1" uID="u249">
+    <w>yeah</w>
+    <e><happening>head:yes</happening></e>
+    <t type="p"></t>
+    <media
+      start="430.923"
+      end="432.191"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u250">
+    <w>yeah</w>
+    <t type="q"></t>
+    <media
+      start="432.191"
+      end="432.584"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u251">
+    <w>so</w>
+    <tagMarker type="vocative"></tagMarker>
+    <w>that's</w>
+    <w>what</w>
+    <w>he</w>
+    <w>looks</w>
+    <w>like</w>
+    <t type="p"></t>
+    <media
+      start="432.584"
+      end="434.111"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u252">
+    <linker type="lazy overlap mark"/>
+    <w type="fragment">l</w>
+    <w>London</w>
+    <t type="p"></t>
+    <media
+      start="432.584"
+      end="434.228"
+      unit="s"
+    />
+  </u>
+  <u who="INV2" uID="u253">
+    <w>take</w>
+    <w>a</w>
+    <w>look</w>
+    <w>at</w>
+    <w><shortening>h</shortening>im</w>
+    <t type="p"></t>
+    <media
+      start="434.228"
+      end="435.392"
+      unit="s"
+    />
+  </u>
+  <u who="PAR3" uID="u254">
+    <w>this</w>
+    <w>one</w>
+    <w>here</w>
+    <w><shortening>i</shortening>s</w>
+    <w>London</w>
+    <t type="p"></t>
+    <media
+      start="435.392"
+      end="437.201"
+      unit="s"
+    />
+  </u>
+</CHAT>

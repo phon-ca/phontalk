@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="zho eng"
+      Corpus="timmy"
+      Date="1996-02-29"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="eng zho"
+      age="P2Y09M08D"
+
+    />
+    <participant
+      id="LIN"
+    name="Linda"
+      role="Investigator"
+      language="eng zho"
+
+    />
+    <participant
+      id="WIN"
+    name="Winnie"
+      role="Investigator"
+      language="eng zho"
+
+    />
+    <participant
+      id="GEM"
+    name="Gemma"
+      role="Speaker"
+      language="eng zho"
+
+    />
+  </Participants>
+  <comment type="Tape Location">TI060 (side A)</comment>
+  <comment type="Date">29-FEB-1996</comment>
+  <comment type="Time Duration">17:30-18:00</comment>
+  <u who="CHI" uID="u0">
+    <w>so<mor type="mor"><mw><pos><c>co</c></pos><stem>so</stem></mw></mor></w>
+    <w>dirty<mor type="mor"><mw><pos><c>v</c></pos><stem>dirty</stem></mw></mor></w>
+    <w>soldier<mor type="mor"><mw><pos><c>n</c></pos><stem>soldier</stem></mw></mor></w>
+    <w>aa3<mor type="mor"><mw><pos><c>sfp</c></pos><stem>aa3</stem></mw></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+
+  </u>
+  <comment type="Generic">Put in ' for character content</comment>
+  <u who="CHI" uID="u1">
+    <w>so<mor type="mor"><mw><pos><c>co</c></pos><stem>so</stem></mw></mor></w>
+    <w>dirty<mor type="mor"><mw><pos><c>v</c></pos><stem>dirty</stem></mw></mor></w>
+    <w>soldier's<mor type="mor"><mw><pos><c>n</c></pos><stem>soldier</stem></mw><mor-post><mw><pos><c>v</c></pos><stem>be</stem><mk type="sfxf">3S</mk></mw></mor-post></mor></w>
+    <w>aa3<mor type="mor"><mw><pos><c>sfp</c></pos><stem>aa3</stem></mw></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+
+  </u>
+</CHAT>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng zho yue"
+      Corpus="bates"
+      Date="1964-07-23"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng zho yue"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng zho yue"
+
+    />
+  </Participants>
+  <comment type="Date">23-JUL-1964</comment>
+  <comment type="Generic">Multiple languages</comment>
+  <u who="CHI" uID="u0">
+    <w>hey</w>
+    <w>there</w>
+    <w>what</w>
+    <w>is</w>
+    <w>this</w>
+    <t type="q"></t>
+
+  </u>
+</CHAT>

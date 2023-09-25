@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="zho"
+      Corpus="timmy"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="zho"
+      age="P2Y09M08D"
+
+    />
+    <participant
+      id="LIN"
+    name="Linda"
+      role="Investigator"
+      language="zho"
+
+    />
+    <participant
+      id="WIN"
+    name="Winnie"
+      role="Investigator"
+      language="zho"
+
+    />
+    <participant
+      id="GEM"
+    name="Gemma"
+      role="Speaker"
+      language="zho"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <w>sik6<mor type="mor"><mw><pos><c>v</c></pos><stem>sik6</stem></mw><menx>eat</menx></mor></w>
+    <w>ping4gwo2<mor type="mor"><mw><pos><c>n</c></pos><stem>ping4gwo2</stem></mw><menx>apple</menx></mor></w>
+    <w>caang2<mor type="mor"><mw><pos><c>n</c></pos><stem>caang2</stem></mw><menx>orange</menx></mor></w>
+    <w>hoeng1ziu1<mor type="mor"><mw><pos><c>n</c></pos><stem>hoeng1ziu1</stem></mw><menx>banana</menx></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+
+  </u>
+</CHAT>

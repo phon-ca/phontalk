@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <lazy-gem label="a"/>
+  <u who="MOT" uID="u0">
+    <w>what's</w>
+    <w>that</w>
+    <t type="q"></t>
+
+    <a type="actions">holds object out to Amy</a>
+  </u>
+  <u who="CHI" uID="u1">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="p"></t>
+
+    <a type="gesture">looks at chicken</a>
+    <a type="actions">holds nesting cups</a>
+    <a type="extension" flavor="pho">wi</a>
+  </u>
+  <begin-gem label="foo"/>
+  <u who="MOT" uID="u2">
+    <w>it's</w>
+    <w>a</w>
+    <w>chicken</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u3">
+    <w>yeah</w>
+    <t type="p"></t>
+
+    <a type="actions">takes chicken</a>
+  </u>
+  <u who="MOT" uID="u4">
+    <w>yeah</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u5">
+    <w>what's</w>
+    <w>this</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;1w-2w&gt; holds object out to Amy &lt;1w&gt; picks up object .</a>
+  </u>
+  <end-gem label="foo"/>
+  <u who="MOT" uID="u6">
+    <w>what</w>
+    <g><w>is</w><k type="stressing"/></g>
+    <w>that</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;1w-3w&gt; holds object out to Amy</a>
+  </u>
+  <u who="CHI" uID="u7">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;aft&gt; manipulates chicken in hands</a>
+    <a type="extension" flavor="pho">6rat</a>
+  </u>
+  <lazy-gem label="b"/>
+  <u who="MOT" uID="u8">
+    <w>it's</w>
+    <w>a</w>
+    <w>woof<wk type="cmp"/><shortening>woof</shortening></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u9">
+    <w>yeah</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u10">
+    <w>yeah</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

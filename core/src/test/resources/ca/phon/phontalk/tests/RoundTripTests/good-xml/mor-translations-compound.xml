@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="spa eng"
+      Corpus="timmy"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="spa eng"
+      age="P2Y09M08D"
+
+    />
+    <participant
+      id="LIN"
+    name="Linda"
+      role="Investigator"
+      language="spa eng"
+
+    />
+    <participant
+      id="WIN"
+    name="Winnie"
+      role="Investigator"
+      language="spa eng"
+
+    />
+    <participant
+      id="GEM"
+    name="Gemma"
+      role="Speaker"
+      language="spa eng"
+
+    />
+  </Participants>
+  <comment type="Generic">Translations for each part.</comment>
+  <u who="CHI" uID="u0">
+    <w>in<wk type="cli"/>the<mor type="mor"><mw><pos><c>prep</c></pos><stem>be</stem></mw><menx>in</menx><menx>at</menx><mor-post><mw><pos><c>det</c></pos><stem>ha</stem></mw><menx>the</menx></mor-post></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+
+  </u>
+</CHAT>

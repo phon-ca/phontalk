@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="belfast"
+      Date="1996-03-26"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Courtney"
+      role="Target_Child"
+      language="eng"
+      age="P3Y06M18D"
+      SES="UC"
+
+      birthday="1992-09-08"
+
+    />
+    <participant
+      id="MOT"
+    name="Tracy"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="INV"
+    name="Rose"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="FAT"
+    name="Tom"
+      role="Father"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Date">26-MAR-1996</comment>
+  <comment type="Situation">Did a Topsy and Tim jigsaw and then magnetic fishing. Ethan, the baby, was asleep on the settee to begin with. Tom came in briefly on his way to work. Hadn't the microphone switched on to begin with so this starts a few minutes into the visit.</comment>
+  <u who="INV" uID="u0">
+    <w>do<mor type="trn"><mw><pos><c>v</c></pos><stem>do</stem></mw></mor></w>
+    <w>you<mor type="trn"><mw><pos><c>pro</c></pos><stem>you</stem></mw></mor></w>
+    <w>like_it_now<mor type="trn"><mw><pos><c>v</c></pos><stem>like_it_now</stem></mw></mor></w>
+    <w>having<mor type="trn"><mw><pos><c>part</c></pos><stem>have</stem><mk type="sfx">PRES_PART</mk></mw></mor></w>
+    <w>laces<mor type="trn"><mw><pos><c>n</c></pos><stem>lace</stem><mk type="sfx">PL</mk></mw></mor></w>
+    <w>or<mor type="trn"><mw><pos><c>conj</c><s>coo</s></pos><stem>or</stem></mw></mor></w>
+    <w>buckles<mor type="trn"><mw><pos><c>n</c></pos><stem>buckle</stem><mk type="sfx">PL</mk></mw></mor></w>
+    <t type="q"><mor type="trn"><mt type="q"/></mor></t>
+
+  </u>
+</CHAT>

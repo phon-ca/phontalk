@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="SBCSAE"
+      >
+  <Participants>
+    <participant
+      id="JAMI"
+    name="JAMIE"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="HARO"
+    name="HAROLD"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="MILE"
+    name="MILES"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="PETE"
+    name="PETE"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="ENV"
+    name="ENV"
+      role="Environment"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="MILE" uID="u0">
+    <overlap-point start-end="start" top-bottom="top"/>
+    <w>top</w>
+    <overlap-point start-end="end" top-bottom="top"/>
+    <overlap-point start-end="start" top-bottom="top" index="2"/>
+    <w>second</w>
+    <w>top</w>
+    <overlap-point start-end="end" top-bottom="top" index="2"/>
+    <overlap-point start-end="start" top-bottom="top" index="3"/>
+    <w>third</w>
+    <w>top</w>
+    <overlap-point start-end="end" top-bottom="top" index="3"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="JAMI" uID="u1">
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <w>bottom</w>
+    <w>begin</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="JAMI" uID="u2">
+    <w>bottom</w>
+    <w>end</w>
+    <overlap-point start-end="end" top-bottom="bottom"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="PETE" uID="u3">
+    <overlap-point start-end="start" top-bottom="bottom" index="2"/>
+    <w>second</w>
+    <w>bottom</w>
+    <overlap-point start-end="end" top-bottom="bottom" index="2"/>
+    <t type="p"></t>
+
+  </u>
+  <u who="JAMI" uID="u4">
+    <overlap-point start-end="start" top-bottom="bottom" index="3"/>
+    <w>third</w>
+    <w>bottom</w>
+    <w>begin</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="JAMI" uID="u5">
+    <w>third</w>
+    <w>bottom</w>
+    <w>end</w>
+    <overlap-point start-end="end" top-bottom="bottom" index="3"/>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

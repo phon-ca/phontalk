@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="snd-multiple" Mediatypes="audio"
+      Version="2.19.0"
+      Lang="eng"
+      Options="multi"
+      Corpus="sample"
+      >
+  <Participants>
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="CHI"
+      role="Target_Child"
+      language="eng"
+      age="P1Y10M04D"
+
+    />
+  </Participants>
+  <comment type="Generic">test multi bullets</comment>
+  <u who="CHI" uID="u0">
+    <w>We'll</w>
+    <internal-media
+      start="0.000"
+      end="2.200"
+      unit="s"
+    />
+    <w>hear</w>
+    <internal-media
+      start="2.200"
+      end="2.370"
+      unit="s"
+    />
+    <w>argument</w>
+    <internal-media
+      start="2.370"
+      end="2.800"
+      unit="s"
+    />
+    <w>now</w>
+    <internal-media
+      start="2.800"
+      end="2.990"
+      unit="s"
+    />
+    <w>in</w>
+    <internal-media
+      start="2.990"
+      end="3.090"
+      unit="s"
+    />
+    <w>number</w>
+    <internal-media
+      start="3.090"
+      end="3.330"
+      unit="s"
+    />
+    <g><w>oh</w>
+    <internal-media
+      start="3.330"
+      end="3.460"
+      unit="s"
+    />
+    <w>two</w>
+    <internal-media
+      start="3.460"
+      end="3.720"
+      unit="s"
+    />
+    <w>ten</w>
+    <internal-media
+      start="3.720"
+      end="3.820"
+      unit="s"
+    />
+    <w>twenty-eight</w>
+    <internal-media
+      start="3.820"
+      end="4.710"
+      unit="s"
+    /><ga type="explanation">02-1028</ga></g>
+    <tagMarker type="comma"></tagMarker>
+    <w>the</w>
+    <internal-media
+      start="4.710"
+      end="4.780"
+      unit="s"
+    />
+    <w>Norfolk</w>
+    <internal-media
+      start="4.780"
+      end="5.260"
+      unit="s"
+    />
+    <w>Southern</w>
+    <internal-media
+      start="5.260"
+      end="5.780"
+      unit="s"
+    />
+    <w>Railway</w>
+    <internal-media
+      start="5.780"
+      end="6.190"
+      unit="s"
+    />
+    <w>Company</w>
+    <internal-media
+      start="6.190"
+      end="7.100"
+      unit="s"
+    />
+    <w>v</w>
+    <internal-media
+      start="7.100"
+      end="7.330"
+      unit="s"
+    />
+    <w>James</w>
+    <internal-media
+      start="7.330"
+      end="7.980"
+      unit="s"
+    />
+    <w>N</w>
+    <internal-media
+      start="7.980"
+      end="8.240"
+      unit="s"
+    />
+    <w>Kirby</w>
+    <internal-media
+      start="8.240"
+      end="9.565"
+      unit="s"
+    />
+    <t type="p"></t>
+
+  </u>
+  <lazy-gem label="---"/>
+</CHAT>

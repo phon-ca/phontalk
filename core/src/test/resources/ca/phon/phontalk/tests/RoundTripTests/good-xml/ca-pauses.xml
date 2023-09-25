@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="sample"
+      >
+  <Participants>
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="CHI"
+      role="Target_Child"
+      language="eng"
+      age="P1Y10M04D"
+
+    />
+  </Participants>
+  <comment type="Generic">pauses</comment>
+  <u who="CHI" uID="u0">
+    <w>a</w>
+    <pause symbolic-length="simple"/>
+    <w>b</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u1">
+    <w>a</w>
+    <pause symbolic-length="long"/>
+    <w>b</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u2">
+    <w>a</w>
+    <pause symbolic-length="very long"/>
+    <w>b</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u3">
+    <w>a</w>
+    <pause symbolic-length="simple" length="3"/>
+    <w>b</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u4">
+    <w>a</w>
+    <pause symbolic-length="simple" length="123"/>
+    <w>b</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u5">
+    <w>a</w>
+    <pause symbolic-length="simple" length="123.4"/>
+    <w>b</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u6">
+    <w>a</w>
+    <pause symbolic-length="simple" length="3.4"/>
+    <w>b</w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">pauses followed by stuff</comment>
+  <u who="CHI" uID="u7">
+    <w>a</w>
+    <pause symbolic-length="simple"/>
+    <tagMarker type="comma"></tagMarker>
+    <w>b</w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">pauses with annotations</comment>
+  <u who="CHI" uID="u8">
+    <g><w>a</w>
+    <pause symbolic-length="simple" length="3.4"/><k type="retracing"/></g>
+    <w>a</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

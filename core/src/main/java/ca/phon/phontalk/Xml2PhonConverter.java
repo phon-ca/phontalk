@@ -26,7 +26,6 @@ import jakarta.xml.bind.ValidationException;
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 
-import ca.phon.phontalk.parser.*;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
 import ca.phon.syllabifier.SyllabifierLibrary;
@@ -75,74 +74,74 @@ public class Xml2PhonConverter {
 	 */
 	public Session convertStream(InputStream inputStream, PhonTalkListener listener) {
 		// create input token stream
-		final TalkBankTokenSource tokenSource = new TalkBankTokenSource(inputStream);
-		TokenStream	tokenStream = new CommonTokenStream(tokenSource);
+//		final TalkBankTokenSource tokenSource = new TalkBankTokenSource(inputStream);
+//		TokenStream	tokenStream = new CommonTokenStream(tokenSource);
+//
+//		// convert xml stream into an AST
+//		TalkBank2ASTParser.chat_return parserRet;
+//		try {
+//			final TalkBank2ASTParser parser = new TalkBank2ASTParser(tokenStream);
+//			parser.setFile(inputFile.getAbsolutePath());
+//			parser.setPhonTalkListener(listener);
+//			parserRet = parser.chat();
+//		} catch (RecognitionException re) {
+//			if(PhonTalkUtil.isVerbose()) re.printStackTrace();
+//			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("TalkBank2AST.tokens"));
+//			visitor.visit(re);
+//			final PhonTalkMessage msg = visitor.getMessage();
+//			msg.setFile(inputFile);
+//			if(listener != null) listener.message(msg);
+//			return null;
+//		}
+//
+//		// walk AST and output using string template
+//		Session session = null;
+//		try {
+//			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(parserRet.getTree());
+//			final AST2Phon walker = new AST2Phon(nodeStream);
+//			walker.setSyllabifyAndAlign(getSettings().isSyllabifyAndAlign());
+//			walker.setSyllabifier(SyllabifierLibrary.getInstance()
+//					.getSyllabifierForLanguage(getSettings().getSyllabifer()) );
+//			walker.setFile(inputFile.getAbsolutePath());
+//			walker.setPhonTalkListener(listener);
+//
+//			walker.chat();
+//			session = walker.getSession();
+//		} catch (TreeWalkerError e) {
+//			if(e.getCause() instanceof RecognitionException) {
+//				final RecognitionException re = (RecognitionException)e.getCause();
+//				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2Phon.tokens"));
+//				visitor.visit(re);
+//
+//				final PhonTalkMessage msg = visitor.getMessage();
+//
+//				msg.setMessage(msg.getMessage());
+//
+//				if(listener != null) {
+//					listener.message(msg);
+//				}
+//			} else {
+//				final PhonTalkError err = new PhonTalkError(e.getMessage(), e);
+//				if(listener != null) {
+//					listener.message(err);
+//				}
+//			}
+//		} catch (RecognitionException re) {
+//			if(PhonTalkUtil.isVerbose()) re.printStackTrace();
+//			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2Phon.tokens"));
+//			visitor.visit(re);
+//			final PhonTalkMessage msg = visitor.getMessage();
+//			msg.setFile(inputFile);
+//			if(listener != null) listener.message(msg);
+//			return null;
+//		} catch (Exception e) {
+//			final PhonTalkMessage msg = new PhonTalkMessage(e.getLocalizedMessage());
+//			msg.setFile(inputFile);
+//			if(listener != null) listener.message(msg);
+//			return null;
+//		}
 		
-		// convert xml stream into an AST
-		TalkBank2ASTParser.chat_return parserRet;
-		try {
-			final TalkBank2ASTParser parser = new TalkBank2ASTParser(tokenStream);
-			parser.setFile(inputFile.getAbsolutePath());
-			parser.setPhonTalkListener(listener);
-			parserRet = parser.chat();
-		} catch (RecognitionException re) {
-			if(PhonTalkUtil.isVerbose()) re.printStackTrace();
-			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("TalkBank2AST.tokens"));
-			visitor.visit(re);
-			final PhonTalkMessage msg = visitor.getMessage();
-			msg.setFile(inputFile);
-			if(listener != null) listener.message(msg);
-			return null;
-		}
-		
-		// walk AST and output using string template
-		Session session = null;
-		try {
-			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(parserRet.getTree());
-			final AST2Phon walker = new AST2Phon(nodeStream);
-			walker.setSyllabifyAndAlign(getSettings().isSyllabifyAndAlign());
-			walker.setSyllabifier(SyllabifierLibrary.getInstance()
-					.getSyllabifierForLanguage(getSettings().getSyllabifer()) );
-			walker.setFile(inputFile.getAbsolutePath());
-			walker.setPhonTalkListener(listener);
-			
-			walker.chat();
-			session = walker.getSession();
-		} catch (TreeWalkerError e) {
-			if(e.getCause() instanceof RecognitionException) {
-				final RecognitionException re = (RecognitionException)e.getCause();
-				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2Phon.tokens"));
-				visitor.visit(re);
-				
-				final PhonTalkMessage msg = visitor.getMessage();
-				
-				msg.setMessage(msg.getMessage());
-				
-				if(listener != null) {
-					listener.message(msg);
-				}
-			} else {
-				final PhonTalkError err = new PhonTalkError(e.getMessage(), e);
-				if(listener != null) {
-					listener.message(err);
-				}
-			}
-		} catch (RecognitionException re) {
-			if(PhonTalkUtil.isVerbose()) re.printStackTrace();
-			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2Phon.tokens"));
-			visitor.visit(re);
-			final PhonTalkMessage msg = visitor.getMessage();
-			msg.setFile(inputFile);
-			if(listener != null) listener.message(msg);
-			return null;
-		} catch (Exception e) {
-			final PhonTalkMessage msg = new PhonTalkMessage(e.getLocalizedMessage());
-			msg.setFile(inputFile);
-			if(listener != null) listener.message(msg);
-			return null;
-		}
-		
-		return session;
+		return null;
 	}
 
 	/**

@@ -1,0 +1,1638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="heb"
+      Corpus="bermanlong"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Hagar"
+      role="Target_Child"
+      language="heb"
+      age="P1Y07M03D"
+      sex="female"
+
+    />
+    <participant
+      id="MOT"
+    name="Inbal"
+      role="Mother"
+      language="heb"
+
+    />
+    <participant
+      id="GRA"
+      role="Grandmother"
+      language="heb"
+
+    />
+  </Participants>
+  <comment type="Situation">At subject's home .Participants are telling a story and talking. They are also looking at a book. linguist.</comment>
+  <u who="MOT" uID="u0">
+    <w>Hagár</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ʔat</w>
+    <w>rocá</w>
+    <w>lišmóa'</w>
+    <w>sipúr</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u1">
+    <w>sipur</w>
+    <w>al</w>
+    <w>sipur</w>
+    <w>al</w>
+    <w>yalda</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;5&gt; yida</a>
+  </u>
+  <u who="CHI" uID="u2">
+    <w>al</w>
+    <w>yalda</w>
+    <w>al</w>
+    <w>yalda</w>
+    <w>yalda</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u3">
+    <w>mimix</w>
+    <w>xa</w>
+    <w>mimixa</w>
+    <t type="p"></t>
+
+    <a type="explanation">"mixa" or "mimixa" always refers to Dodi Simxa .</a>
+  </u>
+  <u who="CHI" uID="u4">
+    <w>mimiexa</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u5">
+    <w>lesapér</w>
+    <w>laḳ</w>
+    <w>ʔet</w>
+    <w>Dodí</w>
+    <w>Símxa</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u6">
+    <w>et</w>
+    <w>ze</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1+2&gt; eje</a>
+  </u>
+  <u who="MOT" uID="u7">
+    <w>ʔet</w>
+    <w>ze</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u8">
+    <w>xatul</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>eper</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>xatul</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1 , 3&gt; atul</a>
+    <a type="explanation">&lt;2&gt; some form of s .p .r</a>
+  </u>
+  <u who="MOT" uID="u9">
+    <w>lesapér</w>
+    <w>'al</w>
+    <w>xatúl</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u10">
+    <w>ṭov</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u11">
+    <w>xatul</w>
+    <t type="e"></t>
+
+    <a type="coding">&lt;1&gt; atul</a>
+  </u>
+  <u who="MOT" uID="u12">
+    <w>naḳón</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>we-</w>
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+    <a type="situation">looking at pictures .</a>
+  </u>
+  <u who="CHI" uID="u13">
+    <w>xatul</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1&gt; tul</a>
+  </u>
+  <u who="MOT" uID="u14">
+    <w>mi</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u15">
+    <w>tarnegol</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1&gt; egol</a>
+  </u>
+  <u who="MOT" uID="u16">
+    <w>tarnegól</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u17">
+    <w>ha-</w>
+    <w>shafan</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ha-</w>
+    <w>shafan</w>
+    <w>ha-</w>
+    <w>katan</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u18">
+    <w>yafé</w>
+    <w>ha-</w>
+    <w>sipúr</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u19">
+    <w>ha-</w>
+    <w>shafan</w>
+    <w>ha-</w>
+    <w>katan</w>
+    <t type="p"></t>
+
+    <a type="comments">singing with the right tune .</a>
+  </u>
+  <u who="CHI" uID="u20">
+    <w>yom</w>
+    <w>huledet</w>
+    <w>ima</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>yom</w>
+    <w>yed</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>yom</w>
+    <w>huledet</w>
+    <w>Imamar</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;2 , 7&gt; ledet &lt;8&gt; Itamar , all other occurances of huledet and Itamar as well .</a>
+    <a type="comments">&lt;3 , 4-5&gt; false start</a>
+  </u>
+  <u who="MOT" uID="u21">
+    <w>xag</w>
+    <w>lo</w>
+    <w>ṣaméax</w>
+    <t type="p"></t>
+
+    <a type="comments">singing</a>
+  </u>
+  <u who="MOT" uID="u22">
+    <w>ma</w>
+    <w>yeš</w>
+    <w>lo</w>
+    <w>le-</w>
+    <w>ʔitamár</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u23">
+    <w>yom</w>
+    <w>huledet</w>
+    <w>Itamar</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u24">
+    <w>naḳón</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="MOT" uID="u25">
+    <w>yeš</w>
+    <w>lo</w>
+    <w>yom</w>
+    <w>hulédet</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u26">
+    <w>yom</w>
+    <w>huledet</w>
+    <w>Itamar</w>
+    <t type="p"></t>
+
+    <a type="comments">repeats that 6 times .</a>
+  </u>
+  <u who="MOT" uID="u27">
+    <w>naḳón</w>
+    <t type="p"></t>
+
+    <a type="situation">Hagar is now sitting on mother's laps .</a>
+  </u>
+  <u who="CHI" uID="u28">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u29">
+    <w>ṭipá</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ṭipá</w>
+    <w>šel</w>
+    <w>máyim</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u30">
+    <w>geshem</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>geshem</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u31">
+    <w>ken</w>
+    <w>ze</w>
+    <w>géšem</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>naḳón</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ze</w>
+    <w>géšem</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u32">
+    <w>geshem</w>
+    <w>geshem</w>
+    <w>geshem</w>
+    <w>mi-</w>
+    <w>shamayim</w>
+    <t type="p"></t>
+
+    <a type="comments">singing a song about rain .</a>
+    <a type="coding">&lt;4&gt; mi-shame</a>
+  </u>
+  <u who="MOT" uID="u33">
+    <w>mi-</w>
+    <w>šamáyim</w>
+    <t type="p"></t>
+
+    <a type="actions">mother is repeating the same song .</a>
+  </u>
+  <u who="CHI" uID="u34">
+    <w>ima</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="MOT" uID="u35">
+    <w>ʔímaʔ</w>
+    <w>yeqará</w>
+    <w>li</w>
+    <t type="p"></t>
+
+    <a type="comments">singing .</a>
+  </u>
+  <u who="MOT" uID="u36">
+    <w>ma</w>
+    <w>ze</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>šir</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u37">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+    <a type="comments">the question is not referring to that song .</a>
+  </u>
+  <u who="MOT" uID="u38">
+    <w>ze</w>
+    <w>šir</w>
+    <w>'al</w>
+    <w>yéled</w>
+    <w>še-</w>
+    <w>yagídu</w>
+    <w>lo</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ʔal</w>
+    <w>také</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ʔal</w>
+    <w>tarbíc</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ze</w>
+    <w>loʔ</w>
+    <w>yafé</w>
+    <w>leharbíc</w>
+    <t type="p"></t>
+
+    <a type="comments">&lt;8-end&gt; reciting</a>
+  </u>
+  <u who="CHI" uID="u39">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u40">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u41">
+    <w>yadi</w>
+    <w>yadi</w>
+    <w>yad</w>
+    <t type="p"></t>
+
+    <a type="comments">singing a song about a hand .</a>
+  </u>
+  <u who="MOT" uID="u42">
+    <w>yad</w>
+    <w>ten</w>
+    <w>yad</w>
+    <t type="p"></t>
+
+    <a type="comments">repeating the song .</a>
+  </u>
+  <u who="CHI" uID="u43">
+    <w>et</w>
+    <w>ze</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1+2&gt; eje</a>
+  </u>
+  <u who="MOT" uID="u44">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u45">
+    <w>lashir</w>
+    <w>lashir</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u46">
+    <w>lašír</w>
+    <w>ʔet</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u47">
+    <w>ṭov</w>
+    <t type="p"></t>
+
+    <a type="actions">singing the requested song .</a>
+  </u>
+  <u who="MOT" uID="u48">
+    <w>gamárnu</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u49">
+    <w>et</w>
+    <w>ze</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ba</w>
+    <w>amama</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1+2&gt; eje &lt;3&gt; buba Yemima</a>
+  </u>
+  <u who="MOT" uID="u50">
+    <w>bubá</w>
+    <w>ʔaní</w>
+    <w>we-</w>
+    <w>šmi</w>
+    <t type="p"></t>
+
+    <a type="comments">singing , and stops abruptly .</a>
+  </u>
+  <u who="MOT" uID="u51">
+    <w>ma</w>
+    <w>ze</w>
+    <w>Hagári</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u52">
+    <w>parpar</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1&gt; parpal</a>
+  </u>
+  <u who="MOT" uID="u53">
+    <w>parpár</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ma</w>
+    <w>'oṣé</w>
+    <w>ha-</w>
+    <w>parpár</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u54">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u55">
+    <w>tarnegól</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u56">
+    <w>we-</w>
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+    <a type="comments">Hagar does not respond .</a>
+  </u>
+  <u who="MOT" uID="u57">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u58">
+    <w>et</w>
+    <w>ze</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>et</w>
+    <w>ze</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>lashir</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1+2 , 3+4&gt; eje</a>
+  </u>
+  <u who="MOT" uID="u59">
+    <w>lašír</w>
+    <w>ʔet</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u60">
+    <w>ze</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>qol</w>
+    <w>dodí</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>qol</w>
+    <w>dodí</w>
+    <t type="p"></t>
+
+    <a type="comments">singing .(the rest os the song is not transcribed) .</a>
+  </u>
+  <u who="MOT" uID="u61">
+    <w>hópa</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="MOT" uID="u62">
+    <w>mi</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u63">
+    <w>xamor</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>xamor</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1 , 2&gt; imar</a>
+  </u>
+  <u who="MOT" uID="u64">
+    <w>we-</w>
+    <w>ma</w>
+    <w>huʔ</w>
+    <w>'oṣé</w>
+    <w>ha-</w>
+    <w>xamór</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ma</w>
+    <w>huʔ</w>
+    <w>'oṣé</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u65">
+    <w>et</w>
+    <w>ze</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>et</w>
+    <w>ze</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1+2 , 3+4&gt; eje</a>
+  </u>
+  <u who="MOT" uID="u66">
+    <w>tistaklí</w>
+    <w>ma</w>
+    <w>huʔ</w>
+    <w>'oṣé</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u67">
+    <w>per</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>per</w>
+    <t type="p"></t>
+
+    <a type="explanation">&lt;1 , 2&gt; mesaper , according to mother .</a>
+    <a type="situation">the phone is ringing .</a>
+  </u>
+  <u who="MOT" uID="u68">
+    <w>mesapér</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u69">
+    <w>'aḳšáyw</w>
+    <w>Hagári</w>
+    <w>tesapér</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u70">
+    <w>ʔímaʔ</w>
+    <w>ta'ané</w>
+    <w>'al</w>
+    <w>ha-</w>
+    <w>ṭélefon</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ṭov</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u71">
+    <w>ṭov</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>Hagári</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u72">
+    <w>ʔat</w>
+    <w>tešví</w>
+    <w>po</w>
+    <w>we-</w>
+    <w>tesaprí</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u73">
+    <w>tešví</w>
+    <w>we-</w>
+    <w>tesaprí</w>
+    <w>ʔet</w>
+    <w>ha-</w>
+    <w>sipúr</w>
+    <t type="p"></t>
+
+    <a type="situation">Hagar is alone , a few seconds of silence .</a>
+  </u>
+  <u who="CHI" uID="u74">
+    <w>mor</w>
+    <w>a'a</w>
+    <w>ia</w>
+    <t type="p"></t>
+
+    <a type="explanation">&lt;1&gt; may be "xamor" and &lt;2&gt; and &lt;3&gt; immitation of its voice .</a>
+  </u>
+  <u who="CHI" uID="u75">
+    <w>xelet</w>
+    <t type="p"></t>
+
+    <a type="explanation">&lt;1&gt; oxelet</a>
+  </u>
+  <u who="CHI" uID="u76">
+    <w>az</w>
+    <w>hi</w>
+    <w>loʔ</w>
+    <w>oxelet</w>
+    <t type="p"></t>
+
+    <a type="comments">adult-like</a>
+  </u>
+  <u who="MOT" uID="u77">
+    <w>mi</w>
+    <w>ʔoḳélet</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u78">
+    <w>ha-</w>
+    <w>xamór</w>
+    <w>ʔoḳél</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u79">
+    <w>oxel</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1&gt; xel</a>
+    <a type="actions">pointing at a picture of an eating donkey .</a>
+  </u>
+  <u who="MOT" uID="u80">
+    <w>naḳón</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u81">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u82">
+    <w>katuv</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u83">
+    <w>ze</w>
+    <w>loʔ</w>
+    <w>katúv</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ze</w>
+    <w>ciyúr</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u84">
+    <w>ʔéjfo</w>
+    <w>ha-</w>
+    <w>katúv</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u85">
+    <w>tarʔí</w>
+    <w>li</w>
+    <w>ʔéjfo</w>
+    <w>katúv</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u86">
+    <w>híne</w>
+    <w>katúv</w>
+    <t type="p"></t>
+
+    <a type="actions">Inbal is showing Hagar lines of text .</a>
+  </u>
+  <u who="CHI" uID="u87">
+    <w>ha-</w>
+    <w>oto</w>
+    <w>shelanu</w>
+    <w>a</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1&gt; oto &lt;2&gt; lanu</a>
+    <a type="comments">singing a song about a car .</a>
+  </u>
+  <u who="MOT" uID="u88">
+    <w>ʔavál</w>
+    <w>ze</w>
+    <w>loʔ</w>
+    <w>ha-</w>
+    <w>ʔOṭo</w>
+    <w>Šelánu</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u89">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u90">
+    <w>oto</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u91">
+    <w>ʔéjfo</w>
+    <w>ʔóṭo</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>tarʔí</w>
+    <w>li</w>
+    <w>ʔéjfo</w>
+    <w>ʔóṭo</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u92">
+    <w>oto</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u93">
+    <w>ze</w>
+    <w>oto</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u94">
+    <w>oto</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u95">
+    <w>Hagár</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>lašír</w>
+    <w>'al</w>
+    <w>ʔóṭo</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u96">
+    <w>híne</w>
+    <w>ʔóṭo</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u97">
+    <w>oto</w>
+    <w>shelanu</w>
+    <w>a</w>
+    <w>a</w>
+    <w>a</w>
+    <w>o</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;2&gt; lanu</a>
+    <a type="comments">repeating the previous song .</a>
+  </u>
+  <u who="CHI" uID="u98">
+    <w>sham</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u99">
+    <w>oto</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u100">
+    <w>mi</w>
+    <w>šar</w>
+    <w>ʔóṭo</w>
+    <t type="q"></t>
+
+    <a type="comments">transcriber heard "sham" in Hagar's previous utterance .</a>
+  </u>
+  <u who="CHI" uID="u101">
+    <w>oto</w>
+    <w>shelanu</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;2&gt; lanu</a>
+    <a type="comments">repeating the song .</a>
+  </u>
+  <u who="CHI" uID="u102">
+    <w>parpar</w>
+    <w>parpar</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u103">
+    <w>naḳón</w>
+    <t type="p"></t>
+
+    <a type="comments">then singing a song about a butterfly .</a>
+  </u>
+  <u who="CHI" uID="u104">
+    <w>et</w>
+    <w>ze</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1+2&gt; eje .</a>
+    <a type="comments">Inbal is singing another song .</a>
+  </u>
+  <u who="MOT" uID="u105">
+    <w>Hagári</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ʔéjze</w>
+    <w>šir</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u106">
+    <w>'al</w>
+    <w>mi</w>
+    <w>ze</w>
+    <w>kaʔn</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u107">
+    <w>et</w>
+    <w>ze</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>et</w>
+    <w>ze</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1+2 , 3+4&gt; eje .</a>
+  </u>
+  <u who="MOT" uID="u108">
+    <w>ʔet</w>
+    <w>ma</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u109">
+    <w>et</w>
+    <w>ze</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1+2&gt; eje .</a>
+  </u>
+  <u who="CHI" uID="u110">
+    <w>lashir</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>lashir</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u111">
+    <w>mi</w>
+    <w>ze</w>
+    <w>kaʔn</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>Hagári</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u112">
+    <w>yom</w>
+    <w>huledet</w>
+    <w>i</w>
+    <w>Itamar</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u113">
+    <w>ʔavál</w>
+    <w>kaʔn</w>
+    <w>ze</w>
+    <w>loʔ</w>
+    <w>yom</w>
+    <w>hulédet</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u114">
+    <w>kaʔn</w>
+    <w>ze</w>
+    <w>meʔaxoréy</w>
+    <w>ha-</w>
+    <w>har</w>
+    <w>ʔaxát</w>
+    <w>štáyim</w>
+    <w>šalóš</w>
+    <t type="p"></t>
+
+    <a type="comments">&lt;3-end&gt; singing</a>
+    <a type="coding">&lt;4&gt; ha- ha'ar &lt;5&gt; xat &lt;6&gt; shtaym</a>
+  </u>
+  <u who="CHI" uID="u115">
+    <w>yom</w>
+    <w>yom</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>yom</w>
+    <w>huledet</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u116">
+    <w>á</w>
+    <w>naḳón</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="MOT" uID="u117">
+    <w>kaʔn</w>
+    <w>be-</w>
+    <w>ʔemét</w>
+    <w>yeš</w>
+    <w>yom</w>
+    <w>hulédet</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u118">
+    <w>yom</w>
+    <w>huledet</w>
+    <w>esh</w>
+    <w>esh</w>
+    <t type="p"></t>
+
+    <a type="actions">pointign at a picture of candles .</a>
+  </u>
+  <u who="CHI" uID="u119">
+    <w>yom</w>
+    <w>huledet</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u120">
+    <w>yom</w>
+    <w>huledet</w>
+    <w>Itamar</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u121">
+    <w>kaʔn</w>
+    <w>ze</w>
+    <w>yom</w>
+    <w>hulédet</w>
+    <w>le-</w>
+    <w>Yoram</w>
+    <t type="p"></t>
+
+    <a type="comments">then singing a birthday song .</a>
+  </u>
+  <u who="MOT" uID="u122">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u123">
+    <w>ze</w>
+    <w>pil</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>bubi</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u124">
+    <w>naḳón</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>we-</w>
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u125">
+    <w>kof</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u126">
+    <w>we-</w>
+    <w>mi</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u127">
+    <w>yeled</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u128">
+    <w>naḳón</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ze</w>
+    <w>yéled</w>
+    <w>šováv</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u129">
+    <w>kof</w>
+    <w>kof</w>
+    <w>kof</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u130">
+    <w>naḳón</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>we-</w>
+    <w>mi</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u131">
+    <w>pil</w>
+    <w>pil</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u132">
+    <w>we-</w>
+    <w>mi</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u133">
+    <w>yo</w>
+    <w>a</w>
+    <w>a</w>
+    <w>o</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u134">
+    <w>pil</w>
+    <w>pil</w>
+    <w>pil</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u135">
+    <w>pil</w>
+    <w>pilón</w>
+    <t type="p"></t>
+
+    <a type="comments">singing a song about an elephant .</a>
+    <a type="situation">the phone is ringing .</a>
+  </u>
+  <u who="CHI" uID="u136">
+    <w>ze</w>
+    <w>mimixa</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u137">
+    <w>'al</w>
+    <w>Dodí</w>
+    <w>Símxa</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u138">
+    <w>be-</w>
+    <w>séder</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>tatxíli</w>
+    <w>lesapér</w>
+    <t type="p"></t>
+
+    <a type="situation">Inbal is on the phone . Hagar is alone with the book .</a>
+  </u>
+  <u who="CHI" uID="u139">
+    <w>ma</w>
+    <w>ze</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u140">
+    <w>ton</w>
+    <w>ton</w>
+    <w>ton</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u141">
+    <w>ton</w>
+    <t type="p"></t>
+
+    <a type="situation">a few seconds of silence .</a>
+  </u>
+  <u who="CHI" uID="u142">
+    <w>erim</w>
+    <w>exim</w>
+    <w>exim</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u143">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u144">
+    <w>seu</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u145">
+    <w>lalalalala</w>
+    <t type="p"></t>
+
+    <a type="comments">singing .</a>
+  </u>
+  <u who="CHI" uID="u146">
+    <w>sau</w>
+    <w>sau</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ashav</w>
+    <t type="p"></t>
+
+    <a type="explanation">&lt;3&gt; axshav</a>
+  </u>
+  <u who="CHI" uID="u147">
+    <w>lalalalala</w>
+    <t type="p"></t>
+
+    <a type="comments">singing .</a>
+  </u>
+  <u who="CHI" uID="u148">
+    <w>shav</w>
+    <t type="p"></t>
+
+    <a type="explanation">&lt;1&gt; axshav</a>
+  </u>
+  <u who="CHI" uID="u149">
+    <w>mixa</w>
+    <w>mimixa</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u150">
+    <w>kova</w>
+    <w>kova</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u151">
+    <w>ima</w>
+    <w>ima</w>
+    <w>e</w>
+    <w>aba</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u152">
+    <w>yeled</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u153">
+    <w>yom</w>
+    <w>huledet</w>
+    <w>i</w>
+    <w>Itamar</w>
+    <t type="p"></t>
+
+    <a type="comments">repeats that 4 times .</a>
+  </u>
+  <u who="CHI" uID="u154">
+    <w>oto</w>
+    <w>shelanu</w>
+    <w>a</w>
+    <w>ha-</w>
+    <w>katan</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;2&gt; lanu</a>
+    <a type="comments">singing the song about a car .</a>
+  </u>
+  <u who="CHI" uID="u155">
+    <w>et</w>
+    <w>ze</w>
+    <pause symbolic-length="simple"/>
+    <w>sipur</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1+2&gt; eje</a>
+    <a type="situation">silence . (Inbal is still on the phone) . turning pages</a>
+    <a type="paralinguistics">Hagar is coughing .</a>
+  </u>
+  <u who="CHI" uID="u156">
+    <w>mimixa</w>
+    <w>mimixa</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>mimixa</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u157">
+    <w>loʔ</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>xim</w>
+    <w>la-</w>
+    <w>yam</w>
+    <t type="p"></t>
+
+    <a type="explanation">&lt;2&gt; holxim , in following occurences as well .</a>
+  </u>
+  <u who="CHI" uID="u158">
+    <w>xim</w>
+    <w>la-</w>
+    <w>yam</w>
+    <w>yam</w>
+    <w>yam</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u159">
+    <w>xi</w>
+    <w>xim</w>
+    <w>yam</w>
+    <w>xim</w>
+    <w>la-</w>
+    <w>yam</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u160">
+    <w>xim</w>
+    <w>la-</w>
+    <w>yam</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u161">
+    <w>mimixa</w>
+    <w>day</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u162">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+    <a type="comments">adult-like</a>
+  </u>
+  <u who="CHI" uID="u163">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u164">
+    <w>yeled</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u165">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u166">
+    <w>mimixa</w>
+    <w>mimixa</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u167">
+    <w>a</w>
+    <w>b</w>
+    <w>b</w>
+    <w>b</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u168">
+    <w>ma</w>
+    <w>ze</w>
+    <w>mimixa</w>
+    <w>mimixa</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u169">
+    <w>xatul</w>
+    <w>xatul</w>
+    <w>xatul</w>
+    <w>eta</w>
+    <w>xatul</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1-3 , 5&gt; atul</a>
+    <a type="explanation">&lt;4&gt; might be "et ha" .</a>
+  </u>
+  <u who="CHI" uID="u170">
+    <w>mixa</w>
+    <w>yalti</w>
+    <w>mixa</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>yalti</w>
+    <w>mimixa</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>yalti</w>
+    <w>mimixa</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u171">
+    <w>kelev</w>
+    <w>kelev</w>
+    <w>kelev</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u172">
+    <w>hine</w>
+    <w>kelev</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u173">
+    <w>seaka</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u174">
+    <w>kelev</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u175">
+    <w>xatul</w>
+    <t type="p"></t>
+
+    <a type="coding">&lt;1&gt; atul</a>
+  </u>
+  <u who="CHI" uID="u176">
+    <w>kelev</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u177">
+    <w>ga</w>
+    <w>ga</w>
+    <w>ga</w>
+    <t type="p"></t>
+
+    <a type="comments">imitating a duck .</a>
+  </u>
+  <u who="MOT" uID="u178">
+    <w>naḳón</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="MOT" uID="u179">
+    <w>ze</w>
+    <w>ha-</w>
+    <w>xayót</w>
+    <w>še-</w>
+    <w>dod</w>
+    <w>Símxa</w>
+    <w>hevíʔ</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u180">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u181">
+    <w>sipur</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u182">
+    <w>še-</w>
+    <w>ʔímaʔ</w>
+    <w>tesapér</w>
+    <w>'aḳšáyw</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u183">
+    <w>'aḳšáyw</w>
+    <w>ʔímaʔ</w>
+    <w>tesapér</w>
+    <w>'al</w>
+    <t type="p"></t>
+
+    <a type="comments">interrupted .</a>
+  </u>
+  <u who="CHI" uID="u184">
+    <w>kelev</w>
+    <w>kelev</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u185">
+    <w>naḳón</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>we-</w>
+    <w>mi</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u186">
+    <w>sus</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u187">
+    <w>sus</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u188">
+    <w>ku</w>
+    <w>ku</w>
+    <w>ku</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u189">
+    <w>od</w>
+    <w>pa'am</w>
+    <w>od</w>
+    <w>pa'am</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u190">
+    <w>'od</w>
+    <w>pá'am</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u191">
+    <w>'od</w>
+    <w>pá'am</w>
+    <w>ʔet</w>
+    <w>ha-</w>
+    <w>séfer</w>
+    <w>ha-</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+    <a type="coding">&lt;2&gt; pam</a>
+  </u>
+  <u who="CHI" uID="u192">
+    <w>ken</w>
+    <t type="p"></t>
+
+    <a type="situation">Hagar is bringing another book .</a>
+  </u>
+  <u who="MOT" uID="u193">
+    <w>ma</w>
+    <w>ze</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u194">
+    <w>oto</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u195">
+    <w>naḳón</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>ze</w>
+    <w>ʔóṭo</w>
+    <w>dóʔar</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u196">
+    <w>we-</w>
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u197">
+    <w>miḳtáv</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>'im</w>
+    <w>bul</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u198">
+    <w>aba</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u199">
+    <w>ze</w>
+    <w>ʔábaʔ</w>
+    <t type="q"></t>
+
+    <a type="comments">there is a picture of a man on the stamp .</a>
+  </u>
+  <u who="MOT" uID="u200">
+    <w>naḳón</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>yaḳól</w>
+    <w>lihiyót</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u201">
+    <w>we-</w>
+    <w>mi</w>
+    <w>ze</w>
+    <w>po</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u202">
+    <w>dubi</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u203">
+    <w>dúbi</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="MOT" uID="u204">
+    <w>we-</w>
+    <w>ze</w>
+    <w>kaʔn</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u205">
+    <w>ma</w>
+    <w>ze</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u206">
+    <w>ze</w>
+    <w>bul</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u207">
+    <w>bul</w>
+    <w>še-</w>
+    <w>madbiqím</w>
+    <w>'al</w>
+    <w>miḳtáv</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u208">
+    <w>od</w>
+    <w>pa'am</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u209">
+    <w>'od</w>
+    <w>pá'am</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Options="CA"
+      Corpus="change_me_later"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Target_Child"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <w>CA</w>
+    <w>can</w>
+    <w>use</w>
+    <w>xx</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>XX</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>and</w>
+    <w>even</w>
+    <w>XXX</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

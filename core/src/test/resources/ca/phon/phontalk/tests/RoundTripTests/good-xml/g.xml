@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="sample"
+      >
+  <Participants>
+    <participant
+      id="MOT"
+    name="Kelly"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="CHI"
+    name="Nicolette"
+      role="Target_Child"
+      language="eng"
+      age="P1Y10M04D"
+
+    />
+  </Participants>
+  <comment type="Generic">transcript group</comment>
+  <lazy-gem label="3a ? = monkey is eating banana, 3b ? = squirrel is eating banana, 3c ? = bunny is eating banana"/>
+  <u who="MOT" uID="u0">
+    <w>hi</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Options="CA"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Generic">TCU continuation</comment>
+  <u who="CHI" uID="u0">
+    <w>berettiger</w>
+    <w>andre</w>
+    <t type="technical break TCU continuation"></t>
+
+  </u>
+  <u who="MOT" uID="u1">
+    <w>bar</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u2">
+    <linker type="technical break TCU completion"/>
+    <w>til</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

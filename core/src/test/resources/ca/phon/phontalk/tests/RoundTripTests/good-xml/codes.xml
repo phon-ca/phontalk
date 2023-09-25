@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <freecode>freecode 1</freecode>
+    <w>this</w>
+    <w>is</w>
+    <w>child</w>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u1">
+    <freecode>freecode 2</freecode>
+    <w>this</w>
+    <w>is</w>
+    <w>child</w>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u2">
+    <freecode>freecode 1</freecode>
+    <freecode>freecode 2</freecode>
+    <w>this</w>
+    <w>is</w>
+    <w>child</w>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u3">
+    <w>this</w>
+    <w>is</w>
+    <w formType="words to be excluded">child</w>
+    <w>speaking</w>
+    <t type="p"></t>
+    <postcode>post1 arg</postcode>
+
+  </u>
+  <u who="MOT" uID="u4">
+    <w>this</w>
+    <w>is</w>
+    <freecode>huh</freecode>
+    <w>mother</w>
+    <freecode>right</freecode>
+    <w>speaking</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u5">
+    <w>this</w>
+    <w>is</w>
+    <w formType="words to be excluded">child</w>
+    <w>speaking</w>
+    <t type="p"></t>
+    <postcode>post2 arg</postcode>
+
+  </u>
+  <u who="CHI" uID="u6">
+    <w>this</w>
+    <w>is</w>
+    <w formType="words to be excluded">child</w>
+    <w>speaking</w>
+    <t type="p"></t>
+    <postcode>post1 arg</postcode><postcode>post2 arg</postcode>
+
+  </u>
+</CHAT>

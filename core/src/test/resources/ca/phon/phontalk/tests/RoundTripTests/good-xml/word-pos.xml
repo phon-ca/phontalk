@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="zho yue"
+      Corpus="bates"
+      Date="1964-07-23"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="zho yue"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="zho yue"
+
+    />
+  </Participants>
+  <comment type="Date">23-JUL-1964</comment>
+  <comment type="Generic">$n in words, with or without @s stuff</comment>
+  <u who="CHI" uID="u0">
+    <w>foo</w>
+    <w>bar<pos><c>n</c></pos></w>
+    <w>baz</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u1">
+    <w>hey</w>
+    <w>there</w>
+    <w>what</w>
+    <w>is</w>
+    <w><langs><single>yue</single></langs>hao3<pos><c>n</c></pos></w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u2">
+    <w>hey</w>
+    <w>there</w>
+    <w>what</w>
+    <w>is</w>
+    <w><langs><single>zho</single></langs>hao3<pos><c>n</c></pos></w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u3">
+    <w>hey</w>
+    <w>there</w>
+    <w>what</w>
+    <w>is</w>
+    <w><langs><multiple>eng zho fra</multiple></langs>hao3<pos><c>n</c></pos></w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u4">
+    <w>hey</w>
+    <w>there</w>
+    <w>what</w>
+    <w>is</w>
+    <w><langs><ambiguous>eng zho fra</ambiguous></langs>hao3<pos><c>n</c></pos></w>
+    <t type="q"></t>
+
+  </u>
+  <comment type="Generic">with subcategories</comment>
+  <u who="CHI" uID="u5">
+    <w>foo</w>
+    <w>bar<pos><c>n</c><s>m</s><s>l</s></pos></w>
+    <w>baz</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

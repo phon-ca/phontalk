@@ -1,0 +1,1195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Generic">example of begin and end gems</comment>
+  <begin-gem label="a"/>
+  <u who="MOT" uID="u0">
+    <w>what's</w>
+    <w>that</w>
+    <t type="q"></t>
+
+    <a type="actions">holds object out to Amy</a>
+  </u>
+  <begin-gem label=""/>
+  <u who="CHI" uID="u1">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="p"></t>
+
+    <a type="gesture">looks at chicken</a>
+    <a type="actions">holds nesting cups</a>
+    <a type="extension" flavor="pho">wi</a>
+  </u>
+  <end-gem label=""/>
+  <begin-gem label="b"/>
+  <u who="MOT" uID="u2">
+    <w>it's</w>
+    <w>a</w>
+    <w>chicken</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u3">
+    <w>yeah</w>
+    <t type="p"></t>
+
+    <a type="actions">takes chicken</a>
+  </u>
+  <u who="MOT" uID="u4">
+    <w>yeah</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u5">
+    <w>what's</w>
+    <w>this</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;1w-2w&gt; holds object out to Amy &lt;1w&gt; picks up object .</a>
+  </u>
+  <end-gem label="a"/>
+  <u who="MOT" uID="u6">
+    <w>what</w>
+    <g><w>is</w><k type="stressing"/></g>
+    <w>that</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;1w-3w&gt; holds object out to Amy</a>
+  </u>
+  <u who="CHI" uID="u7">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;aft&gt; manipulates chicken in hands</a>
+    <a type="extension" flavor="pho">6rat</a>
+  </u>
+  <end-gem label="b"/>
+  <u who="MOT" uID="u8">
+    <w>it's</w>
+    <w>a</w>
+    <w>woof<wk type="cmp"/><shortening>woof</shortening></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u9">
+    <w>yeah</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u10">
+    <w>yeah</w>
+    <t type="p"></t>
+
+    <a type="actions">picks up object and puts back in dollhouse</a>
+  </u>
+  <u who="CHI" uID="u11">
+    <w untranscribed="unintelligible">xxx</w>
+    <w>woof</w>
+    <t type="p"></t>
+
+    <a type="actions">wiggles chicken back and forth</a>
+    <a type="extension" flavor="pho">&lt;2w&gt; wu</a>
+  </u>
+  <u who="MOT" uID="u12">
+    <w>it's</w>
+    <w>a</w>
+    <w>woof<wk type="cmp"/><shortening>woof</shortening></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u13">
+    <w>what's</w>
+    <w>this</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;1w&gt; picks up object from dollhouse and holds out to Amy</a>
+  </u>
+  <u who="MOT" uID="u14">
+    <w>a</w>
+    <w>chicken</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u15">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">takes object and examines</a>
+  </u>
+  <u who="MOT" uID="u16">
+    <w>what's</w>
+    <w>this</w>
+    <t type="q"></t>
+
+    <a type="actions">picks up object from dollhouse and holds out to Amy</a>
+  </u>
+  <u who="CHI" uID="u17">
+    <w>hat</w>
+    <t type="p"></t>
+
+    <a type="comments">spoken softly</a>
+    <a type="extension" flavor="pho">hi6</a>
+  </u>
+  <u who="MOT" uID="u18">
+    <w>is</w>
+    <w>that</w>
+    <w>a</w>
+    <w>hat</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u19">
+    <w>yeah</w>
+    <t type="e"></t>
+
+    <a type="actions">wiggles in hand . holds objects in both hands</a>
+    <a type="comments">spoken loudly</a>
+  </u>
+  <u who="MOT" uID="u20">
+    <w>yeah</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u21">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="e"></t>
+
+    <a type="extension" flavor="pho">mA bI</a>
+  </u>
+  <u who="MOT" uID="u22">
+    <w>huh</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;1w&gt; picks up table, examines and puts in dollhouse &lt;1w&gt; puts object in dollhouse . picks up chair and puts in dollhouse .</a>
+  </u>
+  <u who="MOT" uID="u23">
+    <w>oh</w>
+    <w>look</w>
+    <w>at</w>
+    <w>that</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;1w-4w&gt; picks up table, examines and puts in dollhouse</a>
+  </u>
+  <u who="MOT" uID="u24">
+    <w>there's</w>
+    <w>a</w>
+    <w>picnic</w>
+    <w>table</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u25">
+    <w>and</w>
+    <w>you</w>
+    <w>can</w>
+    <w>sit</w>
+    <w>some</w>
+    <w>people</w>
+    <w>down</w>
+    <w>here</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;dur&gt; picks up another chair and puts by table . picks up man and puts in chair &lt;bef&gt; picks up chair and puts down by table .</a>
+  </u>
+  <u who="CHI" uID="u26">
+    <w>hey</w>
+    <t type="e"></t>
+
+    <a type="actions">puts toys on floor and leans on dollhouse with hands on rim</a>
+    <a type="gesture">points in dollhouse</a>
+  </u>
+  <u who="CHI" uID="u27">
+    <w formType="interjection">aht</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u28">
+    <w>ow</w>
+    <t type="p"></t>
+
+    <a type="gesture">&lt;aft&gt; looks at Mother's object, at car and at dollhouse as Mother uses each</a>
+    <a type="actions">&lt;aft&gt; picks up object and holds</a>
+  </u>
+  <u who="MOT" uID="u29">
+    <w>hoo<wk type="cmp"/>hoo<wk type="cmp"/>hoo<wk type="cmp"/>hoo<wk type="cmp"/>hoo</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;aft&gt; puts object on dollhouse floor . picks up car and puts outside dollhouse . pushes dollhouse back</a>
+    <a type="explanation">dancing noises</a>
+  </u>
+  <u who="MOT" uID="u30">
+    <w>I</w>
+    <w>don't</w>
+    <w>know</w>
+    <t type="trail off"></t>
+
+    <a type="actions">&lt;1w&gt; picks up ladder and examines .</a>
+  </u>
+  <u who="MOT" uID="u31">
+    <w>what's</w>
+    <w>this</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;1w&gt; puts down on side of dollhouse</a>
+  </u>
+  <u who="MOT" uID="u32">
+    <w>a</w>
+    <w>ladder</w>
+    <w>I</w>
+    <w>guess</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u33">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">puts object down . takes two men out of dollhouse and holds</a>
+  </u>
+  <u who="MOT" uID="u34">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">takes chair from dollhouse and puts on floor . takes another chair out and begins to put on floor but stops . moves toward Amy and puts chair on floor in front of her</a>
+  </u>
+  <u who="CHI" uID="u35">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">picks up chair out of dollhouse, drops, picks up again . begins tp put on floor but stops, examines, and puts down by Mother's chair</a>
+  </u>
+  <u who="MOT" uID="u36">
+    <w>can</w>
+    <w>you</w>
+    <w>take</w>
+    <w>him</w>
+    <w>out</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;aft&gt; opens dollhouse door</a>
+  </u>
+  <u who="MOT" uID="u37">
+    <w>boom<wk type="cmp"/>boom<wk type="cmp"/>boom<wk type="cmp"/>boom</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;aft&gt; puts man in chair</a>
+    <a type="explanation">walking noises</a>
+  </u>
+  <u who="CHI" uID="u38">
+    <w>yeah</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;aft&gt; picks up chair with other hand and holds both to knee &lt;dur&gt; lowers one man toward chair . &lt;bef&gt; manipulates men, holding one in each hand .</a>
+  </u>
+  <u who="MOT" uID="u39">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">walks another man out dollhouse door and puts in chair</a>
+  </u>
+  <u who="MOT" uID="u40">
+    <w>here</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;dur&gt; picks up man and puts in car . pushes car toward Amy slightly &lt;1w&gt; moves chair toward Amy slightly .</a>
+  </u>
+  <u who="MOT" uID="u41">
+    <w>go</w>
+    <w>for</w>
+    <w>a</w>
+    <w>ride</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;dur&gt; picks up man and puts in car . pushes car toward Amy slightly</a>
+  </u>
+  <u who="CHI" uID="u42">
+    <w>yeah</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u43">
+    <w>he's</w>
+    <w>gon</w>
+    <w><shortening>t</shortening>a</w>
+    <w>go</w>
+    <w>for</w>
+    <w>a</w>
+    <w>ride</w>
+    <w>with</w>
+    <w>the</w>
+    <w>children</w>
+    <t type="p"></t>
+
+    <a type="actions">picks up chicken by Amy and puts in car</a>
+  </u>
+  <u who="CHI" uID="u44">
+    <w>yeah</w>
+    <t type="p"></t>
+
+    <a type="actions">attempts to put man in car</a>
+  </u>
+  <u who="MOT" uID="u45">
+    <w>yeah</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u46">
+    <w>yeah</w>
+    <t type="p"></t>
+
+    <a type="actions">succeeds in getting man in car</a>
+    <a type="comments">spoken loudly</a>
+  </u>
+  <u who="MOT" uID="u47">
+    <w>yeah</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u48">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">examines man in hand . attempts to put man in car . knocks other man out . succeeds</a>
+  </u>
+  <u who="MOT" uID="u49">
+    <w>whoops</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u50">
+    <w untranscribed="unintelligible">xxx</w>
+    <t type="p"></t>
+
+    <a type="actions">picks up man, puts back in car and drives car in front of Amy</a>
+    <a type="explanation">car noises</a>
+  </u>
+  <u who="MOT" uID="u51">
+    <e><action/><ga type="paralinguistics">snoring noise</ga></e>
+    <t type="p"></t>
+
+    <a type="actions">picks up chair and puts on floor . puts man in chair, tilting</a>
+  </u>
+  <u who="CHI" uID="u52">
+    <e><action/><ga type="paralinguistics">laughs</ga><overlap type="overlap follows"/></e>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u53">
+    <e><action/><ga type="paralinguistics">laughs</ga><overlap type="overlap precedes"/></e>
+    <t type="p"></t>
+
+    <a type="actions">pokes Amy in stomach</a>
+  </u>
+  <u who="CHI" uID="u54">
+    <e><action/><ga type="paralinguistics">laughs louder</ga></e>
+    <t type="p"></t>
+
+    <a type="actions">pushes toys on floor, knocks ladder and puts hands on toys on floor</a>
+  </u>
+  <u who="MOT" uID="u55">
+    <w>uhoh</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;1w&gt; rights ladder .</a>
+  </u>
+  <u who="MOT" uID="u56">
+    <w>here</w>
+    <pause symbolic-length="simple"/>
+    <w>the</w>
+    <w>dog's</w>
+    <w>gon</w>
+    <w><shortening>t</shortening>a</w>
+    <w>go</w>
+    <w>up</w>
+    <w>the</w>
+    <w>ladder</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;1w&gt; picks up dog and makes him climb the ladder</a>
+  </u>
+  <u who="CHI" uID="u57">
+    <e><action/><ga type="paralinguistics">chuckles</ga></e>
+    <t type="p"></t>
+
+    <a type="actions">pushes toys toward ladder and ladder falls</a>
+  </u>
+  <u who="MOT" uID="u58">
+    <w>look</w>
+    <w>at</w>
+    <w>this</w>
+    <t type="p"></t>
+
+    <a type="actions">rights ladder, makes dog climb it and dance on the rim</a>
+    <a type="explanation">climbing noises</a>
+  </u>
+  <u who="MOT" uID="u59">
+    <w>look</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u60">
+    <w>boom<wk type="cmp"/>boom<wk type="cmp"/>boom<wk type="cmp"/>boom</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u61">
+    <w>ah</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;aft&gt; takes table out of dollhouse and puts down by chair</a>
+    <a type="intonation">draws out the letter h</a>
+  </u>
+  <u who="CHI" uID="u62">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">picks up Mother's man and holds with other object</a>
+  </u>
+  <u who="MOT" uID="u63">
+    <w>there's</w>
+    <w>a</w>
+    <w>table</w>
+    <w>and</w>
+    <w>there's</w>
+    <w>some</w>
+    <w>chairs</w>
+    <t type="p"></t>
+
+    <a type="actions">picks up chair by Amy and puts down by table</a>
+  </u>
+  <u who="MOT" uID="u64">
+    <w>there's</w>
+    <w>a</w>
+    <w>little</w>
+    <w>boy</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;aft&gt; reaches in dollhouse, takes out object and puts on floor</a>
+  </u>
+  <u who="CHI" uID="u65">
+    <w>ah</w>
+    <t type="e"></t>
+
+    <a type="extension" flavor="pho">yet</a>
+  </u>
+  <u who="CHI" uID="u66">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;aft&gt; picks up man and holds . dog falls . examines objects . lets another object fall</a>
+  </u>
+  <u who="MOT" uID="u67">
+    <w>shall</w>
+    <w>we</w>
+    <w>go</w>
+    <w>eat</w>
+    <t type="q"></t>
+
+    <a type="actions">holds dog . dances dog</a>
+  </u>
+  <u who="CHI" uID="u68">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="e"></t>
+
+    <a type="actions">takes man from open hand and attempts to put in car</a>
+    <a type="extension" flavor="pho">ye+yet</a>
+  </u>
+  <u who="MOT" uID="u69">
+    <w>c<shortening>o</shortening>m<shortening>e</shortening></w>
+    <w>on</w>
+    <t type="p"></t>
+
+    <a type="actions">picks up dog and brings to table</a>
+  </u>
+  <u who="MOT" uID="u70">
+    <w>let's</w>
+    <w>go</w>
+    <w>eat</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u71">
+    <w>no</w>
+    <t type="e"></t>
+
+    <a type="actions">takes hand back and holds man and objects</a>
+  </u>
+  <u who="MOT" uID="u72">
+    <w>uh</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;1w&gt; puts dog in chair .</a>
+  </u>
+  <u who="MOT" uID="u73">
+    <w>dog's</w>
+    <w>gon</w>
+    <w><shortening>t</shortening>a</w>
+    <w>eat</w>
+    <w>first</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;1w-5w&gt; picks up boy, walks him toward table and puts him in chair</a>
+  </u>
+  <u who="MOT" uID="u74">
+    <w>dog</w>
+    <w>and</w>
+    <w>the</w>
+    <w>boy</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;1w-4w&gt; picks up boy, walks him toward table and puts him in chair</a>
+  </u>
+  <u who="CHI" uID="u75">
+    <w>uh<wk type="cmp"/>uh<wk type="cmp"/>uh</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;aft&gt; puts arm up, flailing</a>
+    <a type="explanation">walking noises</a>
+  </u>
+  <u who="MOT" uID="u76">
+    <w>huh</w>
+    <t type="e"></t>
+
+    <a type="actions">walks man toward chair and puts in chair</a>
+  </u>
+  <u who="MOT" uID="u77">
+    <w>here</w>
+    <w>comes</w>
+    <w>the</w>
+    <w>little</w>
+    <w>girl</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u78">
+    <w>girl</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;1w&gt; brings man over to chair .</a>
+    <a type="extension" flavor="pho">ge wId6l g6</a>
+  </u>
+  <u who="CHI" uID="u79">
+    <w>little</w>
+    <w>girl</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;1w&gt; examines object in hand &lt;1w&gt; attempts to put man in chair and succeeds .</a>
+  </u>
+  <u who="MOT" uID="u80">
+    <e><action/><ga type="paralinguistics">eating noises</ga></e>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u81">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="gesture">smiles at Mother</a>
+  </u>
+  <u who="MOT" uID="u82">
+    <e><action/><ga type="paralinguistics">eating noises</ga></e>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u83">
+    <w>hey</w>
+    <t type="e"></t>
+
+    <a type="actions">reaches for shape box</a>
+  </u>
+  <u who="MOT" uID="u84">
+    <w>what's</w>
+    <w>that</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u85">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;aft&gt; looks inside shape box</a>
+    <a type="extension" flavor="pho">geI</a>
+  </u>
+  <u who="MOT" uID="u86">
+    <w>huh</w>
+    <t type="q"></t>
+
+    <a type="actions">rummages in shape box</a>
+  </u>
+  <u who="MOT" uID="u87">
+    <w>oh</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="MOT" uID="u88">
+    <w>what's</w>
+    <w>in</w>
+    <w>there</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u89">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="e"></t>
+
+    <a type="extension" flavor="pho">m6</a>
+  </u>
+  <u who="MOT" uID="u90">
+    <w>huh</w>
+    <t type="q"></t>
+
+    <a type="actions">takes block out of shape box, drops, and retrieves</a>
+  </u>
+  <u who="CHI" uID="u91">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">takes ball out of shape box and holds</a>
+  </u>
+  <u who="MOT" uID="u92">
+    <w>what's</w>
+    <w>that</w>
+    <t type="q"></t>
+
+    <a type="actions">holds object out on her palm toward Amy . closes palm</a>
+  </u>
+  <u who="MOT" uID="u93">
+    <w>what</w>
+    <w>is</w>
+    <w>it</w>
+    <t type="q"></t>
+
+    <a type="actions">opens palm</a>
+  </u>
+  <u who="CHI" uID="u94">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="e"></t>
+
+    <a type="actions">puts ball on Mother's palm</a>
+    <a type="alternative">ball</a>
+    <a type="extension" flavor="pho">A</a>
+  </u>
+  <u who="MOT" uID="u95">
+    <w>a</w>
+    <w>ball</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u96">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">ball drops . picks up ball and holds . kicks object on floor away</a>
+  </u>
+  <u who="CHI" uID="u97">
+    <e><action/><ga type="paralinguistics">babbles</ga></e>
+    <t type="p"></t>
+
+    <a type="actions">fingers ball on top . takes hand away</a>
+  </u>
+  <u who="MOT" uID="u98">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">pushes dollhouse away and shuts door . puts balls on top</a>
+  </u>
+  <u who="MOT" uID="u99">
+    <w>where</w>
+    <w>does</w>
+    <w>it</w>
+    <w>go</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u100">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">puts ball in shape box</a>
+  </u>
+  <u who="MOT" uID="u101">
+    <w>up</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;aft&gt; retrieves ball and puts on shape box lid</a>
+  </u>
+  <u who="CHI" uID="u102">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">opens shape box lid and block falls . holds open a bit and then shuts</a>
+  </u>
+  <u who="MOT" uID="u103">
+    <w>where</w>
+    <w>does</w>
+    <w>it</w>
+    <w>go</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u104">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">picks up ball and attempts to put in wrong hole . bangs on lid with block . puts block in right hole</a>
+  </u>
+  <u who="MOT" uID="u105">
+    <e><action/><ga type="paralinguistics">gasps</ga></e>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u106">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">opens shape box and block falls</a>
+  </u>
+  <u who="MOT" uID="u107">
+    <w>whoop<shortening>s</shortening></w>
+    <t type="e"></t>
+
+    <a type="actions">retrieves block</a>
+  </u>
+  <u who="CHI" uID="u108">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">takes ball out</a>
+    <a type="gesture">smiles</a>
+  </u>
+  <u who="MOT" uID="u109">
+    <w>where</w>
+    <w>does</w>
+    <w>this</w>
+    <w>go</w>
+    <t type="q"></t>
+
+    <a type="actions">holds object out to Amy</a>
+  </u>
+  <u who="CHI" uID="u110">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">shuts shape box lid . puts own ball in . opens shape box lid</a>
+  </u>
+  <u who="MOT" uID="u111">
+    <w untranscribed="unintelligible">xxx</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;dur&gt; puts hand in shape box and back out &lt;bef&gt; puts block in shape box .</a>
+    <a type="paralinguistics">spoken very softly</a>
+  </u>
+  <u who="CHI" uID="u112">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">reaches in shape box and takes out block . shuts lid, rubs block on lid and puts in shape box</a>
+  </u>
+  <u who="MOT" uID="u113">
+    <e><action/><ga type="paralinguistics">gasps</ga></e>
+    <t type="p"></t>
+
+    <a type="gesture">&lt;aft&gt; smiles</a>
+  </u>
+  <u who="CHI" uID="u114">
+    <e><action/><ga type="paralinguistics">laughs</ga></e>
+    <t type="p"></t>
+
+    <a type="actions">opens shape box lid, takes out same block, shuts lid and puts in shape box</a>
+  </u>
+  <u who="CHI" uID="u115">
+    <e><action/><ga type="paralinguistics">laughs</ga></e>
+    <t type="p"></t>
+
+    <a type="actions">opens shape box and reaches in</a>
+  </u>
+  <u who="MOT" uID="u116">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">reaches in shape box</a>
+  </u>
+  <u who="CHI" uID="u117">
+    <w>no</w>
+    <t type="e"></t>
+
+    <a type="actions">takes Mother's hand out . reaches in shape box and rummages</a>
+  </u>
+  <u who="MOT" uID="u118">
+    <w>no</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;aft&gt; puts finger to shape box lid</a>
+  </u>
+  <u who="CHI" uID="u119">
+    <w>ah</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;aft&gt; rummages in shape box &lt;dur&gt; puts hand on shape box lid and opens it . holds it open . &lt;bef&gt; takes block out of shape box, shuts lid and puts in shape box .</a>
+    <a type="gesture">big smile</a>
+    <a type="paralinguistics">pleasurable scream .</a>
+  </u>
+  <u who="MOT" uID="u120">
+    <w>let</w>
+    <w>me</w>
+    <w>see</w>
+    <t type="p"></t>
+
+    <a type="actions">puts hand in shape box and rummages . takes out blocks</a>
+  </u>
+  <u who="MOT" uID="u121">
+    <w>let</w>
+    <w>me</w>
+    <w>see</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u122">
+    <w>no</w>
+    <t type="e"></t>
+
+    <a type="actions">attempts to remove Mother's hand . takes block out and holds</a>
+    <a type="extension" flavor="pho">&lt;1w&gt; ne</a>
+  </u>
+  <u who="CHI" uID="u123">
+    <w>no</w>
+    <t type="e"></t>
+
+    <a type="comments">&lt;1w&gt; spoken louder</a>
+  </u>
+  <u who="MOT" uID="u124">
+    <g><w>what's</w>
+    <w>this</w>
+    <w>one</w><overlap type="overlap follows"/></g>
+    <t type="q"></t>
+
+    <a type="actions">holds block out to Amy</a>
+  </u>
+  <u who="CHI" uID="u125">
+    <g><w>no</w><overlap type="overlap precedes"/></g>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u126">
+    <w>no</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;aft&gt; puts block in shape box but it sticks</a>
+  </u>
+  <u who="CHI" uID="u127">
+    <w>mine</w>
+    <t type="p"></t>
+
+    <a type="actions">manipulates Mother's block</a>
+  </u>
+  <u who="MOT" uID="u128">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">pushes stuck block through hole</a>
+  </u>
+  <u who="CHI" uID="u129">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">attempts to put square block in circular hole</a>
+  </u>
+  <u who="MOT" uID="u130">
+    <w>uhoh</w>
+    <pause symbolic-length="simple"/>
+    <w>where</w>
+    <w>does</w>
+    <g><w>that</w><k type="stressing"/></g>
+    <w>go</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u131">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="p"></t>
+
+    <a type="actions">begins opening lid</a>
+    <a type="extension" flavor="pho">6+n6</a>
+  </u>
+  <u who="MOT" uID="u132">
+    <w>huh</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u133">
+    <w>uhoh</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;aft&gt; puts block in shape box . takes out round block and attempts to put in wrong hole</a>
+  </u>
+  <u who="MOT" uID="u134">
+    <w>where</w>
+    <w>go</w>
+    <t type="q"></t>
+
+    <a type="actions">picks up square block and holds out to Amy</a>
+  </u>
+  <u who="CHI" uID="u135">
+    <w>yeah</w>
+    <t type="p"></t>
+
+    <a type="actions">lifts block up and takes Mother's block . puts round block in shape box but it sticks . attempts to push through with index finger</a>
+  </u>
+  <u who="MOT" uID="u136">
+    <w>where</w>
+    <w>does</w>
+    <g><w>this</w><k type="stressing"/></g>
+    <w>go</w>
+    <t type="q"></t>
+
+    <a type="gesture">&lt;3w&gt; touches block</a>
+  </u>
+  <u who="MOT" uID="u137">
+    <e><action/><ga type="paralinguistics">laughs</ga></e>
+    <t type="p"></t>
+
+    <a type="actions">&lt;bef&gt; opens shape box a bit and block falls through and lid falls shut</a>
+  </u>
+  <u who="CHI" uID="u138">
+    <e><action/><ga type="paralinguistics">laughs</ga></e>
+    <t type="p"></t>
+
+    <a type="actions">&lt;dur&gt; opens shape box lid &lt;bef&gt; lifts shape box lid a bit and lets it shut . repeats two times .</a>
+  </u>
+  <u who="MOT" uID="u139">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">helps open shape box</a>
+  </u>
+  <u who="CHI" uID="u140">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">takes block from shape box and holds under arm with other blocks . reaches in and out of shape box</a>
+  </u>
+  <u who="MOT" uID="u141">
+    <w>shall</w>
+    <w>we</w>
+    <w>dump</w>
+    <w>them</w>
+    <w>all</w>
+    <w>out</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;aft&gt; dumps box out, rights box and shuts lid</a>
+  </u>
+  <u who="CHI" uID="u142">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">helps with shape box . puts hand over box and block falls from under her arm</a>
+  </u>
+  <u who="MOT" uID="u143">
+    <w>there</w>
+    <t type="p"></t>
+
+    <a type="actions">pushes shape box toward Amy</a>
+  </u>
+  <u who="CHI" uID="u144">
+    <w>uh</w>
+    <t type="p"></t>
+
+    <a type="actions">opens shape box and reaches in</a>
+  </u>
+  <u who="MOT" uID="u145">
+    <w>op<shortening>en</shortening></w>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u146">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="e"></t>
+
+    <a type="actions">takes block from shape box and puts on floor</a>
+    <a type="extension" flavor="pho">deI de</a>
+  </u>
+  <u who="MOT" uID="u147">
+    <w>mmhm</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u148">
+    <w>uh</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;aft&gt; shuts lid</a>
+    <a type="comments">struggle noise</a>
+  </u>
+  <u who="MOT" uID="u149">
+    <w>where</w>
+    <w>does</w>
+    <w>that</w>
+    <w>one</w>
+    <w>go</w>
+    <t type="q"></t>
+
+    <a type="actions">picks up block and holds out to Amy</a>
+  </u>
+  <u who="CHI" uID="u150">
+    <w>there</w>
+    <t type="e"></t>
+
+    <a type="actions">takes block and puts under other arm</a>
+    <a type="extension" flavor="pho">&lt;1w&gt; ger</a>
+  </u>
+  <u who="CHI" uID="u151">
+    <w>op<shortening>en</shortening></w>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u152">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="e"></t>
+
+    <a type="actions">&lt;aft&gt; touches shape box lid with block and puts block through hole . touches blocks in arm . puts slab block in other hand . holds square block toward wrong hole while holding slab toward floor . attempts to put square block in</a>
+    <a type="extension" flavor="pho">eI g6 gum</a>
+  </u>
+  <u who="MOT" uID="u153">
+    <w>where</w>
+    <w>does</w>
+    <w>it</w>
+    <w>go</w>
+    <t type="q"></t>
+
+    <a type="actions">&lt;dur&gt; fingers and holds it &lt;bef&gt; picks up another slab .</a>
+  </u>
+  <u who="MOT" uID="u154">
+    <w>nope</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;dur&gt; holds block over hole &lt;bef&gt; taps block on lid .</a>
+  </u>
+  <u who="CHI" uID="u155">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">holds blocks . arm follows Mother's</a>
+  </u>
+  <u who="MOT" uID="u156">
+    <w>nope</w>
+    <t type="p"></t>
+
+    <a type="actions">puts block over another hole</a>
+  </u>
+  <u who="CHI" uID="u157">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">touches Mother's block</a>
+  </u>
+  <u who="MOT" uID="u158">
+    <w>nope</w>
+    <t type="p"></t>
+
+    <a type="actions">puts block over another hole</a>
+  </u>
+  <u who="CHI" uID="u159">
+    <w>no</w>
+    <t type="p"></t>
+
+    <a type="actions">takes block and tries fourth hole</a>
+    <a type="comments">spoken softly</a>
+    <a type="extension" flavor="pho">nA</a>
+  </u>
+  <u who="MOT" uID="u160">
+    <w>nope</w>
+    <t type="p"></t>
+
+    <a type="intonation">draws out the letter o</a>
+  </u>
+  <u who="CHI" uID="u161">
+    <w>no</w>
+    <t type="p"></t>
+
+    <a type="extension" flavor="pho">nA</a>
+  </u>
+  <u who="MOT" uID="u162">
+    <w>where</w>
+    <w>does</w>
+    <w>it</w>
+    <w>go</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="CHI" uID="u163">
+    <w>no</w>
+    <t type="p"></t>
+
+    <a type="actions">continues trying fourth hole</a>
+    <a type="extension" flavor="pho">nA</a>
+  </u>
+  <u who="MOT" uID="u164">
+    <w>no</w>
+    <w>it</w>
+    <w>doesn't</w>
+    <w>go</w>
+    <w>there</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u165">
+    <w untranscribed="unintelligible-with-pho">yyy</w>
+    <t type="p"></t>
+
+    <a type="actions">&lt;aft&gt; tries third hole</a>
+    <a type="extension" flavor="pho">noI</a>
+  </u>
+  <u who="MOT" uID="u166">
+    <w>where</w>
+    <g><w>does</w><k type="stressing"/></g>
+    <w>it</w>
+    <w>go</w>
+    <t type="q"></t>
+
+  </u>
+  <u who="MOT" uID="u167">
+    <w>try</w>
+    <w>right</w>
+    <w>there</w>
+    <t type="e"></t>
+
+    <a type="gesture">&lt;1w&gt; points to middle hole</a>
+  </u>
+  <u who="MOT" uID="u168">
+    <w>try</w>
+    <w>right</w>
+    <w>there</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u169">
+    <e><action/></e>
+    <t type="p"></t>
+
+    <a type="actions">manipulates blocks . takes slab again and puts by hole</a>
+  </u>
+</CHAT>

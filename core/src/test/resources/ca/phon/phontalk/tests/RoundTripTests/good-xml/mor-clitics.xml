@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="timmy"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="eng"
+      age="P2Y09M08D"
+
+    />
+    <participant
+      id="LIN"
+    name="Linda"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="WIN"
+    name="Winnie"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="GEM"
+    name="Gemma"
+      role="Speaker"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <w>it's<mor type="mor"><mw><pos><c>pro</c></pos><stem>it</stem></mw><mor-post><mw><pos><c>v</c></pos><stem>be</stem><mk type="sfxf">3S</mk></mw></mor-post></mor></w>
+    <w>me<mor type="mor"><mw><pos><c>pro</c></pos><stem>me</stem></mw></mor></w>
+    <t type="e"><mor type="mor"><mt type="e"/></mor></t>
+
+  </u>
+  <comment type="Generic">+ with ~</comment>
+  <u who="CHI" uID="u1">
+    <w>you<mor type="mor"><mw><pos><c>pro</c></pos><stem>you</stem></mw></mor></w>
+    <w>gonna<mor type="mor"><mw><pos><c>part</c></pos><stem>go</stem><mk type="sfx">PROG</mk></mw><mor-post><mw><pos><c>inf</c></pos><stem>to</stem></mw></mor-post></mor></w>
+    <w>put<mor type="mor"><mw><pos><c>v</c></pos><stem>put</stem><mk type="sfxf">ZERO</mk></mw></mor></w>
+    <w>the<mor type="mor"><mw><pos><c>det</c></pos><stem>the</stem></mw></mor></w>
+    <w>choo<wk type="cmp"/>choo's<mor type="mor"><mwc><pos><c>n</c></pos><mw><pos><c>on</c></pos><stem>choo</stem></mw><mw><pos><c>on</c></pos><stem>choo</stem></mw></mwc><mor-post><mw><pos><c>v</c><s>cop</s></pos><stem>be</stem><mk type="sfxf">3S</mk></mw></mor-post></mor></w>
+    <w>wheel<mor type="mor"><mw><pos><c>n</c></pos><stem>wheel</stem></mw></mor></w>
+    <w>on<mor type="mor"><mw><pos><c>adv</c><s>loc</s></pos><stem>on</stem></mw></mor></w>
+    <t type="q"><mor type="mor"><mt type="q"/></mor></t>
+
+  </u>
+  <comment type="Generic">this is not legal for mor</comment>
+  <u who="CHI" uID="u2">
+    <w>you</w>
+    <w>gonna</w>
+    <w>put</w>
+    <w>the</w>
+    <w>choo's<wk type="cmp"/>choo's</w>
+    <w>wheel</w>
+    <w>on</w>
+    <t type="q"></t>
+
+  </u>
+</CHAT>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="indent-overlap-in-word" Mediatypes="audio"
+      Version="2.19.0"
+      Lang="eng"
+      Options="CA"
+      Corpus="SBCSAE"
+      >
+  <Participants>
+    <participant
+      id="CAM"
+    name="CAM"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="JO"
+    name="JO"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="WESS"
+    name="WESS"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="FRED"
+    name="FRED"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="DOG"
+    name="DOG"
+      role="Environment"
+      language="eng"
+
+    />
+    <participant
+      id="ENV"
+    name="ENV"
+      role="Environment"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="FRED" uID="u0">
+    <w>it's</w>
+    <w>already</w>
+    <w>in</w>
+    <w>the</w>
+    <w>pan</w>
+    <internal-media
+      start="1138.844"
+      end="1139.850"
+      unit="s"
+    />
+    <w>and</w>
+    <overlap-point start-end="start" top-bottom="top"/>
+    <w>it's</w>
+    <w>done</w>
+    <overlap-point start-end="end" top-bottom="top"/>
+    <t type="p"></t>
+    <media
+      start="1139.850"
+      end="1140.362"
+      unit="s"
+    />
+  </u>
+  <u who="WESS" uID="u1">
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <w>Mm</w>
+    <overlap-point start-end="end" top-bottom="bottom"/>
+    <t type="p"></t>
+    <media
+      start="1139.975"
+      end="1140.362"
+      unit="s"
+    />
+  </u>
+  <u who="JO" uID="u2">
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <pause symbolic-length="simple"/>
+    <w>Yeah<overlap-point start-end="end" top-bottom="bottom"/><overlap-point start-end="start" top-bottom="top" index="2"/><p type="drawl"/></w>
+    <w>but</w>
+    <t type="p"></t>
+    <media
+      start="1139.984"
+      end="1140.875"
+      unit="s"
+    />
+  </u>
+  <u who="FRED" uID="u3">
+    <overlap-point start-end="start" top-bottom="bottom" index="2"/>
+    <w>and</w>
+    <w>you</w>
+    <w>just</w>
+    <w>set</w>
+    <w>it</w>
+    <w>a<overlap-point start-end="end" top-bottom="bottom" index="2"/><overlap-point start-end="start" top-bottom="top" index="3"/>side</w>
+    <overlap-point start-end="end" top-bottom="top" index="3"/>
+    <t type="p"></t>
+    <media
+      start="1140.362"
+      end="1141.652"
+      unit="s"
+    />
+  </u>
+  <u who="JO" uID="u4">
+    <w>ye<overlap-point start-end="end" top-bottom="top" index="2"/><overlap-point start-end="start" top-bottom="bottom" index="3"/><p type="drawl"/>s</w>
+    <overlap-point start-end="end" top-bottom="bottom" index="3"/>
+    <t type="p"></t>
+    <media
+      start="1140.875"
+      end="1141.652"
+      unit="s"
+    />
+  </u>
+</CHAT>

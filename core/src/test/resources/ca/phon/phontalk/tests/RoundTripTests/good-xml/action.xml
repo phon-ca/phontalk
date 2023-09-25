@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="timmy"
+      Date="1996-02-29"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="eng"
+      age="P2Y09M08D"
+
+    />
+    <participant
+      id="LIN"
+    name="Linda"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="WIN"
+    name="Winnie"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="GEM"
+    name="Gemma"
+      role="Speaker"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Tape Location">TI060 (side A)</comment>
+  <comment type="Date">29-FEB-1996</comment>
+  <comment type="Time Duration">17:30-18:00</comment>
+  <u who="CHI" uID="u0">
+    <e><action/><ga type="explanation">did nothing</ga></e>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

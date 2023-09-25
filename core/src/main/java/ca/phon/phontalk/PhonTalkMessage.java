@@ -26,8 +26,6 @@ import java.io.Serializable;
  */
 public class PhonTalkMessage implements Serializable, Comparable<PhonTalkMessage> {
 	
-	private static final long serialVersionUID = 7955358836268036775L;
-
 	/**
 	 * Severity
 	 */

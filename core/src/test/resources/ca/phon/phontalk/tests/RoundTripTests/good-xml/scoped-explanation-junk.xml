@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <w>This</w>
+    <w>is</w>
+    <g><w>oh</w>
+    <w>oh</w>
+    <w>dash</w>
+    <w>nineteen</w>
+    <w>point</w>
+    <w>two</w>
+    <w formType="letter">b</w>
+    <w formType="letter">e</w><ga type="explanation">OO-19.2(b)(e)</ga></g>
+    <w>here</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

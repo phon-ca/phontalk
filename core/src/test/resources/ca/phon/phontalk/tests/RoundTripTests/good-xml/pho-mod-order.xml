@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="pho-mod-order" Mediatypes="video"
+      Version="2.19.0"
+      Lang="fra"
+      Corpus="Paris-Corpus_Leonard"
+      Date="1992-06-23"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Léonard"
+      role="Target_Child"
+      language="fra"
+      age="P1Y08M09D"
+      sex="male"
+      group="bi"
+
+      birthday="1990-10-15"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="fra"
+
+    />
+    <participant
+      id="FAT"
+      role="Father"
+      language="fra"
+
+    />
+    <participant
+      id="PAT"
+      role="Friend"
+      language="fra"
+
+    />
+    <participant
+      id="OBS"
+    name="Aliyah"
+      role="Speaker"
+      language="fra"
+
+    />
+  </Participants>
+  <comment type="Date">23-JUN-1992</comment>
+  <comment type="Generic">Test %mod and %pho order.</comment>
+  <u who="CHI" uID="u0">
+    <pg><w>oh</w><model><pw><ph id="ph0">ɔ</ph></pw></model><actual><pw><ph id="ph0">o</ph><ph id="ph1">ː</ph></pw></actual></pg>
+    <t type="e"></t>
+    <media
+      start="0.000"
+      end="12.286"
+      unit="s"
+    />
+  </u>
+</CHAT>

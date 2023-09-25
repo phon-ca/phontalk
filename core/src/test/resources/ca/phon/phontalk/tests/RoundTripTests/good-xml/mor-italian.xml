@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="ita"
+      Corpus="tonelli"
+      Date="1997-07-06"
+      >
+  <Participants>
+    <participant
+      id="MAR"
+    name="Marco"
+      role="Child"
+      language="ita"
+      age="P2Y05M24D"
+      sex="male"
+
+      birthday="1995-01-12"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="ita"
+
+    />
+  </Participants>
+  <comment type="Location">Udine</comment>
+  <comment type="Date">06-JUL-1997</comment>
+  <comment type="Generic">Italian mor with clitic</comment>
+  <u who="MOT" uID="u0">
+    <w>bisogna<mor type="mor"><mw><pos><c>v</c></pos><stem>bisogna</stem><mk type="sfx">3S</mk><mk type="sfxf">PRES</mk></mw><menx>need</menx></mor></w>
+    <w>metterne<mor type="mor"><mw><pos><c>v</c><s>inf</s></pos><stem>mette</stem><mk type="sfx">INF</mk></mw><mor-post><mw><pos><c>pro</c><s>clit</s></pos><stem>part</stem></mw><menx>put</menx></mor-post></mor></w>
+    <w>via<mor type="mor"><mw><pos><c>adv</c></pos><stem>via</stem></mw></mor></w>
+    <w>ancora<mor type="mor"><mw><pos><c>v</c></pos><stem>ancora</stem><mk type="sfx">3S</mk><mk type="sfxf">PRES</mk></mw><menx>anchor</menx></mor></w>
+    <w>Marco<mor type="mor"><mw><pos><c>n</c><s>prop</s></pos><stem>Marco</stem></mw></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+
+  </u>
+</CHAT>

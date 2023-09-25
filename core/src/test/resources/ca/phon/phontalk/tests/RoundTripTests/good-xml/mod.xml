@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="por swe"
+      Corpus="mcf"
+      Date="1987-05-01"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Karin"
+      role="Target_Child"
+      language="por swe"
+      age="P1Y09M"
+
+    />
+    <participant
+      id="DAD"
+    name="Peter"
+      role="Father"
+      language="por swe"
+
+    />
+    <participant
+      id="MUM"
+    name="Madalena"
+      role="Mother"
+      language="por swe"
+
+    />
+  </Participants>
+  <comment type="Transcriber">MCF</comment>
+  <comment type="Transcriber">MCF</comment>
+  <comment type="Date">01-MAY-1987</comment>
+  <comment type="Tape Location">Video 1 sd.</comment>
+  <comment type="Location">Viken, Sweden.</comment>
+  <comment type="Situation">sitting at a table at home with Father, Karin in her high chair. Mother is videotaping.</comment>
+  <comment type="Activities">playing with crayons and paper on the table.</comment>
+  <u who="CHI" uID="u0">
+    <w>n<shortening>e</shortening>j</w>
+    <g><w><shortening>v</shortening>ill</w><k type="best guess"/></g>
+    <w><shortening>h</shortening>a</w>
+    <w>han<shortening>d</shortening></w>
+    <t type="p"></t>
+
+    <a type="target gloss">nej, jag vill ha handen .</a>
+    <a type="english translation">no, I want the hand .</a>
+    <a type="extension" flavor="pho">n̩ːːiwʊaˈhan̚</a>
+    <a type="extension" flavor="mod">neʝ vil hɑː ˈhandən</a>
+    <a type="intonation">LL on syllabic nasal, HF on the next three sylls, MR on last word .</a>
+  </u>
+</CHAT>

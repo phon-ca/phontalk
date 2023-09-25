@@ -3,7 +3,7 @@
   <parent>
     <groupId>ca.phon</groupId>
     <artifactId>phontalk</artifactId>
-    <version>3.6.0-181-SNAPSHOT</version>
+    <version>4.0.0-181-SNAPSHOT</version>
   </parent>
   <artifactId>phontalk-plugin</artifactId>
   <name>PhonTalk Plug-in</name>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="chiat"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Ruth"
+      role="Target_Child"
+      language="eng"
+      age="P10Y03M"
+
+    />
+    <participant
+      id="INV"
+    name="Chiat"
+      role="Investigator"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <w>duː</w>
+    <pause symbolic-length="simple"/>
+    <w>us</w>
+    <w>go</w>
+    <w>on</w>
+    <w>sunday</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

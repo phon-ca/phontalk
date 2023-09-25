@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Options="CA"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Generic">Elements</comment>
+  <u who="CHI" uID="u0">
+    <w>blocked</w>
+    <w>segments</w>
+    <w>rub-b-b<ca-element type="blocked segments"/>bber</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u1">
+    <w>a</w>
+    <w>p<ca-element type="pitch up"/>itch</w>
+    <w>up</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u2">
+    <w>a</w>
+    <w>p<ca-element type="pitch down"/>itch</w>
+    <w>down</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u3">
+    <w>a</w>
+    <w>in<ca-element type="inhalation"/>halation</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u4">
+    <w>a</w>
+    <w>constriction<ca-element type="constriction"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u5">
+    <w>a</w>
+    <w><ca-element type="pitch reset"/>pitch</w>
+    <w>reset</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u6">
+    <w>a</w>
+    <w>lau<ca-element type="laugh in word"/>gh</w>
+    <w>in</w>
+    <w>word</w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">CA overlaps</comment>
+  <u who="CHI" uID="u7">
+    <w>a</w>
+    <overlap-point start-end="start" top-bottom="top"/>
+    <w>top</w>
+    <w>begin</w>
+    <w>overlap</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>top</w>
+    <w>end</w>
+    <w>overlap</w>
+    <overlap-point start-end="end" top-bottom="top"/>
+    <w>here</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u8">
+    <w>a</w>
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <w>bottom</w>
+    <w>begin</w>
+    <w>overlap</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>bottom</w>
+    <w>end</w>
+    <w>overlap</w>
+    <overlap-point start-end="end" top-bottom="bottom"/>
+    <w>there</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u9">
+    <w>a</w>
+    <overlap-point start-end="start" top-bottom="top"/>
+    <w>top</w>
+    <w>begin</w>
+    <w>overlap</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>top</w>
+    <w>end</w>
+    <w>overlap<overlap-point start-end="end" top-bottom="top"/></w>
+    <w>here</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u10">
+    <w>a</w>
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <w>bottom</w>
+    <w>begin</w>
+    <w>overlap</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>bottom</w>
+    <w>end</w>
+    <w>overlap<overlap-point start-end="end" top-bottom="bottom"/></w>
+    <w>there</w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">CA overlaps , inside groups</comment>
+  <u who="CHI" uID="u11">
+    <g><w>a</w>
+    <overlap-point start-end="start" top-bottom="top"/>
+    <w>top</w>
+    <w>begin</w>
+    <w>overlap</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>top</w>
+    <w>end</w>
+    <w>overlap</w>
+    <overlap-point start-end="end" top-bottom="top"/>
+    <w>here</w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u12">
+    <g><w>a</w>
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <w>bottom</w>
+    <w>begin</w>
+    <w>overlap</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>bottom</w>
+    <w>end</w>
+    <w>overlap</w>
+    <overlap-point start-end="end" top-bottom="bottom"/>
+    <w>there</w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u13">
+    <g><w>a</w>
+    <overlap-point start-end="start" top-bottom="top"/>
+    <w>top</w>
+    <w>begin</w>
+    <w>overlap</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>top</w>
+    <w>end</w>
+    <w>overlap<overlap-point start-end="end" top-bottom="top"/></w>
+    <w>here</w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="MOT" uID="u14">
+    <g><w>a</w>
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <w>bottom</w>
+    <w>begin</w>
+    <w>overlap</w>
+    <tagMarker type="comma"></tagMarker>
+    <w>bottom</w>
+    <w>end</w>
+    <w>overlap<overlap-point start-end="end" top-bottom="bottom"/></w>
+    <w>there</w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">Segment repetition</comment>
+  <u who="CHI" uID="u15">
+    <w><ca-delimiter type="begin" label="repeated-segment"/>s-s-s<ca-delimiter type="end" label="repeated-segment"/>segment</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u16">
+    <w><ca-delimiter type="begin" label="repeated-segment"/>s-s-s<ca-delimiter type="end" label="repeated-segment"/>seg<ca-delimiter type="begin" label="repeated-segment"/>m-m-m-m<ca-delimiter type="end" label="repeated-segment"/>ments</w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">Unmatched delimiters</comment>
+  <u who="CHI" uID="u17">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="faster"/>faster<ca-delimiter type="end" label="faster"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u18">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="slower"/>slower<ca-delimiter type="end" label="slower"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u19">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="creaky"/>creaky<ca-delimiter type="end" label="creaky"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u20">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="softer"/>softer<ca-delimiter type="end" label="softer"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u21">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="low-pitch"/>lowpitch<ca-delimiter type="end" label="low-pitch"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u22">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="high-pitch"/>highpitch<ca-delimiter type="end" label="high-pitch"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u23">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="smile voice"/>smilevoice<ca-delimiter type="end" label="smile voice"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u24">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="breathy voice"/>breathyvoice<ca-delimiter type="end" label="breathy voice"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u25">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="unsure"/>unsure<ca-delimiter type="end" label="unsure"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u26">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="whisper"/>whisper<ca-delimiter type="end" label="whisper"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u27">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="yawn"/>yawn<ca-delimiter type="end" label="yawn"/></w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u28">
+    <w>a</w>
+    <w><ca-delimiter type="begin" label="singing"/>singing<ca-delimiter type="end" label="singing"/></w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">Unmatched delimiters , in group</comment>
+  <u who="CHI" uID="u29">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="faster"/>faster<ca-delimiter type="end" label="faster"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u30">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="slower"/>slower<ca-delimiter type="end" label="slower"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u31">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="creaky"/>creaky<ca-delimiter type="end" label="creaky"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u32">
+    <g><g><w><ca-delimiter type="begin" label="softer"/>softer<ca-delimiter type="end" label="softer"/></w><k type="retracing"/></g><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u33">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="softer"/>softer<ca-delimiter type="end" label="softer"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u34">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="low-pitch"/>lowpitch<ca-delimiter type="end" label="low-pitch"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u35">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="high-pitch"/>highpitch<ca-delimiter type="end" label="high-pitch"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u36">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="smile voice"/>smilevoice<ca-delimiter type="end" label="smile voice"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u37">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="breathy voice"/>breathyvoice<ca-delimiter type="end" label="breathy voice"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u38">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="unsure"/>unsure<ca-delimiter type="end" label="unsure"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u39">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="whisper"/>whisper<ca-delimiter type="end" label="whisper"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u40">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="yawn"/>yawn<ca-delimiter type="end" label="yawn"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u41">
+    <g><w>a</w>
+    <w><ca-delimiter type="begin" label="singing"/>singing<ca-delimiter type="end" label="singing"/></w><ga type="explanation">foo</ga></g>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">No terminator at end of utterance</comment>
+  <u who="CHI" uID="u42">
+    <w>rising</w>
+    <w>to</w>
+    <w>high</w>
+    <s type="rising to high"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <u who="CHI" uID="u43">
+    <w>rising</w>
+    <w>to</w>
+    <w>mid</w>
+    <s type="rising to mid"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <u who="CHI" uID="u44">
+    <w>level</w>
+    <s type="level"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <u who="CHI" uID="u45">
+    <w>falling</w>
+    <w>to</w>
+    <w>mid</w>
+    <s type="falling to mid"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <u who="CHI" uID="u46">
+    <w>falling</w>
+    <w>to</w>
+    <w>low</w>
+    <s type="falling to low"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <comment type="Generic">continuations</comment>
+  <u who="CHI" uID="u47">
+    <w>rising</w>
+    <w>to</w>
+    <w>high</w>
+    <w>with</w>
+    <w>continuation</w>
+    <s type="rising to high"/>
+    <t type="technical break TCU continuation"></t>
+
+  </u>
+  <u who="MOT" uID="u48">
+    <w>junk</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u49">
+    <linker type="technical break TCU completion"/>
+    <w>continuation</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u50">
+    <w>rising</w>
+    <w>to</w>
+    <w>mid</w>
+    <w>with</w>
+    <w>continuation</w>
+    <s type="rising to mid"/>
+    <t type="technical break TCU continuation"></t>
+
+  </u>
+  <u who="MOT" uID="u51">
+    <w>junk</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u52">
+    <linker type="technical break TCU completion"/>
+    <w>continuation</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u53">
+    <w>level</w>
+    <w>with</w>
+    <w>continuation</w>
+    <s type="level"/>
+    <t type="technical break TCU continuation"></t>
+
+  </u>
+  <u who="MOT" uID="u54">
+    <w>junk</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u55">
+    <linker type="technical break TCU completion"/>
+    <w>continuation</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u56">
+    <w>falling</w>
+    <w>to</w>
+    <w>mid</w>
+    <w>with</w>
+    <w>continuation</w>
+    <s type="falling to mid"/>
+    <t type="technical break TCU continuation"></t>
+
+  </u>
+  <u who="MOT" uID="u57">
+    <w>junk</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u58">
+    <linker type="technical break TCU completion"/>
+    <w>continuation</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u59">
+    <w>falling</w>
+    <w>to</w>
+    <w>low</w>
+    <w>with</w>
+    <w>continuation</w>
+    <s type="falling to low"/>
+    <t type="technical break TCU continuation"></t>
+
+  </u>
+  <u who="MOT" uID="u60">
+    <w>junk</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u61">
+    <linker type="technical break TCU completion"/>
+    <w>continuation</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u62">
+    <w>technical</w>
+    <w>break</w>
+    <w>TCU</w>
+    <w>continuation</w>
+    <t type="technical break TCU continuation"></t>
+
+  </u>
+  <u who="MOT" uID="u63">
+    <w>junk</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u64">
+    <linker type="technical break TCU completion"/>
+    <w>continuation</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u65">
+    <w>falling</w>
+    <w>to</w>
+    <w>low</w>
+    <w>with</w>
+    <w>no</w>
+    <w>break</w>
+    <w>TCU</w>
+    <w>continuation</w>
+    <s type="falling to low"/>
+    <t type="no break TCU continuation"></t>
+
+  </u>
+  <u who="MOT" uID="u66">
+    <w>junk</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u67">
+    <linker type="no break TCU completion"/>
+    <w>no</w>
+    <w>break</w>
+    <w>TCU</w>
+    <w>continuation</w>
+    <t type="p"></t>
+
+  </u>
+  <comment type="Generic">CA separators</comment>
+  <u who="CHI" uID="u68">
+    <w>foo</w>
+    <s type="rising to high"/>
+    <w>rising</w>
+    <w>to</w>
+    <w>high</w>
+    <s type="rising to high"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <u who="CHI" uID="u69">
+    <w>foo</w>
+    <s type="rising to mid"/>
+    <w>rising</w>
+    <w>to</w>
+    <w>mid</w>
+    <s type="rising to mid"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <u who="CHI" uID="u70">
+    <w>foo</w>
+    <s type="level"/>
+    <w>level</w>
+    <s type="level"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <u who="CHI" uID="u71">
+    <w>foo</w>
+    <s type="falling to mid"/>
+    <w>falling</w>
+    <w>to</w>
+    <w>mid</w>
+    <s type="falling to mid"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <u who="CHI" uID="u72">
+    <w>foo</w>
+    <s type="falling to low"/>
+    <w>falling</w>
+    <w>to</w>
+    <w>low</w>
+    <s type="falling to low"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <u who="CHI" uID="u73">
+    <w>þa<overlap-point start-end="start" top-bottom="top"/>ð</w>
+    <w>er</w>
+    <w>svo</w>
+    <w>liti<overlap-point start-end="end" top-bottom="top"/></w>
+    <w>langt</w>
+    <w>síðan</w>
+    <s type="unmarked ending"/>
+    <t type="missing CA terminator"></t>
+
+  </u>
+  <comment type="Generic">optional spaces</comment>
+  <u who="CHI" uID="u74">
+    <w>technical</w>
+    <w>break</w>
+    <w>Tcu</w>
+    <w>continuation</w>
+    <t type="technical break TCU continuation"></t>
+
+  </u>
+  <u who="MOT" uID="u75">
+    <w>junk</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u76">
+    <linker type="technical break TCU completion"/>
+    <w>continuation</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

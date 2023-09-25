@@ -35,12 +35,6 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplateWriter;
 
-import ca.phon.phontalk.parser.AST2TalkBank;
-import ca.phon.phontalk.parser.AntlrExceptionVisitor;
-import ca.phon.phontalk.parser.AntlrTokens;
-import ca.phon.phontalk.parser.AntlrUtils;
-import ca.phon.phontalk.parser.Phon2XmlTreeBuilder;
-import ca.phon.phontalk.parser.TreeBuilderException;
 import ca.phon.session.Participant;
 import ca.phon.session.Record;
 import ca.phon.session.Session;
@@ -76,57 +70,57 @@ public class Phon2XmlConverter {
 	
 	public void sessionToStream(Session session, OutputStream outputStream, PhonTalkListener msgListener) {
 		// convert session into a antlr common tree
-		final Phon2XmlTreeBuilder builder = new Phon2XmlTreeBuilder();
-		CommonTree sessionTree;
-		try {
-			sessionTree = builder.buildTree(session);
-		} catch (TreeBuilderException e1) {
-			if(PhonTalkUtil.isVerbose()) e1.printStackTrace();
-			final PhonTalkError err = new PhonTalkError(e1);
-			err.setFile(sessionFile);
-			if(msgListener != null) msgListener.message(err);
-			return;
-		} catch (Exception e) {
-			findRecordsWithErrors(sessionFile, session, msgListener);
-			return;
-		}
-		
-		try {
-			final OutputStreamWriter fwriter = new OutputStreamWriter(outputStream, "UTF-8");
-			final StringTemplateWriter stWriter = new NoIndentWriter(new PrintWriter(fwriter));
-			
-			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(sessionTree);
-			final AST2TalkBank walker = new AST2TalkBank(nodeStream);
-			walker.setFile(outputFile.getAbsolutePath());
-			final AST2TalkBank.chat_return ret = walker.chat();
-			ret.st.write(stWriter);
-			fwriter.flush();
-			fwriter.close();
-		} catch (IOException e) {
-			final PhonTalkMessage err = new PhonTalkError(e);
-			err.setFile(outputFile);
-			if(msgListener != null) {
-				msgListener.message(err);
-			}
-			findRecordsWithErrors(sessionFile, session, msgListener);
-			return;
-		} catch (RecognitionException re) {
-			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor();
-			visitor.visit(re);
-			final PhonTalkMessage msg = visitor.getMessage();
-			msg.setFile(outputFile);
-			if(msgListener != null) {
-				msgListener.message(msg);
-			}
-			findRecordsWithErrors(sessionFile, session, msgListener);
-			return;
-		} catch (Exception | StackOverflowError e) {
-			final StackTraceElement ste = e.getStackTrace()[0];
-			System.out.println(ste.toString());
-			// sometime stackoverflow and other runtime errors
-			// can occur during string template output
-			findRecordsWithErrors(sessionFile, session, msgListener);
-		}
+//		final Phon2XmlTreeBuilder builder = new Phon2XmlTreeBuilder();
+//		CommonTree sessionTree;
+//		try {
+//			sessionTree = builder.buildTree(session);
+//		} catch (TreeBuilderException e1) {
+//			if(PhonTalkUtil.isVerbose()) e1.printStackTrace();
+//			final PhonTalkError err = new PhonTalkError(e1);
+//			err.setFile(sessionFile);
+//			if(msgListener != null) msgListener.message(err);
+//			return;
+//		} catch (Exception e) {
+//			findRecordsWithErrors(sessionFile, session, msgListener);
+//			return;
+//		}
+//
+//		try {
+//			final OutputStreamWriter fwriter = new OutputStreamWriter(outputStream, "UTF-8");
+//			final StringTemplateWriter stWriter = new NoIndentWriter(new PrintWriter(fwriter));
+//
+//			final CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(sessionTree);
+//			final AST2TalkBank walker = new AST2TalkBank(nodeStream);
+//			walker.setFile(outputFile.getAbsolutePath());
+//			final AST2TalkBank.chat_return ret = walker.chat();
+//			ret.st.write(stWriter);
+//			fwriter.flush();
+//			fwriter.close();
+//		} catch (IOException e) {
+//			final PhonTalkMessage err = new PhonTalkError(e);
+//			err.setFile(outputFile);
+//			if(msgListener != null) {
+//				msgListener.message(err);
+//			}
+//			findRecordsWithErrors(sessionFile, session, msgListener);
+//			return;
+//		} catch (RecognitionException re) {
+//			final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor();
+//			visitor.visit(re);
+//			final PhonTalkMessage msg = visitor.getMessage();
+//			msg.setFile(outputFile);
+//			if(msgListener != null) {
+//				msgListener.message(msg);
+//			}
+//			findRecordsWithErrors(sessionFile, session, msgListener);
+//			return;
+//		} catch (Exception | StackOverflowError e) {
+//			final StackTraceElement ste = e.getStackTrace()[0];
+//			System.out.println(ste.toString());
+//			// sometime stackoverflow and other runtime errors
+//			// can occur during string template output
+//			findRecordsWithErrors(sessionFile, session, msgListener);
+//		}
 	}
 	
 	public void convertFile(File sessionFile, File outputFile) {
@@ -204,88 +198,82 @@ public class Phon2XmlConverter {
 		}
 	}
 	
-	/**
-	 * Attempts to process a session one record at a time in order
-	 * to determine records which have conversion problems.
-	 * 
-	 * @param t
-	 */
 	private void findRecordsWithErrors(File f, Session session, PhonTalkListener listener) {
 		
-		final SessionFactory factory = SessionFactory.newFactory();
-		
-		for(int i = 0; i < session.getRecordCount(); i++) {
-			Session testSession = factory.createSession();
-			factory.copySessionInformation(session, testSession);
-			factory.copySessionMetadata(session, testSession);
-			factory.copySessionTierInformation(session, testSession);
-			for(Participant p:session.getParticipants()) {
-				testSession.addParticipant(factory.cloneParticipant(p));
-			}
-			
-			Record record = session.getRecord(i);
-			testSession.addRecord(record);
-
-			// now attept to convert the test Transcript
-			Phon2XmlTreeBuilder treeBuilder = new Phon2XmlTreeBuilder();
-			CommonTree tTree;
-			try {
-				tTree = treeBuilder.buildTree(testSession);
-			} catch (TreeBuilderException e1) {
-				final PhonTalkError err = new PhonTalkError(e1);
-				if(listener != null) listener.message(err);
-				continue;
-			} catch (Exception e) {
-				final PhonTalkError err = new PhonTalkError(e);
-				if(listener != null) listener.message(err);
-				continue;
-			}
-
-			CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(tTree);
-			AST2TalkBank walker = new AST2TalkBank(nodeStream);
-
-			try {
-				AST2TalkBank.chat_return v = walker.chat();
-				v.st.toString();
-			} catch (TreeWalkerError e) {
-				if(e.getCause() instanceof RecognitionException) {
-					AntlrUtils.printTree(tTree);
-					final RecognitionException re = (RecognitionException)e.getCause();
-					final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2TalkBank.tokens"));
-					visitor.visit(re);
-					final PhonTalkMessage msg = visitor.getMessage();
-					msg.setMessage("Record #" + (i+1) + " " + msg.getMessage());
-					msg.setFile(f);
-					if(listener != null) {
-						listener.message(msg);
-					}
-				} else {
-					final PhonTalkError err = new PhonTalkError("Record #" + (i+1) + " " + e.getMessage(), e);
-					err.setFile(f);
-					if(listener != null) {
-						listener.message(err);
-					}
-				}
-			} catch (RecognitionException re) {
-				AntlrUtils.printTree(tTree);
-				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2TalkBank.tokens"));
-				visitor.visit(re);
-				final PhonTalkMessage msg = visitor.getMessage();
-				msg.setMessage("Record #" + (i+1) + " " + msg.getMessage());
-				msg.setFile(f);
-				if(listener != null) {
-					listener.message(msg);
-				}
-			} catch (Exception | StackOverflowError e) {
-				AntlrUtils.printTree(tTree);
-				final PhonTalkError err = new PhonTalkError("Record #" + (i+1) + " " + e.getMessage(), e);
-				err.setFile(f);
-				if(listener != null) {
-					listener.message(err);
-				}
-				return;
-			}
-		}
+//		final SessionFactory factory = SessionFactory.newFactory();
+//
+//		for(int i = 0; i < session.getRecordCount(); i++) {
+//			Session testSession = factory.createSession();
+//			factory.copySessionInformation(session, testSession);
+//			factory.copySessionMetadata(session, testSession);
+//			factory.copySessionTierInformation(session, testSession);
+//			for(Participant p:session.getParticipants()) {
+//				testSession.addParticipant(factory.cloneParticipant(p));
+//			}
+//
+//			Record record = session.getRecord(i);
+//			testSession.addRecord(record);
+//
+//			// now attept to convert the test Transcript
+//			Phon2XmlTreeBuilder treeBuilder = new Phon2XmlTreeBuilder();
+//			CommonTree tTree;
+//			try {
+//				tTree = treeBuilder.buildTree(testSession);
+//			} catch (TreeBuilderException e1) {
+//				final PhonTalkError err = new PhonTalkError(e1);
+//				if(listener != null) listener.message(err);
+//				continue;
+//			} catch (Exception e) {
+//				final PhonTalkError err = new PhonTalkError(e);
+//				if(listener != null) listener.message(err);
+//				continue;
+//			}
+//
+//			CommonTreeNodeStream nodeStream = new CommonTreeNodeStream(tTree);
+//			AST2TalkBank walker = new AST2TalkBank(nodeStream);
+//
+//			try {
+//				AST2TalkBank.chat_return v = walker.chat();
+//				v.st.toString();
+//			} catch (TreeWalkerError e) {
+//				if(e.getCause() instanceof RecognitionException) {
+//					AntlrUtils.printTree(tTree);
+//					final RecognitionException re = (RecognitionException)e.getCause();
+//					final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2TalkBank.tokens"));
+//					visitor.visit(re);
+//					final PhonTalkMessage msg = visitor.getMessage();
+//					msg.setMessage("Record #" + (i+1) + " " + msg.getMessage());
+//					msg.setFile(f);
+//					if(listener != null) {
+//						listener.message(msg);
+//					}
+//				} else {
+//					final PhonTalkError err = new PhonTalkError("Record #" + (i+1) + " " + e.getMessage(), e);
+//					err.setFile(f);
+//					if(listener != null) {
+//						listener.message(err);
+//					}
+//				}
+//			} catch (RecognitionException re) {
+//				AntlrUtils.printTree(tTree);
+//				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2TalkBank.tokens"));
+//				visitor.visit(re);
+//				final PhonTalkMessage msg = visitor.getMessage();
+//				msg.setMessage("Record #" + (i+1) + " " + msg.getMessage());
+//				msg.setFile(f);
+//				if(listener != null) {
+//					listener.message(msg);
+//				}
+//			} catch (Exception | StackOverflowError e) {
+//				AntlrUtils.printTree(tTree);
+//				final PhonTalkError err = new PhonTalkError("Record #" + (i+1) + " " + e.getMessage(), e);
+//				err.setFile(f);
+//				if(listener != null) {
+//					listener.message(err);
+//				}
+//				return;
+//			}
+//		}
 
 	}
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="pause-with-explanation" Mediatypes="video"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="sample"
+      >
+  <Participants>
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="CHI"
+      role="Target_Child"
+      language="eng"
+      age="P1Y10M04D"
+
+    />
+  </Participants>
+  <comment type="Generic">pause cannot have comment unless wrapped in group</comment>
+  <u who="CHI" uID="u0">
+    <g><pause symbolic-length="simple" length="0.4"/><ga type="explanation">WHO CHI TYPE walking</ga></g>
+    <t type="p"></t>
+    <media
+      start="4.818"
+      end="5.330"
+      unit="s"
+    />
+  </u>
+</CHAT>

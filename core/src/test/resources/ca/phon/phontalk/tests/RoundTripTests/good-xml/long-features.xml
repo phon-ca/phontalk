@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="long-features" Mediatypes="audio"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="SBCSAE"
+      >
+  <Participants>
+    <participant
+      id="ENV"
+    name="FAKE_ENV"
+      role="Environment"
+      language="eng"
+
+    />
+    <participant
+      id="REED"
+    name="REED"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="DARRE"
+    name="DARREN"
+      role="Speaker"
+      language="eng"
+
+    />
+    <participant
+      id="SALLY"
+    name="SALLY"
+      role="Speaker"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="REED" uID="u0">
+    <pause symbolic-length="long"/>
+    <w>Hey</w>
+    <w>man</w>
+    <t type="p"></t>
+    <media
+      start="2.589"
+      end="4.447"
+      unit="s"
+    />
+  </u>
+  <u who="DARRE" uID="u1">
+    <w>Hey</w>
+    <t type="p"></t>
+    <media
+      start="4.447"
+      end="4.934"
+      unit="s"
+    />
+  </u>
+  <u who="REED" uID="u2">
+    <pause symbolic-length="long"/>
+    <w>Good</w>
+    <w>to</w>
+    <w>see</w>
+    <w>you</w>
+    <internal-media
+      start="4.934"
+      end="6.420"
+      unit="s"
+    />
+    <e><happening>laugh</happening></e>
+    <e><happening>laugh</happening></e>
+    <internal-media
+      start="6.420"
+      end="6.954"
+      unit="s"
+    />
+    <pause symbolic-length="long"/>
+    <w>we<p type="drawl"/>ll</w>
+    <internal-media
+      start="6.954"
+      end="8.464"
+      unit="s"
+    />
+    <pause symbolic-length="long"/>
+    <w>I</w>
+    <w>see</w>
+    <w>you</w>
+    <w>went</w>
+    <w>ahead</w>
+    <w>with</w>
+    <w>your</w>
+    <w>plans</w>
+    <w>to</w>
+    <w>do</w>
+    <w>a</w>
+    <w>little</w>
+    <w>skiing</w>
+    <w>there</w>
+    <t type="q"></t>
+    <media
+      start="8.464"
+      end="12.328"
+      unit="s"
+    />
+  </u>
+  <u who="DARRE" uID="u3">
+    <pause symbolic-length="simple"/>
+    <w>I</w>
+    <w>did</w>
+    <t type="p"></t>
+    <media
+      start="12.328"
+      end="12.879"
+      unit="s"
+    />
+  </u>
+  <u who="DARRE" uID="u4">
+    <e><happening>laugh</happening></e>
+    <e><happening>laugh</happening></e>
+    <t type="p"></t>
+    <media
+      start="12.879"
+      end="13.234"
+      unit="s"
+    />
+  </u>
+  <u who="SALLY" uID="u5">
+    <e><happening>laugh</happening></e>
+    <t type="p"></t>
+    <media
+      start="13.234"
+      end="13.408"
+      unit="s"
+    />
+  </u>
+  <u who="REED" uID="u6">
+    <w>We<p type="drawl"/>ll</w>
+    <internal-media
+      start="13.408"
+      end="14.046"
+      unit="s"
+    />
+    <w>I'm</w>
+    <w>glad</w>
+    <w>you</w>
+    <w>didn't</w>
+    <w>hurt</w>
+    <w>yourself</w>
+    <w>too</w>
+    <w>bad</w>
+    <t type="trail off"></t>
+    <media
+      start="14.046"
+      end="15.579"
+      unit="s"
+    />
+  </u>
+  <u who="DARRE" uID="u7">
+    <overlap-point start-end="start" top-bottom="top"/>
+    <w>Me</w>
+    <w>too</w>
+    <overlap-point start-end="end" top-bottom="top"/>
+    <t type="p"></t>
+    <media
+      start="15.579"
+      end="16.185"
+      unit="s"
+    />
+  </u>
+  <u who="REED" uID="u8">
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <w>and</w>
+    <w>she</w>
+    <w>says</w>
+    <overlap-point start-end="end" top-bottom="bottom"/>
+    <w>you're</w>
+    <overlap-point start-end="start" top-bottom="top" index="2"/>
+    <w>getting</w>
+    <w>better</w>
+    <overlap-point start-end="end" top-bottom="top" index="2"/>
+    <w>already</w>
+    <t type="trail off"></t>
+    <media
+      start="15.637"
+      end="17.163"
+      unit="s"
+    />
+  </u>
+  <u who="ENV" uID="u9">
+    <overlap-point start-end="start" top-bottom="bottom" index="2"/>
+    <e><happening>DOOR_CLOSING</happening></e>
+    <overlap-point start-end="end" top-bottom="bottom" index="2"/>
+    <t type="p"></t>
+    <media
+      start="16.212"
+      end="16.788"
+      unit="s"
+    />
+  </u>
+  <u who="REED" uID="u10">
+    <w>so</w>
+    <w>that's</w>
+    <w>always</w>
+    <w>a</w>
+    <w>good</w>
+    <w>sign</w>
+    <t type="p"></t>
+    <media
+      start="17.163"
+      end="18.591"
+      unit="s"
+    />
+  </u>
+  <u who="DARRE" uID="u11">
+    <pause symbolic-length="simple"/>
+    <w>Yeah</w>
+    <internal-media
+      start="18.591"
+      end="18.969"
+      unit="s"
+    />
+    <w>I</w>
+    <w>mean</w>
+    <w>I</w>
+    <w>couldn't</w>
+    <t type="interruption"></t>
+    <media
+      start="18.969"
+      end="19.619"
+      unit="s"
+    />
+  </u>
+  <u who="DARRE" uID="u12">
+    <pause symbolic-length="long"/>
+    <w>I</w>
+    <w>couldn't</w>
+    <w>begin</w>
+    <w>to</w>
+    <overlap-point start-end="start" top-bottom="top"/>
+    <long-feature type="begin">X</long-feature>
+    <w>deal</w>
+    <w>with</w>
+    <long-feature type="end">X</long-feature>
+    <w>the</w>
+    <w>slightest</w>
+    <w>pressure</w>
+    <overlap-point start-end="end" top-bottom="top"/>
+    <t type="p"></t>
+    <media
+      start="19.619"
+      end="21.848"
+      unit="s"
+    />
+  </u>
+  <u who="REED" uID="u13">
+    <overlap-point start-end="start" top-bottom="bottom"/>
+    <w>Yeah</w>
+    <internal-media
+      start="20.757"
+      end="21.151"
+      unit="s"
+    />
+    <long-feature type="begin">X</long-feature>
+    <w>give</w>
+    <w>it</w>
+    <long-feature type="end">X</long-feature>
+    <w>easy</w>
+    <w>easy</w>
+    <overlap-point start-end="end" top-bottom="bottom"/>
+    <internal-media
+      start="21.151"
+      end="22.208"
+      unit="s"
+    />
+    <w>yeah</w>
+    <w>don't</w>
+    <t type="trail off"></t>
+    <media
+      start="22.208"
+      end="22.684"
+      unit="s"
+    />
+  </u>
+  <u who="DARRE" uID="u14">
+    <pause symbolic-length="long"/>
+    <w>Well</w>
+    <internal-media
+      start="23.930"
+      end="24.260"
+      unit="s"
+    />
+    <w>It's</w>
+    <w>certainly</w>
+    <w>been</w>
+    <w>a</w>
+    <internal-media
+      start="24.260"
+      end="25.379"
+      unit="s"
+    />
+    <long-feature type="begin">PAR</long-feature>
+    <w>is</w>
+    <nonvocal type="begin">THUMP_MICROPHONE</nonvocal>
+    <e><happening>nonvocal</happening></e>
+    <w>this</w>
+    <e><happening>nonvocal</happening></e>
+    <long-feature type="begin">X</long-feature>
+    <w>one</w>
+    <long-feature type="end">X</long-feature>
+    <w>working</w>
+    <nonvocal type="end">THUMP_MICROPHONE</nonvocal>
+    <long-feature type="end">PAR</long-feature>
+    <nonvocal type="simple">PUNCH</nonvocal>
+    <t type="q"></t>
+    <media
+      start="25.379"
+      end="26.310"
+      unit="s"
+    />
+  </u>
+</CHAT>

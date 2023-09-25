@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="spa eng"
+      Corpus="timmy"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="spa eng"
+      age="P2Y09M08D"
+
+    />
+    <participant
+      id="LIN"
+    name="Linda"
+      role="Investigator"
+      language="spa eng"
+
+    />
+    <participant
+      id="WIN"
+    name="Winnie"
+      role="Investigator"
+      language="spa eng"
+
+    />
+    <participant
+      id="GEM"
+    name="Gemma"
+      role="Speaker"
+      language="spa eng"
+
+    />
+  </Participants>
+  <comment type="Generic">Translation for clitic.</comment>
+  <u who="CHI" uID="u0">
+    <w>cosa<mor type="mor"><mw><pos><c>pro</c><s>int</s></pos><stem>cosa</stem></mw><menx>what</menx></mor></w>
+    <pause symbolic-length="simple"/>
+    <w>dimmelo<mor type="mor"><mw><pos><c>v</c><s>imp</s></pos><stem>dice</stem><mk type="sfx">2S</mk><mk type="sfxf">IMP</mk></mw><mor-post><mw><pos><c>pro</c><s>clit</s></pos><stem>1S</stem></mw></mor-post><mor-post><mw><pos><c>pro</c><s>clit</s></pos><stem>3S</stem><mk type="sfxf">MASC</mk></mw><menx>say</menx></mor-post></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+
+  </u>
+</CHAT>

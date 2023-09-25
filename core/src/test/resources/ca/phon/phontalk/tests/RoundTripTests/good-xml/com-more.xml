@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="providence"
+      >
+  <Participants>
+    <participant
+      id="TXT"
+      role="Target_Child"
+      language="eng"
+      age="P1Y09M08D"
+      sex="female"
+
+    />
+  </Participants>
+  <u who="TXT" uID="u0">
+    <w>text</w>
+    <t type="p"></t>
+
+    <a type="comments">TTHIS can (happen) in "quotes" or even with !! sometimes.</a>
+  </u>
+  <u who="TXT" uID="u1">
+    <w>text</w>
+    <t type="p"></t>
+
+    <a type="comments">a-a-and - -- we get *** /this\ or #{this} with @^$ + and the rest.</a>
+  </u>
+  <u who="TXT" uID="u2">
+    <w>text</w>
+    <t type="p"></t>
+
+    <a type="comments">then there is IPA ɟɮɬːɟɮːɬʉɨɤθ and so on</a>
+  </u>
+  <u who="TXT" uID="u3">
+    <w>text</w>
+    <t type="p"></t>
+
+    <a type="comments">and there are the CA characters ↓↑∆∇t☺ and so on (see manual)</a>
+  </u>
+  <u who="TXT" uID="u4">
+    <w>text</w>
+    <t type="p"></t>
+
+    <a type="comments">and CJK 阿萨德</a>
+  </u>
+  <u who="TXT" uID="u5">
+    <w>text</w>
+    <t type="p"></t>
+
+    <a type="comments">there are extended Latin characters ňŝâ, and Greek ζΫβ, Cyrillic чДЋ, Hebrew דים, and some هإكآday we will have Arabic etc.</a>
+  </u>
+</CHAT>

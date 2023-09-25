@@ -24,8 +24,6 @@ import java.util.logging.Logger;
 
 import org.antlr.runtime.RecognitionException;
 
-import ca.phon.phontalk.parser.AntlrExceptionVisitor;
-import ca.phon.phontalk.parser.AntlrTokens;
 import ca.phon.session.io.*;
 
 /**
@@ -49,43 +47,43 @@ public class Xml2PhonTask extends PhonTalkTask {
 	public void performTask() {
 		super.setStatus(TaskStatus.RUNNING);
 		
-		try {
-			final Xml2PhonConverter converter = new Xml2PhonConverter();
-			converter.convertFile(getInputFile(), getOutputFile(), getListener());
-			
-			// check to make sure the file is a valid phon session
-			final SessionInputFactory inputFactory = new SessionInputFactory();
-			final SessionReader reader = inputFactory.createReader("phonbank", "1.2");
-			reader.readSession(new FileInputStream(getOutputFile()));
-			super.setStatus(TaskStatus.FINISHED);
-		} catch (Exception e) {
-			if(PhonTalkUtil.isVerbose()) {
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
-			
-			if(e.getCause() instanceof RecognitionException) {
-				final RecognitionException re = (RecognitionException)e.getCause();
-				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2Phon.tokens"));
-				visitor.visit(re);
-				
-				final PhonTalkMessage msg = visitor.getMessage();
-				
-				msg.setMessage(msg.getMessage());
-				
-				if(getListener() != null) {
-					getListener().message(msg);
-				}
-			} else {
-				final PhonTalkError err = new PhonTalkError(e.getMessage(), e);
-				err.setFile(getOutputFile());
-				if(getListener() != null) {
-					getListener().message(err);
-				}
-			}
-			
-			super.err = e;
-			setStatus(TaskStatus.ERROR);
-		}
+//		try {
+//			final Xml2PhonConverter converter = new Xml2PhonConverter();
+//			converter.convertFile(getInputFile(), getOutputFile(), getListener());
+//
+//			// check to make sure the file is a valid phon session
+//			final SessionInputFactory inputFactory = new SessionInputFactory();
+//			final SessionReader reader = inputFactory.createReader("phonbank", "1.2");
+//			reader.readSession(new FileInputStream(getOutputFile()));
+//			super.setStatus(TaskStatus.FINISHED);
+//		} catch (Exception e) {
+//			if(PhonTalkUtil.isVerbose()) {
+//				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+//			}
+//
+//			if(e.getCause() instanceof RecognitionException) {
+//				final RecognitionException re = (RecognitionException)e.getCause();
+//				final AntlrExceptionVisitor visitor = new AntlrExceptionVisitor(new AntlrTokens("AST2Phon.tokens"));
+//				visitor.visit(re);
+//
+//				final PhonTalkMessage msg = visitor.getMessage();
+//
+//				msg.setMessage(msg.getMessage());
+//
+//				if(getListener() != null) {
+//					getListener().message(msg);
+//				}
+//			} else {
+//				final PhonTalkError err = new PhonTalkError(e.getMessage(), e);
+//				err.setFile(getOutputFile());
+//				if(getListener() != null) {
+//					getListener().message(err);
+//				}
+//			}
+//
+//			super.err = e;
+//			setStatus(TaskStatus.ERROR);
+//		}
 	}
 	
 	@Override

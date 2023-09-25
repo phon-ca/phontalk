@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="deu"
+      Corpus="timmy"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="deu"
+      age="P2Y09M08D"
+
+    />
+    <participant
+      id="LIN"
+    name="Linda"
+      role="Investigator"
+      language="deu"
+
+    />
+    <participant
+      id="WIN"
+    name="Winnie"
+      role="Investigator"
+      language="deu"
+
+    />
+    <participant
+      id="GEM"
+    name="Gemma"
+      role="Speaker"
+      language="deu"
+
+    />
+  </Participants>
+  <comment type="Generic">test German mor</comment>
+  <u who="CHI" uID="u0">
+    <w>ausgegangen<mor type="mor"><mw><mpfx>PART</mpfx><pos><c>v</c></pos><stem>geh</stem><mk type="sfxf">PAST</mk><mk type="mc">PART</mk></mw><menx>go</menx><mor-pre><mw><pos><c>prep</c></pos><stem>aus</stem></mw></mor-pre></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+
+  </u>
+</CHAT>

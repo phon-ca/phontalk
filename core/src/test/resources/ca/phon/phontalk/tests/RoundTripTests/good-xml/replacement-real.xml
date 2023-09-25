@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="replacement-real" Mediatypes="audio"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="Kansas"
+      >
+  <Participants>
+    <participant
+      id="PAR"
+    name="kansas14a"
+      role="Participant"
+      language="eng"
+      sex="female"
+      group="Wernicke"
+      SES="UC"
+
+    />
+    <participant
+      id="INV"
+      role="Investigator"
+      language="eng"
+      SES="UC"
+
+    />
+    <participant
+      id="INV2"
+      role="Investigator"
+      language="eng"
+      SES="UC"
+
+    />
+  </Participants>
+  <comment type="Generic">replacement for real word, so that mor ignores</comment>
+  <u who="PAR" uID="u0">
+    <e><happening>coughs</happening></e>
+    <w>well<mor type="mor"><mw><pos><c>co</c></pos><stem>well</stem></mw></mor></w>
+    <w>this<mor type="mor"><mw><pos><c>pro</c><s>dem</s></pos><stem>this</stem></mw></mor></w>
+    <w>is<mor type="mor"><mw><pos><c>v</c><s>cop</s></pos><stem>be</stem><mk type="sfxf">3S</mk></mw></mor></w>
+    <g><w>a</w>
+    <w>little</w>
+    <g><w>girl<replacement real="true"><w>boy</w></replacement></w><error>s:r-ret</error></g><k type="retracing with correction"/></g>
+    <e><happening>points:picture_one</happening></e>
+    <g><w>a</w>
+    <w>person</w><k type="retracing with correction"/></g>
+    <w>a<mor type="mor"><mw><pos><c>det</c></pos><stem>a</stem></mw></mor></w>
+    <g><w>man<replacement real="true"><w>boy</w></replacement></w><error>s:r-rep</error><k type="retracing"/></g>
+    <w>man<mor type="mor"><mw><pos><c>n</c></pos><stem>man</stem></mw></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+    <media
+      start="200.785"
+      end="204.700"
+      unit="s"
+    />
+  </u>
+  <u who="PAR" uID="u1">
+    <e><happening>points:picture_one</happening></e>
+    <w>that's<mor type="mor"><mw><pos><c>pro</c><s>dem</s></pos><stem>that</stem></mw><mor-post><mw><pos><c>v</c><s>cop</s></pos><stem>be</stem><mk type="sfxf">3S</mk></mw></mor-post></mor></w>
+    <w>the<mor type="mor"><mw><pos><c>det</c></pos><stem>the</stem></mw></mor></w>
+    <g><w>father<replacement real="true"><w>son</w></replacement><mor type="mor"><mw><pos><c>n</c></pos><stem>father</stem></mw></mor></w><error>s:r</error></g>
+    <e><happening>points:picture_three</happening></e>
+    <w>and<mor type="mor"><mw><pos><c>coord</c></pos><stem>and</stem></mw></mor></w>
+    <w>this<mor type="mor"><mw><pos><c>pro</c><s>dem</s></pos><stem>this</stem></mw></mor></w>
+    <w>is<mor type="mor"><mw><pos><c>v</c><s>cop</s></pos><stem>be</stem><mk type="sfxf">3S</mk></mw></mor></w>
+    <w>the<mor type="mor"><mw><pos><c>det</c></pos><stem>the</stem></mw></mor></w>
+    <w>older<mor type="mor"><mw><pos><c>adj</c></pos><stem>old</stem><mk type="sfx">CP</mk></mw></mor></w>
+    <w>one<mor type="mor"><mw><pos><c>pro</c><s>indef</s></pos><stem>one</stem></mw></mor></w>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+    <media
+      start="277.889"
+      end="279.746"
+      unit="s"
+    />
+  </u>
+  <u who="PAR" uID="u2">
+    <e><happening>points:picture_one</happening></e>
+    <g><w>let's</w><k type="retracing with correction"/></g>
+    <w>it's<mor type="mor"><mw><pos><c>pro</c></pos><stem>it</stem></mw><mor-post><mw><pos><c>v</c><s>cop</s></pos><stem>be</stem><mk type="sfxf">3S</mk></mw></mor-post></mor></w>
+    <g><w>a</w><k type="retracing with correction"/></g>
+    <w type="fragment">ba</w>
+    <w>the<mor type="mor"><mw><pos><c>det</c></pos><stem>the</stem></mw></mor></w>
+    <g><w>brain<replacement real="true"><w>umbrella</w></replacement><mor type="mor"><mw><pos><c>n</c></pos><stem>brain</stem></mw></mor></w><error>s:ur</error></g>
+    <t type="p"><mor type="mor"><mt type="p"/></mor></t>
+    <media
+      start="355.535"
+      end="357.031"
+      unit="s"
+    />
+  </u>
+</CHAT>

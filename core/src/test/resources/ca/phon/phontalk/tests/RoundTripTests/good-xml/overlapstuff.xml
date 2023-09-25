@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="bates"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+      role="Child"
+      language="eng"
+      age="P1Y08M"
+      sex="female"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <w>en</w>
+    <w>nu</w>
+    <g><w>moeten</w>
+    <w>we</w><k type="retracing with correction"/><overlap type="overlap follows" index="1"/></g>
+    <w>staan</w>
+    <w>we</w>
+    <g><w>op</w>
+    <w>het</w><overlap type="overlap follows" index="2"/></g>
+    <w>punt</w>
+    <w>om</w>
+    <w>het</w>
+    <g><w>toch</w><overlap type="overlap follows" index="3"/></g>
+    <w>maar</w>
+    <w>wel</w>
+    <w>te</w>
+    <w>doen</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u1">
+    <g><w>het</w>
+    <w>hele</w><overlap type="overlap precedes"/><k type="retracing"/></g>
+    <w>het</w>
+    <w>hele</w>
+    <w>onderzoek</w>
+    <w>gaat</w>
+    <w>de</w>
+    <w>mist</w>
+    <w>in</w>
+    <w>zo</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

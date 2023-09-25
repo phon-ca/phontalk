@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.19.0"
+      Lang="eng"
+      Corpus="bloom70"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Peter"
+      role="Target_Child"
+      language="eng"
+      age="P2Y05M22D"
+      sex="male"
+      group="normal"
+
+    />
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="LOI"
+    name="Lois"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="PAT"
+    name="Patsy"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="LYN"
+    name="Lynn"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="JEN"
+    name="Jenny"
+      role="Child"
+      language="eng"
+
+    />
+    <participant
+      id="AIM"
+    name="Aimee"
+      role="Student"
+      language="eng"
+
+    />
+  </Participants>
+  <u who="CHI" uID="u0">
+    <w formType="letter">a</w>
+    <w formType="letter">b</w>
+    <w formType="letter">c</w>
+    <w formType="letter">d</w>
+    <w formType="letter">e</w>
+    <w formType="letter">f</w>
+    <w formType="letter">g</w>
+    <w formType="letter">k</w>
+    <w>ok</w>
+    <w formType="letter">n</w>
+    <w>ok</w>
+    <w>Peter</w>
+    <w formType="letter">p</w>
+    <w formType="letter">s</w>
+    <w formType="letter">y</w>
+    <w>ok</w>
+    <w>Peter</w>
+    <w formType="letter">n</w>
+    <w>ok</w>
+    <w formType="letter">n</w>
+    <w>ok</w>
+    <w>Peter</w>
+    <pause symbolic-length="simple"/>
+    <w formType="letter">q</w>
+    <w formType="letter">r</w>
+    <w formType="letter">s</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>
