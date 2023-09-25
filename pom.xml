@@ -5,7 +5,7 @@
 
 	<groupId>ca.phon</groupId>
 	<artifactId>phontalk</artifactId>
-	<version>3.6.0-181-SNAPSHOT</version>
+	<version>4.0.0-181-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>PhonTalk</name>
@@ -36,7 +36,7 @@
 	</distributionManagement>
 
 	<properties>
-		<ca.phon.version>3.6.0-SNAPSHOT</ca.phon.version>
+		<ca.phon.version>4.0.0-SNAPSHOT</ca.phon.version>
 		<junit.junit.version>4.13.1</junit.junit.version>
 
 		<!-- Project settings -->
