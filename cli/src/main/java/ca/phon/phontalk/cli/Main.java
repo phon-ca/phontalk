@@ -18,18 +18,19 @@
  */
 package ca.phon.phontalk.cli;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import ca.phon.orthography.Orthography;
+import ca.phon.session.io.xml.XMLFragments;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.MissingArgumentException;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
@@ -51,17 +52,50 @@ import ca.phon.phontalk.Xml2PhonConverter;
  */
 public class Main {
 	
-	private final static String CMD_STRING = "java -jar phontalk.jar [options] <input file> <output file>";
+	private final static String CMD_STRING = "java -jar phontalk-cli.jar [options]";
 	
 	private static Options getCLIOptions() {
 		final Options retVal = new Options();
-		
-		// add option for verbose output
-		retVal.addOption("v", false, "Enable verbose output");
-		retVal.getOption("v").setRequired(false);
-		
-		retVal.addOption("?", false, "Show usage info");
-		retVal.getOption("?").setRequired(false);
+
+		// files
+		retVal.addOption("f", "file", true,
+				"""
+						Input file xml file, start elements must be one of: {https://phon.ca/ns/session}session, {https://phon.ca/ns/session}ipa, {https://phon.ca/ns/session}u, or {http://www.talkbank.org/ns/talkbank}CHAT.
+						""");
+		retVal.getOption("f").setRequired(false);
+		retVal.addOption("o", "output", true,
+				"""
+						Output file, if unspecified data will be written to stdout""");
+		retVal.getOption("o").setRequired(false);
+
+		// u <-> xml
+		retVal.addOption("u", "utterance", true,
+				"""
+						Produce xml fragment for main line utterance. If no arguemnt is given
+						data is read from stdin.""");
+		retVal.getOption("u").setRequired(false);
+
+		// ipa <-> xml
+		retVal.addOption("ipa", "ipatranscript", true,
+				"""
+						Produce xml fragment for ipa transcripts. If no argument is given
+						data will be read from stdin."""
+				);
+		retVal.getOption("ipa").setRequired(false);
+		retVal.getOption("ipa").setOptionalArg(true);
+		retVal.addOption("sb", "syllabifier", true,
+				"""
+						Syllabifier language, if provided IPA data will be 'syllabified' before
+						xml fragment is produced (requires -ipa)""");
+		retVal.getOption("sb").setOptionalArg(false);
+		retVal.getOption("sb").setRequired(false);
+		retVal.addOption("lsb", "list-syllabifiers", false,
+				"""
+						List available syllabifier languages and exit.  This supersedes all other options.""");
+		retVal.getOption("lsb").setRequired(false);
+
+		retVal.addOption("h", "help", false, "Show usage info");
+		retVal.getOption("h").setRequired(false);
 		
 		return retVal;
 	}
@@ -75,54 +109,95 @@ public class Main {
 		final CommandLineParser parser = new PosixParser();
 		try {
 			final CommandLine cmdLine = parser.parse( getCLIOptions(), args );
-			
-			if(cmdLine.hasOption("v")) {
-				System.setProperty("phontalk.verbose", Boolean.TRUE.toString());
-			}
-			
-			if(cmdLine.hasOption("?")) {
+
+			if(cmdLine.hasOption("h") || cmdLine.getOptions().length == 0) {
 				final HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp(CMD_STRING, getCLIOptions());
 				
 				System.exit(0);
 			}
-			
-			final String[] fileArgs = cmdLine.getArgs();
-			if(fileArgs.length == 0) {
-				throw new MissingArgumentException("<input file>");
-			} else if(fileArgs.length == 1) {
-				throw new MissingArgumentException("<output file>");
-			} else if(fileArgs.length > 2) {
-				throw new UnrecognizedOptionException(fileArgs[2]);
+
+			if(cmdLine.hasOption("u") && cmdLine.hasOption("ipa")) {
+				System.err.println("-u and -ipa must be used independently");
+				System.exit(1);
 			}
-			
-			final File inputFile = new File(fileArgs[0]);
-			final File outputFile = new File(fileArgs[1]);
-			
-			// get the type of the input file
-			final String rootEleName = getRootElementName(inputFile);
-			if(rootEleName.equalsIgnoreCase("CHAT")) {
-				// processing xml->phon
-				final Xml2PhonConverter converter = new Xml2PhonConverter();
-				converter.convertFile(inputFile, outputFile, new DefaultPhonTalkListener());
-			} else if(rootEleName.equalsIgnoreCase("session")) {
-				// processing phon->xml
-				final Phon2XmlConverter converter = new Phon2XmlConverter();
-				converter.convertFile(inputFile, outputFile, new DefaultPhonTalkListener());
-			} else {
-				throw new UnrecognizedOptionException("Input file type not support.");
+
+			// default mode is full file conversion
+			String mode = "phontalk";
+			if(cmdLine.hasOption("u")) {
+				mode = "u";
+			} else if(cmdLine.hasOption("ipa")) {
+				mode = "ipa";
 			}
+
+			final String inputFile = cmdLine.hasOption("f") ? cmdLine.getOptionValue("f") : null;
+			final String outputFile = cmdLine.hasOption("o") ? cmdLine.getOptionValue("o") : null;
+
+			switch (mode) {
+				case "u":
+					try {
+						String utterance = cmdLine.getOptionValue("u");
+						outputUtteranceFramgent(utterance, outputFile);
+					} catch (IOException e) {
+						e.printStackTrace(new PrintWriter(System.err));
+						System.exit(2);
+					}
+					break;
+
+				case "ipa":
+					break;
+
+				default:
+					final String[] fileArgs = cmdLine.getArgs();
+					if(fileArgs.length != 0) {
+						final HelpFormatter formatter = new HelpFormatter();
+						formatter.printHelp(CMD_STRING, getCLIOptions());
+						throw new IllegalArgumentException("Too many arguments");
+					}
+
+					// get the type of the input file
+		//			final String rootEleName = getRootElementName(inputFile);
+		//			if(rootEleName.equalsIgnoreCase("CHAT")) {
+		//				// processing xml->phon
+		//				final Xml2PhonConverter converter = new Xml2PhonConverter();
+		//				converter.convertFile(inputFile, outputFile, new DefaultPhonTalkListener());
+		//			} else if(rootEleName.equalsIgnoreCase("session")) {
+		//				// processing phon->xml
+		//				final Phon2XmlConverter converter = new Phon2XmlConverter();
+		//				converter.convertFile(inputFile, outputFile, new DefaultPhonTalkListener());
+		//			} else {
+		//
+		//				throw new UnrecognizedOptionException("Input file type not support.");
+		//			}
+			}
+
+			// ensure no other arguments
 		} catch (ParseException e) {
 			System.err.println(e.getMessage());
 			final HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp(CMD_STRING, getCLIOptions());
 			
 			System.exit(1);
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			System.exit(1);
 		}
 		
+	}
+
+	private static void outputUtteranceFramgent(String utterance, String outputFile) throws IOException {
+		try {
+			final Orthography orthography = Orthography.parseOrthography(utterance);
+			final String xml = XMLFragments.toXml(orthography, false, false);
+			outputData(xml, outputFile);
+		} catch (java.text.ParseException e) {
+			throw new IOException(e);
+		}
+	}
+
+	private static void outputData(String data, String outputFile) throws IOException {
+		try(BufferedOutputStream out = new BufferedOutputStream(outputFile == null ? System.out : new FileOutputStream(outputFile))) {
+			out.write(data.getBytes(StandardCharsets.UTF_8));
+			out.write('\n');
+			out.flush();
+		}
 	}
 	
 	private static String getRootElementName(File f) 

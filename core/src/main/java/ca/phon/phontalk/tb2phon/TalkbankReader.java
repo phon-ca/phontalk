@@ -1,16 +1,23 @@
 package ca.phon.phontalk.tb2phon;
 
+import ca.phon.extensions.UnvalidatedValue;
+import ca.phon.ipa.IPATranscript;
+import ca.phon.orthography.Orthography;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
 import ca.phon.session.*;
+import ca.phon.session.Record;
 import ca.phon.session.io.SessionOutputFactory;
 import ca.phon.session.io.SessionWriter;
+import ca.phon.session.io.xml.XMLFragments;
+import ca.phon.session.tierdata.TierData;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
-import java.time.Duration;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
@@ -19,7 +26,7 @@ import java.util.List;
 
 public class TalkbankReader {
 
-    private final static String TB_NS = "http://www.talkbank.org/ns/talkbank";
+    private final static String TBNS = "http://www.talkbank.org/ns/talkbank";
 
     private final List<PhonTalkListener> listeners = new ArrayList<>();
 
@@ -57,15 +64,7 @@ public class TalkbankReader {
         return null;
     }
 
-    private boolean readToNextElement(XMLStreamReader reader) throws XMLStreamException {
-        while(reader.hasNext()) {
-            int eventType = reader.next();
-            if(eventType == XMLStreamReader.START_ELEMENT) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // region XML Processing
 
     /**
      * Read CHAT element and return Session object
@@ -80,16 +79,32 @@ public class TalkbankReader {
         final Session session = factory.createSession();
         // TODO attributes
 
-        reader.next();
-        while(readToNextElement(reader)) {
+        // flag used to avoid skipping elements
+        boolean dontSkip = false;
+        while(dontSkip || readToNextElement(reader)) {
+            if(dontSkip) dontSkip = false;
             final String eleName = reader.getLocalName();
             switch (eleName) {
                 case "Participants":
                     readParticipants(session, reader);
+                    dontSkip = true;
+                    break;
+
+                case "comment":
+                    readComment(session, reader);
+                    break;
+
+                case "u":
+                    readRecord(session, reader);
+                    break;
+
+                case "lazy-gem":
+                case "begin-gem":
+                case "end-gem":
+                    readGem(reader);
                     break;
 
                 default:
-                    reader.next();
                     break;
             }
         }
@@ -225,6 +240,71 @@ public class TalkbankReader {
     }
 
     /**
+     * Read comment
+     *
+     * @param reader
+     * @return comment
+     * @throws XMLStreamException
+     */
+    private Comment readComment(Session session, XMLStreamReader reader) throws XMLStreamException {
+        if(!"comment".equals(reader.getLocalName())) throw new XMLStreamException();
+        final Comment comment = factory.createComment();
+
+        // read type
+        final String type = reader.getAttributeValue(null, "type");
+        CommentType commentType =
+                type != null ? CommentType.fromString(type) : CommentType.Generic;
+        commentType = commentType == null ? CommentType.Generic : commentType;
+        comment.setType(commentType);
+
+        StringBuilder builder = new StringBuilder();
+        while(reader.hasNext()) {
+            reader.next();
+            if(reader.isCharacters()) {
+                if(!builder.isEmpty()) builder.append(" ");
+                builder.append(reader.getText());
+            } else if(reader.isStartElement() && "media".equals(reader.getLocalName())) {
+                // TODO read media
+            } else if(reader.isStartElement() && "mediaPic".equals(reader.getLocalName())) {
+                // TODO read mediaPic
+            } else {
+                break;
+            }
+        }
+        TierData commentData = new TierData();
+        try {
+            commentData = TierData.parseTierData(builder.toString());
+        } catch (ParseException pe) {
+            fireWarning(pe.getMessage(), reader);
+            commentData.putExtension(UnvalidatedValue.class, new UnvalidatedValue(builder.toString(), pe));
+        }
+        comment.setValue(commentData);
+
+        session.getTranscript().addComment(comment);
+
+        return comment;
+    }
+
+    /**
+     * Read record
+     *
+     * @param reader
+     * @return record
+     * @throws XMLStreamException
+     */
+    private Record readRecord(Session session, XMLStreamReader reader) throws XMLStreamException {
+        if(!"u".equals(reader.getLocalName())) throw new XMLStreamException();
+        final Record r = factory.createRecord();
+
+        UtteranceTierData utd = readUtterance(reader);
+        r.setOrthography(utd.orthography);
+
+        session.getTranscript().addRecord(r);
+
+        return r;
+    }
+
+    /**
      * Read one of: lazy-gem, begin-gem, end-gem
      *
      * @param reader
@@ -241,6 +321,175 @@ public class TalkbankReader {
         };
         return factory.createGem(gemType, reader.getText());
     }
+
+    // endregion XML Processing
+
+    // region XML Utils
+    private boolean readToNextElement(XMLStreamReader reader) throws XMLStreamException {
+        while(reader.hasNext()) {
+            int eventType = reader.next();
+            if(eventType == XMLStreamReader.START_ELEMENT) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean readToEndTag(XMLStreamReader reader) throws XMLStreamException {
+        if(!reader.isStartElement()) throwNotStart();
+        final String eleName = reader.getLocalName();
+        while(reader.hasNext()) {
+            reader.next();
+            if(reader.isEndElement() && reader.getLocalName().equals(eleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    record UtteranceTierData(Orthography orthography, List<Tier<IPATranscript>> ipaTiers, List<Tier<TierData>> morTiers) {}
+    private UtteranceTierData readUtterance(XMLStreamReader reader) throws XMLStreamException {
+        if(!reader.isStartElement() && !"u".equalsIgnoreCase(reader.getLocalName())) throw new XMLStreamException("Not a start element");
+
+        final StringBuilder builder = new StringBuilder();
+        List<Tier<IPATranscript>> ipaTiers = new ArrayList<>();
+        List<Tier<TierData>> morTiers = new ArrayList<>();
+
+        builder.append("<u xmlns=\"https://phon.ca/ns/session\"");
+        final String lang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
+        if(lang != null) {
+            builder.append(" xml:lang=\"").append(lang).append("\"");
+        }
+        builder.append(">");
+        readUtteranceContent(reader, builder, ipaTiers, morTiers);
+        builder.append("</u>");
+
+        try {
+            final Orthography ortho = XMLFragments.orthographyFromXml(builder.toString());
+            return new UtteranceTierData(ortho, ipaTiers, morTiers);
+        } catch (IllegalArgumentException | IOException e) {
+            throw new XMLStreamException(e);
+        }
+    }
+
+    private void readUtteranceElement(XMLStreamReader reader, StringBuilder builder, List<Tier<IPATranscript>> ipaTiers, List<Tier<TierData>> morTiers) throws XMLStreamException {
+        if(!reader.isStartElement()) throw new XMLStreamException();
+        final String eleName = reader.getLocalName();
+
+        builder.append("<").append(eleName);
+        appendAttributes(builder, reader);
+        builder.append(">");
+        readUtteranceContent(reader, builder, ipaTiers, morTiers);
+        builder.append("</").append(eleName).append(">");
+    }
+
+    private void readUtteranceContent(XMLStreamReader reader, StringBuilder builder, List<Tier<IPATranscript>> ipaTiers, List<Tier<TierData>> morTiers) throws XMLStreamException {
+        boolean readTerminator = false;
+        final String originalEleName = reader.getLocalName();
+        while(!readTerminator && reader.hasNext()) {
+            reader.next();
+            if(reader.isCharacters()) {
+                builder.append(reader.getText());
+            } else if(reader.isStartElement()) {
+                final String eleName = reader.getLocalName();
+                switch (eleName) {
+                    case "mor":
+                        // TODO handle mor tiers
+                        readToEndTag(reader);
+                        break;
+
+                    case "actual", "model":
+                        // TODO handle ipa tiers
+                        readToEndTag(reader);
+                        break;
+
+                    case "align":
+                        // old-data, ignore
+                        readToEndTag(reader);
+                        break;
+
+                    case "t":
+                        readTerminator = true;
+                    default:
+                        readUtteranceElement(reader, builder, ipaTiers, morTiers);
+                        break;
+                }
+            } else if(reader.isEndElement() && reader.getLocalName().equals(originalEleName)) {
+                break;
+            }
+        }
+    }
+
+    private void readMor(XMLStreamReader reader, StringBuilder builder, List<Tier<TierData>> morTiers) throws XMLStreamException {
+        if(!reader.isStartElement() || !"mor".equals(reader.getLocalName())) throwNotElement("mor", reader.getLocalName());
+
+    }
+
+    private void throwNotStart() throws XMLStreamException {
+        throw new XMLStreamException("Expected start element");
+    }
+
+    private void throwNotElement(String expectedName, String eleName) throws XMLStreamException {
+        throw new XMLStreamException(String.format("Expected element '%s' but got '%s'", expectedName, eleName));
+    }
+
+    private String recreateElementXML(XMLStreamReader reader, List<String> ignoreElements, boolean includeAttributesOfParent)
+        throws XMLStreamException{
+        if(!reader.isStartElement()) throw new XMLStreamException("Not a start element");
+        final StringBuilder builder = new StringBuilder();
+
+        appendElementStartXml(builder, reader, includeAttributesOfParent);
+        appendElementContent(builder, reader);
+        builder.append("</").append(reader.getLocalName()).append(">");
+
+        return builder.toString();
+    }
+
+    private void appendElement(StringBuilder builder, XMLStreamReader reader) throws XMLStreamException {
+        if(!reader.isStartElement()) throw new XMLStreamException();
+        final String eleName = reader.getLocalName();
+
+        builder.append("<").append(eleName);
+        appendAttributes(builder, reader);
+        builder.append(">");
+        appendElementContent(builder, reader);
+        builder.append("</").append(eleName).append(">");
+    }
+
+    private void appendElementContent(StringBuilder builder, XMLStreamReader reader) throws XMLStreamException {
+        while(reader.hasNext()) {
+            reader.next();
+            if(reader.isCharacters()) {
+                builder.append(reader.getText());
+            } else if(reader.isStartElement()) {
+                appendElement(builder, reader);
+            } else if(reader.isEndElement()) {
+                break;
+            }
+        }
+    }
+
+    private void appendAttributes(StringBuilder builder, XMLStreamReader reader) {
+        for(int i = 0; i < reader.getAttributeCount(); i++) {
+            builder.append(" ");
+            builder.append(reader.getAttributeLocalName(i));
+            builder.append("=\"");
+            builder.append(StringEscapeUtils.escapeXml(reader.getAttributeValue(i)));
+            builder.append("\"");
+        }
+    }
+
+    private void appendElementStartXml(StringBuilder builder, XMLStreamReader reader, boolean includeAttributes) {
+        builder.append("<").append(reader.getLocalName());
+        if(includeAttributes) {
+            appendAttributes(builder, reader);
+        }
+        builder.append(">");
+    }
+
+    // endregion XML Utils
+
+    // region Listeners
 
     /**
      * Fire warning and return the given value.  Useful for switch statements
@@ -277,16 +526,16 @@ public class TalkbankReader {
         }
     }
 
+    // endregion Listeners
+
     public static void main(String[] args) throws IOException, XMLStreamException {
         TalkbankReader reader = new TalkbankReader();
         reader.addListener(msg -> {
             System.out.println(msg);
         });
-        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/participants-duplicate-role.xml");
+        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/language-utterance-code.xml");
         final SessionWriter writer = (new SessionOutputFactory()).createWriter();
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        writer.writeSession(session, bout);
-        System.out.println(bout.toString("UTF-8"));
+        writer.writeSession(session, System.out);
     }
 
 }
