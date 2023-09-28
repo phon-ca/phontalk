@@ -2,10 +2,8 @@ package ca.phon.phontalk.tb2phon;
 
 import ca.phon.extensions.UnvalidatedValue;
 import ca.phon.ipa.IPATranscript;
-import ca.phon.orthography.InternalMedia;
-import ca.phon.orthography.Orthography;
-import ca.phon.orthography.OrthographyBuilder;
-import ca.phon.orthography.Postcode;
+import ca.phon.orthography.*;
+import ca.phon.orthography.Error;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
 import ca.phon.phontalk.TalkbankDependentTier;
@@ -16,6 +14,7 @@ import ca.phon.session.io.SessionWriter;
 import ca.phon.session.io.xml.XMLFragments;
 import ca.phon.session.io.xml.v1_3.XmlMediaUnitType;
 import ca.phon.session.tierdata.TierData;
+import ca.phon.session.tierdata.TierLink;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.print.attribute.standard.Media;
@@ -266,32 +265,9 @@ public class TalkbankReader {
                 type != null ? CommentType.fromString(type) : CommentType.Generic;
         commentType = commentType == null ? CommentType.Generic : commentType;
         comment.setType(commentType);
-
-        StringBuilder builder = new StringBuilder();
-        while(reader.hasNext()) {
-            reader.next();
-            if(reader.isCharacters()) {
-                if(!builder.isEmpty()) builder.append(" ");
-                builder.append(reader.getText());
-            } else if(reader.isStartElement() && "media".equals(reader.getLocalName())) {
-                // TODO read media
-            } else if(reader.isStartElement() && "mediaPic".equals(reader.getLocalName())) {
-                // TODO read mediaPic
-            } else {
-                break;
-            }
-        }
-        TierData commentData = new TierData();
-        try {
-            commentData = TierData.parseTierData(builder.toString());
-        } catch (ParseException pe) {
-            fireWarning(pe.getMessage(), reader);
-            commentData.putExtension(UnvalidatedValue.class, new UnvalidatedValue(builder.toString(), pe));
-        }
+        TierData commentData = readTierContent(reader);
         comment.setValue(commentData);
-
         session.getTranscript().addComment(comment);
-
         return comment;
     }
 
@@ -320,12 +296,13 @@ public class TalkbankReader {
 
         boolean atEnd = false;
         // read remainder of utterance after terminator
+        OrthographyBuilder builder = new OrthographyBuilder();
         while(!atEnd && readToNextElement(reader)) {
             final String eleName = reader.getLocalName();
             switch (eleName) {
                 case "postcode":
                     Postcode postcode = readPostcode(reader);
-                    final OrthographyBuilder builder = new OrthographyBuilder();
+                    builder = new OrthographyBuilder();
                     builder.append(r.getOrthography());
                     builder.append(postcode);
                     r.setOrthography(builder.toOrthography());
@@ -336,14 +313,22 @@ public class TalkbankReader {
                     r.setMediaSegment(segment);
                     break;
 
-//                case "k":
-//                    readMarker(reader, r.getOrthographyTier());
-//                    break;
+                case "k":
+                    Marker marker = readMarker(reader);
+                    builder = new OrthographyBuilder();
+                    builder.append(r.getOrthography());
+                    builder.append(marker);
+                    r.setOrthography(builder.toOrthography());
+                    break;
 
-//                case "error":
-//                    readError(reader, r.getOrthographyTier());
-//                    break;
-//
+                case "error":
+                    Error error = readError(reader);
+                    builder = new OrthographyBuilder();
+                    builder.append(r.getOrthography());
+                    builder.append(error);
+                    r.setOrthography(builder.toOrthography());
+                    break;
+
                 case "a":
                     Tier<TierData> depTier = readDepTier(reader);
                     r.putTier(depTier);
@@ -361,6 +346,34 @@ public class TalkbankReader {
         }
         session.getTranscript().addRecord(r);
         return r;
+    }
+
+    private Marker readMarker(XMLStreamReader reader) throws XMLStreamException {
+        if(!reader.isStartElement()) throwNotStart();
+        if(!"k".equals(reader.getLocalName())) throwNotElement("k", reader.getLocalName());
+
+        final String type = reader.getAttributeValue(null, "type");
+        final MarkerType mkType = MarkerType.fromString(type);
+        if(mkType == null) throw new XMLStreamException("Unknown marker type " + type);
+        return new Marker(mkType);
+    }
+
+    private Error readError(XMLStreamReader reader) throws XMLStreamException {
+        if (!reader.isStartElement()) throwNotStart();
+        if (!"error".equals(reader.getLocalName())) throwNotElement("error", reader.getLocalName());
+
+        final StringBuilder builder = new StringBuilder();
+        while (reader.hasNext()) {
+            reader.next();
+            if (reader.isCharacters()) {
+                builder.append(reader.getText());
+            } else if (reader.isStartElement()) {
+                throw new XMLStreamException("Invalid content found at element " + reader.getLocalName());
+            } else if (reader.isEndElement() && reader.getLocalName().equals("error")) {
+                break;
+            }
+        }
+        return new Error(builder.toString());
     }
 
     private Postcode readPostcode(XMLStreamReader reader) throws XMLStreamException {
@@ -393,6 +406,13 @@ public class TalkbankReader {
         return retVal;
     }
 
+    /**
+     * Read utterance dependent tier
+     *
+     * @param reader
+     * @return
+     * @throws XMLStreamException
+     */
     private Tier<TierData> readDepTier(XMLStreamReader reader) throws XMLStreamException {
         if(!reader.isStartElement()) throwNotStart();
         if(!"a".equals(reader.getLocalName())) throwNotElement("a", reader.getLocalName());
@@ -409,38 +429,53 @@ public class TalkbankReader {
                 tierName += flavor;
             }
             final Tier<TierData> retVal = factory.createTier(tierName, TierData.class);
-
-            final StringBuilder builder = new StringBuilder();
-            while(reader.hasNext()) {
-                reader.next();
-                if(reader.isCharacters()) {
-                    builder.append(reader.getText());
-                } else if(reader.isStartElement()) {
-                    final String eleName = reader.getLocalName();
-                    switch (eleName) {
-                        case "media":
-                            MediaSegment segment = readMedia(reader);
-                            builder.append(InternalMedia.MEDIA_BULLET)
-                                    .append(segment)
-                                    .append(InternalMedia.MEDIA_BULLET);
-                            break;
-
-                        case "mediaPic":
-                            // TODO
-                            break;
-
-                        default:
-                            throw new XMLStreamException("Unexpected element " + eleName);
-                    }
-                } else if(reader.isEndElement() && reader.getLocalName().equals("a")) {
-                    break;
-                }
-            }
-            retVal.setText(builder.toString());
+            retVal.setValue(readTierContent(reader));
             return retVal;
         } else {
             throw new XMLStreamException("Required attribute 'type' missing");
         }
+    }
+
+    private TierData readTierContent(XMLStreamReader reader) throws XMLStreamException {
+        if(!reader.isStartElement()) throwNotStart();
+        final String startEleName = reader.getLocalName();
+
+        final StringBuilder builder = new StringBuilder();
+        while(reader.hasNext()) {
+            reader.next();
+            if(reader.isCharacters()) {
+                builder.append(reader.getText());
+            } else if(reader.isStartElement()) {
+                final String eleName = reader.getLocalName();
+                switch (eleName) {
+                    case "media":
+                        MediaSegment segment = readMedia(reader);
+                        builder.append(InternalMedia.MEDIA_BULLET)
+                                .append(segment)
+                                .append(InternalMedia.MEDIA_BULLET);
+                        break;
+
+                    case "mediaPic":
+                        String href = reader.getAttributeValue(null, "href");
+                        if(!builder.isEmpty()) builder.append(" ");
+                        builder.append(TierLink.LINK_PREFIX).append("pic ").append(href).append(TierLink.LINK_SUFFIX);
+                        break;
+
+                    default:
+                        throw new XMLStreamException("Unexpected element " + eleName);
+                }
+            } else if(reader.isEndElement() && reader.getLocalName().equals(startEleName)) {
+                break;
+            }
+        }
+        TierData tierData = new TierData();
+        try {
+            tierData = TierData.parseTierData(builder.toString());
+        } catch (ParseException e) {
+            fireWarning(e.getMessage(), reader);
+            tierData.putExtension(UnvalidatedValue.class, new UnvalidatedValue(builder.toString(), e));
+        }
+        return tierData;
     }
 
     /**
