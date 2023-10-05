@@ -72,6 +72,29 @@ public class TalkbankReader {
         return null;
     }
 
+    // region Session utils
+
+    /**
+     * Read session records and create tier descriptions for user-defined tiers
+     * @param session
+     */
+    private void updateSessionTierDescriptions(Session session) {
+        for(Record record:session.getRecords()) {
+            for(Tier<?> userTier:record.getUserTiers()) {
+                TierDescription td = session.getUserTiers().get(userTier.getName());
+                if(td != null) continue;
+                final UserTierType userTierType = UserTierType.fromPhonTierName(userTier.getName());
+                if(userTierType != null) {
+                    td = factory.createTierDescription(userTierType.getTierName(), userTierType.getType(), new HashMap<>(), !userTierType.isAlignable());
+                } else {
+                    td = factory.createTierDescription(userTier.getName());
+                }
+                session.addUserTier(td);
+            }
+        }
+    }
+    // endregion Session utils
+
     // region XML Processing
 
     /**
@@ -117,6 +140,7 @@ public class TalkbankReader {
             }
         }
 
+        updateSessionTierDescriptions(session);
         return session;
     }
 
