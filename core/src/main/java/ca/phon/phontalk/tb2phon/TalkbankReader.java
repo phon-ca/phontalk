@@ -4,6 +4,8 @@ import ca.phon.extensions.UnvalidatedValue;
 import ca.phon.ipa.IPATranscript;
 import ca.phon.orthography.*;
 import ca.phon.orthography.Error;
+import ca.phon.orthography.mor.Grasp;
+import ca.phon.orthography.mor.GraspTierData;
 import ca.phon.orthography.mor.MorTierData;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
@@ -23,6 +25,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -283,6 +286,9 @@ public class TalkbankReader {
         for(Tier<MorTierData> morTier:utd.morTiers()) {
             r.putTier(morTier);
         }
+        for(Tier<GraspTierData> graTier:utd.graTiers()) {
+            r.putTier(graTier);
+        }
 
         for(Tier<IPATranscript> ipaTier:utd.ipaTiers) {
             if(SystemTierType.IPATarget.getName().equals(ipaTier.getName())) {
@@ -523,7 +529,8 @@ public class TalkbankReader {
         return false;
     }
 
-    record UtteranceTierData(Orthography orthography, List<Tier<IPATranscript>> ipaTiers, List<Tier<MorTierData>> morTiers) {}
+    record UtteranceTierData(Orthography orthography, List<Tier<IPATranscript>> ipaTiers,
+                             List<Tier<MorTierData>> morTiers, List<Tier<GraspTierData>> graTiers) {}
     private UtteranceTierData readUtterance(XMLStreamReader reader) throws XMLStreamException {
         if(!reader.isStartElement() && !"u".equalsIgnoreCase(reader.getLocalName())) throw new XMLStreamException("Not a start element");
 
@@ -543,6 +550,7 @@ public class TalkbankReader {
             final Orthography ortho = XMLFragments.orthographyFromXml(builder.toString());
 
             final List<Tier<MorTierData>> morTiers = new ArrayList<>();
+            final List<Tier<GraspTierData>> graTiers = new ArrayList<>();
             for(String tierName:morTierBuilders.keySet()) {
                 final UserTierType userTierType = UserTierType.fromPhonTierName(tierName);
                 final StringBuilder tierBuilder = morTierBuilders.get(tierName);
@@ -553,9 +561,35 @@ public class TalkbankReader {
                 final Tier<MorTierData> morTier = factory.createTier(tierName, MorTierData.class, new HashMap<>(), true);
                 morTier.setValue(morTierData);
                 morTiers.add(morTier);
+
+                // read xml with a new stream reader and process the gra tiers (if any)
+                final XMLStreamReader graReader = XMLInputFactory.newFactory().createXMLStreamReader(new ByteArrayInputStream(tierBuilder.toString().getBytes(StandardCharsets.UTF_8)));
+                final Map<String, List<Grasp>> graMap = new LinkedHashMap<>();
+                while(graReader.hasNext()) {
+                    graReader.next();
+                    if(graReader.isStartElement() && "gra".equals(graReader.getLocalName())) {
+                        final String type = graReader.getAttributeValue(null, "type");
+                        final UserTierType graTierType = UserTierType.fromChatTierName("%" + type);
+                        if(graTierType == null) {
+                            fireWarning("Unknown gra tier type " + type, graReader);
+                            continue;
+                        }
+                        Grasp gra = readGra(graReader);
+                        List<Grasp> grasps = graMap.computeIfAbsent(graTierType.getTierName(), k -> new ArrayList<>());
+                        grasps.add(gra);
+                    }
+                }
+                graReader.close();
+
+                for(String graTierName:graMap.keySet()) {
+                    final GraspTierData graspTierData = new GraspTierData(graMap.get(graTierName));
+                    final Tier<GraspTierData> graTier = factory.createTier(graTierName, GraspTierData.class, new HashMap<>(), true);
+                    graTier.setValue(graspTierData);
+                    graTiers.add(graTier);
+                }
             }
 
-            return new UtteranceTierData(ortho, new ArrayList<>(), morTiers);
+            return new UtteranceTierData(ortho, new ArrayList<>(), morTiers, graTiers);
         } catch (IllegalArgumentException | IOException e) {
             throw new XMLStreamException(e);
         }
@@ -582,7 +616,7 @@ public class TalkbankReader {
             } else if(reader.isStartElement()) {
                 final String eleName = reader.getLocalName();
                 switch (eleName) {
-                    case "mor", "trn":
+                    case "mor":
                         readMor(reader, tierBuilders);
                         break;
 
@@ -606,6 +640,13 @@ public class TalkbankReader {
                 break;
             }
         }
+    }
+
+    private Grasp readGra(XMLStreamReader reader) throws XMLStreamException {
+        final int index = Integer.parseInt(reader.getAttributeValue(null, "index"));
+        final int head = Integer.parseInt(reader.getAttributeValue(null, "head"));
+        final String relation = reader.getAttributeValue(null, "relation");
+        return new Grasp(index, head, relation);
     }
 
     private void readMor(XMLStreamReader reader, Map<String, StringBuilder> tierBuilders) throws XMLStreamException {
@@ -735,7 +776,7 @@ public class TalkbankReader {
         reader.addListener(msg -> {
             System.out.println(msg);
         });
-        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/mortrn.xml");
+        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/gra.xml");
         final SessionWriter writer = (new SessionOutputFactory()).createWriter();
         writer.writeSession(session, System.out);
     }
