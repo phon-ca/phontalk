@@ -1,6 +1,8 @@
 package ca.phon.phontalk.tb2phon;
 
 import ca.phon.extensions.UnvalidatedValue;
+import ca.phon.formatter.Formatter;
+import ca.phon.formatter.FormatterFactory;
 import ca.phon.ipa.IPATranscript;
 import ca.phon.orthography.*;
 import ca.phon.orthography.Error;
@@ -17,6 +19,7 @@ import ca.phon.session.io.SessionWriter;
 import ca.phon.session.io.xml.XMLFragments;
 import ca.phon.session.tierdata.TierData;
 import ca.phon.session.tierdata.TierLink;
+import ca.phon.util.Language;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.xml.stream.XMLInputFactory;
@@ -108,7 +111,93 @@ public class TalkbankReader {
         if(!"CHAT".equalsIgnoreCase(reader.getLocalName())) throw new XMLStreamException();
 
         final Session session = factory.createSession();
-        // TODO attributes
+
+        // read optional Date
+        final String dateText = reader.getAttributeValue(null, "Date");
+        if(dateText != null) {
+            try {
+                final Formatter<LocalDate> dateFormatter = FormatterFactory.createFormatter(LocalDate.class);
+                final  LocalDate date = dateFormatter.parse(dateText);
+                session.setDate(date);
+            } catch (ParseException e) {
+                fireWarning("Unable to parse date " + dateText + ", " + e.getLocalizedMessage(), reader);
+            }
+        }
+
+        final String corpus = reader.getAttributeValue(null, "Corpus");
+        if(corpus != null) {
+            session.setCorpus(corpus);
+        }
+
+        final String videos = reader.getAttributeValue(null, "Videos");
+        if(videos != null) {
+            fireWarning("Videos header is currently unsupported", reader);
+        }
+
+        final String media = reader.getAttributeValue(null, "Media");
+        if(media != null) {
+            session.setMediaLocation(media);
+        }
+
+        final String mediaTypes = reader.getAttributeValue(null, "Mediatypes");
+        if(mediaTypes != null) {
+            fireWarning("Mediatypes header is currently unsupported", reader);
+        }
+
+        final String langText = reader.getAttributeValue(null, "Langs");
+        if(langText != null) {
+            final ArrayList<Language> langs = new ArrayList<>();
+            for(String txt:langText.split("\\s")) {
+                try {
+                    final Language lang = Language.parseLanguage(txt);
+                    langs.add(lang);
+                } catch (IllegalArgumentException e) {
+                    fireWarning("Unable to parse language " + txt + ", " + e.getLocalizedMessage(), reader);
+                }
+            }
+            if(!langs.isEmpty())
+                session.setLanguages(langs);
+        }
+
+        final String options = reader.getAttributeValue(null, "Options");
+        if(options != null) {
+            fireWarning("Options header is currently unsupported", reader);
+        }
+
+        final String designType = reader.getAttributeValue(null, "DesignType");
+        if(designType != null) {
+            fireWarning("DesignType header is currently unsupported", reader);
+        }
+
+        final String activityType = reader.getAttributeValue(null, "ActivityType");
+        if(activityType != null) {
+            fireWarning("ActivityType header is currently unsupported", reader);
+        }
+
+        final String groupType = reader.getAttributeValue(null, "GroupType");
+        if(groupType != null) {
+            fireWarning("GroupType header is currently unsupported", reader);
+        }
+
+        final String colorwords = reader.getAttributeValue(null, "Colorwords");
+        if(colorwords != null) {
+            fireWarning("Colorwords header is currently unsupported", reader);
+        }
+
+        final String window = reader.getAttributeValue(null, "Window");
+        if(window != null) {
+            fireWarning("Window header is currently unsupported", reader);
+        }
+
+        final String pid = reader.getAttributeValue(null, "PID");
+        if(pid != null) {
+            fireWarning("PID header is currently unsupported", reader);
+        }
+
+        final String font = reader.getAttributeValue(null, "Font");
+        if(font != null) {
+            fireWarning("Font header is currently unsupported", reader);
+        }
 
         // flag used to avoid skipping elements
         boolean dontSkip = false;
