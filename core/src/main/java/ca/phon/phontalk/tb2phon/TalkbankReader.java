@@ -4,6 +4,7 @@ import ca.phon.extensions.UnvalidatedValue;
 import ca.phon.ipa.IPATranscript;
 import ca.phon.orthography.*;
 import ca.phon.orthography.Error;
+import ca.phon.orthography.mor.MorTierData;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.PhonTalkMessage;
 import ca.phon.phontalk.TalkbankDependentTier;
@@ -12,12 +13,10 @@ import ca.phon.session.Record;
 import ca.phon.session.io.SessionOutputFactory;
 import ca.phon.session.io.SessionWriter;
 import ca.phon.session.io.xml.XMLFragments;
-import ca.phon.session.io.xml.v1_3.XmlMediaUnitType;
 import ca.phon.session.tierdata.TierData;
 import ca.phon.session.tierdata.TierLink;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import javax.print.attribute.standard.Media;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -28,10 +27,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TalkbankReader {
 
@@ -284,6 +280,10 @@ public class TalkbankReader {
         UtteranceTierData utd = readUtterance(reader);
         r.setOrthography(utd.orthography);
 
+        for(Tier<MorTierData> morTier:utd.morTiers()) {
+            r.putTier(morTier);
+        }
+
         for(Tier<IPATranscript> ipaTier:utd.ipaTiers) {
             if(SystemTierType.IPATarget.getName().equals(ipaTier.getName())) {
                 r.setIPATarget(ipaTier.getValue());
@@ -523,7 +523,7 @@ public class TalkbankReader {
         return false;
     }
 
-    record UtteranceTierData(Orthography orthography, List<Tier<IPATranscript>> ipaTiers, List<Tier<TierData>> morTiers) {}
+    record UtteranceTierData(Orthography orthography, List<Tier<IPATranscript>> ipaTiers, List<Tier<MorTierData>> morTiers) {}
     private UtteranceTierData readUtterance(XMLStreamReader reader) throws XMLStreamException {
         if(!reader.isStartElement() && !"u".equalsIgnoreCase(reader.getLocalName())) throw new XMLStreamException("Not a start element");
 
@@ -541,14 +541,28 @@ public class TalkbankReader {
 
         try {
             final Orthography ortho = XMLFragments.orthographyFromXml(builder.toString());
-            return new UtteranceTierData(ortho, new ArrayList<>(), new ArrayList<>());
+
+            final List<Tier<MorTierData>> morTiers = new ArrayList<>();
+            for(String tierName:morTierBuilders.keySet()) {
+                final UserTierType userTierType = UserTierType.fromPhonTierName(tierName);
+                final StringBuilder tierBuilder = morTierBuilders.get(tierName);
+                if(userTierType.getType() == MorTierData.class) {
+                    tierBuilder.append("</mors>");
+                }
+                final MorTierData morTierData = XMLFragments.morsFromXml(tierBuilder.toString());
+                final Tier<MorTierData> morTier = factory.createTier(tierName, MorTierData.class, new HashMap<>(), true);
+                morTier.setValue(morTierData);
+                morTiers.add(morTier);
+            }
+
+            return new UtteranceTierData(ortho, new ArrayList<>(), morTiers);
         } catch (IllegalArgumentException | IOException e) {
             throw new XMLStreamException(e);
         }
     }
 
     private void readUtteranceElement(XMLStreamReader reader, StringBuilder builder, Map<String, StringBuilder> tierBuilders) throws XMLStreamException {
-        if(!reader.isStartElement()) throw new XMLStreamException();
+        if(!reader.isStartElement()) throwNotStart();
         final String eleName = reader.getLocalName();
 
         builder.append("<").append(eleName);
@@ -568,8 +582,7 @@ public class TalkbankReader {
             } else if(reader.isStartElement()) {
                 final String eleName = reader.getLocalName();
                 switch (eleName) {
-                    case "mor":
-                        // TODO handle mor tiers
+                    case "mor", "trn":
                         readMor(reader, tierBuilders);
                         break;
 
@@ -596,10 +609,23 @@ public class TalkbankReader {
     }
 
     private void readMor(XMLStreamReader reader, Map<String, StringBuilder> tierBuilders) throws XMLStreamException {
-        if(!reader.isStartElement() || !"mor".equals(reader.getLocalName())) throwNotElement("mor", reader.getLocalName());
+        if(!reader.isStartElement()) throwNotStart();;
+        if(!"mor".equals(reader.getLocalName())) throwNotElement("mor", reader.getLocalName());
 
-        // TODO
-        readToEndTag(reader);
+        final String type = reader.getAttributeValue(null, "type");
+        final UserTierType userTierType = UserTierType.fromChatTierName("%" + type);
+        if(userTierType == null) {
+            fireWarning("Unknown mor tier type " + type, reader);
+            readToEndTag(reader);
+            return;
+        }
+        StringBuilder builder = tierBuilders.get(userTierType.getTierName());
+        if(builder == null) {
+            builder = new StringBuilder();
+            builder.append("<mors>\n");
+            tierBuilders.put(userTierType.getTierName(), builder);
+        }
+        builder.append(recreateElementXML(reader, new ArrayList<>(), true));
     }
 
     private void throwNotStart() throws XMLStreamException {
@@ -709,7 +735,7 @@ public class TalkbankReader {
         reader.addListener(msg -> {
             System.out.println(msg);
         });
-        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/bullet-dependent.xml");
+        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/mortrn.xml");
         final SessionWriter writer = (new SessionOutputFactory()).createWriter();
         writer.writeSession(session, System.out);
     }

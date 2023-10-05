@@ -14,7 +14,5 @@
 @Comment:	mor translation with continuation lines
 @Date:	03-JUN-2007
 *AUN:	ah oui alors je peux éteindre dans le couloir oui non elle va chercher xxx . 350255_354852
-%mor:	co|ah co|oui=yes adv|alors pro:subj|je v:mdl|pouvoir&PRES&12s
-	v|éteindre-INF prep|dans det:art|le&m&sg n|couloir&m co|oui=yes
-	co|non=no pro:subj|elle v:mdl|aller&PRES&3s v|chercher-INF .
+%mor:	co|ah co|oui=yes adv|alors pro:subj|je v:mdl|pouvoir&PRES&12s v|éteindre-INF prep|dans det:art|le&m&sg n|couloir&m co|oui=yes co|non=no pro:subj|elle v:mdl|aller&PRES&3s v|chercher-INF .
 @End
