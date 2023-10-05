@@ -141,7 +141,7 @@ public class TalkbankReader {
 
         final String mediaTypes = reader.getAttributeValue(null, "Mediatypes");
         if(mediaTypes != null) {
-            fireWarning("Mediatypes header is currently unsupported", reader);
+            session.getMetadata().put("Mediatypes", mediaTypes);
         }
 
         final String langText = reader.getAttributeValue(null, "Langs");
@@ -161,42 +161,42 @@ public class TalkbankReader {
 
         final String options = reader.getAttributeValue(null, "Options");
         if(options != null) {
-            fireWarning("Options header is currently unsupported", reader);
+            session.getMetadata().put("Options", options);
         }
 
         final String designType = reader.getAttributeValue(null, "DesignType");
         if(designType != null) {
-            fireWarning("DesignType header is currently unsupported", reader);
+            session.getMetadata().put("DesignType", designType);
         }
 
         final String activityType = reader.getAttributeValue(null, "ActivityType");
         if(activityType != null) {
-            fireWarning("ActivityType header is currently unsupported", reader);
+            session.getMetadata().put("ActivityType", activityType);
         }
 
         final String groupType = reader.getAttributeValue(null, "GroupType");
         if(groupType != null) {
-            fireWarning("GroupType header is currently unsupported", reader);
+            session.getMetadata().put("GroupType", groupType);
         }
 
         final String colorwords = reader.getAttributeValue(null, "Colorwords");
         if(colorwords != null) {
-            fireWarning("Colorwords header is currently unsupported", reader);
+            session.getMetadata().put("Colorwords", colorwords);
         }
 
         final String window = reader.getAttributeValue(null, "Window");
         if(window != null) {
-            fireWarning("Window header is currently unsupported", reader);
+            session.getMetadata().put("Window", window);
         }
 
         final String pid = reader.getAttributeValue(null, "PID");
         if(pid != null) {
-            fireWarning("PID header is currently unsupported", reader);
+            session.getMetadata().put("PID", pid);
         }
 
         final String font = reader.getAttributeValue(null, "Font");
         if(font != null) {
-            fireWarning("Font header is currently unsupported", reader);
+            session.getMetadata().put("Font", font);
         }
 
         // flag used to avoid skipping elements
