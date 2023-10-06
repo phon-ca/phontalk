@@ -3,7 +3,10 @@ package ca.phon.phontalk.tb2phon;
 import ca.phon.extensions.UnvalidatedValue;
 import ca.phon.formatter.Formatter;
 import ca.phon.formatter.FormatterFactory;
+import ca.phon.ipa.CompoundWordMarker;
 import ca.phon.ipa.IPATranscript;
+import ca.phon.ipa.IPATranscriptBuilder;
+import ca.phon.ipa.StressType;
 import ca.phon.orthography.*;
 import ca.phon.orthography.Error;
 import ca.phon.orthography.mor.Grasp;
@@ -19,6 +22,8 @@ import ca.phon.session.io.SessionWriter;
 import ca.phon.session.io.xml.XMLFragments;
 import ca.phon.session.tierdata.TierData;
 import ca.phon.session.tierdata.TierLink;
+import ca.phon.syllable.SyllabificationInfo;
+import ca.phon.syllable.SyllableConstituentType;
 import ca.phon.util.Language;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -246,6 +251,7 @@ public class TalkbankReader {
             final Participant participant = readParticipant(reader);
             session.addParticipant(participant);
         }
+
     }
 
     /**
@@ -395,6 +401,16 @@ public class TalkbankReader {
         final Record r = factory.createRecord();
         UtteranceTierData utd = readUtterance(reader);
         r.setOrthography(utd.orthography);
+
+        for(Tier<IPATranscript> ipaTier:utd.ipaTiers()) {
+            if(SystemTierType.IPATarget.getName().equals(ipaTier.getName())) {
+                r.setIPATarget(ipaTier.getValue());
+            } else if(SystemTierType.IPAActual.getName().equals(ipaTier.getName())) {
+                r.setIPAActual(ipaTier.getValue());
+            } else {
+                r.putTier(ipaTier);
+            }
+        }
 
         for(Tier<MorTierData> morTier:utd.morTiers()) {
             r.putTier(morTier);
@@ -649,6 +665,7 @@ public class TalkbankReader {
 
         final StringBuilder builder = new StringBuilder();
         Map<String, StringBuilder> morTierBuilders = new LinkedHashMap<>();
+        Map<String, IPATranscriptBuilder> ipaTierBuilders = new LinkedHashMap<>();
 
         builder.append("<u xmlns=\"https://phon.ca/ns/session\"");
         final String lang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
@@ -656,12 +673,23 @@ public class TalkbankReader {
             builder.append(" xml:lang=\"").append(lang).append("\"");
         }
         builder.append(">");
-        readUtteranceContent(reader, builder, morTierBuilders);
+        readUtteranceContent(reader, builder, morTierBuilders, ipaTierBuilders);
         builder.append("</u>");
 
         try {
+            // main line
             final Orthography ortho = XMLFragments.orthographyFromXml(builder.toString());
 
+            // ipa
+            final List<Tier<IPATranscript>> ipaTiers = new ArrayList<>();
+            for(String tierName:ipaTierBuilders.keySet()) {
+                final SystemTierType ipaTierType = SystemTierType.tierFromString(tierName);
+                final Tier<IPATranscript> ipaTier = factory.createTier(ipaTierType.getName(), IPATranscript.class, new LinkedHashMap<>(), false);
+                ipaTier.setValue(ipaTierBuilders.get(tierName).toIPATranscript());
+                ipaTiers.add(ipaTier);
+            }
+
+            // mor
             final List<Tier<MorTierData>> morTiers = new ArrayList<>();
             final List<Tier<GraspTierData>> graTiers = new ArrayList<>();
             for(String tierName:morTierBuilders.keySet()) {
@@ -702,24 +730,26 @@ public class TalkbankReader {
                 }
             }
 
-            return new UtteranceTierData(ortho, new ArrayList<>(), morTiers, graTiers);
+            return new UtteranceTierData(ortho, ipaTiers, morTiers, graTiers);
         } catch (IllegalArgumentException | IOException e) {
             throw new XMLStreamException(e);
         }
     }
 
-    private void readUtteranceElement(XMLStreamReader reader, StringBuilder builder, Map<String, StringBuilder> tierBuilders) throws XMLStreamException {
+    private void readUtteranceElement(XMLStreamReader reader, StringBuilder builder,
+                                      Map<String, StringBuilder> tierBuilders, Map<String, IPATranscriptBuilder> ipaTierBuilders) throws XMLStreamException {
         if(!reader.isStartElement()) throwNotStart();
         final String eleName = reader.getLocalName();
 
         builder.append("<").append(eleName);
         appendAttributes(builder, reader);
         builder.append(">");
-        readUtteranceContent(reader, builder, tierBuilders);
+        readUtteranceContent(reader, builder, tierBuilders, ipaTierBuilders);
         builder.append("</").append(eleName).append(">");
     }
 
-    private void readUtteranceContent(XMLStreamReader reader, StringBuilder builder, Map<String, StringBuilder> tierBuilders) throws XMLStreamException {
+    private void readUtteranceContent(XMLStreamReader reader, StringBuilder builder,
+                                      Map<String, StringBuilder> tierBuilders, Map<String, IPATranscriptBuilder> ipaTierBuilders) throws XMLStreamException {
         boolean readTerminator = false;
         final String originalEleName = reader.getLocalName();
         while(!readTerminator && reader.hasNext()) {
@@ -733,23 +763,113 @@ public class TalkbankReader {
                         readMor(reader, tierBuilders);
                         break;
 
-                    case "actual", "model":
-                        // TODO handle ipa tiers
-                        readToEndTag(reader);
-                        break;
-
-                    case "align":
-                        // old-data, ignore
-                        readToEndTag(reader);
+                    case "pg":
+                        readPg(reader, builder, tierBuilders, ipaTierBuilders);
                         break;
 
                     case "t":
                         readTerminator = true;
                     default:
-                        readUtteranceElement(reader, builder, tierBuilders);
+                        readUtteranceElement(reader, builder, tierBuilders, ipaTierBuilders);
                         break;
                 }
             } else if(reader.isEndElement() && reader.getLocalName().equals(originalEleName)) {
+                break;
+            }
+        }
+    }
+
+    private void readPg(XMLStreamReader reader, StringBuilder builder,
+                        Map<String, StringBuilder> tierBuilders, Map<String, IPATranscriptBuilder> ipaTierBuilders) throws XMLStreamException {
+        builder.append("<pg>");
+        while(reader.hasNext()) {
+            reader.next();
+            if(reader.isStartElement()) {
+                final String eleName = reader.getLocalName();
+                switch (eleName) {
+                    case "model", "actual":
+                        readOldPho(reader, ipaTierBuilders);
+                        break;
+
+                    case "align":
+                        // ignore for now
+                        readToEndTag(reader);
+                        break;
+
+                    default:
+                        readUtteranceElement(reader, builder, tierBuilders, ipaTierBuilders);
+                        break;
+                }
+            } else if(reader.isEndElement() && reader.getLocalName().equals("pg")) {
+                break;
+            }
+        }
+        builder.append("</pg>");
+    }
+
+    private void readOldPho(XMLStreamReader reader, Map<String, IPATranscriptBuilder> tierBuilders) throws XMLStreamException {
+        if(!reader.isStartElement()) throwNotStart();
+        final String eleName = reader.getLocalName();
+        if(!"model".equals(eleName) && !"actual".equals(eleName)) throwNotElement("actual|model", eleName);
+
+        final SystemTierType ipaTier = "model".equals(eleName) ? SystemTierType.IPATarget : SystemTierType.IPAActual;
+        IPATranscriptBuilder builder = tierBuilders.computeIfAbsent(ipaTier.getName(), k -> new IPATranscriptBuilder());
+        if(builder.size() > 0) builder.appendWordBoundary();
+
+        while(reader.hasNext()) {
+            reader.next();
+            if(reader.isStartElement()) {
+                final String pwEleName = reader.getLocalName();
+                if(!"pw".equals(pwEleName)) throwNotElement("pw", pwEleName);
+                readPw(reader, builder);
+            } else if(reader.isEndElement()) {
+                break;
+            }
+        }
+    }
+
+    private void readPw(XMLStreamReader reader, IPATranscriptBuilder builder) throws XMLStreamException {
+        if(!reader.isStartElement()) throwNotStart();
+        if(!"pw".equals(reader.getLocalName())) throwNotElement("pw", reader.getLocalName());
+        while(reader.hasNext()) {
+            reader.next();
+            if(reader.isStartElement()) {
+                final String eleName = reader.getLocalName();
+                switch (eleName) {
+                    case "ss":
+                        final String ssType = reader.getAttributeValue(null, "type");
+                        final StressType stressType = "1".equals(ssType) ? StressType.PRIMARY : StressType.SECONDARY;
+                        builder.appendStress(stressType);
+                        break;
+
+                    case "wk":
+                        final String wkType = reader.getAttributeValue(null, "type");
+                        final CompoundWordMarker wordMarker = "cli".equals(wkType) ? new CompoundWordMarker('~') : new CompoundWordMarker();
+                        builder.append(wordMarker);
+                        break;
+
+                    case "ph":
+                        final String type = reader.getAttributeValue(null, "sctype");
+                        final SyllableConstituentType scType = type != null ? SyllableConstituentType.fromString(type) : SyllableConstituentType.UNKNOWN;
+                        final String hiatus = reader.getAttributeValue(null, "hiatus");
+                        final boolean isHiatus = Boolean.parseBoolean(hiatus);
+                        final String eleTxt = reader.getElementText();
+                        if(eleTxt.isBlank())
+                            throw new XMLStreamException("ph must not be empty", reader.getLocation());
+                        builder.append(eleTxt);
+                        // setup sc info
+                        if(scType != null && scType != SyllableConstituentType.UNKNOWN) {
+                            final SyllabificationInfo info = builder.last().getExtension(SyllabificationInfo.class);
+                            info.setConstituentType(scType);
+                            if(scType == SyllableConstituentType.NUCLEUS)
+                                info.setDiphthongMember(!isHiatus);
+                        }
+                        break;
+
+                    default:
+                        throw new XMLStreamException("Invalid pho child element " + eleName, reader.getLocation());
+                }
+            } else if(reader.isEndElement() && "pw".equals(reader.getLocalName())) {
                 break;
             }
         }
@@ -889,7 +1009,7 @@ public class TalkbankReader {
         reader.addListener(msg -> {
             System.out.println(msg);
         });
-        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/gra.xml");
+        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/pho-mod.xml");
         final SessionWriter writer = (new SessionOutputFactory()).createWriter();
         writer.writeSession(session, System.out);
     }
