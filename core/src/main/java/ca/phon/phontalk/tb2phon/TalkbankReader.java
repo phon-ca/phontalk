@@ -136,7 +136,7 @@ public class TalkbankReader {
 
         final String videos = reader.getAttributeValue(null, "Videos");
         if(videos != null) {
-            fireWarning("Videos header is currently unsupported", reader);
+            session.getMetadata().put("Videos", videos);
         }
 
         final String media = reader.getAttributeValue(null, "Media");
