@@ -63,10 +63,12 @@ public class TalkbankWriter {
 
     // region XML Writing
     public void writeCHAT(Session session, XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeStartElement(TBNS, "CHAT");
+        writer.writeStartElement("CHAT");
+        writer.writeDefaultNamespace(TBNS);
+
 
         // setup attributes
-        writer.writeAttribute("Version", "2.20");
+        writer.writeAttribute("Version", "2.21");
 
         if(session.getDate() != null) {
             final Formatter<LocalDate> dateFormatter = FormatterFactory.createFormatter(LocalDate.class);
@@ -136,6 +138,7 @@ public class TalkbankWriter {
         }
         writer.writeEndElement();
 
+        int uid = 0;
         // write transcript
         for(Transcript.Element element:session.getTranscript()) {
             if(element.isComment()) {
@@ -143,9 +146,12 @@ public class TalkbankWriter {
             } else if(element.isGem()) {
                 writeGem(element.asGem(), writer);
             } else if(element.isRecord()) {
-                writeRecord(element.asRecord(), writer);
+                writeRecord(element.asRecord(), uid++, element.asRecord().getSpeaker().getId(), writer);
             }
         }
+
+        writer.writeEndElement();
+        writer.writeEndDocument();
     }
 
     private void writeParticipant(Participant participant, XMLStreamWriter writer) throws XMLStreamException {
@@ -199,8 +205,10 @@ public class TalkbankWriter {
     }
 
     private void writeTierData(TierData tierData, XMLStreamWriter writer) throws XMLStreamException {
-        for(TierElement ele:tierData.getElements()) {
+        for(int i = 0; i < tierData.length(); i++) {
+            final TierElement ele = tierData.elementAt(i);
             if (ele instanceof TierString ts) {
+                if(i > 0) writer.writeCharacters(" ");
                 writer.writeCharacters(ts.text());
             } else if (ele instanceof TierInternalMedia tim) {
                 writer.writeStartElement("media");
@@ -230,13 +238,13 @@ public class TalkbankWriter {
         writer.writeEndElement();
     }
 
-    private void writeRecord(Record record, XMLStreamWriter writer) throws XMLStreamException {
+    private void writeRecord(Record record, int uid, String who, XMLStreamWriter writer) throws XMLStreamException {
         OneToOne.annotateRecord(record);
         try {
             final String utteranceXml = XMLFragments.toXml(record.getOrthography(), false, false);
             final XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
             final XMLStreamReader uReader = xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(utteranceXml.getBytes(StandardCharsets.UTF_8)));
-            final XMLStreamWriter userTierWriter = new UserTierXmlStreamWriter(writer, record);
+            final XMLStreamWriter userTierWriter = new RecordXmlStreamWriter(writer, record, uid, who);
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer();
             StAXSource source = new StAXSource(uReader);
@@ -249,20 +257,30 @@ public class TalkbankWriter {
     }
     // endregion XML Writing
 
-    private class UserTierXmlStreamWriter extends DelegatingXMLStreamWriter {
+    private class RecordXmlStreamWriter extends DelegatingXMLStreamWriter {
 
         private final Record record;
 
+        private final int uid;
+
+        private final String who;
+
         private final Stack<String> eleStack = new Stack<>();
 
-        public UserTierXmlStreamWriter(XMLStreamWriter delegate, Record record) {
+        public RecordXmlStreamWriter(XMLStreamWriter delegate, Record record, int uid, String who) {
             super(delegate);
             this.record = record;
+            this.uid = uid;
+            this.who = who;
         }
 
         @Override
         public void writeStartElement(String localName) throws XMLStreamException {
             super.writeStartElement(localName);
+            if("u".equals(localName)) {
+                writeAttribute("uID", "u" + uid);
+                writeAttribute("who", who);
+            }
             eleStack.push(localName);
         }
 
