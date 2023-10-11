@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
+import ca.phon.app.session.editor.SessionEditorWindow;
 import org.apache.commons.io.FilenameUtils;
 
 import ca.phon.app.actions.OpenFileHandler;
@@ -39,7 +40,7 @@ public class CHATOpenFileHandler implements OpenFileHandler, IPluginExtensionPoi
 
 	@Override
 	public void openFile(File file, Map<String, Object> args) throws IOException {
-		SessionEditor existingEditor = findEditorForFile(file);
+		SessionEditorWindow existingEditor = findEditorForFile(file);
 		if(existingEditor != null) {
 			existingEditor.toFront();
 			return;
@@ -61,11 +62,9 @@ public class CHATOpenFileHandler implements OpenFileHandler, IPluginExtensionPoi
 		PluginEntryPointRunner.executePluginInBackground(SessionEditorEP.EP_NAME, epArgs);
 	}
 	
-	private SessionEditor findEditorForFile(File file) {
+	private SessionEditorWindow findEditorForFile(File file) {
 		for(CommonModuleFrame cmf:CommonModuleFrame.getOpenWindows()) {
-			if(cmf instanceof SessionEditor) {
-				SessionEditor editor = (SessionEditor)cmf;
-				
+			if(cmf instanceof SessionEditorWindow editor) {
 				Project project = editor.getProject();
 				Session session = editor.getSession();
 				String sessionPath = project.getSessionPath(session);

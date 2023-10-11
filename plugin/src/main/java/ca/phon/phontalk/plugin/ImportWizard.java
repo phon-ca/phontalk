@@ -28,6 +28,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.TreePath;
 
 import ca.phon.app.project.*;
+import ca.phon.formatter.MediaTimeFormatter;
 import ca.phon.project.LocalProject;
 import ca.phon.ui.*;
 import org.apache.commons.io.FilenameUtils;
@@ -58,9 +59,6 @@ import ca.phon.ui.fonts.FontPreferences;
 import ca.phon.ui.jbreadcrumb.BreadcrumbButton;
 import ca.phon.ui.nativedialogs.FileFilter;
 import ca.phon.ui.nativedialogs.MessageDialogProperties;
-import ca.phon.ui.text.FileSelectionField;
-import ca.phon.ui.text.PromptedTextField;
-import ca.phon.ui.text.FileSelectionField.SelectionMode;
 import ca.phon.ui.tristatecheckbox.TristateCheckBoxState;
 import ca.phon.ui.tristatecheckbox.TristateCheckBoxTree;
 import ca.phon.ui.tristatecheckbox.TristateCheckBoxTreeCellEditor;
@@ -69,7 +67,6 @@ import ca.phon.ui.tristatecheckbox.TristateCheckBoxTreeModel;
 import ca.phon.ui.tristatecheckbox.TristateCheckBoxTreeNode;
 import ca.phon.ui.wizard.BreadcrumbWizardFrame;
 import ca.phon.ui.wizard.WizardStep;
-import ca.phon.util.MsFormatter;
 import ca.phon.util.icons.IconManager;
 import ca.phon.util.icons.IconSize;
 import ca.phon.worker.PhonTask;
@@ -759,7 +756,7 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 		if(numFilesFailed > 0)
 			buffer.append(String.format("Failed to process %d files\n", numFilesFailed));
 		
-		buffer.append(String.format("Elapsed time:\t\t\t\t%s\n", MsFormatter.msToDisplayString(importFinishedMs-importStartedMs)));
+		buffer.append(String.format("Elapsed time:\t\t\t\t%s\n", MediaTimeFormatter.timeToMinutesAndSeconds(importFinishedMs-importStartedMs)));
 		
 		bufferPanel.getLogBuffer().append(buffer.toString());
 	}

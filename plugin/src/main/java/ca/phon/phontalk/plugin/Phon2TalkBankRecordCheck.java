@@ -1,8 +1,6 @@
 package ca.phon.phontalk.plugin;
 
-import ca.phon.app.log.LogUtil;
 import ca.phon.phontalk.*;
-import ca.phon.phontalk.parser.*;
 import ca.phon.plugin.IPluginExtensionFactory;
 import ca.phon.plugin.IPluginExtensionPoint;
 import ca.phon.plugin.PhonPlugin;
@@ -79,7 +77,7 @@ public class Phon2TalkBankRecordCheck implements SessionCheck, IPluginExtensionP
 
 		Session testSession = factory.createSession();
 		factory.copySessionInformation(session, testSession);
-		factory.copySessionMetadata(session, testSession);
+		testSession.getMetadata().putAll(session.getMetadata());
 		factory.copySessionTierInformation(session, testSession);
 		for(Participant p:session.getParticipants()) {
 			testSession.addParticipant(factory.cloneParticipant(p));

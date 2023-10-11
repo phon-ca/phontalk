@@ -13,11 +13,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ca.phon.phontalk.PhonTalkMessage.Severity;
+import ca.phon.phontalk.tb2phon.TalkbankReader;
 import ca.phon.session.Session;
 import ca.phon.session.io.OriginalFormat;
 import ca.phon.session.io.SessionIO;
 import ca.phon.session.io.SessionOutputFactory;
 import ca.phon.util.OSInfo;
+
+import javax.xml.stream.XMLStreamException;
 
 public class CHAT2PhonTask extends PhonTalkTask {
 	
@@ -77,18 +80,17 @@ public class CHAT2PhonTask extends PhonTalkTask {
 			if(xmlReady.get()) {
 				Xml2PhonConverter xml2Phon = new Xml2PhonConverter();
 				xml2Phon.setInputFile(tempFile);
-				final Session retVal =  xml2Phon.convertStream(new FileInputStream(tempFile), new PhonTalkListener() {
-					
-					@Override
-					public void message(PhonTalkMessage msg) {
-						getListener().message(msg);
-					}
-					
-				});
-				retVal.putExtension(OriginalFormat.class, new OriginalFormat(getClass().getAnnotation(SessionIO.class)));
-				
-				SessionOutputFactory factory = new SessionOutputFactory();
-				factory.createWriter().writeSession(retVal, new FileOutputStream(getOutputFile()));
+				final TalkbankReader reader = new TalkbankReader();
+
+				try {
+					final Session retVal = reader.readFile(tempFile.getAbsolutePath());
+					retVal.putExtension(OriginalFormat.class, new OriginalFormat(getClass().getAnnotation(SessionIO.class)));
+
+					SessionOutputFactory factory = new SessionOutputFactory();
+					factory.createWriter().writeSession(retVal, new FileOutputStream(getOutputFile()));
+				} catch (XMLStreamException e) {
+					throw new IOException(e);
+				}
 			} else {
 				throw new IOException("CHAT conversion failed");
 			}

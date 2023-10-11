@@ -7,6 +7,7 @@ import javax.xml.stream.*;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
+import ca.phon.phontalk.tb2phon.TalkbankReader;
 import org.apache.commons.lang3.StringUtils;
 
 import ca.phon.app.log.LogUtil;
@@ -35,7 +36,8 @@ public class TalkBankSessionReader implements SessionReader, IPluginExtensionPoi
 			buffer.append(String.format("(%d:%d) %s", msg.getLineNumber(), msg.getColNumber(), msg.getMessage()));
 		};
 		
-		
+
+		final TalkbankReader reader = new TalkbankReader();
 		Session retVal = converter.convertStream(stream, listener);
 		if(buffer.length() > 0) {
 			LogUtil.warning(buffer.toString());
