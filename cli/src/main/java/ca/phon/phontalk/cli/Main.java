@@ -20,6 +20,7 @@ package ca.phon.phontalk.cli;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.stream.XMLInputFactory;
@@ -28,6 +29,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import ca.phon.orthography.Orthography;
 import ca.phon.session.io.xml.XMLFragments;
+import ca.phon.syllabifier.Syllabifier;
+import ca.phon.syllabifier.SyllabifierLibrary;
+import ca.phon.util.Language;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -60,7 +64,12 @@ public class Main {
 		// files
 		retVal.addOption("f", "file", true,
 				"""
-						Input file xml file, start elements must be one of: {https://phon.ca/ns/session}session, {https://phon.ca/ns/session}ipa, {https://phon.ca/ns/session}u, or {http://www.talkbank.org/ns/talkbank}CHAT.
+						Input file xml file, start elements must be one of: 
+							* {https://phon.ca/ns/session}session - output will be an xml file with start element {http://www.talkbank.org/ns/talkbank}CHAT
+						    * {http://www.talkbank.org/ns/talkbank}CHAT - output will be an xml file with start element {https://phon.ca/ns/session}session
+						    * {https://phon.ca/ns/session}ipa - output will be the ipa transcription
+						    * {https://phon.ca/ns/session}u - output will be main line of utterance
+						If no namespace is provided it is assumed to be https://phon.ca/ns/session
 						""");
 		retVal.getOption("f").setRequired(false);
 		retVal.addOption("o", "output", true,
@@ -71,24 +80,62 @@ public class Main {
 		// u <-> xml
 		retVal.addOption("u", "utterance", true,
 				"""
-						Produce xml fragment for main line utterance. If no arguemnt is given
-						data is read from stdin.""");
+						Produce xml fragment for main line utterance.  May be combined with -mod -pho -mor -gra -trn -grt""");
 		retVal.getOption("u").setRequired(false);
+		retVal.getOption("u").setOptionalArg(false);
 
 		// ipa <-> xml
-		retVal.addOption("ipa", "ipatranscript", true,
+		retVal.addOption("ipa", "IPATranscript", true,
 				"""
-						Produce xml fragment for ipa transcripts. If no argument is given
-						data will be read from stdin."""
-				);
+						Product xml fragment for given ipa transcription.  Does not combine with -u""");
 		retVal.getOption("ipa").setRequired(false);
-		retVal.getOption("ipa").setOptionalArg(true);
+		retVal.getOption("ipa").setOptionalArg(false);
+
+		retVal.addOption("mod", "IPATarget", true,
+				"""
+						Add ipa transcript for %mod tier. Requires -u""");
+		retVal.getOption("mod").setRequired(false);
+		retVal.getOption("mod").setOptionalArg(false);
+
+		retVal.addOption("pho", "IPAActual", true,
+				"""
+						Add ipa transcript for %. Requires -u""");
+		retVal.getOption("pho").setRequired(false);
+		retVal.getOption("pho").setOptionalArg(false);
+
+		// mor tiers
+		retVal.addOption("mor", "Morphology", true,
+				"""
+						Add %mor tier to utterance. Requires -u""");
+		retVal.getOption("mor").setRequired(false);
+		retVal.getOption("mor").setOptionalArg(false);
+
+		retVal.addOption("gra", "GRASP", true,
+				"""
+						Add %gra tier to utterance. Requires -mor""");
+		retVal.getOption("gra").setRequired(false);
+		retVal.getOption("gra").setOptionalArg(false);
+
+		retVal.addOption("trn", "Morphology", true,
+				"""
+						Add %trn tier to utterance. Requires -u""");
+		retVal.getOption("trn").setRequired(false);
+		retVal.getOption("trn").setOptionalArg(false);
+
+		retVal.addOption("grt", "GRASP", true,
+				"""
+						Add %grt tier to utterance. Requires -trn""");
+		retVal.getOption("grt").setRequired(false);
+		retVal.getOption("grt").setOptionalArg(false);
+
+		// syllabifiers
 		retVal.addOption("sb", "syllabifier", true,
 				"""
 						Syllabifier language, if provided IPA data will be 'syllabified' before
-						xml fragment is produced (requires -ipa)""");
-		retVal.getOption("sb").setOptionalArg(false);
+						xml fragment is produced""");
 		retVal.getOption("sb").setRequired(false);
+		retVal.getOption("sb").setOptionalArg(false);
+
 		retVal.addOption("lsb", "list-syllabifiers", false,
 				"""
 						List available syllabifier languages and exit.  This supersedes all other options.""");
@@ -113,26 +160,58 @@ public class Main {
 			if(cmdLine.hasOption("h") || cmdLine.getOptions().length == 0) {
 				final HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp(CMD_STRING, getCLIOptions());
-				
+
+				System.exit(0);
+			}
+
+			if(cmdLine.hasOption("lsb")) {
+				// list syllabifiers and exit
+				final SyllabifierLibrary library = SyllabifierLibrary.getInstance();
+				final StringBuilder builder = new StringBuilder();
+				builder.append("Available syllabifiers: ");
+				for(Language lang:library.availableSyllabifierLanguages()) {
+					builder.append(" ").append(lang);
+				}
+				builder.append("\n");
+				System.out.println(builder.toString());
 				System.exit(0);
 			}
 
 			if(cmdLine.hasOption("u") && cmdLine.hasOption("ipa")) {
+				final HelpFormatter formatter = new HelpFormatter();
+				formatter.printHelp(CMD_STRING, getCLIOptions());
 				System.err.println("-u and -ipa must be used independently");
 				System.exit(1);
 			}
 
 			// default mode is full file conversion
+			final String inputFile = cmdLine.hasOption("f") ? cmdLine.getOptionValue("f") : null;
 			String mode = "phontalk";
 			if(cmdLine.hasOption("u")) {
+				if(inputFile != null) {
+					final HelpFormatter formatter = new HelpFormatter();
+					formatter.printHelp(CMD_STRING, getCLIOptions());
+					throw new IllegalArgumentException("Cannot use -u with input file");
+				}
 				mode = "u";
 			} else if(cmdLine.hasOption("ipa")) {
+				if(inputFile != null) {
+					final HelpFormatter formatter = new HelpFormatter();
+					formatter.printHelp(CMD_STRING, getCLIOptions());
+					throw new IllegalArgumentException("Cannot use -ipa with input file");
+				}
 				mode = "ipa";
 			}
 
-			final String inputFile = cmdLine.hasOption("f") ? cmdLine.getOptionValue("f") : null;
-			final String outputFile = cmdLine.hasOption("o") ? cmdLine.getOptionValue("o") : null;
+			if("phontalk".equals(mode)) {
+				if(inputFile == null) {
+					final HelpFormatter formatter = new HelpFormatter();
+					formatter.printHelp(CMD_STRING, getCLIOptions());
+					throw new IllegalArgumentException("No input file given");
+				}
+			}
 
+			final String outputFile = cmdLine.hasOption("o") ? cmdLine.getOptionValue("o") : null;
 			switch (mode) {
 				case "u":
 					try {

@@ -252,8 +252,9 @@ public class TalkbankWriter {
             t.transform(source, result);
         } catch (IOException | TransformerException e) {
             throw new XMLStreamException(e);
+        } finally {
+            OneToOne.removeAnnotations(record);
         }
-
     }
     // endregion XML Writing
 
