@@ -19,18 +19,12 @@
 package ca.phon.phontalk;
 
 import java.io.*;
-import java.util.Locale;
 import java.util.logging.*;
 
 
-import ca.phon.phontalk.tb2phon.TalkbankReader;
-import jakarta.xml.bind.ValidationException;
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
-
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
-import ca.phon.syllabifier.SyllabifierLibrary;
+import jakarta.xml.bind.ValidationException;
 
 import javax.xml.stream.XMLStreamException;
 

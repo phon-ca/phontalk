@@ -1,4 +1,4 @@
-package ca.phon.phontalk.tb2phon;
+package ca.phon.phontalk;
 
 import ca.phon.extensions.UnvalidatedValue;
 import ca.phon.formatter.Formatter;
@@ -12,9 +12,6 @@ import ca.phon.orthography.Error;
 import ca.phon.orthography.mor.Grasp;
 import ca.phon.orthography.mor.GraspTierData;
 import ca.phon.orthography.mor.MorTierData;
-import ca.phon.phontalk.PhonTalkListener;
-import ca.phon.phontalk.PhonTalkMessage;
-import ca.phon.phontalk.TalkbankDependentTier;
 import ca.phon.session.*;
 import ca.phon.session.Record;
 import ca.phon.session.io.SessionOutputFactory;
@@ -149,7 +146,7 @@ public class TalkbankReader {
             session.getMetadata().put("Mediatypes", mediaTypes);
         }
 
-        final String langText = reader.getAttributeValue(null, "Langs");
+        final String langText = reader.getAttributeValue(null, "Lang");
         if(langText != null) {
             final ArrayList<Language> langs = new ArrayList<>();
             for(String txt:langText.split("\\s")) {
@@ -221,6 +218,7 @@ public class TalkbankReader {
 
                 case "u":
                     readRecord(session, reader);
+                    dontSkip = (reader.isStartElement());
                     break;
 
                 case "lazy-gem":
@@ -313,9 +311,11 @@ public class TalkbankReader {
             Sex s = switch (sex) {
                 case "male" -> Sex.MALE;
                 case "female" -> Sex.FEMALE;
-                default -> null;
+                default -> Sex.UNSPECIFIED;
             };
             participant.setSex(s);
+        } else {
+            participant.setSex(Sex.UNSPECIFIED);
         }
 
         // SES
@@ -399,6 +399,17 @@ public class TalkbankReader {
     private Record readRecord(Session session, XMLStreamReader reader) throws XMLStreamException {
         if(!"u".equals(reader.getLocalName())) throw new XMLStreamException();
         final Record r = factory.createRecord();
+
+        final String who = reader.getAttributeValue("", "who");
+        if(who != null) {
+            final Participant speaker = session.getParticipants().getParticipantById(who);
+            if(speaker == null) {
+                fireWarning("Unknown speaker id " + who, reader);
+            } else {
+                r.setSpeaker(speaker);
+            }
+        }
+
         UtteranceTierData utd = readUtterance(reader);
         r.setOrthography(utd.orthography);
 
@@ -468,10 +479,11 @@ public class TalkbankReader {
                     Tier<TierData> depTier = readDepTier(reader);
                     r.putTier(depTier);
                     break;
-//
-//                case "wor":
-//                    readWorTier(reader, r);
-//                    break;
+
+                case "wor":
+                    Tier<Orthography> worTier = readWorTier(reader);
+                    r.putTier(worTier);
+                    break;
 
                 default:
                     // at next transcript element, break look
@@ -484,8 +496,8 @@ public class TalkbankReader {
     }
 
     private Marker readMarker(XMLStreamReader reader) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart();
-        if(!"k".equals(reader.getLocalName())) throwNotElement("k", reader.getLocalName());
+        if(!reader.isStartElement()) throwNotStart(reader);
+        if(!"k".equals(reader.getLocalName())) throwNotElement(reader, "k", reader.getLocalName());
 
         final String type = reader.getAttributeValue(null, "type");
         final MarkerType mkType = MarkerType.fromString(type);
@@ -494,8 +506,8 @@ public class TalkbankReader {
     }
 
     private Error readError(XMLStreamReader reader) throws XMLStreamException {
-        if (!reader.isStartElement()) throwNotStart();
-        if (!"error".equals(reader.getLocalName())) throwNotElement("error", reader.getLocalName());
+        if (!reader.isStartElement()) throwNotStart(reader);
+        if (!"error".equals(reader.getLocalName())) throwNotElement(reader, "error", reader.getLocalName());
 
         final StringBuilder builder = new StringBuilder();
         while (reader.hasNext()) {
@@ -512,16 +524,16 @@ public class TalkbankReader {
     }
 
     private Postcode readPostcode(XMLStreamReader reader) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart();
-        if(!"postcode".equals(reader.getLocalName())) throwNotElement("postcode", reader.getLocalName());
+        if(!reader.isStartElement()) throwNotStart(reader);
+        if(!"postcode".equals(reader.getLocalName())) throwNotElement(reader, "postcode", reader.getLocalName());
         reader.next();
         final String txt = reader.isCharacters() ? reader.getText() : "";
         return new Postcode(txt);
     }
 
     private MediaSegment readMedia(XMLStreamReader reader) throws XMLStreamException {
-        if (!reader.isStartElement()) throwNotStart();
-        if(!"media".equals(reader.getLocalName())) throwNotElement("media", reader.getLocalName());
+        if (!reader.isStartElement()) throwNotStart(reader);
+        if(!"media".equals(reader.getLocalName())) throwNotElement(reader, "media", reader.getLocalName());
         final String startTxt = reader.getAttributeValue(null, "start");
         final String endTxt = reader.getAttributeValue(null, "end");
         final String unit = reader.getAttributeValue(null, "unit");
@@ -541,6 +553,8 @@ public class TalkbankReader {
         return retVal;
     }
 
+
+
     /**
      * Read utterance dependent tier
      *
@@ -549,8 +563,8 @@ public class TalkbankReader {
      * @throws XMLStreamException
      */
     private Tier<TierData> readDepTier(XMLStreamReader reader) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart();
-        if(!"a".equals(reader.getLocalName())) throwNotElement("a", reader.getLocalName());
+        if(!reader.isStartElement()) throwNotStart(reader);
+        if(!"a".equals(reader.getLocalName())) throwNotElement(reader, "a", reader.getLocalName());
 
         final String type = reader.getAttributeValue(null, "type");
         final String flavor = reader.getAttributeValue(null, "flavor");
@@ -572,7 +586,7 @@ public class TalkbankReader {
     }
 
     private TierData readTierContent(XMLStreamReader reader) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart();
+        if(!reader.isStartElement()) throwNotStart(reader);
         final String startEleName = reader.getLocalName();
 
         final StringBuilder builder = new StringBuilder();
@@ -647,7 +661,7 @@ public class TalkbankReader {
     }
 
     private boolean readToEndTag(XMLStreamReader reader) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart();
+        if(!reader.isStartElement()) throwNotStart(reader);
         final String eleName = reader.getLocalName();
         while(reader.hasNext()) {
             reader.next();
@@ -661,7 +675,8 @@ public class TalkbankReader {
     record UtteranceTierData(Orthography orthography, List<Tier<IPATranscript>> ipaTiers,
                              List<Tier<MorTierData>> morTiers, List<Tier<GraspTierData>> graTiers) {}
     private UtteranceTierData readUtterance(XMLStreamReader reader) throws XMLStreamException {
-        if(!reader.isStartElement() && !"u".equalsIgnoreCase(reader.getLocalName())) throw new XMLStreamException("Not a start element");
+        if(!reader.isStartElement()) throwNotStart(reader);
+        if(!"u".equalsIgnoreCase(reader.getLocalName())) throwNotElement(reader, "u", reader.getLocalName());
 
         final StringBuilder builder = new StringBuilder();
         Map<String, StringBuilder> morTierBuilders = new LinkedHashMap<>();
@@ -736,9 +751,17 @@ public class TalkbankReader {
         }
     }
 
+    private Tier<Orthography> readWorTier(XMLStreamReader reader) throws XMLStreamException {
+        final Tier<Orthography> retVal = factory.createTier(UserTierType.Wor.getTierName(), Orthography.class);
+
+
+
+        return retVal;
+    }
+
     private void readUtteranceElement(XMLStreamReader reader, StringBuilder builder,
                                       Map<String, StringBuilder> tierBuilders, Map<String, IPATranscriptBuilder> ipaTierBuilders) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart();
+        if(!reader.isStartElement()) throwNotStart(reader);
         final String eleName = reader.getLocalName();
 
         builder.append("<").append(eleName);
@@ -755,7 +778,7 @@ public class TalkbankReader {
         while(!readTerminator && reader.hasNext()) {
             reader.next();
             if(reader.isCharacters()) {
-                builder.append(reader.getText());
+                builder.append(StringEscapeUtils.escapeXml(reader.getText()));
             } else if(reader.isStartElement()) {
                 final String eleName = reader.getLocalName();
                 switch (eleName) {
@@ -808,9 +831,9 @@ public class TalkbankReader {
     }
 
     private void readOldPho(XMLStreamReader reader, Map<String, IPATranscriptBuilder> tierBuilders) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart();
+        if(!reader.isStartElement()) throwNotStart(reader);
         final String eleName = reader.getLocalName();
-        if(!"model".equals(eleName) && !"actual".equals(eleName)) throwNotElement("actual|model", eleName);
+        if(!"model".equals(eleName) && !"actual".equals(eleName)) throwNotElement(reader, "actual|model", eleName);
 
         final SystemTierType ipaTier = "model".equals(eleName) ? SystemTierType.IPATarget : SystemTierType.IPAActual;
         IPATranscriptBuilder builder = tierBuilders.computeIfAbsent(ipaTier.getName(), k -> new IPATranscriptBuilder());
@@ -820,7 +843,7 @@ public class TalkbankReader {
             reader.next();
             if(reader.isStartElement()) {
                 final String pwEleName = reader.getLocalName();
-                if(!"pw".equals(pwEleName)) throwNotElement("pw", pwEleName);
+                if(!"pw".equals(pwEleName)) throwNotElement(reader, "pw", pwEleName);
                 readPw(reader, builder);
             } else if(reader.isEndElement()) {
                 break;
@@ -829,8 +852,8 @@ public class TalkbankReader {
     }
 
     private void readPw(XMLStreamReader reader, IPATranscriptBuilder builder) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart();
-        if(!"pw".equals(reader.getLocalName())) throwNotElement("pw", reader.getLocalName());
+        if(!reader.isStartElement()) throwNotStart(reader);
+        if(!"pw".equals(reader.getLocalName())) throwNotElement(reader, "pw", reader.getLocalName());
         while(reader.hasNext()) {
             reader.next();
             if(reader.isStartElement()) {
@@ -883,8 +906,8 @@ public class TalkbankReader {
     }
 
     private void readMor(XMLStreamReader reader, Map<String, StringBuilder> tierBuilders) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart();;
-        if(!"mor".equals(reader.getLocalName())) throwNotElement("mor", reader.getLocalName());
+        if(!reader.isStartElement()) throwNotStart(reader);;
+        if(!"mor".equals(reader.getLocalName())) throwNotElement(reader, "mor", reader.getLocalName());
 
         final String type = reader.getAttributeValue(null, "type");
         final UserTierType userTierType = UserTierType.fromChatTierName("%" + type);
@@ -902,12 +925,12 @@ public class TalkbankReader {
         builder.append(recreateElementXML(reader, new ArrayList<>(), true));
     }
 
-    private void throwNotStart() throws XMLStreamException {
-        throw new XMLStreamException("Expected start element");
+    private void throwNotStart(XMLStreamReader reader) throws XMLStreamException {
+        throw new XMLStreamException("Expected start element", reader.getLocation());
     }
 
-    private void throwNotElement(String expectedName, String eleName) throws XMLStreamException {
-        throw new XMLStreamException(String.format("Expected element '%s' but got '%s'", expectedName, eleName));
+    private void throwNotElement(XMLStreamReader reader, String expectedName, String eleName) throws XMLStreamException {
+        throw new XMLStreamException(String.format("Expected element '%s' but got '%s'", expectedName, eleName), reader.getLocation());
     }
 
     private String recreateElementXML(XMLStreamReader reader, List<String> ignoreElements, boolean includeAttributesOfParent)
@@ -1009,7 +1032,7 @@ public class TalkbankReader {
         reader.addListener(msg -> {
             System.out.println(msg);
         });
-        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/pho-mod.xml");
+        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/mor-clitics.xml");
         final SessionWriter writer = (new SessionOutputFactory()).createWriter();
         writer.writeSession(session, System.out);
     }

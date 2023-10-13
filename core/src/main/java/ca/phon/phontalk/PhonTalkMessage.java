@@ -117,4 +117,18 @@ public class PhonTalkMessage implements Serializable, Comparable<PhonTalkMessage
 		return myVal.compareTo(oVal);
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("(").append(severity).append(") ");
+		if(this.file != null) {
+			builder.append(file.getName());
+			builder.append("@line_").append(lineNumber);
+			builder.append(",col_").append(colNumber);
+			builder.append(" ");
+		}
+		builder.append(message);
+		return builder.toString();
+	}
+
 }

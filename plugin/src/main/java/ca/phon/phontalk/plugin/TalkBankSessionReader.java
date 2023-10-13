@@ -7,7 +7,7 @@ import javax.xml.stream.*;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
-import ca.phon.phontalk.tb2phon.TalkbankReader;
+import ca.phon.phontalk.TalkbankReader;
 import org.apache.commons.lang3.StringUtils;
 
 import ca.phon.app.log.LogUtil;

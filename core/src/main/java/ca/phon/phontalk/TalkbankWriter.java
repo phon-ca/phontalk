@@ -5,6 +5,7 @@ import ca.phon.formatter.FormatterFactory;
 import ca.phon.session.*;
 import ca.phon.session.Record;
 import ca.phon.session.io.xml.OneToOne;
+import ca.phon.session.io.xml.SessionXMLStreamWriter;
 import ca.phon.session.io.xml.XMLFragments;
 import ca.phon.session.tierdata.*;
 import ca.phon.util.Language;
@@ -17,9 +18,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stax.StAXResult;
 import javax.xml.transform.stax.StAXSource;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,7 +28,9 @@ import java.util.stream.Collectors;
 
 public class TalkbankWriter {
 
-    private final static String TBNS = "https://www.talkbank.org/ns/talkbank";
+    private final static String TBNS = "http://www.talkbank.org/ns/talkbank";
+
+    private final static String TBNS_SCHEMA_LOCATION = "http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd";
 
     private final List<PhonTalkListener> listeners = new ArrayList<>();
 
@@ -47,17 +48,30 @@ public class TalkbankWriter {
     }
 
     /**
+     * Write to file
+     *
+     * @param filename
+     * @throws XMLStreamException
+     */
+    public void writeSession(Session session, String filename) throws IOException {
+        try(final FileOutputStream out = new FileOutputStream(filename)) {
+            writeSession(session, out);
+        } catch (XMLStreamException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
      * Write to stream
      *
      * @param stream
-     * @throws java.io.IOException
+     * @throws XMLStreamException
      */
     public void writeSession(Session session, OutputStream stream) throws XMLStreamException {
         final XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stream, "UTF-8");
-        if(isFormattedOutput()) {
-            writer = new IndentingXMLStreamWriter(writer);
-        }
+        writer = new SessionXMLStreamWriter(writer, isFormattedOutput());
+        writer.writeStartDocument();
         writeCHAT(session, writer);
     }
 
@@ -65,10 +79,11 @@ public class TalkbankWriter {
     public void writeCHAT(Session session, XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartElement("CHAT");
         writer.writeDefaultNamespace(TBNS);
-
+        writer.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", TBNS_SCHEMA_LOCATION);
 
         // setup attributes
-        writer.writeAttribute("Version", "2.21");
+        writer.writeAttribute("Version", "2.21.0");
 
         if(session.getDate() != null) {
             final Formatter<LocalDate> dateFormatter = FormatterFactory.createFormatter(LocalDate.class);
@@ -96,7 +111,7 @@ public class TalkbankWriter {
             final String langTxt = session.getLanguages().stream()
                     .map(Language::toString)
                     .collect(Collectors.joining(" "));
-            writer.writeAttribute("Langs", langTxt);
+            writer.writeAttribute("Lang", langTxt);
         }
 
         if(session.getMetadata().containsKey("Options")) {
@@ -158,7 +173,7 @@ public class TalkbankWriter {
         writer.writeStartElement("participant");
         // required
         writer.writeAttribute("id", participant.getId());
-        writer.writeAttribute("role", participant.getRole().getTitle());
+        writer.writeAttribute("role", participant.getRole().getTitle().replaceAll("\\s", "_"));
 
         if(participant.getName() != null) {
             writer.writeAttribute("name", participant.getName());
@@ -257,6 +272,27 @@ public class TalkbankWriter {
         }
     }
     // endregion XML Writing
+
+    // region Listeners
+    private void fireWarning(String message, XMLStreamWriter writer) {
+        final PhonTalkMessage msg = new PhonTalkMessage(message, PhonTalkMessage.Severity.WARNING);
+        msg.setLineNumber(-1);
+        msg.setColNumber(-1);
+        if(file != null)
+            msg.setFile(new File(file));
+        fireMessage(msg);
+    }
+
+    private void fireMessage(PhonTalkMessage message) {
+        listeners.forEach(l -> l.message(message));
+    }
+
+    public void addListener(PhonTalkListener listener) {
+        if(!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+    // endregion Listeners
 
     private class RecordXmlStreamWriter extends DelegatingXMLStreamWriter {
 

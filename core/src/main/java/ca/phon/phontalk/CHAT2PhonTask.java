@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ca.phon.phontalk.PhonTalkMessage.Severity;
-import ca.phon.phontalk.tb2phon.TalkbankReader;
 import ca.phon.session.Session;
 import ca.phon.session.io.OriginalFormat;
 import ca.phon.session.io.SessionIO;
