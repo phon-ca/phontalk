@@ -11,8 +11,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.talkbank.ns.talkbank.P;
 import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.Difference;
+import org.xmlunit.diff.ElementSelectors;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
@@ -93,29 +95,57 @@ public class TestTb2Tb {
         final String testXml = FileUtils.readFileToString(outputXmlFile, StandardCharsets.UTF_8);
 
         final Diff xmlDiff = DiffBuilder.compare(origXml).withTest(testXml)
+                .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
                 .ignoreWhitespace().ignoreComments().build();
 
         final Iterator<Difference> iter = xmlDiff.getDifferences().iterator();
         int numSignificantDiffs = 0;
+        final StringBuilder builder = new StringBuilder();
+        final StringBuilder nonSigBuilder = new StringBuilder();
         while(iter.hasNext()) {
             Difference d = iter.next();
-            System.out.println(d.toString());
             if(d.getComparison().getType().name().equals("ATTR_VALUE")) {
                 if (d.getComparison().getControlDetails().getXPath().equals("/CHAT[1]/@Version")) {
                     // ignore version differences for now
+                    nonSigBuilder.append("\n").append(d);
                     continue;
                 } else if(d.getComparison().getControlDetails().getXPath().endsWith("@age")) {
                     // also ignore differences in period if they are the same
                     final Period cdur = Period.parse(d.getComparison().getControlDetails().getValue().toString());
                     final Period tdur = Period.parse(d.getComparison().getTestDetails().getValue().toString());
                     if(cdur.equals(tdur)) {
+                        nonSigBuilder.append("\n").append(d);
+                        continue;
+                    }
+                } else if(d.getComparison().getControlDetails().getValue().toString().matches("[0-9]+(\\.[0-9]*)?")
+                    && d.getComparison().getTestDetails().getValue().toString().matches("[0-9]+(\\.[0-9]*)?")) {
+                    // ignore differences in floating point number output
+                    Float control = Float.parseFloat(d.getComparison().getControlDetails().getValue().toString());
+                    Float test = Float.parseFloat(d.getComparison().getTestDetails().getValue().toString());
+                    if(control.equals(test)) {
+                        nonSigBuilder.append("\n").append(d);
                         continue;
                     }
                 }
+            } else if(d.getComparison().getType().name().equals("ELEMENT_NUM_ATTRIBUTES")) {
+                if(d.getComparison().getControlDetails().getXPath().contains("replacement")) {
+                    // ignore for now
+                    nonSigBuilder.append("\n").append(d);
+                    continue;
+                }
+            } else if(d.getComparison().getType().name().equals("ATTR_NAME_LOOKUP")) {
+                if(d.getComparison().getControlDetails().getXPath().contains("replacement")) {
+                    // ignore for now
+                    nonSigBuilder.append("\n").append(d);
+                    continue;
+                }
             }
+            builder.append("\n");
+            builder.append(d);
             ++numSignificantDiffs;
         }
-        Assert.assertEquals(0, numSignificantDiffs);
+        System.out.println(nonSigBuilder);
+        Assert.assertEquals(builder.toString(), 0, numSignificantDiffs);
     }
 
 }

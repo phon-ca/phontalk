@@ -10,7 +10,6 @@ import ca.phon.session.io.xml.XMLFragments;
 import ca.phon.session.tierdata.*;
 import ca.phon.util.Language;
 import ca.phon.xml.DelegatingXMLStreamWriter;
-import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 
 import javax.xml.stream.*;
 import javax.xml.transform.Transformer;
@@ -19,10 +18,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stax.StAXResult;
 import javax.xml.transform.stax.StAXSource;
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -71,7 +73,7 @@ public class TalkbankWriter {
         final XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stream, "UTF-8");
         writer = new SessionXMLStreamWriter(writer, isFormattedOutput());
-        writer.writeStartDocument();
+        writer.writeStartDocument("UTF-8", "1.0");
         writeCHAT(session, writer);
     }
 
@@ -112,6 +114,9 @@ public class TalkbankWriter {
                     .map(Language::toString)
                     .collect(Collectors.joining(" "));
             writer.writeAttribute("Lang", langTxt);
+        } else {
+            final String lang = Locale.getDefault().getISO3Country();
+            writer.writeAttribute("Lang",  lang);
         }
 
         if(session.getMetadata().containsKey("Options")) {
@@ -170,7 +175,7 @@ public class TalkbankWriter {
     }
 
     private void writeParticipant(Participant participant, XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeStartElement("participant");
+        writer.writeEmptyElement("participant");
         // required
         writer.writeAttribute("id", participant.getId());
         writer.writeAttribute("role", participant.getRole().getTitle().replaceAll("\\s", "_"));
@@ -209,7 +214,6 @@ public class TalkbankWriter {
         if(participant.getOther() != null) {
             writer.writeAttribute("custom-field", participant.getOther());
         }
-        writer.writeEndElement();
     }
 
     private void writeComment(Comment comment, XMLStreamWriter writer) throws XMLStreamException {
@@ -223,20 +227,22 @@ public class TalkbankWriter {
         for(int i = 0; i < tierData.length(); i++) {
             final TierElement ele = tierData.elementAt(i);
             if (ele instanceof TierString ts) {
-                if(i > 0) writer.writeCharacters(" ");
+                if (i > 0) writer.writeCharacters(" ");
                 writer.writeCharacters(ts.text());
+            } else if(ele instanceof TierComment tc) {
+                if(i > 0) writer.writeCharacters(" ");
+                writer.writeCharacters(tc.text());
             } else if (ele instanceof TierInternalMedia tim) {
-                writer.writeStartElement("media");
-                writer.writeAttribute("start", Integer.toString((int) (tim.getStartTime() * 1000.0f)));
-                writer.writeAttribute("end", Integer.toString((int) (tim.getEndTime() * 1000.0f)));
-                writer.writeAttribute("unit", "ms");
-                writer.writeEndElement();
+                writer.writeEmptyElement("media");
+                writer.writeAttribute("start", String.format("%.3f", tim.getStartTime()));
+                writer.writeAttribute("end", String.format("%.3f", tim.getEndTime()));
+                writer.writeAttribute("unit", "s");
             } else if (ele instanceof TierLink tl) {
                 if ("pic".equals(tl.getLabel())) {
-                    writer.writeStartElement("mediaPic");
+                    writer.writeEmptyElement("mediaPic");
                     writer.writeAttribute("href", tl.getHref());
-                    writer.writeEndElement();
                 } else {
+                    if (i > 0) writer.writeCharacters(" ");
                     writer.writeCharacters(tl.text());
                 }
             }
@@ -271,6 +277,19 @@ public class TalkbankWriter {
             OneToOne.removeAnnotations(record);
         }
     }
+
+    private void writeMedia(MediaSegment segment, XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeEmptyElement("media");
+        float start = segment.getStartValue();
+        start = segment.getUnitType() == MediaUnit.Millisecond ? start / 1000.0f : start;
+        float end = segment.getEndValue();
+        end = segment.getUnitType() == MediaUnit.Millisecond ? end / 1000.0f : end;
+        writer.writeAttribute("start",
+                BigDecimal.valueOf(start).setScale(3, RoundingMode.HALF_UP).toString());
+        writer.writeAttribute("end",
+                BigDecimal.valueOf(end).setScale(3, RoundingMode.HALF_UP).toString());
+        writer.writeAttribute("unit", "s");
+    }
     // endregion XML Writing
 
     // region Listeners
@@ -304,6 +323,8 @@ public class TalkbankWriter {
 
         private final Stack<String> eleStack = new Stack<>();
 
+        private boolean foundTerminator = false;
+
         public RecordXmlStreamWriter(XMLStreamWriter delegate, Record record, int uid, String who) {
             super(delegate);
             this.record = record;
@@ -317,6 +338,8 @@ public class TalkbankWriter {
             if("u".equals(localName)) {
                 writeAttribute("uID", "u" + uid);
                 writeAttribute("who", who);
+            } else if("t".equals(localName)) {
+                foundTerminator = true;
             }
             eleStack.push(localName);
         }
@@ -334,18 +357,24 @@ public class TalkbankWriter {
         }
 
         @Override
+        public void writeEmptyElement(String localName) throws XMLStreamException {
+            super.writeEmptyElement(localName);
+            if("t".equals(localName)) {
+                foundTerminator = true;
+            }
+        }
+
+        @Override
         public void writeEndElement() throws XMLStreamException {
             final String eleName = eleStack.pop();
             if("u".equals(eleName)) {
-                // write user tiers
-                // notes first
-                if(record.getNotesTier().hasValue() && record.getNotesTier().getValue().length() > 0) {
-                    writeStartElement("a");
-                    writeAttribute("type", "comments");
-                    writeTierData(record.getNotes(), this);
-                    writeCharacters(record.getNotes().toString());
-                    writeEndElement();
+                if(!foundTerminator) {
+                    writeEmptyElement("t");
+                    writeAttribute("type", "missing CA terminator");
                 }
+
+                if(record.getSegmentTier().hasValue() && !record.getSegmentTier().getValue().isUnset())
+                    writeMedia(record.getMediaSegment(), this);
 
                 // other user tiers
                 for(String tierName:record.getUserDefinedTierNames()) {
@@ -360,8 +389,13 @@ public class TalkbankWriter {
                         final String type = userTierType.getTierName();
                         writeAttribute("type", type);
                     } else {
+                        // TODO abbreviate tier name
+                        String flavor = tierName;
+                        if(tierName.startsWith("%x")) {
+                            flavor = tierName.substring(2);
+                        }
                         writeAttribute("type", "extension");
-                        writeAttribute("flavor", tierName);
+                        writeAttribute("flavor", flavor);
                     }
                     if(tier.getDeclaredType() == TierData.class) {
                         writeTierData((TierData) tier.getValue(), this);
@@ -371,6 +405,13 @@ public class TalkbankWriter {
                     writeEndElement();
                 }
 
+                if(record.getNotesTier().hasValue() && record.getNotesTier().getValue().length() > 0) {
+                    writeStartElement("a");
+                    writeAttribute("type", "comments");
+                    writeTierData(record.getNotes(), this);
+                    writeCharacters(record.getNotes().toString());
+                    writeEndElement();
+                }
                 // TODO IPA syllabification and alignment
             }
             super.writeEndElement();

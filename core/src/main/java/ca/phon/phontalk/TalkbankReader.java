@@ -335,7 +335,7 @@ public class TalkbankReader {
         }
 
         // birthday
-        final String bday = reader.getAttributeValue(null, "date");
+        final String bday = reader.getAttributeValue(null, "birthday");
         if(bday != null) {
             try {
                 LocalDate date = LocalDate.parse(bday);
@@ -477,7 +477,10 @@ public class TalkbankReader {
 
                 case "a":
                     Tier<TierData> depTier = readDepTier(reader);
-                    r.putTier(depTier);
+                    if(SystemTierType.Notes.getName().equals(depTier.getName()))
+                        r.setNotes(depTier.getValue());
+                    else
+                        r.putTier(depTier);
                     break;
 
                 case "wor":
@@ -550,6 +553,7 @@ public class TalkbankReader {
         retVal.setStartValue(start.floatValue());
         retVal.setEndValue(end.floatValue());
         retVal.setUnitType(mediaUnit);
+        retVal.toString();
         return retVal;
     }
 
@@ -570,13 +574,17 @@ public class TalkbankReader {
         final String flavor = reader.getAttributeValue(null, "flavor");
 
         if(type != null) {
-            // one of our pre-defined tiers
-            final TalkbankDependentTier talkbankDependentTier = TalkbankDependentTier.fromType(type);
-            if(talkbankDependentTier == null) throw new XMLStreamException("Unknown 'type' " + type);
-            String tierName = talkbankDependentTier.getTierName();
-            if(talkbankDependentTier == TalkbankDependentTier.Extension) {
-                tierName += flavor;
+            String tierName = "undefined";
+            if("extension".equals(type)) {
+                tierName = flavor;
+            } else if("comments".equals(type)) {
+                tierName = SystemTierType.Notes.getName();
+            } else {
+                final UserTierType userTierType = UserTierType.fromPhonTierName(type);
+                if(userTierType == null) throw new XMLStreamException("Unknown tier 'type' " + type);
+                tierName = userTierType.getTierName();
             }
+            // one of our pre-defined tiers
             final Tier<TierData> retVal = factory.createTier(tierName, TierData.class);
             retVal.setValue(readTierContent(reader));
             return retVal;
