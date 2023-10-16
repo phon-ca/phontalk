@@ -95,7 +95,7 @@ public class TestTb2Tb {
         final String testXml = FileUtils.readFileToString(outputXmlFile, StandardCharsets.UTF_8);
 
         final Diff xmlDiff = DiffBuilder.compare(origXml).withTest(testXml)
-                .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
+//                .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText))
                 .ignoreWhitespace().ignoreComments().build();
 
         final Iterator<Difference> iter = xmlDiff.getDifferences().iterator();
@@ -104,7 +104,10 @@ public class TestTb2Tb {
         final StringBuilder nonSigBuilder = new StringBuilder();
         while(iter.hasNext()) {
             Difference d = iter.next();
-            if(d.getComparison().getType().name().equals("ATTR_VALUE")) {
+            if(d.getComparison().getType().name().equals("ATTR_VALUE") ||
+                d.getComparison().getType().name().equals("TEXT_VALUE")) {
+                final String controlText = d.getComparison().getControlDetails().getValue().toString();
+                final String testText = d.getComparison().getTestDetails().getValue().toString();
                 if (d.getComparison().getControlDetails().getXPath().equals("/CHAT[1]/@Version")) {
                     // ignore version differences for now
                     nonSigBuilder.append("\n").append(d);
@@ -117,12 +120,17 @@ public class TestTb2Tb {
                         nonSigBuilder.append("\n").append(d);
                         continue;
                     }
-                } else if(d.getComparison().getControlDetails().getValue().toString().matches("[0-9]+(\\.[0-9]*)?")
-                    && d.getComparison().getTestDetails().getValue().toString().matches("[0-9]+(\\.[0-9]*)?")) {
+                } else if(controlText.matches("[0-9]+(\\.[0-9]*)?") && testText.matches("[0-9]+(\\.[0-9]*)?")) {
                     // ignore differences in floating point number output
-                    Float control = Float.parseFloat(d.getComparison().getControlDetails().getValue().toString());
-                    Float test = Float.parseFloat(d.getComparison().getTestDetails().getValue().toString());
+                    Float control = Float.parseFloat(controlText);
+                    Float test = Float.parseFloat(testText);
                     if(control.equals(test)) {
+                        nonSigBuilder.append("\n").append(d);
+                        continue;
+                    }
+                } else if(controlText.endsWith("].") && testText.endsWith("] .")) {
+                    final String cmp = controlText.substring(0, testText.length()-2) + " .";
+                    if(cmp.equals(testText)) {
                         nonSigBuilder.append("\n").append(d);
                         continue;
                     }

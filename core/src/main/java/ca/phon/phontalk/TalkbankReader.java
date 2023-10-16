@@ -22,11 +22,16 @@ import ca.phon.session.tierdata.TierLink;
 import ca.phon.syllable.SyllabificationInfo;
 import ca.phon.syllable.SyllableConstituentType;
 import ca.phon.util.Language;
+import ca.phon.xml.DelegatingXMLStreamWriter;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stax.StAXResult;
+import javax.xml.transform.stax.StAXSource;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -928,7 +933,60 @@ public class TalkbankReader {
             builder.append("<mors>\n");
             tierBuilders.put(userTierType.getTierName(), builder);
         }
-        builder.append(recreateElementXML(reader, new ArrayList<>(), true));
+
+        final String eleXml = recreateElementXML(reader, new ArrayList<>(), true);
+        final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+        XMLStreamReader morReader = inputFactory.createXMLStreamReader(new ByteArrayInputStream(eleXml.getBytes(StandardCharsets.UTF_8)));
+        final XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
+        final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        XMLStreamWriter morReWriter = new DelegatingXMLStreamWriter(outputFactory.createXMLStreamWriter(bout, "UTF-8")) {
+            @Override
+            public void writeStartElement(String localName) throws XMLStreamException {
+                if(localName.equals("s")) {
+                    super.writeStartElement("subc");
+                } else {
+                    super.writeStartElement(localName);
+                }
+            }
+
+            @Override
+            public void writeProcessingInstruction(String target) throws XMLStreamException {
+            }
+
+            @Override
+            public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
+            }
+
+            @Override
+            public void writeStartDocument() throws XMLStreamException {
+            }
+
+            @Override
+            public void writeStartDocument(String version) throws XMLStreamException {
+            }
+
+            @Override
+            public void writeStartDocument(String encoding, String version) throws XMLStreamException {
+            }
+
+            @Override
+            public void writeEndDocument() throws XMLStreamException {
+            }
+        };
+
+        final StAXSource source = new StAXSource(morReader);
+        final StAXResult result = new StAXResult(morReWriter);
+
+        try {
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.transform(source, result);
+        } catch (TransformerException tce) {
+            throw new XMLStreamException(tce);
+        }
+
+        builder.append(bout.toString(StandardCharsets.UTF_8));
+//        builder.append(recreateElementXML(reader, new ArrayList<>(), true));
     }
 
     private void throwNotStart(XMLStreamReader reader) throws XMLStreamException {
@@ -941,7 +999,7 @@ public class TalkbankReader {
 
     private String recreateElementXML(XMLStreamReader reader, List<String> ignoreElements, boolean includeAttributesOfParent)
         throws XMLStreamException{
-        if(!reader.isStartElement()) throw new XMLStreamException("Not a start element");
+        if(!reader.isStartElement()) throwNotStart(reader);
         final StringBuilder builder = new StringBuilder();
 
         appendElementStartXml(builder, reader, includeAttributesOfParent);
@@ -952,8 +1010,8 @@ public class TalkbankReader {
     }
 
     private void appendElement(StringBuilder builder, XMLStreamReader reader) throws XMLStreamException {
-        if(!reader.isStartElement()) throw new XMLStreamException();
-        final String eleName = reader.getLocalName();
+        if(!reader.isStartElement()) throwNotStart(reader);
+        String eleName = reader.getLocalName();
 
         builder.append("<").append(eleName);
         appendAttributes(builder, reader);

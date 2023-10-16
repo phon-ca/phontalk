@@ -231,7 +231,7 @@ public class TalkbankWriter {
                 writer.writeCharacters(ts.text());
             } else if(ele instanceof TierComment tc) {
                 if(i > 0) writer.writeCharacters(" ");
-                writer.writeCharacters(tc.text());
+                writer.writeCharacters(tc.toString());
             } else if (ele instanceof TierInternalMedia tim) {
                 writer.writeEmptyElement("media");
                 writer.writeAttribute("start", String.format("%.3f", tim.getStartTime()));
@@ -325,6 +325,8 @@ public class TalkbankWriter {
 
         private boolean foundTerminator = false;
 
+        private boolean inPos = false;
+
         public RecordXmlStreamWriter(XMLStreamWriter delegate, Record record, int uid, String who) {
             super(delegate);
             this.record = record;
@@ -334,12 +336,17 @@ public class TalkbankWriter {
 
         @Override
         public void writeStartElement(String localName) throws XMLStreamException {
+            if(inPos && "subc".equals(localName)) {
+                localName = "s";
+            }
             super.writeStartElement(localName);
             if("u".equals(localName)) {
                 writeAttribute("uID", "u" + uid);
                 writeAttribute("who", who);
             } else if("t".equals(localName)) {
                 foundTerminator = true;
+            } else if("pos".equals(localName)) {
+                inPos = true;
             }
             eleStack.push(localName);
         }
@@ -413,6 +420,8 @@ public class TalkbankWriter {
                     writeEndElement();
                 }
                 // TODO IPA syllabification and alignment
+            } else if("pos".equals(eleName)) {
+                inPos = false;
             }
             super.writeEndElement();
         }
