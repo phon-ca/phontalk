@@ -577,8 +577,6 @@ public class TalkbankReader {
             String tierName = "undefined";
             if("extension".equals(type)) {
                 tierName = flavor;
-            } else if("comments".equals(type)) {
-                tierName = SystemTierType.Notes.getName();
             } else {
                 final UserTierType userTierType = UserTierType.fromPhonTierName(type);
                 if(userTierType == null) throw new XMLStreamException("Unknown tier 'type' " + type);

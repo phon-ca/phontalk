@@ -407,7 +407,8 @@ public class TalkbankWriter {
 
                 if(record.getNotesTier().hasValue() && record.getNotesTier().getValue().length() > 0) {
                     writeStartElement("a");
-                    writeAttribute("type", "comments");
+                    writeAttribute("type", "extension");
+                    writeAttribute("flavor", "Notes");
                     writeTierData(record.getNotes(), this);
                     writeEndElement();
                 }
