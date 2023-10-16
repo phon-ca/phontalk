@@ -409,7 +409,6 @@ public class TalkbankWriter {
                     writeStartElement("a");
                     writeAttribute("type", "comments");
                     writeTierData(record.getNotes(), this);
-                    writeCharacters(record.getNotes().toString());
                     writeEndElement();
                 }
                 // TODO IPA syllabification and alignment
