@@ -5,7 +5,7 @@
 
 	<groupId>ca.phon</groupId>
 	<artifactId>phontalk</artifactId>
-	<version>4.0.0-181-SNAPSHOT</version>
+	<version>4.0.0-183-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>PhonTalk</name>
