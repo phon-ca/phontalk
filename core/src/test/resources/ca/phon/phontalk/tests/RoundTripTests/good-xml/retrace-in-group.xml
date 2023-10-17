@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Version="2.20.0"
+      Lang="eng"
+      Corpus="timmy"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="eng"
+      age="P2Y"
+
+    />
+  </Participants>
+  <comment type="Generic">retrace in a group can be followed by something after group</comment>
+  <u who="CHI" uID="u0">
+    <g><g><w>ingroup</w><k type="retracing"/></g><overlap type="overlap precedes"/></g>
+    <w>after</w>
+    <t type="p"></t>
+
+  </u>
+</CHAT>

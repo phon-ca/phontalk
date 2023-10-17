@@ -3,7 +3,8 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Window="391_127_540_823_-1_-1_1433_0_1433_0"
+      Version="2.20.0"
       Lang="eng"
       Options="CA"
       Corpus="bates"
@@ -296,7 +297,8 @@
 
   </u>
   <u who="CHI" uID="u32">
-    <g><g><w><ca-delimiter type="begin" label="softer"/>softer<ca-delimiter type="end" label="softer"/></w><k type="retracing"/></g><ga type="explanation">foo</ga></g>
+    <g><g><w><ca-delimiter type="begin" label="softer"/>softer<ca-delimiter type="end" label="softer"/></w><k type="retracing"/></g>
+    <w>soft</w><ga type="explanation">foo</ga></g>
     <t type="p"></t>
 
   </u>

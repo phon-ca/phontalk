@@ -3,7 +3,7 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng"
       Corpus="bates"
       >
@@ -27,10 +27,10 @@
   <comment type="Generic">phonological fragments</comment>
   <u who="CHI" uID="u0">
     <w>foo</w>
-    <w type="fragment">au<p type="pause"/>bg</w>
+    <w type="nonword">au<p type="pause"/>bg</w>
     <w>bar</w>
-    <w type="fragment">foo<p type="drawl"/><p type="drawl"/>bar</w>
-    <w type="fragment">foo<p type="drawl"/><p type="drawl"/></w>
+    <w type="nonword">foo<p type="drawl"/><p type="drawl"/>bar</w>
+    <w type="nonword">foo<p type="drawl"/><p type="drawl"/></w>
     <t type="p"></t>
 
   </u>

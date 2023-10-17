@@ -4,7 +4,7 @@
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
       Media="headers" Mediatypes="video unlinked"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng deu"
       Corpus="bates"
       Date="2001-07-28"
@@ -32,7 +32,7 @@
 
     />
   </Participants>
-  <comment type="Generic">Test all headers FAKE_WORD = ({ALNUM} | [\_\@\&amp;\;\-\!\?\.\,\'\"\+\&lt;\&gt;\(\)\/\=\~\*\#\`\\\%\^\$] | {TAG_CHAR})+</comment>
+  <comment type="Generic">Test all headers FAKE_WORD = ({ALNUM} | [\_\@\&amp;~\;\-\!\?\.\,\'\"\+\&lt;\&gt;\(\)\/\=\~\*\#\`\\\%\^\$] | {TAG_CHAR})+</comment>
   <u who="CHI" uID="u0">
     <w>foo</w>
     <t type="p"></t>

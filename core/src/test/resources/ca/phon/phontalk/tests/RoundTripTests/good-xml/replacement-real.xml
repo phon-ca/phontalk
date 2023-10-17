@@ -4,7 +4,7 @@
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
       Media="replacement-real" Mediatypes="audio"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng"
       Corpus="Kansas"
       >
@@ -80,7 +80,7 @@
     <g><w>let's</w><k type="retracing with correction"/></g>
     <w>it's<mor type="mor"><mw><pos><c>pro</c></pos><stem>it</stem></mw><mor-post><mw><pos><c>v</c><s>cop</s></pos><stem>be</stem><mk type="sfxf">3S</mk></mw></mor-post></mor></w>
     <g><w>a</w><k type="retracing with correction"/></g>
-    <w type="fragment">ba</w>
+    <w type="nonword">ba</w>
     <w>the<mor type="mor"><mw><pos><c>det</c></pos><stem>the</stem></mw></mor></w>
     <g><w>brain<replacement real="true"><w>umbrella</w></replacement><mor type="mor"><mw><pos><c>n</c></pos><stem>brain</stem></mw></mor></w><error>s:ur</error></g>
     <t type="p"><mor type="mor"><mt type="p"/></mor></t>

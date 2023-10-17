@@ -3,7 +3,7 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="zho eng"
       Corpus="bates"
       Date="1964-07-23"
@@ -12,7 +12,7 @@
     <participant
       id="CHI"
       role="Child"
-      language="eng zho"
+      language="zho eng"
       age="P1Y08M"
       sex="female"
       group="normal"
@@ -21,7 +21,7 @@
     <participant
       id="MOT"
       role="Mother"
-      language="eng zho"
+      language="zho eng"
 
     />
   </Participants>

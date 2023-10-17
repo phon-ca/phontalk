@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Media="movskip" Mediatypes="video"
+      Version="2.20.0"
+      Lang="eng"
+      Corpus="sample"
+      >
+  <Participants>
+    <participant
+      id="MOT"
+      role="Mother"
+      language="eng"
+
+    />
+    <participant
+      id="CHI"
+      role="Target_Child"
+      language="eng"
+      age="P1Y10M04D"
+
+    />
+  </Participants>
+  <comment type="Generic">test bullet with -</comment>
+  <u who="CHI" uID="u0">
+    <g><w>ryoote</w>
+    <w>agete</w><ga type="paralinguistics">singing</ga></g>
+    <t type="p"></t>
+    <postcode>bch</postcode><postcode>foo</postcode>
+    <media
+      start="2041.689"
+      end="2042.652"
+      unit="s"
+    skip="true"
+    />
+  </u>
+  <u who="MOT" uID="u1">
+    <w>foo</w>
+    <t type="p"></t>
+    <media
+      start="2042.652"
+      end="2043.652"
+      unit="s"
+    />
+  </u>
+</CHAT>

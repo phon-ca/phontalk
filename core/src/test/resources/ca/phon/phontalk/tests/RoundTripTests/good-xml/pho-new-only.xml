@@ -3,7 +3,8 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Window="263_127_668_685_-1_-1_1797_0_1802_0"
+      Version="2.20.0"
       Lang="ind jav"
       Corpus="IDO"
       Date="2000-06-23"
@@ -128,7 +129,7 @@
   </u>
   <comment type="Generic">fragment retrace</comment>
   <u who="EXP" uID="u9">
-    <pg><g><w type="fragment">est</w><k type="retracing"/></g><actual><pw><ph id="ph0">s</ph><ph id="ph1">e</ph></pw></actual></pg>
+    <pg><g><w type="nonword">est</w><k type="retracing"/></g><actual><pw><ph id="ph0">s</ph><ph id="ph1">e</ph></pw></actual></pg>
     <pg><w>lait</w><actual><pw><ph id="ph0">l</ph><ph id="ph1">e</ph></pw></actual></pg>
     <t type="p"></t>
 
@@ -136,9 +137,11 @@
   <comment type="Generic">pho group around regular group, and vice versa</comment>
   <u who="EXP" uID="u10">
     <pg><w>est</w>
-    <g><w>lait</w><k type="retracing"/></g><actual><pw><ph id="ph0">a</ph></pw></actual></pg>
+    <g><w>lait</w><k type="retracing"/></g>
+    <w>la</w><actual><pw><ph id="ph0">a</ph></pw></actual></pg>
     <g><pg><w>est</w><actual><pw><ph id="ph0">b</ph></pw></actual></pg>
     <pg><w>lait</w><actual><pw><ph id="ph0">c</ph></pw></actual></pg><k type="retracing"/></g>
+    <pg><w>la</w><actual><pw><ph id="ph0">d</ph></pw></actual></pg>
     <t type="p"></t>
 
   </u>
@@ -163,7 +166,7 @@
 
   </u>
   <u who="EXP" uID="u14">
-    <pg><w type="fragment">notomitted</w><actual><pw><ph id="ph0">a</ph></pw></actual></pg>
+    <pg><w type="nonword">notomitted</w><actual><pw><ph id="ph0">a</ph></pw></actual></pg>
     <t type="p"></t>
 
   </u>
@@ -173,7 +176,7 @@
 
   </u>
   <u who="EXP" uID="u16">
-    <pg><w type="incomplete">notomitted</w><actual><pw><ph id="ph0">a</ph></pw></actual></pg>
+    <pg><w type="fragment">notomitted</w><actual><pw><ph id="ph0">a</ph></pw></actual></pg>
     <t type="p"></t>
 
   </u>
@@ -189,13 +192,6 @@
     <pg><w>watched</w><actual><pw><ph id="ph0">b</ph></pw></actual></pg>
     <pg><w>TV</w><actual><pw><ph id="ph0">c</ph></pw></actual></pg>
     <pg><w untranscribed="unintelligible">xxx</w><actual><pw><ph id="ph0">*</ph></pw></actual></pg>
-    <t type="p"></t>
-
-  </u>
-  <comment type="Generic">2011-04-08 Brian discussion of how to handle x</comment>
-  <comment type="Generic">fmc should check for number of pho words in group</comment>
-  <u who="EXP" uID="u19">
-    <pg><g><w>foo</w><r times="4"/></g><actual><pw><ph id="ph0">a</ph></pw><pw><ph id="ph1">a</ph></pw><pw><ph id="ph2">a</ph></pw><pw><ph id="ph3">a</ph></pw></actual></pg>
     <t type="p"></t>
 
   </u>

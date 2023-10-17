@@ -3,7 +3,8 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Window="263_127_668_685_-1_-1_420_0_420_0"
+      Version="2.20.0"
       Lang="eng"
       Corpus="timmy"
       Date="1996-02-29"
@@ -44,11 +45,13 @@
   <comment type="Time Duration">17:30-18:00</comment>
   <u who="CHI" uID="u0">
     <g><w><ca-delimiter type="begin" label="softer"/>softer<ca-delimiter type="end" label="softer"/></w><k type="retracing"/></g>
+    <w>soft</w>
     <t type="p"></t>
 
   </u>
   <u who="CHI" uID="u1">
     <g><w><ca-delimiter type="begin" label="softer"/>softer<shortening>foo</shortening><ca-delimiter type="end" label="softer"/></w><k type="retracing"/></g>
+    <w>soft</w>
     <t type="p"></t>
 
   </u>

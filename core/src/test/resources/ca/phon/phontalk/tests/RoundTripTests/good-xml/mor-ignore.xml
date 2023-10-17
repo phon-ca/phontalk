@@ -3,7 +3,7 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng"
       Corpus="timmy"
       >
@@ -124,7 +124,7 @@
     <w>here<mor type="mor"><mw><pos><c>adv</c><s>loc</s></pos><stem>here</stem></mw></mor></w>
     <w>is<mor type="mor"><mw><pos><c>v</c></pos><stem>be</stem><mk type="sfxf">3S</mk></mw></mor></w>
     <w>a<mor type="mor"><mw><pos><c>det</c></pos><stem>a</stem></mw></mor></w>
-    <w type="fragment">frag</w>
+    <w type="nonword">frag</w>
     <t type="p"><mor type="mor"><mt type="p"/></mor></t>
 
   </u>

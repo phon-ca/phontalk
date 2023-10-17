@@ -3,7 +3,7 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng"
       Corpus="bates"
       >
@@ -26,9 +26,9 @@
   </Participants>
   <u who="CHI" uID="u0">
     <w>ooh</w>
-    <w type="fragment">piNb</w>
-    <w type="fragment">k</w>
-    <w type="fragment">grr</w>
+    <w type="nonword">piNb</w>
+    <w type="nonword">k</w>
+    <w type="nonword">grr</w>
     <t type="p"></t>
 
   </u>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.talkbank.org/ns/talkbank"
+      xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
+      Window="263_127_668_685_-1_-1_420_0_420_0"
+      Version="2.20.0"
+      Lang="eng"
+      Corpus="timmy"
+      Date="1996-02-29"
+      >
+  <Participants>
+    <participant
+      id="CHI"
+    name="Timmy"
+      role="Target_Child"
+      language="eng"
+      age="P2Y09M08D"
+
+    />
+    <participant
+      id="LIN"
+    name="Linda"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="WIN"
+    name="Winnie"
+      role="Investigator"
+      language="eng"
+
+    />
+    <participant
+      id="GEM"
+    name="Gemma"
+      role="Speaker"
+      language="eng"
+
+    />
+  </Participants>
+  <comment type="Tape Location">TI060 (side A)</comment>
+  <comment type="Date">29-FEB-1996</comment>
+  <comment type="Time Duration">17:30-18:00</comment>
+  <u who="CHI" uID="u0">
+    <w formType="UNIBET">a^bo</w>
+    <w>chatta</w>
+    <w formType="UNIBET">hu:n</w>
+    <t type="e"></t>
+
+  </u>
+  <u who="CHI" uID="u1">
+    <w>a</w>
+    <g><w formType="UNIBET">softer</w><k type="retracing"/></g>
+    <w>soft</w>
+    <t type="p"></t>
+
+  </u>
+  <u who="CHI" uID="u2">
+    <w>the</w>
+    <w>one</w>
+    <w>that</w>
+    <w>says</w>
+    <w formType="UNIBET">ˈtɪgɜ˞r<replacement><w>Tigger</w></replacement></w>
+    <w>has</w>
+    <w>breakfast</w>
+    <t type="q"></t>
+
+  </u>
+</CHAT>

@@ -3,7 +3,7 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng"
       Corpus="sample"
       >
@@ -24,17 +24,20 @@
   </Participants>
   <comment type="Generic">durations for groups</comment>
   <u who="CHI" uID="u0">
-    <g><w>a</w><w>b</w><duration>3</duration></g>
+    <g><w>a</w>
+    <w>b</w><duration>3</duration></g>
     <t type="p"></t>
 
   </u>
   <u who="CHI" uID="u1">
-    <g><w>a</w><w>b</w><duration>123</duration></g>
+    <g><w>a</w>
+    <w>b</w><duration>123</duration></g>
     <t type="p"></t>
 
   </u>
   <u who="CHI" uID="u2">
-    <g><w>a</w><w>b</w><duration>123.4</duration></g>
+    <g><w>a</w>
+    <w>b</w><duration>123.4</duration></g>
     <t type="p"></t>
 
   </u>

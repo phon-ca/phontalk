@@ -4,7 +4,7 @@
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
       Window="85_1024_770_1024_-1_-1_460_0_460_0"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng"
       Corpus="change_me_later"
       >
@@ -26,7 +26,7 @@
   </u>
   <u who="CHI" uID="u1">
     <w>mommy</w>
-    <g><w type="incomplete"><ca-element type="blocked segments"/>w</w><k type="retracing with correction"/></g>
+    <g><w type="fragment"><ca-element type="blocked segments"/>w</w><k type="retracing with correction"/></g>
     <g><w>we</w><k type="retracing with correction"/></g>
     <w><ca-delimiter type="begin" label="repeated-segment"/>a<ca-delimiter type="end" label="repeated-segment"/>and</w>
     <t type="p"></t>

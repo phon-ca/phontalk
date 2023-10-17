@@ -3,7 +3,7 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="heb"
       Corpus="BermanLong"
       Date="1990-02-15"
@@ -36,7 +36,7 @@
   <comment type="Date">15-FEB-1990</comment>
   <comment type="Generic">mor translation with gra</comment>
   <u who="FAT" uID="u0">
-    <w type="fragment">a</w>
+    <w type="nonword">a</w>
     <t type="p"></t>
 
   </u>

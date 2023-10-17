@@ -3,7 +3,7 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="zho eng"
       Corpus="timmy"
       Date="1996-02-29"
@@ -13,7 +13,7 @@
       id="CHI"
     name="Timmy"
       role="Target_Child"
-      language="eng zho"
+      language="zho eng"
       age="P2Y09M08D"
 
     />
@@ -21,21 +21,21 @@
       id="LIN"
     name="Linda"
       role="Investigator"
-      language="eng zho"
+      language="zho eng"
 
     />
     <participant
       id="WIN"
     name="Winnie"
       role="Investigator"
-      language="eng zho"
+      language="zho eng"
 
     />
     <participant
       id="GEM"
     name="Gemma"
       role="Speaker"
-      language="eng zho"
+      language="zho eng"
 
     />
   </Participants>

@@ -3,7 +3,7 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng"
       Corpus="bates"
       >
@@ -27,120 +27,27 @@
   <comment type="Generic">test all the legal form markers</comment>
   <u who="CHI" uID="u0">
     <w formType="addition">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u1">
     <w formType="babbling">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u2">
     <w formType="child-invented">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u3">
     <w formType="dialect">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u4">
     <w formType="echolalia">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u5">
     <w formType="family-specific">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u6">
     <w formType="filled pause">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u7">
     <w formType="generic">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u8">
     <w formType="interjection">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u9">
     <w formType="kana">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u10">
     <w formType="letter">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u11">
     <w formType="neologism">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u12">
     <w formType="no voice">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u13">
     <w formType="onomatopoeia">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u14">
     <w formType="phonology consistent">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u15">
     <w formType="quoted metareference">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u16">
-    <w formType="quoted metareference" formSuffix="-s">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u17">
     <w formType="sign speech">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u18">
     <w formType="singing">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u19">
     <w formType="signed language">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u20">
     <w formType="test">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u21">
     <w formType="word play">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u22">
     <w formType="words to be excluded">a</w>
-    <t type="p"></t>
-
-  </u>
-  <u who="CHI" uID="u23">
     <w formType="words to be excluded">a<pos><c>adj</c></pos></w>
     <t type="p"></t>
 

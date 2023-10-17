@@ -3,7 +3,7 @@
 <CHAT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="ara"
       Corpus="aarsenbos"
       Date="1991-06-20"
@@ -27,7 +27,7 @@
   </Participants>
   <comment type="Date">20-JUN-1991</comment>
   <u who="CHI" uID="u0">
-    <w type="fragment">gʰan</w>
+    <w type="nonword">gʰan</w>
     <t type="p"></t>
 
   </u>

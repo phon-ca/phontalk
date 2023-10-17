@@ -4,7 +4,7 @@
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
       Media="ca-tcu-bullet" Mediatypes="video"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng"
       Options="CA"
       Corpus="sample"
@@ -33,11 +33,12 @@
       unit="s"
     />
     <pause symbolic-length="simple" length="9.4"/>
-    <t type="missing CA terminator"></t>
-    <media
+    <internal-media
       start="2042.652"
       end="2043.652"
       unit="s"
     />
+    <t type="missing CA terminator"></t>
+
   </u>
 </CHAT>

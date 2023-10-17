@@ -4,7 +4,7 @@
       xmlns="http://www.talkbank.org/ns/talkbank"
       xsi:schemaLocation="http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd"
       Media="engn4175" Mediatypes="audio"
-      Version="2.19.0"
+      Version="2.20.0"
       Lang="eng"
       Options="CA"
       Corpus="cf"
@@ -44,11 +44,12 @@
     <w>met</w>
     <w>him<p type="drawl"/></w>
     <s type="level"/>
-    <t type="missing CA terminator"></t>
-    <media
+    <internal-media
       start="94.531"
       end="95.651"
       unit="s"
     />
+    <t type="missing CA terminator"></t>
+
   </u>
 </CHAT>

@@ -106,7 +106,6 @@ public class TalkbankReader {
     // endregion Session utils
 
     // region XML Processing
-
     /**
      * Read CHAT element and return Session object
      *
@@ -658,30 +657,6 @@ public class TalkbankReader {
         session.getTranscript().addGem(retVal);
         return retVal;
     }
-    // endregion XML Processing
-
-    // region XML Utils
-    private boolean readToNextElement(XMLStreamReader reader) throws XMLStreamException {
-        while(reader.hasNext()) {
-            int eventType = reader.next();
-            if(eventType == XMLStreamReader.START_ELEMENT) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean readToEndTag(XMLStreamReader reader) throws XMLStreamException {
-        if(!reader.isStartElement()) throwNotStart(reader);
-        final String eleName = reader.getLocalName();
-        while(reader.hasNext()) {
-            reader.next();
-            if(reader.isEndElement() && reader.getLocalName().equals(eleName)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     record UtteranceTierData(Orthography orthography, List<Tier<IPATranscript>> ipaTiers,
                              List<Tier<MorTierData>> morTiers, List<Tier<GraspTierData>> graTiers) {}
@@ -702,9 +677,27 @@ public class TalkbankReader {
         readUtteranceContent(reader, builder, morTierBuilders, ipaTierBuilders);
         builder.append("</u>");
 
+        final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+        XMLStreamReader morReader = inputFactory.createXMLStreamReader(new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8)));
+        final XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
+        final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        XMLStreamWriter morReWriter = new MorRewriter(outputFactory.createXMLStreamWriter(bout, "UTF-8"));
+
+        final StAXSource source = new StAXSource(morReader);
+        final StAXResult result = new StAXResult(morReWriter);
+
+        try {
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.transform(source, result);
+        } catch (TransformerException tce) {
+            throw new XMLStreamException(tce);
+        }
+
+        final String xml = bout.toString(StandardCharsets.UTF_8);
         try {
             // main line
-            final Orthography ortho = XMLFragments.orthographyFromXml(builder.toString());
+            final Orthography ortho = XMLFragments.orthographyFromXml(xml);
 
             // ipa
             final List<Tier<IPATranscript>> ipaTiers = new ArrayList<>();
@@ -939,40 +932,7 @@ public class TalkbankReader {
         XMLStreamReader morReader = inputFactory.createXMLStreamReader(new ByteArrayInputStream(eleXml.getBytes(StandardCharsets.UTF_8)));
         final XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        XMLStreamWriter morReWriter = new DelegatingXMLStreamWriter(outputFactory.createXMLStreamWriter(bout, "UTF-8")) {
-            @Override
-            public void writeStartElement(String localName) throws XMLStreamException {
-                if(localName.equals("s")) {
-                    super.writeStartElement("subc");
-                } else {
-                    super.writeStartElement(localName);
-                }
-            }
-
-            @Override
-            public void writeProcessingInstruction(String target) throws XMLStreamException {
-            }
-
-            @Override
-            public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
-            }
-
-            @Override
-            public void writeStartDocument() throws XMLStreamException {
-            }
-
-            @Override
-            public void writeStartDocument(String version) throws XMLStreamException {
-            }
-
-            @Override
-            public void writeStartDocument(String encoding, String version) throws XMLStreamException {
-            }
-
-            @Override
-            public void writeEndDocument() throws XMLStreamException {
-            }
-        };
+        XMLStreamWriter morReWriter = new MorRewriter(outputFactory.createXMLStreamWriter(bout, "UTF-8"));
 
         final StAXSource source = new StAXSource(morReader);
         final StAXResult result = new StAXResult(morReWriter);
@@ -986,7 +946,103 @@ public class TalkbankReader {
         }
 
         builder.append(bout.toString(StandardCharsets.UTF_8));
-//        builder.append(recreateElementXML(reader, new ArrayList<>(), true));
+    }
+
+    /**
+     * Class to re-write the {http://www.talkbank.org/ns/talkbank}pos/s elemnt to
+     * {https://phon.ca/ns/session}subc
+     */
+    private class MorRewriter extends DelegatingXMLStreamWriter {
+
+        private Stack<String> eleStack = new Stack<>();
+
+        private boolean inPos = false;
+
+        public MorRewriter(XMLStreamWriter delegate) {
+            super(delegate);
+        }
+
+        @Override
+        public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
+            eleStack.push(localName);
+            super.writeStartElement(namespaceURI, localName);
+        }
+
+        @Override
+        public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
+            eleStack.push(localName);
+            super.writeStartElement(prefix, localName, namespaceURI);
+        }
+
+        @Override
+        public void writeStartElement(String localName) throws XMLStreamException {
+            if("pos".equals(localName)) {
+                inPos = true;
+            } else if(inPos && "s".equals(localName))  {
+                localName = "subc";
+            }
+            eleStack.push(localName);
+            super.writeStartElement(localName);
+        }
+
+        @Override
+        public void writeEndElement() throws XMLStreamException {
+            String eleName = eleStack.pop();
+            if("pos".equals(eleName)) {
+                inPos = false;
+            }
+            super.writeEndElement();
+        }
+
+        @Override
+        public void writeProcessingInstruction(String target) throws XMLStreamException {
+        }
+
+        @Override
+        public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
+        }
+
+        @Override
+        public void writeStartDocument() throws XMLStreamException {
+        }
+
+        @Override
+        public void writeStartDocument(String version) throws XMLStreamException {
+        }
+
+        @Override
+        public void writeStartDocument(String encoding, String version) throws XMLStreamException {
+        }
+
+        @Override
+        public void writeEndDocument() throws XMLStreamException {
+        }
+
+    }
+
+    // endregion XML Processing
+
+    // region XML Utils
+    private boolean readToNextElement(XMLStreamReader reader) throws XMLStreamException {
+        while(reader.hasNext()) {
+            int eventType = reader.next();
+            if(eventType == XMLStreamReader.START_ELEMENT) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean readToEndTag(XMLStreamReader reader) throws XMLStreamException {
+        if(!reader.isStartElement()) throwNotStart(reader);
+        final String eleName = reader.getLocalName();
+        while(reader.hasNext()) {
+            reader.next();
+            if(reader.isEndElement() && reader.getLocalName().equals(eleName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void throwNotStart(XMLStreamReader reader) throws XMLStreamException {
