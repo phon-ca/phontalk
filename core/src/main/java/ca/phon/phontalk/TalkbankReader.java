@@ -603,7 +603,10 @@ public class TalkbankReader {
         while(reader.hasNext()) {
             reader.next();
             if(reader.isCharacters()) {
-                builder.append(reader.getText());
+                final String chars = reader.getText();
+//                if(!builder.isEmpty() && !chars.isBlank()) builder.append(" ");
+                if(!chars.isBlank())
+                    builder.append(chars);
             } else if(reader.isStartElement()) {
                 final String eleName = reader.getLocalName();
                 switch (eleName) {
@@ -629,7 +632,7 @@ public class TalkbankReader {
         }
         TierData tierData = new TierData();
         try {
-            tierData = TierData.parseTierData(builder.toString());
+            tierData = TierData.parseTierData(builder.toString().trim());
         } catch (ParseException e) {
             fireWarning(e.getMessage(), reader);
             tierData.putExtension(UnvalidatedValue.class, new UnvalidatedValue(builder.toString(), e));

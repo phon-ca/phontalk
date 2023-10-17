@@ -334,6 +334,7 @@ public class TalkbankWriter {
             this.who = who;
         }
 
+
         @Override
         public void writeStartElement(String localName) throws XMLStreamException {
             if(inPos && "subc".equals(localName)) {
@@ -341,8 +342,8 @@ public class TalkbankWriter {
             }
             super.writeStartElement(localName);
             if("u".equals(localName)) {
-                writeAttribute("uID", "u" + uid);
                 writeAttribute("who", who);
+                writeAttribute("uID", "u" + uid);
             } else if("t".equals(localName)) {
                 foundTerminator = true;
             } else if("pos".equals(localName)) {
