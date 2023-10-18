@@ -490,7 +490,7 @@ public class TalkbankWriter {
         for(int i = 0; i < tierName.length() && builder.length() < 7; i++) {
             final char c = tierName.charAt(i);
             if(!Character.isWhitespace(c)) {
-                builder.append(Character.toLowerCase(c));
+                builder.append(c);
             }
         }
         int idx = 0;
