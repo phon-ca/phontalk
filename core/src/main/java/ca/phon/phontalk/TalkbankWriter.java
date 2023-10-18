@@ -2,6 +2,7 @@ package ca.phon.phontalk;
 
 import ca.phon.formatter.Formatter;
 import ca.phon.formatter.FormatterFactory;
+import ca.phon.orthography.Orthography;
 import ca.phon.session.*;
 import ca.phon.session.Record;
 import ca.phon.session.io.xml.OneToOne;
@@ -10,6 +11,7 @@ import ca.phon.session.io.xml.XMLFragments;
 import ca.phon.session.tierdata.*;
 import ca.phon.util.Language;
 import ca.phon.xml.DelegatingXMLStreamWriter;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.xml.stream.*;
 import javax.xml.transform.Transformer;
@@ -22,10 +24,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TalkbankWriter {
@@ -278,6 +277,47 @@ public class TalkbankWriter {
         }
     }
 
+    private void writeWorTier(Orthography worData, XMLStreamWriter writer) throws XMLStreamException {
+        try {
+            final String xml = XMLFragments.toXml(worData, false, false);
+            final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+            final XMLStreamReader reader = inputFactory.createXMLStreamReader(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+            final XMLStreamWriter w = new DelegatingXMLStreamWriter(writer) {
+                @Override
+                public void writeStartElement(String localName) throws XMLStreamException {
+                    if ("u".equals(localName)) {
+                        localName = "wor";
+                    }
+                    super.writeStartElement(localName);
+                }
+
+                @Override
+                public void close() throws XMLStreamException {
+                }
+
+                @Override
+                public void writeStartDocument() throws XMLStreamException {
+                }
+
+                @Override
+                public void writeStartDocument(String version) throws XMLStreamException {
+                }
+
+                @Override
+                public void writeStartDocument(String encoding, String version) throws XMLStreamException {
+                }
+            };
+            final StAXSource source = new StAXSource(reader);
+            final StAXResult result = new StAXResult(w);
+
+            final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            final Transformer transformer = transformerFactory.newTransformer();
+            transformer.transform(source, result);
+        } catch(IOException | TransformerException e) {
+            throw new XMLStreamException(e);
+        }
+    }
+
     private void writeMedia(MediaSegment segment, XMLStreamWriter writer) throws XMLStreamException {
         writer.writeEmptyElement("media");
         float start = segment.getStartValue();
@@ -290,29 +330,10 @@ public class TalkbankWriter {
                 BigDecimal.valueOf(end).setScale(3, RoundingMode.HALF_UP).toString());
         writer.writeAttribute("unit", "s");
     }
-    // endregion XML Writing
 
-    // region Listeners
-    private void fireWarning(String message, XMLStreamWriter writer) {
-        final PhonTalkMessage msg = new PhonTalkMessage(message, PhonTalkMessage.Severity.WARNING);
-        msg.setLineNumber(-1);
-        msg.setColNumber(-1);
-        if(file != null)
-            msg.setFile(new File(file));
-        fireMessage(msg);
-    }
-
-    private void fireMessage(PhonTalkMessage message) {
-        listeners.forEach(l -> l.message(message));
-    }
-
-    public void addListener(PhonTalkListener listener) {
-        if(!listeners.contains(listener)) {
-            listeners.add(listener);
-        }
-    }
-    // endregion Listeners
-
+    /**
+     * Writes record data including any user-defined tiers
+     */
     private class RecordXmlStreamWriter extends DelegatingXMLStreamWriter {
 
         private final Record record;
@@ -388,29 +409,33 @@ public class TalkbankWriter {
                 for(String tierName:record.getUserDefinedTierNames()) {
                     final UserTierType userTierType = UserTierType.fromPhonTierName(tierName);
                     if(userTierType == UserTierType.Mor || userTierType == UserTierType.Trn
-                        || userTierType == UserTierType.Gra || userTierType == UserTierType.Grt)
+                            || userTierType == UserTierType.Gra || userTierType == UserTierType.Grt)
                         continue;
                     final Tier<?> tier = record.getTier(tierName);
-                    if(tier == null || !tier.hasValue()) continue;
-                    writeStartElement("a");
-                    if(userTierType != null) {
-                        final String type = userTierType.getTierName();
-                        writeAttribute("type", type);
+                    if (tier == null || !tier.hasValue()) continue;
+                    if(userTierType == UserTierType.Wor) {
+                        writeWorTier((Orthography)tier.getValue(), this);
                     } else {
-                        // TODO abbreviate tier name
-                        String flavor = tierName;
-                        if(tierName.startsWith("%x")) {
-                            flavor = tierName.substring(2);
+                        writeStartElement("a");
+                        if (userTierType != null) {
+                            final String type = userTierType.getTierName();
+                            writeAttribute("type", type);
+                        } else {
+                            // TODO abbreviate tier name
+                            String flavor = abbreviateTierName(tierName);
+                            if (tierName.startsWith("%x")) {
+                                flavor = tierName.substring(2);
+                            }
+                            writeAttribute("type", "extension");
+                            writeAttribute("flavor", flavor);
                         }
-                        writeAttribute("type", "extension");
-                        writeAttribute("flavor", flavor);
+                        if (tier.getDeclaredType() == TierData.class) {
+                            writeTierData((TierData) tier.getValue(), this);
+                        } else {
+                            writeCharacters(tier.toString());
+                        }
+                        writeEndElement();
                     }
-                    if(tier.getDeclaredType() == TierData.class) {
-                        writeTierData((TierData) tier.getValue(), this);
-                    } else {
-                        writeCharacters(tier.toString());
-                    }
-                    writeEndElement();
                 }
 
                 if(record.getNotesTier().hasValue() && record.getNotesTier().getValue().length() > 0) {
@@ -447,5 +472,70 @@ public class TalkbankWriter {
         public void writeStartDocument(String encoding, String version) throws XMLStreamException {
         }
     }
+    // endregion XML Writing
+
+    // region Tier mapping
+    /**
+     * Map of phon tier names to chat extension flavors
+     */
+    private final Map<String, String> tierNameMap = new LinkedHashMap<>();
+
+    /**
+     * CLAN requires user-defined tier names be no longer than 7 characters
+     *
+     * @return mapped tier name
+     */
+    private String abbreviateTierName(String tierName) {
+        final StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < tierName.length() && builder.length() < 7; i++) {
+            final char c = tierName.charAt(i);
+            if(!Character.isWhitespace(c)) {
+                builder.append(Character.toLowerCase(c));
+            }
+        }
+        int idx = 0;
+        while(tierNameMap.containsKey(builder.toString())) {
+            builder.replace(builder.length()-2, builder.length()-1, Integer.toString(idx));
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Write comments at end of transcript for mapping tier names back to Phon
+     *
+     * @param writer
+     * @throws XMLStreamException
+     */
+    private void writeTierNameMap(XMLStreamWriter writer) throws XMLStreamException {
+        for(String tierName:tierNameMap.keySet()) {
+            writer.writeStartElement("comment");
+            writer.writeAttribute("type", "");
+            writer.writeCharacters(StringEscapeUtils.escapeXml(
+                    String.format("tier %%x%s=%s", tierNameMap.get(tierName), tierName)));
+            writer.writeEndElement();
+        }
+    }
+    // endregion Tier mapping
+
+    // region Listeners
+    private void fireWarning(String message, XMLStreamWriter writer) {
+        final PhonTalkMessage msg = new PhonTalkMessage(message, PhonTalkMessage.Severity.WARNING);
+        msg.setLineNumber(-1);
+        msg.setColNumber(-1);
+        if(file != null)
+            msg.setFile(new File(file));
+        fireMessage(msg);
+    }
+
+    private void fireMessage(PhonTalkMessage message) {
+        listeners.forEach(l -> l.message(message));
+    }
+
+    public void addListener(PhonTalkListener listener) {
+        if(!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+    // endregion Listeners
 
 }

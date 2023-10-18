@@ -761,7 +761,21 @@ public class TalkbankReader {
     private Tier<Orthography> readWorTier(XMLStreamReader reader) throws XMLStreamException {
         final Tier<Orthography> retVal = factory.createTier(UserTierType.Wor.getTierName(), Orthography.class);
 
+        final StringBuilder builder = new StringBuilder();
+        // more/ipa data should not be %wor
+        Map<String, StringBuilder> morTierBuilders = new LinkedHashMap<>();
+        Map<String, IPATranscriptBuilder> ipaTierBuilders = new LinkedHashMap<>();
 
+        builder.append("<u xmlns=\"https://phon.ca/ns/session\">");
+        readUtteranceContent(reader, builder, morTierBuilders, ipaTierBuilders);
+        builder.append("</u>");
+
+        try {
+            final Orthography orthography = XMLFragments.orthographyFromXml(builder.toString());
+            retVal.setValue(orthography);
+        } catch (IOException e) {
+            throw new XMLStreamException(e.getMessage(), reader.getLocation(), e);
+        }
 
         return retVal;
     }
