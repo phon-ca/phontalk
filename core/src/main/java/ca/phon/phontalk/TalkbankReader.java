@@ -14,8 +14,6 @@ import ca.phon.orthography.mor.GraspTierData;
 import ca.phon.orthography.mor.MorTierData;
 import ca.phon.session.*;
 import ca.phon.session.Record;
-import ca.phon.session.io.SessionOutputFactory;
-import ca.phon.session.io.SessionWriter;
 import ca.phon.session.io.xml.XMLFragments;
 import ca.phon.session.tierdata.TierData;
 import ca.phon.session.tierdata.TierLink;
@@ -27,7 +25,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.xml.stream.*;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stax.StAXResult;
@@ -41,6 +38,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TalkbankReader {
 
@@ -88,18 +87,27 @@ public class TalkbankReader {
      * Read session records and create tier descriptions for user-defined tiers
      * @param session
      */
-    private void updateSessionTierDescriptions(Session session) {
+    private void updateSessionTierDescriptions(Session session, Map<String, String> tierNameMap) {
         for(Record record:session.getRecords()) {
             for(Tier<?> userTier:record.getUserTiers()) {
-                TierDescription td = session.getUserTiers().get(userTier.getName());
+                final String tierName = tierNameMap.containsKey(userTier.getName()) ? tierNameMap.get(userTier.getName()) : userTier.getName();
+                TierDescription td = session.getUserTiers().get(tierName);
                 if(td != null) continue;
-                final UserTierType userTierType = UserTierType.fromPhonTierName(userTier.getName());
+                final UserTierType userTierType = UserTierType.fromPhonTierName(tierName);
                 if(userTierType != null) {
-                    td = factory.createTierDescription(userTierType.getTierName(), userTierType.getType(), new HashMap<>(), !userTierType.isAlignable());
+                    td = factory.createTierDescription(tierName, userTierType.getType(), new HashMap<>(), !userTierType.isAlignable());
                 } else {
-                    td = factory.createTierDescription(userTier.getName());
+                    td = factory.createTierDescription(tierName, TierData.class, new HashMap<>(), false);
                 }
                 session.addUserTier(td);
+            }
+
+            for(String abbrvTierName:tierNameMap.keySet()) {
+                Tier<Object> tier = (Tier<Object>)record.getTier(abbrvTierName);
+                final Tier<Object> newTier = factory.createTier(tierNameMap.get(abbrvTierName), tier.getDeclaredType(), tier.getTierParameters(), tier.isExcludeFromAlignment());
+                newTier.setValue(tier.getValue());
+                record.removeTier(abbrvTierName);
+                record.putTier(newTier);
             }
         }
     }
@@ -205,6 +213,8 @@ public class TalkbankReader {
             session.getMetadata().put("Font", font);
         }
 
+        final Map<String, String> tierNameMap = new LinkedHashMap<>();
+
         // flag used to avoid skipping elements
         boolean dontSkip = false;
         while(dontSkip || readToNextElement(reader)) {
@@ -217,7 +227,15 @@ public class TalkbankReader {
                     break;
 
                 case "comment":
-                    readComment(session, reader);
+                    Comment comment = readComment(reader);
+                    final Pattern tierMapPattern = Pattern.compile("tier (.+?)=(.+)");
+                    final Matcher matcher = tierMapPattern.matcher(comment.getValue().toString());
+                    if(matcher.matches()) {
+                        // add to tier name map
+                        tierNameMap.put(matcher.group(1), matcher.group(2));
+                    } else {
+                        session.getTranscript().addComment(comment);
+                    }
                     break;
 
                 case "u":
@@ -236,7 +254,7 @@ public class TalkbankReader {
             }
         }
 
-        updateSessionTierDescriptions(session);
+        updateSessionTierDescriptions(session, tierNameMap);
         return session;
     }
 
@@ -377,7 +395,7 @@ public class TalkbankReader {
      * @return comment
      * @throws XMLStreamException
      */
-    private Comment readComment(Session session, XMLStreamReader reader) throws XMLStreamException {
+    private Comment readComment(XMLStreamReader reader) throws XMLStreamException {
         if(!"comment".equals(reader.getLocalName())) throw new XMLStreamException();
         final Comment comment = factory.createComment();
 
@@ -389,7 +407,7 @@ public class TalkbankReader {
         comment.setType(commentType);
         TierData commentData = readTierContent(reader);
         comment.setValue(commentData);
-        session.getTranscript().addComment(comment);
+
         return comment;
     }
 
@@ -1163,15 +1181,5 @@ public class TalkbankReader {
         }
     }
     // endregion Listeners
-
-    public static void main(String[] args) throws IOException, XMLStreamException {
-        TalkbankReader reader = new TalkbankReader();
-        reader.addListener(msg -> {
-            System.out.println(msg);
-        });
-        final Session session = reader.readFile("core/src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml/mor-clitics.xml");
-        final SessionWriter writer = (new SessionOutputFactory()).createWriter();
-        writer.writeSession(session, System.out);
-    }
 
 }
