@@ -92,7 +92,6 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 
 	private JRadioButton useWorkspaceButton = new JRadioButton("Create new project in workspace folder");
 	private JRadioButton storeInProjectButton = new JRadioButton("Add files to existing Phon project");
-	private JRadioButton customOutputFolderButton = new JRadioButton("Advanced (keep existing folder structure)");
 
 	private ProjectSelectionButton projectButton;
 
@@ -321,24 +320,20 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 		ActionListener listener = (e) -> {
 			outputFolderButton.setSelection(determineOutputFolder());
 			projectButton.setVisible(storeInProjectButton.isSelected());
-			outputFolderButton.setVisible(customOutputFolderButton.isSelected());
 		};
 		useWorkspaceButton.addActionListener(listener);
 		storeInProjectButton.addActionListener(listener);
-		customOutputFolderButton.addActionListener(listener);
 
 		// radio buttons
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(useWorkspaceButton);
 		bg.add(storeInProjectButton);
-		bg.add(customOutputFolderButton);
 		useWorkspaceButton.setSelected(getProject() == null);
 		storeInProjectButton.setSelected(getProject() != null);
 
 		JPanel radioBoxPanel = new JPanel(new VerticalLayout());
 		radioBoxPanel.add(useWorkspaceButton);
 		radioBoxPanel.add(storeInProjectButton);
-		radioBoxPanel.add(customOutputFolderButton);
 		radioBoxPanel.setBorder(BorderFactory.createTitledBorder("Import Action"));
 
 		JPanel optionalsPanel = new JPanel(new VerticalLayout());
@@ -559,7 +554,7 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 
 				Path relativePath = parentPath.relativize(inputPath);
 
-				boolean keepLongPath = customOutputFolderButton.isSelected();
+				boolean keepLongPath = true;
 				// output folder for *this* file
 				File outputFolder = outputFolderButton.getSelection();
 				for(int i = 0; i < relativePath.getNameCount()-1; i++) {
@@ -570,15 +565,15 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 					}
 				}
 
-				if((ptNode.getType() == PhonTalkTaskType.CHAT2Phon ||
-						ptNode.getType() == PhonTalkTaskType.XML2Phon)
-					&& (useWorkspaceButton.isSelected() || storeInProjectButton.isSelected())) {
-					// ensure files go into a proper corpus folder
-					if(relativePath.getNameCount() == 1) {
-						// move into corpus folder with name 'Transcripts'
-						outputFolder = new File(outputFolder, "Transcripts");
-					}
-				}
+//				if((ptNode.getType() == PhonTalkTaskType.CHAT2Phon ||
+//						ptNode.getType() == PhonTalkTaskType.XML2Phon)
+//					&& (useWorkspaceButton.isSelected() || storeInProjectButton.isSelected())) {
+//					// ensure files go into a proper corpus folder
+//					if(relativePath.getNameCount() == 1) {
+//						// move into corpus folder with name 'Transcripts'
+//						outputFolder = new File(outputFolder, "Transcripts");
+//					}
+//				}
 
 				if(!outputFolder.exists())
 					outputFolder.mkdirs();
