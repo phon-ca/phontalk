@@ -465,6 +465,7 @@ public class TalkbankReader {
         boolean atEnd = false;
         // read remainder of utterance after terminator
         OrthographyBuilder builder = new OrthographyBuilder();
+        Tier<Orthography> lastOrthoTier = null;
         while(!atEnd && readToNextElement(reader)) {
             final String eleName = reader.getLocalName();
             switch (eleName) {
@@ -478,7 +479,16 @@ public class TalkbankReader {
 
                 case "media":
                     MediaSegment segment = readMedia(reader);
-                    r.setMediaSegment(segment);
+                    if(r.getMediaSegment().isUnset()) {
+                        r.setMediaSegment(segment);
+                    } else if(lastOrthoTier != null) {
+                        builder = new OrthographyBuilder();
+                        builder.append(lastOrthoTier.getValue());
+                        float startTime = segment.getUnitType() == MediaUnit.Millisecond ? segment.getStartValue() / 1000.0f : segment.getStartValue();
+                        float endTime = segment.getUnitType() == MediaUnit.Millisecond ? segment.getEndValue() / 1000.0f : segment.getEndValue();
+                        builder.append(new InternalMedia(startTime, endTime));
+                        lastOrthoTier.setValue(builder.toOrthography());
+                    }
                     break;
 
                 case "k":
@@ -508,6 +518,7 @@ public class TalkbankReader {
                 case "wor":
                     Tier<Orthography> worTier = readWorTier(reader);
                     r.putTier(worTier);
+                    lastOrthoTier = worTier;
                     break;
 
                 default:
