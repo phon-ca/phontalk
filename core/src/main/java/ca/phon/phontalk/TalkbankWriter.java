@@ -418,7 +418,7 @@ public class TalkbankWriter {
                     } else {
                         writeStartElement("a");
                         if (userTierType != null) {
-                            final String type = userTierType.getTierName();
+                            final String type = userTierType.getTalkbankTierType();
                             writeAttribute("type", type);
                         } else {
                             // TODO abbreviate tier name

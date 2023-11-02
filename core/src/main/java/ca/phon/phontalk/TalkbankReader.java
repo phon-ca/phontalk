@@ -600,7 +600,7 @@ public class TalkbankReader {
             if("extension".equals(type)) {
                 tierName = flavor;
             } else {
-                final UserTierType userTierType = UserTierType.fromPhonTierName(type);
+                final UserTierType userTierType = UserTierType.fromTalkbankTierType(type);
                 if(userTierType == null) throw new XMLStreamException("Unknown tier 'type' " + type);
                 tierName = userTierType.getTierName();
             }
