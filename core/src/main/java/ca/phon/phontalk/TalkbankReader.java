@@ -41,6 +41,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Read in a TalkBank xml file as a Phon session.
+ *
+ */
 public class TalkbankReader {
 
     private final static String TBNS = "http://www.talkbank.org/ns/talkbank";

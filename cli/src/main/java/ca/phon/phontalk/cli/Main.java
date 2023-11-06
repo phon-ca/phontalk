@@ -20,14 +20,23 @@ package ca.phon.phontalk.cli;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import ca.phon.orthography.Orthography;
+import ca.phon.orthography.mor.GraspTierData;
+import ca.phon.orthography.mor.MorTierData;
+import ca.phon.session.Record;
+import ca.phon.session.SessionFactory;
+import ca.phon.session.Tier;
+import ca.phon.session.UserTierType;
+import ca.phon.session.io.xml.OneToOne;
 import ca.phon.session.io.xml.XMLFragments;
 import ca.phon.syllabifier.Syllabifier;
 import ca.phon.syllabifier.SyllabifierLibrary;
@@ -57,6 +66,10 @@ import ca.phon.phontalk.Xml2PhonConverter;
 public class Main {
 	
 	private final static String CMD_STRING = "java -jar phontalk-cli.jar [options]";
+
+	private final static String PHON_NAMESPACE = "https://phon.ca/ns/session";
+
+	private final static String CHAT_NAMESPACE = "http://www.talkbank.org/ns/talkbank";
 	
 	private static Options getCLIOptions() {
 		final Options retVal = new Options();
@@ -64,17 +77,14 @@ public class Main {
 		// files
 		retVal.addOption("f", "file", true,
 				"""
-						Input file xml file, start elements must be one of: 
+						Input file xml file, start elements must be one of:
 							* {https://phon.ca/ns/session}session - output will be an xml file with start element {http://www.talkbank.org/ns/talkbank}CHAT
 						    * {http://www.talkbank.org/ns/talkbank}CHAT - output will be an xml file with start element {https://phon.ca/ns/session}session
-						    * {https://phon.ca/ns/session}ipa - output will be the ipa transcription
-						    * {https://phon.ca/ns/session}u - output will be main line of utterance
-						If no namespace is provided it is assumed to be https://phon.ca/ns/session
 						""");
 		retVal.getOption("f").setRequired(false);
 		retVal.addOption("o", "output", true,
 				"""
-						Output file, if unspecified data will be written to stdout""");
+						Output file, required when using -f""");
 		retVal.getOption("o").setRequired(false);
 
 		// u <-> xml
@@ -85,11 +95,11 @@ public class Main {
 		retVal.getOption("u").setOptionalArg(false);
 
 		// ipa <-> xml
-		retVal.addOption("ipa", "IPATranscript", true,
-				"""
-						Product xml fragment for given ipa transcription.  Does not combine with -u""");
-		retVal.getOption("ipa").setRequired(false);
-		retVal.getOption("ipa").setOptionalArg(false);
+//		retVal.addOption("ipa", "IPATranscript", true,
+//				"""
+//						Product xml fragment for given ipa transcription.  Does not combine with -u""");
+//		retVal.getOption("ipa").setRequired(false);
+//		retVal.getOption("ipa").setOptionalArg(false);
 
 		retVal.addOption("mod", "IPATarget", true,
 				"""
@@ -141,6 +151,13 @@ public class Main {
 						List available syllabifier languages and exit.  This supersedes all other options.""");
 		retVal.getOption("lsb").setRequired(false);
 
+		retVal.addOption("m", "formatted", false, """
+				Output formatted xml.""");
+		retVal.getOption("m").setRequired(false);
+
+		retVal.addOption("n", "namespace", false, """
+						Include xml namespace.""");
+
 		retVal.addOption("h", "help", false, "Show usage info");
 		retVal.getOption("h").setRequired(false);
 		
@@ -177,30 +194,19 @@ public class Main {
 				System.exit(0);
 			}
 
-			if(cmdLine.hasOption("u") && cmdLine.hasOption("ipa")) {
+			if(cmdLine.hasOption("u") && cmdLine.hasOption("f")) {
 				final HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp(CMD_STRING, getCLIOptions());
-				System.err.println("-u and -ipa must be used independently");
+				System.err.println("-u and -f cannot be used together");
 				System.exit(1);
 			}
 
 			// default mode is full file conversion
 			final String inputFile = cmdLine.hasOption("f") ? cmdLine.getOptionValue("f") : null;
 			String mode = "phontalk";
-			if(cmdLine.hasOption("u")) {
-				if(inputFile != null) {
-					final HelpFormatter formatter = new HelpFormatter();
-					formatter.printHelp(CMD_STRING, getCLIOptions());
-					throw new IllegalArgumentException("Cannot use -u with input file");
-				}
-				mode = "u";
-			} else if(cmdLine.hasOption("ipa")) {
-				if(inputFile != null) {
-					final HelpFormatter formatter = new HelpFormatter();
-					formatter.printHelp(CMD_STRING, getCLIOptions());
-					throw new IllegalArgumentException("Cannot use -ipa with input file");
-				}
-				mode = "ipa";
+			final String outputFile = cmdLine.hasOption("o") ? cmdLine.getOptionValue("o") : null;
+			if(inputFile == null && cmdLine.hasOption("u")) {
+				mode = "fragment";
 			}
 
 			if("phontalk".equals(mode)) {
@@ -208,26 +214,36 @@ public class Main {
 					final HelpFormatter formatter = new HelpFormatter();
 					formatter.printHelp(CMD_STRING, getCLIOptions());
 					throw new IllegalArgumentException("No input file given");
+				} else if(outputFile == null) {
+					final HelpFormatter formatter = new HelpFormatter();
+					formatter.printHelp(CMD_STRING, getCLIOptions());
+					throw new IllegalArgumentException("No output file given");
 				}
 			}
 
-			final String outputFile = cmdLine.hasOption("o") ? cmdLine.getOptionValue("o") : null;
+			boolean formattedOutput = cmdLine.hasOption("m");
+
 			switch (mode) {
-				case "u":
+				case "fragment":
 					try {
 						String utterance = cmdLine.getOptionValue("u");
-						outputUtteranceFramgent(utterance, outputFile);
+						String mod = cmdLine.getOptionValue("mod", "");
+						String pho = cmdLine.getOptionValue("pho", "");
+						String mor = cmdLine.getOptionValue("mor", "");
+						String gra = cmdLine.getOptionValue("gra", "");
+						String trn = cmdLine.getOptionValue("trn", "");
+						String grt = cmdLine.getOptionValue("grt", "");
+						outputUtteranceFramgent(utterance, mod, pho, mor, gra, trn, grt, outputFile, formattedOutput);
 					} catch (IOException e) {
 						e.printStackTrace(new PrintWriter(System.err));
 						System.exit(2);
 					}
 					break;
 
-				case "ipa":
-					break;
-
+				case "phontalk":
 				default:
 					final String[] fileArgs = cmdLine.getArgs();
+					// ensure no other arguments
 					if(fileArgs.length != 0) {
 						final HelpFormatter formatter = new HelpFormatter();
 						formatter.printHelp(CMD_STRING, getCLIOptions());
@@ -235,22 +251,24 @@ public class Main {
 					}
 
 					// get the type of the input file
-		//			final String rootEleName = getRootElementName(inputFile);
-		//			if(rootEleName.equalsIgnoreCase("CHAT")) {
-		//				// processing xml->phon
-		//				final Xml2PhonConverter converter = new Xml2PhonConverter();
-		//				converter.convertFile(inputFile, outputFile, new DefaultPhonTalkListener());
-		//			} else if(rootEleName.equalsIgnoreCase("session")) {
-		//				// processing phon->xml
-		//				final Phon2XmlConverter converter = new Phon2XmlConverter();
-		//				converter.convertFile(inputFile, outputFile, new DefaultPhonTalkListener());
-		//			} else {
-		//
-		//				throw new UnrecognizedOptionException("Input file type not support.");
-		//			}
+					try {
+						final QName rootEleName = getRootElementName(new File(inputFile));
+						if (rootEleName.equals(new QName(CHAT_NAMESPACE, "CHAT"))) {
+							// processing xml->phon
+							final Xml2PhonConverter converter = new Xml2PhonConverter();
+							converter.convertFile(new File(inputFile), new File(outputFile), new DefaultPhonTalkListener());
+						} else if (rootEleName.equals(new QName(PHON_NAMESPACE, "session"))) {
+							// processing phon->xml
+							final Phon2XmlConverter converter = new Phon2XmlConverter();
+							converter.convertFile(new File(inputFile), new File(outputFile), new DefaultPhonTalkListener());
+						} else {
+							throw new UnrecognizedOptionException("Input file type not support.");
+						}
+					} catch (IOException e) {
+						throw new IllegalArgumentException(e);
+					}
 			}
 
-			// ensure no other arguments
 		} catch (ParseException e) {
 			System.err.println(e.getMessage());
 			final HelpFormatter formatter = new HelpFormatter();
@@ -261,10 +279,49 @@ public class Main {
 		
 	}
 
-	private static void outputUtteranceFramgent(String utterance, String outputFile) throws IOException {
+	/**
+	 *
+	 */
+	private static void outputUtteranceFramgent(String utterance, String mod, String pho,
+												String mor, String gra, String trn, String grt, String outputFile, boolean formatted) throws IOException {
+		final SessionFactory factory = SessionFactory.newFactory();
+		final Record record = factory.createRecord();
 		try {
-			final Orthography orthography = Orthography.parseOrthography(utterance);
-			final String xml = XMLFragments.toXml(orthography, false, false);
+			record.getOrthographyTier().setText(utterance);
+			if(record.getOrthographyTier().isUnvalidated()) throw record.getOrthographyTier().getUnvalidatedValue().getParseError();
+			record.getIPATargetTier().setText(mod);
+			if(record.getIPATargetTier().isUnvalidated()) throw record.getIPATargetTier().getUnvalidatedValue().getParseError();
+			record.getIPAActualTier().setText(pho);
+			if(record.getIPAActualTier().isUnvalidated()) throw record.getIPAActualTier().getUnvalidatedValue().getParseError();
+			if(!mor.isBlank()) {
+				final Tier<MorTierData> morTier = factory.createTier(UserTierType.Mor.getTierName(), MorTierData.class, new HashMap<>(), true);
+				morTier.setText(mor);
+				if(morTier.isUnvalidated()) throw morTier.getUnvalidatedValue().getParseError();
+				record.putTier(morTier);
+
+				if(!gra.isBlank()) {
+					final Tier<GraspTierData> graTier = factory.createTier(UserTierType.Gra.getTierName(), GraspTierData.class, new HashMap<>(), true);
+					graTier.setText(gra);
+					if(graTier.isUnvalidated()) throw graTier.getUnvalidatedValue().getParseError();
+					record.putTier(graTier);
+				}
+			}
+			if(!trn.isBlank()) {
+				final Tier<MorTierData> trnTier = factory.createTier(UserTierType.Trn.getTierName(), MorTierData.class, new HashMap<>(), true);
+				trnTier.setText(trn);
+				if(trnTier.isUnvalidated()) throw trnTier.getUnvalidatedValue().getParseError();
+				record.putTier(trnTier);
+
+				if(!gra.isBlank()) {
+					final Tier<GraspTierData> grtTier = factory.createTier(UserTierType.Grt.getTierName(), GraspTierData.class, new HashMap<>(), true);
+					grtTier.setText(gra);
+					if(grtTier.isUnvalidated()) throw grtTier.getUnvalidatedValue().getParseError();
+					record.putTier(grtTier);
+				}
+			}
+			OneToOne.annotateRecord(record);
+			final Orthography orthography = record.getOrthography();
+			final String xml = XMLFragments.toXml(orthography, false, formatted);
 			outputData(xml, outputFile);
 		} catch (java.text.ParseException e) {
 			throw new IOException(e);
@@ -279,9 +336,9 @@ public class Main {
 		}
 	}
 	
-	private static String getRootElementName(File f) 
+	private static QName getRootElementName(File f)
 		throws IOException {
-		String retVal = null;
+		QName retVal = null;
 		
 		final FileInputStream fin = new FileInputStream(f);
 		final XMLInputFactory factory = XMLInputFactory.newFactory();
@@ -293,7 +350,7 @@ public class Main {
 				final int nextType = xmlStreamReader.next();
 				if(nextType == XMLStreamReader.START_ELEMENT) {
 					// get the element name and break
-					retVal = xmlStreamReader.getName().getLocalPart();
+					retVal = new QName(xmlStreamReader.getNamespaceURI(), xmlStreamReader.getLocalName());
 					break;
 				}
 			}

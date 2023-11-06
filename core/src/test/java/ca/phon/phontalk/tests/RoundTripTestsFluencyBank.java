@@ -20,41 +20,54 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Period;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
- * Read files in 'good-xml' (talkbank format) and then write them back in talkbank format.
+ * Read test files in FluencyBank (talkbank format) and then write them back in talkbank format.
  * Tests xml equivalence of two files using xmlunit.
  */
-@RunWith(Parameterized.class)
-public class RoundTripTests {
+// uncomment to run test, will take a long time
+//@RunWith(Parameterized.class)
+public class RoundTripTestsFluencyBank {
 
-//    final static String GOOD_XML = "src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml";
-//
-//    final static String GOOD_XML_OUTPUT = "target/test/RoundTripTests/good-xml";
-//
-//    final static String GOOD_XML_PHON_OUTPUT = "target/test/RoundTripTests/good-xml-phon";
-
-    final static String GOOD_XML = "/Users/ghedlund/Documents/PhonWorkspace/testfluencybank/xml-tb/Ellisweismer/LT/30ec";
-
-    final static String GOOD_XML_OUTPUT = "target/test/RoundTripTests/testfluencybank/Ellisweismer/LT/30ec";
-
-    final static String GOOD_XML_PHON_OUTPUT = "target/test/RoundTripTests/testfluencybank/Ellisweismer/LT/30ec";
+    final static String GIT_REPO = "https://github.com/ghedlund/testfluencybank";
+    final static String TARGET_TEST_FOLDER = "target/test/RoundTripsTestsFluencyBank";
+    final static String OUT_XML_TB_FOLDER = TARGET_TEST_FOLDER + "/xml-tb";
+    final static String OUT_XML_PHON_FODLER = TARGET_TEST_FOLDER + "/xml-phon";
+    final static String GIT_CLONE_FOLDER = TARGET_TEST_FOLDER + "/testfluencybank";
+    final static String XML_TB_FOLDER = GIT_CLONE_FOLDER + "/xml-tb";
 
     @Parameterized.Parameters(name = "{0}")
-    public static Collection<Object[]> collectFiles() {
+    public static Collection<Object[]> collectFiles() throws IOException, InterruptedException {
+        cloneGitRepo();
         List<Object[]> retVal = new ArrayList<>();
 
-        final File goodXmlFolder = new File(GOOD_XML);
-        if(!goodXmlFolder.exists() || !goodXmlFolder.isDirectory())
+        final File tbXmlFolder = new File(XML_TB_FOLDER);
+        if(!tbXmlFolder.exists() || !tbXmlFolder.isDirectory())
             throw new RuntimeException("Invalid input folder");
 
-        for(File xmlFile:goodXmlFolder.listFiles((dir, name) -> name.endsWith(".xml"))) {
-            final File outFile = new File(GOOD_XML_OUTPUT, xmlFile.getName());
-            retVal.add(new Object[]{xmlFile.getName(), xmlFile, outFile});
+        final List<Path> xmlPaths = new ArrayList<>();
+        final Path baseFolder = tbXmlFolder.toPath();
+        collectFiles(baseFolder, baseFolder, xmlPaths);
+
+        final File outXmlFolder = new File(OUT_XML_TB_FOLDER);
+        if(!outXmlFolder.exists()) {
+            outXmlFolder.mkdirs();
+        }
+        final Path outFolder = outXmlFolder.toPath();
+        for(Path xmlRelPath:xmlPaths) {
+            final File xmlFile = baseFolder.resolve(xmlRelPath).toFile();
+            final File outFile = outFolder.resolve(xmlRelPath).toFile();
+            retVal.add(new Object[]{xmlRelPath.toString(), xmlFile, outFile });
         }
 
         retVal.sort(Comparator.comparing(a -> a[0].toString()));
@@ -62,11 +75,38 @@ public class RoundTripTests {
         return retVal;
     }
 
+    public static int cloneGitRepo() throws IOException, InterruptedException {
+        final File targetTestFolder = new File(TARGET_TEST_FOLDER);
+        if(!targetTestFolder.exists()) targetTestFolder.mkdirs();
+        final File gitRepoFolder = new File(GIT_CLONE_FOLDER);
+        if(!gitRepoFolder.exists()) {
+            final String cmd = String.format("git clone %s %s", GIT_REPO, GIT_CLONE_FOLDER);
+            Process p = Runtime.getRuntime().exec(cmd);
+            int exitVal = p.waitFor();
+            return exitVal;
+        } else {
+            return 0;
+        }
+    }
+
+    public static void collectFiles(Path baseFolder, Path folder, List<Path> xmlPaths) throws IOException {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(folder)) {
+            for(Path path:directoryStream) {
+                if(Files.isDirectory(path)) {
+                    collectFiles(baseFolder, path, xmlPaths);
+                } else if(path.getFileName().toString().endsWith(".xml")) {
+                    final Path relPath = baseFolder.relativize(path);
+                    xmlPaths.add(relPath);
+                }
+            }
+        }
+    }
+
     private String filename;
     private File inputXmlFile;
     private File outputXmlFile;
 
-    public RoundTripTests(String filename, File inputXmlFile, File outputXmlFile) {
+    public RoundTripTestsFluencyBank(String filename, File inputXmlFile, File outputXmlFile) {
         this.filename = filename;
         this.inputXmlFile = inputXmlFile;
         this.outputXmlFile = outputXmlFile;
@@ -75,7 +115,7 @@ public class RoundTripTests {
     @Test
     public void testShortRoundTrip() throws IOException, XMLStreamException {
         // ensure output folder exists
-        final File outputFolder = new File(GOOD_XML_OUTPUT);
+        final File outputFolder = outputXmlFile.getParentFile();
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();
         }
@@ -115,7 +155,7 @@ public class RoundTripTests {
     @Test
     public void testLongRoundTrip() throws IOException, XMLStreamException {
         // ensure output folder exists
-        final File outputFolder = new File(GOOD_XML_PHON_OUTPUT);
+        final File outputFolder = new File(OUT_XML_PHON_FODLER);
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();
         }
@@ -127,7 +167,7 @@ public class RoundTripTests {
             intRef.set(intRef.get()+1);
         };
 
-        final File inputFile = new File(GOOD_XML_OUTPUT, inputXmlFile.getName());
+        final File inputFile = new File(OUT_XML_TB_FOLDER, this.filename);
 
         // read in talkbank file
         final TalkbankReader reader = new TalkbankReader();
@@ -135,7 +175,8 @@ public class RoundTripTests {
         final Session session = reader.readFile(inputFile.getAbsolutePath());
 
         // write phon file
-        final File phonFile = new File(GOOD_XML_PHON_OUTPUT, inputFile.getName());
+        final File phonFile = new File(OUT_XML_PHON_FODLER, this.filename);
+        phonFile.getParentFile().mkdirs();
         final SessionOutputFactory outputFactory = new SessionOutputFactory();
         final SessionWriter sessionWriter = outputFactory.createWriter();
         sessionWriter.writeSession(session, new FileOutputStream(phonFile));
