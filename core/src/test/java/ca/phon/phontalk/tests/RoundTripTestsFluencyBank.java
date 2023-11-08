@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * Tests xml equivalence of two files using xmlunit.
  */
 // uncomment to run test, will take a long time
-@RunWith(Parameterized.class)
+//@RunWith(Parameterized.class)
 public class RoundTripTestsFluencyBank {
 
     final static String GIT_REPO = "https://github.com/ghedlund/testfluencybank";
