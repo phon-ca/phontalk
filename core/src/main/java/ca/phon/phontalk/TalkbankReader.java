@@ -40,6 +40,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Read in a TalkBank xml file as a Phon session.
@@ -437,7 +438,19 @@ public class TalkbankReader {
         }
 
         UtteranceTierData utd = readUtterance(reader);
-        r.setOrthography(utd.orthography);
+        Orthography ortho = utd.orthography();
+        if(ortho.hasUtteranceMedia()) {
+            final InternalMedia utteranceMedia = ortho.getUtteranceMedia();
+            final MediaSegment mediaSegment = factory.createMediaSegment();
+            mediaSegment.setStartValue(utteranceMedia.getStartTime());
+            mediaSegment.setEndValue(utteranceMedia.getEndTime());
+            mediaSegment.setUnitType(MediaUnit.Second);
+            r.setMediaSegment(mediaSegment);
+            final List<OrthographyElement> filteredElements = ortho.toList().stream()
+                    .filter(ele -> ele != utd.orthography().getUtteranceMedia()).toList();
+            ortho = new Orthography(filteredElements);
+        }
+        r.setOrthography(ortho);
 
         for(Tier<IPATranscript> ipaTier:utd.ipaTiers()) {
             if(SystemTierType.IPATarget.getName().equals(ipaTier.getName())) {
@@ -447,6 +460,10 @@ public class TalkbankReader {
             } else {
                 r.putTier(ipaTier);
             }
+        }
+
+        for(Tier<?> depTier:utd.depTiers()) {
+            r.putTier(depTier);
         }
 
         for(Tier<MorTierData> morTier:utd.morTiers()) {
@@ -473,51 +490,51 @@ public class TalkbankReader {
         while(!atEnd && readToNextElement(reader)) {
             final String eleName = reader.getLocalName();
             switch (eleName) {
-                case "postcode":
-                    Postcode postcode = readPostcode(reader);
-                    builder = new OrthographyBuilder();
-                    builder.append(r.getOrthography());
-                    builder.append(postcode);
-                    r.setOrthography(builder.toOrthography());
-                    break;
+//                case "postcode":
+//                    Postcode postcode = readPostcode(reader);
+//                    builder = new OrthographyBuilder();
+//                    builder.append(r.getOrthography());
+//                    builder.append(postcode);
+//                    r.setOrthography(builder.toOrthography());
+//                    break;
+//
+//                case "media":
+//                    MediaSegment segment = readMedia(reader);
+//                    if(r.getMediaSegment().isUnset()) {
+//                        r.setMediaSegment(segment);
+//                    } else if(lastOrthoTier != null) {
+//                        builder = new OrthographyBuilder();
+//                        builder.append(lastOrthoTier.getValue());
+//                        float startTime = segment.getUnitType() == MediaUnit.Millisecond ? segment.getStartValue() / 1000.0f : segment.getStartValue();
+//                        float endTime = segment.getUnitType() == MediaUnit.Millisecond ? segment.getEndValue() / 1000.0f : segment.getEndValue();
+//                        builder.append(new InternalMedia(startTime, endTime));
+//                        lastOrthoTier.setValue(builder.toOrthography());
+//                    }
+//                    break;
 
-                case "media":
-                    MediaSegment segment = readMedia(reader);
-                    if(r.getMediaSegment().isUnset()) {
-                        r.setMediaSegment(segment);
-                    } else if(lastOrthoTier != null) {
-                        builder = new OrthographyBuilder();
-                        builder.append(lastOrthoTier.getValue());
-                        float startTime = segment.getUnitType() == MediaUnit.Millisecond ? segment.getStartValue() / 1000.0f : segment.getStartValue();
-                        float endTime = segment.getUnitType() == MediaUnit.Millisecond ? segment.getEndValue() / 1000.0f : segment.getEndValue();
-                        builder.append(new InternalMedia(startTime, endTime));
-                        lastOrthoTier.setValue(builder.toOrthography());
-                    }
-                    break;
+//                case "k":
+//                    Marker marker = readMarker(reader);
+//                    builder = new OrthographyBuilder();
+//                    builder.append(r.getOrthography());
+//                    builder.append(marker);
+//                    r.setOrthography(builder.toOrthography());
+//                    break;
+//
+//                case "error":
+//                    Error error = readError(reader);
+//                    builder = new OrthographyBuilder();
+//                    builder.append(r.getOrthography());
+//                    builder.append(error);
+//                    r.setOrthography(builder.toOrthography());
+//                    break;
 
-                case "k":
-                    Marker marker = readMarker(reader);
-                    builder = new OrthographyBuilder();
-                    builder.append(r.getOrthography());
-                    builder.append(marker);
-                    r.setOrthography(builder.toOrthography());
-                    break;
-
-                case "error":
-                    Error error = readError(reader);
-                    builder = new OrthographyBuilder();
-                    builder.append(r.getOrthography());
-                    builder.append(error);
-                    r.setOrthography(builder.toOrthography());
-                    break;
-
-                case "a":
-                    Tier<TierData> depTier = readDepTier(reader);
-                    if(SystemTierType.Notes.getName().equals(depTier.getName()))
-                        r.setNotes(depTier.getValue());
-                    else
-                        r.putTier(depTier);
-                    break;
+//                case "a":
+//                    Tier<TierData> depTier = readDepTier(reader);
+//                    if(SystemTierType.Notes.getName().equals(depTier.getName()))
+//                        r.setNotes(depTier.getValue());
+//                    else
+//                        r.putTier(depTier);
+//                    break;
 
                 case "wor":
                     Tier<Orthography> worTier = readWorTier(reader);
@@ -694,7 +711,7 @@ public class TalkbankReader {
         return retVal;
     }
 
-    record UtteranceTierData(Orthography orthography, List<Tier<IPATranscript>> ipaTiers,
+    record UtteranceTierData(Orthography orthography, List<Tier<IPATranscript>> ipaTiers, List<Tier<?>> depTiers,
                              List<Tier<MorTierData>> morTiers, List<Tier<GraspTierData>> graTiers) {}
     private UtteranceTierData readUtterance(XMLStreamReader reader) throws XMLStreamException {
         if(!reader.isStartElement()) throwNotStart(reader);
@@ -703,6 +720,7 @@ public class TalkbankReader {
         final StringBuilder builder = new StringBuilder();
         Map<String, StringBuilder> morTierBuilders = new LinkedHashMap<>();
         Map<String, IPATranscriptBuilder> ipaTierBuilders = new LinkedHashMap<>();
+        List<Tier<?>> depTierList = new ArrayList<>();
 
         builder.append("<u xmlns=\"https://phon.ca/ns/session\"");
         final String lang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
@@ -710,7 +728,7 @@ public class TalkbankReader {
             builder.append(" xml:lang=\"").append(lang).append("\"");
         }
         builder.append(">");
-        readUtteranceContent(reader, builder, morTierBuilders, ipaTierBuilders);
+        readUtteranceContent(reader, builder, depTierList, morTierBuilders, ipaTierBuilders);
         builder.append("</u>");
 
         final XMLInputFactory inputFactory = XMLInputFactory.newFactory();
@@ -785,7 +803,7 @@ public class TalkbankReader {
                 }
             }
 
-            return new UtteranceTierData(ortho, ipaTiers, morTiers, graTiers);
+            return new UtteranceTierData(ortho, ipaTiers, depTierList, morTiers, graTiers);
         } catch (IllegalArgumentException | IOException e) {
             throw new XMLStreamException(e);
         }
@@ -800,7 +818,7 @@ public class TalkbankReader {
         Map<String, IPATranscriptBuilder> ipaTierBuilders = new LinkedHashMap<>();
 
         builder.append("<u xmlns=\"https://phon.ca/ns/session\">");
-        readUtteranceContent(reader, builder, morTierBuilders, ipaTierBuilders);
+        readUtteranceContent(reader, builder, new ArrayList<>(), morTierBuilders, ipaTierBuilders);
         builder.append("</u>");
 
         try {
@@ -813,7 +831,7 @@ public class TalkbankReader {
         return retVal;
     }
 
-    private void readUtteranceElement(XMLStreamReader reader, StringBuilder builder,
+    private void readUtteranceElement(XMLStreamReader reader, StringBuilder builder, List<Tier<?>> depTiers,
                                       Map<String, StringBuilder> tierBuilders, Map<String, IPATranscriptBuilder> ipaTierBuilders) throws XMLStreamException {
         if(!reader.isStartElement()) throwNotStart(reader);
         final String eleName = reader.getLocalName();
@@ -821,15 +839,14 @@ public class TalkbankReader {
         builder.append("<").append(eleName);
         appendAttributes(builder, reader);
         builder.append(">");
-        readUtteranceContent(reader, builder, tierBuilders, ipaTierBuilders);
+        readUtteranceContent(reader, builder, depTiers, tierBuilders, ipaTierBuilders);
         builder.append("</").append(eleName).append(">");
     }
 
-    private void readUtteranceContent(XMLStreamReader reader, StringBuilder builder,
-                                      Map<String, StringBuilder> tierBuilders, Map<String, IPATranscriptBuilder> ipaTierBuilders) throws XMLStreamException {
-        boolean readTerminator = false;
+    private void readUtteranceContent(XMLStreamReader reader, StringBuilder builder, List<Tier<?>> depTierList,
+                                      Map<String, StringBuilder> morTierBuilders, Map<String, IPATranscriptBuilder> ipaTierBuilders) throws XMLStreamException {
         final String originalEleName = reader.getLocalName();
-        while(!readTerminator && reader.hasNext()) {
+        while(reader.hasNext()) {
             reader.next();
             if(reader.isCharacters()) {
                 builder.append(StringEscapeUtils.escapeXml(reader.getText()));
@@ -837,17 +854,26 @@ public class TalkbankReader {
                 final String eleName = reader.getLocalName();
                 switch (eleName) {
                     case "mor":
-                        readMor(reader, tierBuilders);
+                        readMor(reader, morTierBuilders);
                         break;
 
                     case "pg":
-                        readPg(reader, builder, tierBuilders, ipaTierBuilders);
+                        readPg(reader, builder, morTierBuilders, ipaTierBuilders);
                         break;
 
-                    case "t":
-                        readTerminator = true;
+                    case "a":
+                        Tier<TierData> depTier = readDepTier(reader);
+                        depTierList.add(depTier);
+                        break;
+
+                    case "wor":
+                        // read wor tier and return
+                        final Tier<Orthography> worTier = readWorTier(reader);
+                        depTierList.add(worTier);
+                        return;
+
                     default:
-                        readUtteranceElement(reader, builder, tierBuilders, ipaTierBuilders);
+                        readUtteranceElement(reader, builder, depTierList, morTierBuilders, ipaTierBuilders);
                         break;
                 }
             } else if(reader.isEndElement() && reader.getLocalName().equals(originalEleName)) {
@@ -874,7 +900,7 @@ public class TalkbankReader {
                         break;
 
                     default:
-                        readUtteranceElement(reader, builder, tierBuilders, ipaTierBuilders);
+                        readUtteranceElement(reader, builder, new ArrayList<>(), tierBuilders, ipaTierBuilders);
                         break;
                 }
             } else if(reader.isEndElement() && reader.getLocalName().equals("pg")) {

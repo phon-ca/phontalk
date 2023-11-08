@@ -35,13 +35,13 @@ import java.util.stream.Collectors;
  */
 // uncomment to run test, will take a long time
 @RunWith(Parameterized.class)
-public class RoundTripTestsFluencyBank {
+public class RoundTripTestsAphasiaBank {
 
-    final static String GIT_REPO = "https://github.com/ghedlund/testfluencybank";
-    final static String TARGET_TEST_FOLDER = "target/test/RoundTripsTestsFluencyBank";
+    final static String GIT_REPO = "https://github.com/ghedlund/testaphasiabank";
+    final static String TARGET_TEST_FOLDER = "target/test/RoundTripsTestsAphasiaBank";
     final static String OUT_XML_TB_FOLDER = TARGET_TEST_FOLDER + "/xml-tb";
     final static String OUT_XML_PHON_FODLER = TARGET_TEST_FOLDER + "/xml-phon";
-    final static String GIT_CLONE_FOLDER = TARGET_TEST_FOLDER + "/testfluencybank";
+    final static String GIT_CLONE_FOLDER = TARGET_TEST_FOLDER + "/testaphasiabank";
     final static String XML_TB_FOLDER = GIT_CLONE_FOLDER + "/xml-tb";
 
     @Parameterized.Parameters(name = "{0}")
@@ -104,7 +104,7 @@ public class RoundTripTestsFluencyBank {
     private File inputXmlFile;
     private File outputXmlFile;
 
-    public RoundTripTestsFluencyBank(String filename, File inputXmlFile, File outputXmlFile) {
+    public RoundTripTestsAphasiaBank(String filename, File inputXmlFile, File outputXmlFile) {
         this.filename = filename;
         this.inputXmlFile = inputXmlFile;
         this.outputXmlFile = outputXmlFile;

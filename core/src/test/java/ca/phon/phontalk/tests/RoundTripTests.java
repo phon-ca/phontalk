@@ -6,6 +6,7 @@ import ca.phon.phontalk.TalkbankWriter;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,10 +16,7 @@ import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.Difference;
 
 import javax.xml.stream.XMLStreamException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Period;
 import java.util.*;
@@ -32,17 +30,11 @@ import java.util.stream.Collectors;
 @RunWith(Parameterized.class)
 public class RoundTripTests {
 
-//    final static String GOOD_XML = "src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml";
-//
-//    final static String GOOD_XML_OUTPUT = "target/test/RoundTripTests/good-xml";
-//
-//    final static String GOOD_XML_PHON_OUTPUT = "target/test/RoundTripTests/good-xml-phon";
+    final static String GOOD_XML = "src/test/resources/ca/phon/phontalk/tests/RoundTripTests/good-xml";
 
-    final static String GOOD_XML = "/Users/ghedlund/Documents/PhonWorkspace/testfluencybank/xml-tb/Ellisweismer/LT/30ec";
+    final static String GOOD_XML_OUTPUT = "target/test/RoundTripTests/good-xml";
 
-    final static String GOOD_XML_OUTPUT = "target/test/RoundTripTests/testfluencybank/Ellisweismer/LT/30ec";
-
-    final static String GOOD_XML_PHON_OUTPUT = "target/test/RoundTripTests/testfluencybank/Ellisweismer/LT/30ec";
+    final static String GOOD_XML_PHON_OUTPUT = "target/test/RoundTripTests/good-xml-phon";
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> collectFiles() {
@@ -105,6 +97,19 @@ public class RoundTripTests {
         final Diff xmlDiff = DiffBuilder.compare(origXml).withTest(testXml)
                 .ignoreWhitespace().ignoreComments().build();
         final DiffData diffData = sortCHATDiff(xmlDiff);
+
+        final File diffFile = new File(outputXmlFile.getParent(), FilenameUtils.removeExtension(outputXmlFile.getName()) + "-diff.txt");
+        try (PrintWriter diffWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(diffFile), StandardCharsets.UTF_8))) {
+            if(!diffData.warnings().isEmpty()) {
+                diffWriter.write(diffData.getWarningText());
+                diffWriter.write("\n");
+            }
+            if(!diffData.errors().isEmpty()) {
+                diffWriter.write(diffData.getErrorText());
+                diffWriter.write("\n");
+            }
+            diffWriter.flush();
+        }
 
         if(!diffData.warnings().isEmpty())
             System.out.println(diffData.getWarningText());
