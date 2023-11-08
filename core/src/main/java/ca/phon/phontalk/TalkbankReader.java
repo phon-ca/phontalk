@@ -809,6 +809,7 @@ public class TalkbankReader {
         }
     }
 
+    private int numWors = 0;
     private Tier<Orthography> readWorTier(XMLStreamReader reader) throws XMLStreamException {
         final Tier<Orthography> retVal = factory.createTier(UserTierType.Wor.getTierName(), Orthography.class);
 
@@ -867,10 +868,9 @@ public class TalkbankReader {
                         break;
 
                     case "wor":
-                        // read wor tier and return
                         final Tier<Orthography> worTier = readWorTier(reader);
                         depTierList.add(worTier);
-                        return;
+                        break;
 
                     default:
                         readUtteranceElement(reader, builder, depTierList, morTierBuilders, ipaTierBuilders);

@@ -75,17 +75,25 @@ public class Main {
 		final Options retVal = new Options();
 
 		// files
-		retVal.addOption("f", "file", true,
+		retVal.addOption("i", "inputFile", true,
 				"""
-						Input file xml file, start elements must be one of:
+						Input xml file, start element must be one of:
 							* {https://phon.ca/ns/session}session - output will be an xml file with start element {http://www.talkbank.org/ns/talkbank}CHAT
 						    * {http://www.talkbank.org/ns/talkbank}CHAT - output will be an xml file with start element {https://phon.ca/ns/session}session
+						Output format may be overridden using -f.
 						""");
-		retVal.getOption("f").setRequired(false);
-		retVal.addOption("o", "output", true,
+		retVal.getOption("i").setRequired(false);
+		retVal.addOption("o", "outputFile", true,
 				"""
 						Output file, required when using -f""");
 		retVal.getOption("o").setRequired(false);
+
+		retVal.addOption("f", "format", true,
+				"""
+						Output format.  Options are 'phon' or 'talkbank'. When converting files this option may
+						override default behaviour.  Default output format for xml fragments is talkbank.""");
+		retVal.getOption("f").setRequired(false);
+		retVal.getOption("f").setOptionalArg(false);
 
 		// u <-> xml
 		retVal.addOption("u", "utterance", true,
@@ -93,13 +101,6 @@ public class Main {
 						Produce xml fragment for main line utterance.  May be combined with -mod -pho -mor -gra -trn -grt""");
 		retVal.getOption("u").setRequired(false);
 		retVal.getOption("u").setOptionalArg(false);
-
-		// ipa <-> xml
-//		retVal.addOption("ipa", "IPATranscript", true,
-//				"""
-//						Product xml fragment for given ipa transcription.  Does not combine with -u""");
-//		retVal.getOption("ipa").setRequired(false);
-//		retVal.getOption("ipa").setOptionalArg(false);
 
 		retVal.addOption("mod", "IPATarget", true,
 				"""
@@ -156,7 +157,7 @@ public class Main {
 		retVal.getOption("m").setRequired(false);
 
 		retVal.addOption("n", "namespace", false, """
-						Include xml namespace.""");
+						Include namespace in xml fragments. Requires -u.""");
 
 		retVal.addOption("h", "help", false, "Show usage info");
 		retVal.getOption("h").setRequired(false);
@@ -221,10 +222,13 @@ public class Main {
 				}
 			}
 
-			boolean formattedOutput = cmdLine.hasOption("m");
+			final boolean formattedOutput = cmdLine.hasOption("m");
+			final boolean includeNamespace = cmdLine.hasOption("n");
 
+			String outputFormat = cmdLine.hasOption("f") ? cmdLine.getOptionValue("f") : "default";
 			switch (mode) {
 				case "fragment":
+					if("default".matches(outputFormat)) outputFormat = "talkbank";
 					try {
 						String utterance = cmdLine.getOptionValue("u");
 						String mod = cmdLine.getOptionValue("mod", "");
@@ -233,7 +237,7 @@ public class Main {
 						String gra = cmdLine.getOptionValue("gra", "");
 						String trn = cmdLine.getOptionValue("trn", "");
 						String grt = cmdLine.getOptionValue("grt", "");
-						outputUtteranceFramgent(utterance, mod, pho, mor, gra, trn, grt, outputFile, formattedOutput);
+						outputUtteranceFramgent(utterance, mod, pho, mor, gra, trn, grt, outputFile, includeNamespace, formattedOutput);
 					} catch (IOException e) {
 						e.printStackTrace(new PrintWriter(System.err));
 						System.exit(2);
@@ -283,7 +287,7 @@ public class Main {
 	 *
 	 */
 	private static void outputUtteranceFramgent(String utterance, String mod, String pho,
-												String mor, String gra, String trn, String grt, String outputFile, boolean formatted) throws IOException {
+												String mor, String gra, String trn, String grt, String outputFile, boolean includeNamespace, boolean formatted) throws IOException {
 		final SessionFactory factory = SessionFactory.newFactory();
 		final Record record = factory.createRecord();
 		try {
@@ -321,7 +325,7 @@ public class Main {
 			}
 			OneToOne.annotateRecord(record);
 			final Orthography orthography = record.getOrthography();
-			final String xml = XMLFragments.toXml(orthography, false, formatted);
+			final String xml = XMLFragments.toXml(orthography, includeNamespace, formatted);
 			outputData(xml, outputFile);
 		} catch (java.text.ParseException e) {
 			throw new IOException(e);
