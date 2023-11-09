@@ -463,7 +463,11 @@ public class TalkbankReader {
         }
 
         for(Tier<?> depTier:utd.depTiers()) {
-            r.putTier(depTier);
+            if(SystemTierType.Notes.getName().equals(depTier.getName())) {
+                r.setNotes((TierData) depTier.getValue());
+            } else {
+                r.putTier(depTier);
+            }
         }
 
         for(Tier<MorTierData> morTier:utd.morTiers()) {
@@ -485,65 +489,16 @@ public class TalkbankReader {
 
         boolean atEnd = false;
         // read remainder of utterance after terminator
-        OrthographyBuilder builder = new OrthographyBuilder();
-        Tier<Orthography> lastOrthoTier = null;
         while(!atEnd && readToNextElement(reader)) {
             final String eleName = reader.getLocalName();
             switch (eleName) {
-//                case "postcode":
-//                    Postcode postcode = readPostcode(reader);
-//                    builder = new OrthographyBuilder();
-//                    builder.append(r.getOrthography());
-//                    builder.append(postcode);
-//                    r.setOrthography(builder.toOrthography());
-//                    break;
-//
-//                case "media":
-//                    MediaSegment segment = readMedia(reader);
-//                    if(r.getMediaSegment().isUnset()) {
-//                        r.setMediaSegment(segment);
-//                    } else if(lastOrthoTier != null) {
-//                        builder = new OrthographyBuilder();
-//                        builder.append(lastOrthoTier.getValue());
-//                        float startTime = segment.getUnitType() == MediaUnit.Millisecond ? segment.getStartValue() / 1000.0f : segment.getStartValue();
-//                        float endTime = segment.getUnitType() == MediaUnit.Millisecond ? segment.getEndValue() / 1000.0f : segment.getEndValue();
-//                        builder.append(new InternalMedia(startTime, endTime));
-//                        lastOrthoTier.setValue(builder.toOrthography());
-//                    }
-//                    break;
-
-//                case "k":
-//                    Marker marker = readMarker(reader);
-//                    builder = new OrthographyBuilder();
-//                    builder.append(r.getOrthography());
-//                    builder.append(marker);
-//                    r.setOrthography(builder.toOrthography());
-//                    break;
-//
-//                case "error":
-//                    Error error = readError(reader);
-//                    builder = new OrthographyBuilder();
-//                    builder.append(r.getOrthography());
-//                    builder.append(error);
-//                    r.setOrthography(builder.toOrthography());
-//                    break;
-
-//                case "a":
-//                    Tier<TierData> depTier = readDepTier(reader);
-//                    if(SystemTierType.Notes.getName().equals(depTier.getName()))
-//                        r.setNotes(depTier.getValue());
-//                    else
-//                        r.putTier(depTier);
-//                    break;
-
                 case "wor":
                     Tier<Orthography> worTier = readWorTier(reader);
                     r.putTier(worTier);
-                    lastOrthoTier = worTier;
                     break;
 
                 default:
-                    // at next transcript element, break look
+                    // at next transcript element, break loop
                     atEnd = true;
                     break;
             }
@@ -809,7 +764,6 @@ public class TalkbankReader {
         }
     }
 
-    private int numWors = 0;
     private Tier<Orthography> readWorTier(XMLStreamReader reader) throws XMLStreamException {
         final Tier<Orthography> retVal = factory.createTier(UserTierType.Wor.getTierName(), Orthography.class);
 
