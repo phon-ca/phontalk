@@ -9,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
@@ -40,7 +39,7 @@ public class RoundTripTestsAphasiaBank {
     final static String GIT_REPO = "https://github.com/ghedlund/testaphasiabank";
     final static String TARGET_TEST_FOLDER = "target/test/RoundTripsTestsAphasiaBank";
     final static String OUT_XML_TB_FOLDER = TARGET_TEST_FOLDER + "/xml-tb";
-    final static String OUT_XML_PHON_FODLER = TARGET_TEST_FOLDER + "/xml-phon";
+    final static String OUT_XML_PHON_FOLDER = TARGET_TEST_FOLDER + "/xml-phon";
     final static String GIT_CLONE_FOLDER = TARGET_TEST_FOLDER + "/testaphasiabank";
     final static String XML_TB_FOLDER = GIT_CLONE_FOLDER + "/xml-tb";
 
@@ -118,7 +117,7 @@ public class RoundTripTestsAphasiaBank {
             outputFolder.mkdirs();
         }
 
-        final File phonXmlFile = new File(OUT_XML_PHON_FODLER, filename);
+        final File phonXmlFile = new File(OUT_XML_PHON_FOLDER, filename);
         if(!phonXmlFile.getParentFile().exists()) {
             phonXmlFile.getParentFile().mkdirs();
         }
@@ -175,7 +174,7 @@ public class RoundTripTestsAphasiaBank {
 //    @Test
     public void testLongRoundTrip() throws IOException, XMLStreamException {
         // ensure output folder exists
-        final File outputFolder = new File(OUT_XML_PHON_FODLER);
+        final File outputFolder = new File(OUT_XML_PHON_FOLDER);
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();
         }
@@ -195,7 +194,7 @@ public class RoundTripTestsAphasiaBank {
         final Session session = reader.readFile(inputFile.getAbsolutePath());
 
         // write phon file
-        final File phonFile = new File(OUT_XML_PHON_FODLER, this.filename);
+        final File phonFile = new File(OUT_XML_PHON_FOLDER, this.filename);
         phonFile.getParentFile().mkdirs();
         final SessionOutputFactory outputFactory = new SessionOutputFactory();
         final SessionWriter sessionWriter = outputFactory.createWriter();

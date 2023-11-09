@@ -13,7 +13,38 @@ alias phontalk="java -jar /path/to/phontalk-cli-<version>.jar"
 ## Usage info (-h)
 
 ```
-
+usage: java -jar phontalk-cli.jar [options]
+ -f,--format <arg>          Output format.  Options are 'phon' or
+                            'talkbank'. When converting files this option
+                            may override default behaviour.  Default output
+                            format for xml fragments is talkbank.
+ -gra <arg>                 Add %gra tier to utterance. Requires -mor
+ -grt <arg>                 Add %grt tier to utterance. Requires -trn
+ -h,--help                  Show usage info
+ -i,--inputFile <arg>       Input xml file, start element must be one of:
+                            * {https://phon.ca/ns/session}session - output
+                            will be an xml file with start element
+                            {http://www.talkbank.org/ns/talkbank}CHAT
+                            * {http://www.talkbank.org/ns/talkbank}CHAT -
+                            output will be an xml file with start element
+                            {https://phon.ca/ns/session}session
+                            Output format may be overridden using -f.
+ -lsb,--list-syllabifiers   List available syllabifier languages and exit.
+                            This supersedes all other options.
+ -m,--formatted             Output formatted xml.
+ -mod <arg>                 Add ipa transcript for %mod tier. Requires -u
+ -mor <arg>                 Add %mor tier to utterance. Requires -u
+ -n,--namespace             Include namespace in xml fragments. Requires
+                            -u.
+ -o,--outputFile <arg>      Output file, required when using -f
+ -pho <arg>                 Add ipa transcript for %. Requires -u
+ -sb,--syllabifier <arg>    Syllabifier language, if provided IPA data
+                            will be 'syllabified' before
+                            xml fragment is produced
+ -trn <arg>                 Add %trn tier to utterance. Requires -u
+ -u <arg>                   Produce xml fragment for main line utterance.
+                            May be combined with -mod -pho -mor -gra -trn
+                            -grt
 ```
 
 ## Convert Between TalkBank and Phon xml formats
@@ -47,39 +78,64 @@ PhonTalk may produce XML Fragments for utterances as an alternate mode to conver
 ### Example: Produce utterance fragment
 
 ```
-phontalk -u "hello world ."
+phontalk -u "[- eng] <hello world> [/] goodbye sanity ."
 ```
 
 Output:
 ```
-   
+<u xml:lang="eng"><g><w>hello</w><w>world</w><k type="retracing"/></g><w>goodbye</w><w>sanity</w><t type="p"/></u>
 ```
 
 Adding ```-m``` will produce formatted output:
 
 ```
-phontalk -u "[- eng] <hello world> [!!] goodbye sanity !" -m
+phontalk -m -u "[- eng] <hello world> [/] goodbye sanity ."
 ```
 
 Output:
 ```
-
+<u xml:lang="eng">
+  <g><w>hello</w><w>world</w><k type="retracing"/></g>
+  <w>goodbye</w>
+  <w>sanity</w>
+  <t type="p"/>
+</u>
 ```
 
 Additional tiers may be supplied using ```-mod```, ```-pho```, ```-mor```, ```-gra```,
 ```-trn```, and ```-grt```.
 
-### Example: Produce utterance fragment with ipa data
+### Example: Produce utterance fragment with mor and ipa data
+
+```
+phontalk -m -u "‹Mommy [?]› ." \
+            -mor "n:prop|Mommy ." \
+            -gra "1|0|INCROOT 2|1|PUNCT" \
+            -pho "ˈɑmɪ" \
+            -mod "ˈmɑmiː"
+```
+
+Output:
+```
+<u>
+  <pg><g><w>Mommy<mor type="mor"><mw><pos><c>n</c><subc>prop</subc></pos><stem>Mommy</stem></mw><gra type="gra" index="1" head="0" relation="INCROOT"></gra></mor></w><k type="best guess"></k></g><mod><pw><stress type="primary"></stress><ph><base>m</base></ph><ph><base>ɑ</base></ph><ph><base>m</base></ph><ph><base>i</base><phlen>ː</phlen></ph></pw></mod><pho><pw><stress type="primary"></stress><ph><base>ɑ</base></ph><ph><base>m</base></ph><ph><base>ɪ</base></ph></pw></pho></pg>
+  <t type="p"><mor type="mor"><mt type="p"></mt><gra type="gra" index="2" head="1" relation="PUNCT"></gra></mor></t>
+</u>
+```
 
 ### Example: Produce utterance fragment with syllabified ipa data
 
-### Example: Auto-transcribe ipa tiers
-
-> This feature is not yet implemented.
-
 ```
-phontalk -u "this is a test ." -dict eng -amod -apho
+phontalk -m -u "‹Mommy [?]› ." \
+            -pho "ˈɑmɪ" \
+            -mod "ˈmɑmiː" \
+            -sb eng
 ```
 
-### Example: Produce utterance fragment with mor data
-
+Output: (scType annotations have been specified)
+```
+<u>
+  <pg><g><w>Mommy</w><k type="best guess"></k></g><mod><pw><stress type="primary"></stress><ph scType="onset"><base>m</base></ph><ph scType="nucleus"><base>ɑ</base></ph><ph scType="onset"><base>m</base></ph><ph scType="nucleus"><base>i</base><phlen>ː</phlen></ph></pw></mod><pho><pw><stress type="primary"></stress><ph scType="nucleus"><base>ɑ</base></ph><ph scType="onset"><base>m</base></ph><ph scType="nucleus"><base>ɪ</base></ph></pw></pho></pg>
+  <t type="p"></t>
+</u>
+```

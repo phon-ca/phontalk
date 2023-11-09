@@ -25,22 +25,30 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stax.StAXResult;
+import javax.xml.transform.stax.StAXSource;
 
 import ca.phon.orthography.Orthography;
 import ca.phon.orthography.mor.GraspTierData;
 import ca.phon.orthography.mor.MorTierData;
+import ca.phon.phontalk.*;
+import ca.phon.session.*;
 import ca.phon.session.Record;
-import ca.phon.session.SessionFactory;
-import ca.phon.session.Tier;
-import ca.phon.session.UserTierType;
+import ca.phon.session.io.SessionInputFactory;
+import ca.phon.session.io.SessionOutputFactory;
+import ca.phon.session.io.SessionReader;
+import ca.phon.session.io.SessionWriter;
 import ca.phon.session.io.xml.OneToOne;
 import ca.phon.session.io.xml.XMLFragments;
 import ca.phon.syllabifier.Syllabifier;
 import ca.phon.syllabifier.SyllabifierLibrary;
 import ca.phon.util.Language;
+import ca.phon.xml.DelegatingXMLStreamWriter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -48,10 +56,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.cli.UnrecognizedOptionException;
-
-import ca.phon.phontalk.DefaultPhonTalkListener;
-import ca.phon.phontalk.Phon2XmlConverter;
-import ca.phon.phontalk.Xml2PhonConverter;
 
 /**
  * Entry point for PhonTalk CLI.
@@ -90,50 +94,49 @@ public class Main {
 
 		retVal.addOption("f", "format", true,
 				"""
-						Output format.  Options are 'phon' or 'talkbank'. When converting files this option may
-						override default behaviour.  Default output format for xml fragments is talkbank.""");
+						Output format.  Options are 'phon' or 'talkbank'. When converting files this option may override default behaviour.  Default output format for xml fragments is talkbank.""");
 		retVal.getOption("f").setRequired(false);
 		retVal.getOption("f").setOptionalArg(false);
 
 		// u <-> xml
-		retVal.addOption("u", "utterance", true,
+		retVal.addOption("u", true,
 				"""
 						Produce xml fragment for main line utterance.  May be combined with -mod -pho -mor -gra -trn -grt""");
 		retVal.getOption("u").setRequired(false);
 		retVal.getOption("u").setOptionalArg(false);
 
-		retVal.addOption("mod", "IPATarget", true,
+		retVal.addOption("mod", true,
 				"""
 						Add ipa transcript for %mod tier. Requires -u""");
 		retVal.getOption("mod").setRequired(false);
 		retVal.getOption("mod").setOptionalArg(false);
 
-		retVal.addOption("pho", "IPAActual", true,
+		retVal.addOption("pho", true,
 				"""
 						Add ipa transcript for %. Requires -u""");
 		retVal.getOption("pho").setRequired(false);
 		retVal.getOption("pho").setOptionalArg(false);
 
 		// mor tiers
-		retVal.addOption("mor", "Morphology", true,
+		retVal.addOption("mor", true,
 				"""
 						Add %mor tier to utterance. Requires -u""");
 		retVal.getOption("mor").setRequired(false);
 		retVal.getOption("mor").setOptionalArg(false);
 
-		retVal.addOption("gra", "GRASP", true,
+		retVal.addOption("gra", true,
 				"""
 						Add %gra tier to utterance. Requires -mor""");
 		retVal.getOption("gra").setRequired(false);
 		retVal.getOption("gra").setOptionalArg(false);
 
-		retVal.addOption("trn", "Morphology", true,
+		retVal.addOption("trn", true,
 				"""
 						Add %trn tier to utterance. Requires -u""");
 		retVal.getOption("trn").setRequired(false);
 		retVal.getOption("trn").setOptionalArg(false);
 
-		retVal.addOption("grt", "GRASP", true,
+		retVal.addOption("grt", true,
 				"""
 						Add %grt tier to utterance. Requires -trn""");
 		retVal.getOption("grt").setRequired(false);
@@ -195,7 +198,16 @@ public class Main {
 				System.exit(0);
 			}
 
-			if(cmdLine.hasOption("u") && cmdLine.hasOption("f")) {
+			Syllabifier syllabifier = null;
+			if(cmdLine.hasOption("sb")) {
+				syllabifier = SyllabifierLibrary.getInstance().getSyllabifierForLanguage(cmdLine.getOptionValue("sb"));
+				if(syllabifier == null) {
+					System.err.println("Unable to find syllabifier for language " + cmdLine.getOptionValue("sb"));
+					System.exit(3);
+				}
+			}
+
+			if(cmdLine.hasOption("u") && cmdLine.hasOption("i")) {
 				final HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp(CMD_STRING, getCLIOptions());
 				System.err.println("-u and -f cannot be used together");
@@ -203,7 +215,7 @@ public class Main {
 			}
 
 			// default mode is full file conversion
-			final String inputFile = cmdLine.hasOption("f") ? cmdLine.getOptionValue("f") : null;
+			final String inputFile = cmdLine.hasOption("i") ? cmdLine.getOptionValue("i") : null;
 			String mode = "phontalk";
 			final String outputFile = cmdLine.hasOption("o") ? cmdLine.getOptionValue("o") : null;
 			if(inputFile == null && cmdLine.hasOption("u")) {
@@ -237,7 +249,8 @@ public class Main {
 						String gra = cmdLine.getOptionValue("gra", "");
 						String trn = cmdLine.getOptionValue("trn", "");
 						String grt = cmdLine.getOptionValue("grt", "");
-						outputUtteranceFramgent(utterance, mod, pho, mor, gra, trn, grt, outputFile, includeNamespace, formattedOutput);
+						outputUtteranceFramgent(utterance, mod, pho, syllabifier,
+								mor, gra, trn, grt, outputFile, outputFormat, includeNamespace, formattedOutput);
 					} catch (IOException e) {
 						e.printStackTrace(new PrintWriter(System.err));
 						System.exit(2);
@@ -257,19 +270,38 @@ public class Main {
 					// get the type of the input file
 					try {
 						final QName rootEleName = getRootElementName(new File(inputFile));
+						Session session = null;
 						if (rootEleName.equals(new QName(CHAT_NAMESPACE, "CHAT"))) {
-							// processing xml->phon
-							final Xml2PhonConverter converter = new Xml2PhonConverter();
-							converter.convertFile(new File(inputFile), new File(outputFile), new DefaultPhonTalkListener());
-						} else if (rootEleName.equals(new QName(PHON_NAMESPACE, "session"))) {
-							// processing phon->xml
-							final Phon2XmlConverter converter = new Phon2XmlConverter();
-							converter.convertFile(new File(inputFile), new File(outputFile), new DefaultPhonTalkListener());
+							final TalkbankReader talkbankReader = new TalkbankReader();
+							talkbankReader.addListener(new DefaultPhonTalkListener());
+							session = talkbankReader.readFile(inputFile);
+							outputFormat = "default".equals(outputFormat) ? "phon" : outputFormat;
+						} else if (rootEleName.equals(new QName(PHON_NAMESPACE, "session")) ||
+							rootEleName.equals(new QName("http://phon.ling.mun.ca/ns/phonbank", "session"))) {
+							final SessionReader reader = (new SessionInputFactory()).createReaderForFile(new File(inputFile));
+							session = reader.readSession(new FileInputStream(inputFile));
+							outputFormat = "default".equals(outputFormat) ? "talkbank" : outputFormat;
 						} else {
 							throw new UnrecognizedOptionException("Input file type not support.");
 						}
-					} catch (IOException e) {
-						throw new IllegalArgumentException(e);
+
+						switch (outputFormat) {
+							case "phon":
+								final SessionWriter writer = (new SessionOutputFactory()).createWriter();
+								writer.writeSession(session, new FileOutputStream(outputFile));
+								break;
+
+							case "talkbank":
+								final TalkbankWriter talkbankWriter = new TalkbankWriter();
+								talkbankWriter.addListener(new DefaultPhonTalkListener());
+								talkbankWriter.writeSession(session, outputFile);
+								break;
+
+							default:
+								throw new IllegalArgumentException("Unknown output format '" + outputFormat + "'");
+						}
+					} catch (IOException | XMLStreamException e) {
+						throw new RuntimeException(e);
 					}
 			}
 
@@ -277,7 +309,6 @@ public class Main {
 			System.err.println(e.getMessage());
 			final HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp(CMD_STRING, getCLIOptions());
-			
 			System.exit(1);
 		}
 		
@@ -286,8 +317,9 @@ public class Main {
 	/**
 	 *
 	 */
-	private static void outputUtteranceFramgent(String utterance, String mod, String pho,
-												String mor, String gra, String trn, String grt, String outputFile, boolean includeNamespace, boolean formatted) throws IOException {
+	private static void outputUtteranceFramgent(String utterance, String mod, String pho, Syllabifier syllabifier,
+												String mor, String gra, String trn, String grt, String outputFile, String outputFormat,
+												boolean includeNamespace, boolean formatted) throws IOException {
 		final SessionFactory factory = SessionFactory.newFactory();
 		final Record record = factory.createRecord();
 		try {
@@ -295,8 +327,12 @@ public class Main {
 			if(record.getOrthographyTier().isUnvalidated()) throw record.getOrthographyTier().getUnvalidatedValue().getParseError();
 			record.getIPATargetTier().setText(mod);
 			if(record.getIPATargetTier().isUnvalidated()) throw record.getIPATargetTier().getUnvalidatedValue().getParseError();
+			if(syllabifier != null)
+				syllabifier.syllabify(record.getIPATarget().toList());
 			record.getIPAActualTier().setText(pho);
 			if(record.getIPAActualTier().isUnvalidated()) throw record.getIPAActualTier().getUnvalidatedValue().getParseError();
+			if(syllabifier != null)
+				syllabifier.syllabify(record.getIPAActual().toList());
 			if(!mor.isBlank()) {
 				final Tier<MorTierData> morTier = factory.createTier(UserTierType.Mor.getTierName(), MorTierData.class, new HashMap<>(), true);
 				morTier.setText(mor);
@@ -325,9 +361,52 @@ public class Main {
 			}
 			OneToOne.annotateRecord(record);
 			final Orthography orthography = record.getOrthography();
-			final String xml = XMLFragments.toXml(orthography, includeNamespace, formatted);
+			String xml = XMLFragments.toXml(orthography, false, formatted);
+
+			final XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+			final XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(xml.getBytes()));
+			final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			final XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newFactory();
+			XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(bout);
+			if("talkbank".equals(outputFormat)) {
+				writer = new TalkbankReader.MorRewriter(writer);
+			}
+			writer = new DelegatingXMLStreamWriter(writer) {
+
+				@Override
+				public void writeStartDocument() throws XMLStreamException {
+				}
+
+				@Override
+				public void writeStartDocument(String version) throws XMLStreamException {
+				}
+
+				@Override
+				public void writeStartDocument(String encoding, String version) throws XMLStreamException {
+				}
+
+				@Override
+				public void writeStartElement(String localName) throws XMLStreamException {
+					if(includeNamespace && localName.equals("u")) {
+						final String ns = "phon".equals(outputFormat) ? PHON_NAMESPACE : CHAT_NAMESPACE;
+						super.writeStartElement("", localName, ns);
+						super.writeNamespace("", ns);
+					} else {
+						super.writeStartElement(localName);
+					}
+				}
+			};
+
+			final StAXSource source = new StAXSource(reader);
+			final StAXResult result = new StAXResult(writer);
+			final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			final Transformer transformer = transformerFactory.newTransformer();
+
+			transformer.transform(source, result);
+			xml = bout.toString(StandardCharsets.UTF_8);
+
 			outputData(xml, outputFile);
-		} catch (java.text.ParseException e) {
+		} catch (java.text.ParseException | XMLStreamException | TransformerException e) {
 			throw new IOException(e);
 		}
 	}

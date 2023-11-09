@@ -1028,7 +1028,7 @@ public class TalkbankReader {
      * Class to re-write the {http://www.talkbank.org/ns/talkbank}pos/s elemnt to
      * {https://phon.ca/ns/session}subc
      */
-    private class MorRewriter extends DelegatingXMLStreamWriter {
+    public static class MorRewriter extends DelegatingXMLStreamWriter {
 
         private Stack<String> eleStack = new Stack<>();
 
