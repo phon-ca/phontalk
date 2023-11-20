@@ -589,7 +589,7 @@ public class TalkbankReader {
             } else {
                 final UserTierType userTierType = UserTierType.fromTalkbankTierType(type);
                 if(userTierType == null) throw new XMLStreamException("Unknown tier 'type' " + type);
-                tierName = userTierType.getTierName();
+                tierName = userTierType.getPhonTierName();
             }
             // one of our pre-defined tiers
             final Tier<TierData> retVal = factory.createTier(tierName, TierData.class);
@@ -744,7 +744,7 @@ public class TalkbankReader {
                             continue;
                         }
                         Grasp gra = readGra(graReader);
-                        List<Grasp> grasps = graMap.computeIfAbsent(graTierType.getTierName(), k -> new ArrayList<>());
+                        List<Grasp> grasps = graMap.computeIfAbsent(graTierType.getPhonTierName(), k -> new ArrayList<>());
                         grasps.add(gra);
                     }
                 }
@@ -765,7 +765,7 @@ public class TalkbankReader {
     }
 
     private Tier<Orthography> readWorTier(XMLStreamReader reader) throws XMLStreamException {
-        final Tier<Orthography> retVal = factory.createTier(UserTierType.Wor.getTierName(), Orthography.class);
+        final Tier<Orthography> retVal = factory.createTier(UserTierType.Wor.getPhonTierName(), Orthography.class);
 
         final StringBuilder builder = new StringBuilder();
         // more/ipa data should not be %wor
@@ -950,11 +950,11 @@ public class TalkbankReader {
             readToEndTag(reader);
             return;
         }
-        StringBuilder builder = tierBuilders.get(userTierType.getTierName());
+        StringBuilder builder = tierBuilders.get(userTierType.getPhonTierName());
         if(builder == null) {
             builder = new StringBuilder();
             builder.append("<mors>\n");
-            tierBuilders.put(userTierType.getTierName(), builder);
+            tierBuilders.put(userTierType.getPhonTierName(), builder);
         }
 
         final String eleXml = recreateElementXML(reader, new ArrayList<>(), true);

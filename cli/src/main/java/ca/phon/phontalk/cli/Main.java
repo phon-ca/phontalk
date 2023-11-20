@@ -334,26 +334,26 @@ public class Main {
 			if(syllabifier != null)
 				syllabifier.syllabify(record.getIPAActual().toList());
 			if(!mor.isBlank()) {
-				final Tier<MorTierData> morTier = factory.createTier(UserTierType.Mor.getTierName(), MorTierData.class, new HashMap<>(), true);
+				final Tier<MorTierData> morTier = factory.createTier(UserTierType.Mor.getPhonTierName(), MorTierData.class, new HashMap<>(), true);
 				morTier.setText(mor);
 				if(morTier.isUnvalidated()) throw morTier.getUnvalidatedValue().getParseError();
 				record.putTier(morTier);
 
 				if(!gra.isBlank()) {
-					final Tier<GraspTierData> graTier = factory.createTier(UserTierType.Gra.getTierName(), GraspTierData.class, new HashMap<>(), true);
+					final Tier<GraspTierData> graTier = factory.createTier(UserTierType.Gra.getPhonTierName(), GraspTierData.class, new HashMap<>(), true);
 					graTier.setText(gra);
 					if(graTier.isUnvalidated()) throw graTier.getUnvalidatedValue().getParseError();
 					record.putTier(graTier);
 				}
 			}
 			if(!trn.isBlank()) {
-				final Tier<MorTierData> trnTier = factory.createTier(UserTierType.Trn.getTierName(), MorTierData.class, new HashMap<>(), true);
+				final Tier<MorTierData> trnTier = factory.createTier(UserTierType.Trn.getPhonTierName(), MorTierData.class, new HashMap<>(), true);
 				trnTier.setText(trn);
 				if(trnTier.isUnvalidated()) throw trnTier.getUnvalidatedValue().getParseError();
 				record.putTier(trnTier);
 
 				if(!gra.isBlank()) {
-					final Tier<GraspTierData> grtTier = factory.createTier(UserTierType.Grt.getTierName(), GraspTierData.class, new HashMap<>(), true);
+					final Tier<GraspTierData> grtTier = factory.createTier(UserTierType.Grt.getPhonTierName(), GraspTierData.class, new HashMap<>(), true);
 					grtTier.setText(gra);
 					if(grtTier.isUnvalidated()) throw grtTier.getUnvalidatedValue().getParseError();
 					record.putTier(grtTier);
