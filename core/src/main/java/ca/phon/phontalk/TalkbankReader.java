@@ -40,7 +40,6 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Read in a TalkBank xml file as a Phon session.
@@ -826,6 +825,20 @@ public class TalkbankReader {
                         depTierList.add(worTier);
                         break;
 
+                    case "pho":
+                        final IPATranscriptBuilder ipaABuilder = ipaTierBuilders.computeIfAbsent(SystemTierType.IPAActual.getName(), (k) -> new IPATranscriptBuilder());
+                        final IPATranscript ipa = readPhoneticTranscript(reader);
+                        if(ipaABuilder.size() > 0) ipaABuilder.appendWordBoundary();
+                        ipaABuilder.append(ipa);
+                        break;
+
+                    case "mod":
+                        final IPATranscriptBuilder ipaTBuilder = ipaTierBuilders.computeIfAbsent(SystemTierType.IPATarget.getName(), (k) -> new IPATranscriptBuilder());
+                        final IPATranscript ipaT = readPhoneticTranscript(reader);
+                        if(ipaTBuilder.size() > 0) ipaTBuilder.appendWordBoundary();
+                        ipaTBuilder.append(ipaT);
+                        break;
+
                     default:
                         readUtteranceElement(reader, builder, depTierList, morTierBuilders, ipaTierBuilders);
                         break;
@@ -833,6 +846,18 @@ public class TalkbankReader {
             } else if(reader.isEndElement() && reader.getLocalName().equals(originalEleName)) {
                 break;
             }
+        }
+    }
+
+    private IPATranscript readPhoneticTranscript(XMLStreamReader reader) throws XMLStreamException {
+        final StringBuilder xmlBuilder = new StringBuilder();
+        xmlBuilder.append("<pho>");
+        appendElementContent(xmlBuilder, reader);
+        xmlBuilder.append("</pho>");
+        try {
+            return XMLFragments.ipaFromXml(xmlBuilder.toString());
+        } catch (IOException e) {
+            throw new XMLStreamException(e);
         }
     }
 
@@ -846,6 +871,20 @@ public class TalkbankReader {
                 switch (eleName) {
                     case "model", "actual":
                         readOldPho(reader, ipaTierBuilders);
+                        break;
+
+                    case "pho":
+                        final IPATranscriptBuilder ipaABuilder = ipaTierBuilders.computeIfAbsent(SystemTierType.IPAActual.getName(), (k) -> new IPATranscriptBuilder());
+                        final IPATranscript ipa = readPhoneticTranscript(reader);
+                        if(ipaABuilder.size() > 0) ipaABuilder.appendWordBoundary();
+                        ipaABuilder.append(ipa);
+                        break;
+
+                    case "mod":
+                        final IPATranscriptBuilder ipaTBuilder = ipaTierBuilders.computeIfAbsent(SystemTierType.IPATarget.getName(), (k) -> new IPATranscriptBuilder());
+                        final IPATranscript ipaT = readPhoneticTranscript(reader);
+                        if(ipaTBuilder.size() > 0) ipaTBuilder.appendWordBoundary();
+                        ipaTBuilder.append(ipaT);
                         break;
 
                     case "align":
@@ -878,14 +917,14 @@ public class TalkbankReader {
             if(reader.isStartElement()) {
                 final String pwEleName = reader.getLocalName();
                 if(!"pw".equals(pwEleName)) throwNotElement(reader, "pw", pwEleName);
-                readPw(reader, builder);
+                readOldPw(reader, builder);
             } else if(reader.isEndElement()) {
                 break;
             }
         }
     }
 
-    private void readPw(XMLStreamReader reader, IPATranscriptBuilder builder) throws XMLStreamException {
+    private void readOldPw(XMLStreamReader reader, IPATranscriptBuilder builder) throws XMLStreamException {
         if(!reader.isStartElement()) throwNotStart(reader);
         if(!"pw".equals(reader.getLocalName())) throwNotElement(reader, "pw", reader.getLocalName());
         while(reader.hasNext()) {

@@ -159,16 +159,16 @@ public class TalkbankWriter {
         writer.writeEndElement();
 
         // write tier name mappings
-        for(TierDescription userTierDesc:session.getUserTiers()) {
-            final String chatTierName = UserTierType.determineCHATTierName(session, userTierDesc.getName());
-            if(chatTierName.startsWith("%x")) {
-                final Comment tierComment = SessionFactory.newFactory().createComment(CommentType.Generic);
-                try {
-                    tierComment.setValue(TierData.parseTierData(String.format("%s = %s")));
-                    writeComment(tierComment, writer);
-                } catch (ParseException pe) {}
-            }
-        }
+//        for(TierDescription userTierDesc:session.getUserTiers()) {
+//            final String chatTierName = UserTierType.determineCHATTierName(session, userTierDesc.getName());
+//            if(chatTierName.startsWith("%x")) {
+//                final Comment tierComment = SessionFactory.newFactory().createComment(CommentType.Generic);
+//                try {
+//                    tierComment.setValue(TierData.parseTierData(String.format("%s = %s", chatTierName, userTierDesc.getName())));
+//                    writeComment(tierComment, writer);
+//                } catch (ParseException pe) {}
+//            }
+//        }
 
         int uid = 0;
         // write transcript
@@ -437,10 +437,9 @@ public class TalkbankWriter {
                             final String type = userTierType.getTalkbankTierType();
                             writeAttribute("type", type);
                         } else {
-                            // TODO abbreviate tier name
                             String flavor = UserTierType.determineCHATTierName(session, tierName);
-                            if (tierName.startsWith("%x")) {
-                                flavor = tierName.substring(2);
+                            if (flavor.startsWith("%x")) {
+                                flavor = flavor.substring(2);
                             }
                             writeAttribute("type", "extension");
                             writeAttribute("flavor", flavor);
