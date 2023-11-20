@@ -23,6 +23,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -157,6 +158,18 @@ public class TalkbankWriter {
         }
         writer.writeEndElement();
 
+        // write tier name mappings
+        for(TierDescription userTierDesc:session.getUserTiers()) {
+            final String chatTierName = UserTierType.determineCHATTierName(session, userTierDesc.getName());
+            if(chatTierName.startsWith("%x")) {
+                final Comment tierComment = SessionFactory.newFactory().createComment(CommentType.Generic);
+                try {
+                    tierComment.setValue(TierData.parseTierData(String.format("%s = %s")));
+                    writeComment(tierComment, writer);
+                } catch (ParseException pe) {}
+            }
+        }
+
         int uid = 0;
         // write transcript
         for(Transcript.Element element:session.getTranscript()) {
@@ -165,7 +178,7 @@ public class TalkbankWriter {
             } else if(element.isGem()) {
                 writeGem(element.asGem(), writer);
             } else if(element.isRecord()) {
-                writeRecord(element.asRecord(), uid++, element.asRecord().getSpeaker().getId(), writer);
+                writeRecord(session, element.asRecord(), uid++, element.asRecord().getSpeaker().getId(), writer);
             }
         }
 
@@ -258,13 +271,13 @@ public class TalkbankWriter {
         writer.writeEndElement();
     }
 
-    private void writeRecord(Record record, int uid, String who, XMLStreamWriter writer) throws XMLStreamException {
+    private void writeRecord(Session session, Record record, int uid, String who, XMLStreamWriter writer) throws XMLStreamException {
         OneToOne.annotateRecord(record);
         try {
             final String utteranceXml = XMLFragments.toXml(record.getOrthography(), false, false);
             final XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
             final XMLStreamReader uReader = xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(utteranceXml.getBytes(StandardCharsets.UTF_8)));
-            final XMLStreamWriter userTierWriter = new RecordXmlStreamWriter(writer, record, uid, who);
+            final XMLStreamWriter userTierWriter = new RecordXmlStreamWriter(writer, session, record, uid, who);
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer();
             StAXSource source = new StAXSource(uReader);
@@ -336,6 +349,8 @@ public class TalkbankWriter {
      */
     private class RecordXmlStreamWriter extends DelegatingXMLStreamWriter {
 
+        private final Session session;
+
         private final Record record;
 
         private final int uid;
@@ -348,9 +363,10 @@ public class TalkbankWriter {
 
         private boolean inPos = false;
 
-        public RecordXmlStreamWriter(XMLStreamWriter delegate, Record record, int uid, String who) {
+        public RecordXmlStreamWriter(XMLStreamWriter delegate, Session session, Record record, int uid, String who) {
             super(delegate);
             this.record = record;
+            this.session = session;
             this.uid = uid;
             this.who = who;
         }
@@ -422,7 +438,7 @@ public class TalkbankWriter {
                             writeAttribute("type", type);
                         } else {
                             // TODO abbreviate tier name
-                            String flavor = abbreviateTierName(tierName);
+                            String flavor = UserTierType.determineCHATTierName(session, tierName);
                             if (tierName.startsWith("%x")) {
                                 flavor = tierName.substring(2);
                             }
@@ -473,49 +489,6 @@ public class TalkbankWriter {
         }
     }
     // endregion XML Writing
-
-    // region Tier mapping
-    /**
-     * Map of phon tier names to chat extension flavors
-     */
-    private final Map<String, String> tierNameMap = new LinkedHashMap<>();
-
-    /**
-     * CLAN requires user-defined tier names be no longer than 7 characters
-     *
-     * @return mapped tier name
-     */
-    private String abbreviateTierName(String tierName) {
-        final StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < tierName.length() && builder.length() < 7; i++) {
-            final char c = tierName.charAt(i);
-            if(!Character.isWhitespace(c)) {
-                builder.append(c);
-            }
-        }
-        int idx = 0;
-        while(tierNameMap.containsKey(builder.toString())) {
-            builder.replace(builder.length()-2, builder.length()-1, Integer.toString(idx));
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Write comments at end of transcript for mapping tier names back to Phon
-     *
-     * @param writer
-     * @throws XMLStreamException
-     */
-    private void writeTierNameMap(XMLStreamWriter writer) throws XMLStreamException {
-        for(String tierName:tierNameMap.keySet()) {
-            writer.writeStartElement("comment");
-            writer.writeAttribute("type", "");
-            writer.writeCharacters(StringEscapeUtils.escapeXml(
-                    String.format("tier %%x%s=%s", tierNameMap.get(tierName), tierName)));
-            writer.writeEndElement();
-        }
-    }
-    // endregion Tier mapping
 
     // region Listeners
     private void fireWarning(String message, XMLStreamWriter writer) {
