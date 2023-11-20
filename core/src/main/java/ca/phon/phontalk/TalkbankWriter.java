@@ -159,16 +159,19 @@ public class TalkbankWriter {
         writer.writeEndElement();
 
         // write tier name mappings
-//        for(TierDescription userTierDesc:session.getUserTiers()) {
-//            final String chatTierName = UserTierType.determineCHATTierName(session, userTierDesc.getName());
-//            if(chatTierName.startsWith("%x")) {
-//                final Comment tierComment = SessionFactory.newFactory().createComment(CommentType.Generic);
-//                try {
-//                    tierComment.setValue(TierData.parseTierData(String.format("%s = %s", chatTierName, userTierDesc.getName())));
-//                    writeComment(tierComment, writer);
-//                } catch (ParseException pe) {}
-//            }
-//        }
+        for(TierDescription userTierDesc:session.getUserTiers()) {
+            final String abbrvTierName = "%x" + UserTierType.abbreviateTierName(userTierDesc.getName());
+            final String chatTierName = UserTierType.determineCHATTierName(session, userTierDesc.getName());
+            // only write when necessary
+            if(userTierDesc.getName().length() < 7 && abbrvTierName.equals(chatTierName)) continue;
+            if(chatTierName.startsWith("%x")) {
+                final Comment tierComment = SessionFactory.newFactory().createComment(CommentType.Generic);
+                try {
+                    tierComment.setValue(TierData.parseTierData(String.format("%s = %s", chatTierName, userTierDesc.getName())));
+                    writeComment(tierComment, writer);
+                } catch (ParseException pe) {}
+            }
+        }
 
         int uid = 0;
         // write transcript
