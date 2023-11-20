@@ -94,7 +94,7 @@ public class TalkbankReader {
     private void updateSessionTierDescriptions(Session session, Map<String, String> tierNameMap) {
         for(Record record:session.getRecords()) {
             for(Tier<?> userTier:record.getUserTiers()) {
-                final String tierName = tierNameMap.containsKey(userTier.getName()) ? tierNameMap.get(userTier.getName()) : userTier.getName();
+                final String tierName = userTier.getName();
                 TierDescription td = session.getUserTiers().get(tierName);
                 if(td != null) continue;
                 final UserTierType userTierType = UserTierType.fromPhonTierName(tierName);
@@ -105,19 +105,12 @@ public class TalkbankReader {
                 }
                 session.addUserTier(td);
             }
-
-            for(String abbrvTierName:tierNameMap.keySet()) {
-                Tier<Object> tier = (Tier<Object>)record.getTier(abbrvTierName);
-                final Tier<Object> newTier = factory.createTier(tierNameMap.get(abbrvTierName), tier.getDeclaredType(), tier.getTierParameters(), tier.isExcludeFromAlignment());
-                newTier.setValue(tier.getValue());
-                record.removeTier(abbrvTierName);
-                record.putTier(newTier);
-            }
         }
     }
     // endregion Session utils
 
     // region XML Processing
+    final Map<String, String> tierNameMap = new LinkedHashMap<>();
     /**
      * Read CHAT element and return Session object
      *
@@ -217,8 +210,6 @@ public class TalkbankReader {
             session.getMetadata().put("Font", font);
         }
 
-        final Map<String, String> tierNameMap = new LinkedHashMap<>();
-
         // flag used to avoid skipping elements
         boolean dontSkip = false;
         while(dontSkip || readToNextElement(reader)) {
@@ -232,7 +223,7 @@ public class TalkbankReader {
 
                 case "comment":
                     Comment comment = readComment(reader);
-                    final Pattern tierMapPattern = Pattern.compile("tier (.+?)=(.+)");
+                    final Pattern tierMapPattern = Pattern.compile("%x(.+?)\\s*=\\s*(.+)");
                     final Matcher matcher = tierMapPattern.matcher(comment.getValue().toString());
                     if(matcher.matches()) {
                         // add to tier name map
@@ -584,7 +575,7 @@ public class TalkbankReader {
         if(type != null) {
             String tierName = "undefined";
             if("extension".equals(type)) {
-                tierName = flavor;
+                tierName = tierNameMap.getOrDefault(flavor, flavor);
             } else {
                 final UserTierType userTierType = UserTierType.fromTalkbankTierType(type);
                 if(userTierType == null) throw new XMLStreamException("Unknown tier 'type' " + type);
