@@ -1,16 +1,22 @@
 package ca.phon.phontalk.tests;
 
+import ca.phon.orthography.Orthography;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.TalkbankReader;
 import ca.phon.phontalk.TalkbankWriter;
+import ca.phon.session.Record;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.jsoup.select.CombiningEvaluator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.talkbank.ns.talkbank.P;
+import org.talkbank.ns.talkbank.S;
+import org.talkbank.ns.talkbank.T;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.Difference;
@@ -21,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,14 +42,16 @@ import java.util.stream.Collectors;
  */
 // uncomment to run test, will take a long time
 //@RunWith(Parameterized.class)
-public class RoundTripTestsAphasiaBank {
+public class RoundTripTestsPhonBank {
 
-    final static String GIT_REPO = "https://github.com/ghedlund/testaphasiabank";
-    final static String TARGET_TEST_FOLDER = "target/test/RoundTripsTestsAphasiaBank";
+    final static String GIT_REPO = "https://github.com/ghedlund/testphonbank";
+    final static String TARGET_TEST_FOLDER = "target/test/RoundTripsTestsPhonBank";
     final static String OUT_XML_TB_FOLDER = TARGET_TEST_FOLDER + "/xml-tb";
     final static String OUT_XML_PHON_FOLDER = TARGET_TEST_FOLDER + "/xml-phon";
-    final static String GIT_CLONE_FOLDER = TARGET_TEST_FOLDER + "/testaphasiabank";
+    final static String OUT_XML_PHON_TB_FOLDER = TARGET_TEST_FOLDER + "/xml-phon-tb";
+    final static String GIT_CLONE_FOLDER = TARGET_TEST_FOLDER + "/testphonbank";
     final static String XML_TB_FOLDER = GIT_CLONE_FOLDER + "/xml-tb";
+    final static String XML_PHON_FOLDER = GIT_CLONE_FOLDER + "/xml-phon-1_3";
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> collectFiles() throws IOException, InterruptedException {
@@ -61,11 +70,8 @@ public class RoundTripTestsAphasiaBank {
         if(!outXmlFolder.exists()) {
             outXmlFolder.mkdirs();
         }
-        final Path outFolder = outXmlFolder.toPath();
         for(Path xmlRelPath:xmlPaths) {
-            final File xmlFile = baseFolder.resolve(xmlRelPath).toFile();
-            final File outFile = outFolder.resolve(xmlRelPath).toFile();
-            retVal.add(new Object[]{xmlRelPath.toString(), xmlFile, outFile });
+            retVal.add(new Object[]{xmlRelPath.toString()});
         }
 
         retVal.sort(Comparator.comparing(a -> a[0].toString()));
@@ -101,27 +107,18 @@ public class RoundTripTestsAphasiaBank {
     }
 
     private String filename;
-    private File inputXmlFile;
-    private File outputXmlFile;
 
-    public RoundTripTestsAphasiaBank(String filename, File inputXmlFile, File outputXmlFile) {
+    public RoundTripTestsPhonBank(String filename) {
         this.filename = filename;
-        this.inputXmlFile = inputXmlFile;
-        this.outputXmlFile = outputXmlFile;
     }
 
     @Test
     public void testShortRoundTrip() throws IOException, XMLStreamException {
-        // ensure output folder exists
-        final File outputFolder = outputXmlFile.getParentFile();
-        if(!outputFolder.exists()) {
-            outputFolder.mkdirs();
-        }
-
-        final File phonXmlFile = new File(OUT_XML_PHON_FOLDER, filename);
-        if(!phonXmlFile.getParentFile().exists()) {
-            phonXmlFile.getParentFile().mkdirs();
-        }
+        final File origTbFile = new File(XML_TB_FOLDER, this.filename);
+        final File origPhonFile = new File(XML_PHON_FOLDER, this.filename);
+        final File outTbFile = new File(OUT_XML_TB_FOLDER, this.filename);
+        final File outPhonFile = new File(OUT_XML_PHON_FOLDER, this.filename);
+        final File outPhonTbFile = new File(OUT_XML_PHON_TB_FOLDER, this.filename);
 
         System.out.println("Round trip file: " + filename);
         AtomicReference<Integer> intRef = new AtomicReference<>(0);
@@ -130,25 +127,57 @@ public class RoundTripTestsAphasiaBank {
             intRef.set(intRef.get()+1);
         };
 
-        // read in talkbank file
+        // read original tb file
         final TalkbankReader reader = new TalkbankReader();
         reader.addListener(listener);
-        final Session session = reader.readFile(inputXmlFile.getAbsolutePath());
+        final Session tbSession = reader.readFile(origTbFile.getAbsolutePath());
 
-        final SessionWriter writer = (new SessionOutputFactory()).createWriter();
-        writer.writeSession(session, new FileOutputStream(phonXmlFile));
+        for(Record r:tbSession.getRecords()) {
+            try {
+                final Orthography reparsedOrtho = Orthography.parseOrthography(r.getOrthography().toString());
+                r.setOrthography(reparsedOrtho);
+            } catch (ParseException e) {
 
-        final TalkbankWriter phonWriter = new TalkbankWriter();
-        phonWriter.addListener(listener);
-        phonWriter.writeSession(session, outputXmlFile.getAbsolutePath());
+            }
+        }
+
+        // output talkbank xml
+        File outputFolder = outTbFile.getParentFile();
+        if(!outputFolder.exists()) {
+            outputFolder.mkdirs();
+        }
+        final TalkbankWriter writer = new TalkbankWriter();
+        writer.addListener(listener);
+        writer.writeSession(tbSession, outTbFile.getAbsolutePath());
+
+        // read original phon file
+        final SessionInputFactory inputFactory = new SessionInputFactory();
+        final SessionReader origSessionReader = inputFactory.createReaderForFile(origPhonFile);
+        final Session phonSession = origSessionReader.readSession(new FileInputStream(origPhonFile));
+
+        // output new phon file
+        if(!outPhonFile.getParentFile().exists()) {
+            outPhonFile.getParentFile().mkdirs();
+        }
+        final SessionOutputFactory sessionOutputFactory = new SessionOutputFactory();
+        final SessionWriter sessionWriter = sessionOutputFactory.createWriter();
+        sessionWriter.writeSession(phonSession, new FileOutputStream(outPhonFile));
+
+        // output phon-tb file
+        if(!outPhonTbFile.getParentFile().exists()) {
+            outPhonTbFile.getParentFile().mkdirs();
+        }
+        final TalkbankWriter phonTbWriter = new TalkbankWriter();
+        phonTbWriter.addListener(listener);
+        phonTbWriter.writeSession(phonSession, new FileOutputStream(outPhonTbFile));
 
         // check number of reported errors
         Assert.assertEquals(0, (int)intRef.get());
 
-        final String origXml = FileUtils.readFileToString(inputXmlFile, StandardCharsets.UTF_8);
-        final String testXml = FileUtils.readFileToString(outputXmlFile, StandardCharsets.UTF_8);
+        final String tbXml = FileUtils.readFileToString(outTbFile, StandardCharsets.UTF_8);
+        final String phonTbXml = FileUtils.readFileToString(outPhonTbFile, StandardCharsets.UTF_8);
 
-        final Diff xmlDiff = DiffBuilder.compare(origXml).withTest(testXml)
+        final Diff xmlDiff = DiffBuilder.compare(phonTbXml).withTest(tbXml)
                 .ignoreWhitespace().ignoreComments().build();
         final DiffData diffData = sortCHATDiff(xmlDiff);
 
@@ -156,7 +185,7 @@ public class RoundTripTestsAphasiaBank {
             System.out.println(diffData.getWarningText());
 
         // write diff file
-        final File diffFile = new File(outputXmlFile.getParent(), FilenameUtils.removeExtension(outputXmlFile.getName()) + "-diff.txt");
+        final File diffFile = new File(outTbFile.getParent(), FilenameUtils.removeExtension(outTbFile.getName()) + "-diff.txt");
         try (PrintWriter diffWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(diffFile), StandardCharsets.UTF_8))) {
             if(!diffData.warnings().isEmpty()) {
                 diffWriter.write(diffData.getWarningText());
@@ -168,60 +197,6 @@ public class RoundTripTestsAphasiaBank {
             }
             diffWriter.flush();
         }
-
-        Assert.assertEquals(diffData.getErrorText(), 0, diffData.errors().size());
-    }
-
-//    @Test
-    public void testLongRoundTrip() throws IOException, XMLStreamException {
-        // ensure output folder exists
-        final File outputFolder = new File(OUT_XML_PHON_FOLDER);
-        if(!outputFolder.exists()) {
-            outputFolder.mkdirs();
-        }
-
-        System.out.println("Round trip file: " + filename);
-        AtomicReference<Integer> intRef = new AtomicReference<>(0);
-        final PhonTalkListener listener = (msg) -> {
-            System.out.println(msg.toString());
-            intRef.set(intRef.get()+1);
-        };
-
-        final File inputFile = new File(OUT_XML_TB_FOLDER, this.filename);
-
-        // read in talkbank file
-        final TalkbankReader reader = new TalkbankReader();
-        reader.addListener(listener);
-        final Session session = reader.readFile(inputFile.getAbsolutePath());
-
-        // write phon file
-        final File phonFile = new File(OUT_XML_PHON_FOLDER, this.filename);
-        phonFile.getParentFile().mkdirs();
-        final SessionOutputFactory outputFactory = new SessionOutputFactory();
-        final SessionWriter sessionWriter = outputFactory.createWriter();
-        sessionWriter.writeSession(session, new FileOutputStream(phonFile));
-
-        // read Phon file
-        final SessionInputFactory inputFactory = new SessionInputFactory();
-        final SessionReader sessionReader = inputFactory.createReader(sessionWriter.getClass().getAnnotation(SessionIO.class));
-        final Session testSession = sessionReader.readSession(new FileInputStream(phonFile));
-
-        final TalkbankWriter writer = new TalkbankWriter();
-        writer.addListener(listener);
-        writer.writeSession(testSession, outputXmlFile.getAbsolutePath());
-
-        // check number of reported errors
-        Assert.assertEquals(0, (int)intRef.get());
-
-        final String origXml = FileUtils.readFileToString(inputFile, StandardCharsets.UTF_8);
-        final String testXml = FileUtils.readFileToString(outputXmlFile, StandardCharsets.UTF_8);
-
-        final Diff xmlDiff = DiffBuilder.compare(origXml).withTest(testXml)
-                .ignoreWhitespace().ignoreComments().build();
-        final DiffData diffData = sortCHATDiff(xmlDiff);
-
-        if(!diffData.warnings().isEmpty())
-            System.out.println(diffData.getWarningText());
 
         Assert.assertEquals(diffData.getErrorText(), 0, diffData.errors().size());
     }
