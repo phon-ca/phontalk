@@ -71,7 +71,7 @@ phontalk -i tb.xml -o tb-tb.xml -f talkbank
 phontalk -i phon.xml -o phon-phon.xml -f phon
 ```
 
-## Produce XML Fragments
+## XML Fragments
 
 PhonTalk may produce XML Fragments for utterances as an alternate mode to converting files.
 
@@ -138,4 +138,15 @@ Output: (scType annotations have been specified)
   <pg><g><w>Mommy</w><k type="best guess"></k></g><mod><pw><stress type="primary"></stress><ph scType="onset"><base>m</base></ph><ph scType="nucleus"><base>ɑ</base></ph><ph scType="onset"><base>m</base></ph><ph scType="nucleus"><base>i</base><phlen>ː</phlen></ph></pw></mod><pho><pw><stress type="primary"></stress><ph scType="nucleus"><base>ɑ</base></ph><ph scType="onset"><base>m</base></ph><ph scType="nucleus"><base>ɪ</base></ph></pw></pho></pg>
   <t type="p"></t>
 </u>
+```
+
+### Example: List available syllabifier languages
+
+```
+phontalk -lsb
+```
+
+Output:
+```
+Available syllabifiers:  ara arn cat-simple cat cmn cre-simple cre deu-ambi deu-simple deu ell eng-ambi eng-simple eng-smith eng-smith-simple eng fas fas fra-simple fra gue isl-simple isl ita jbe nld-ambi nld-clpf-ambi nld-clpf nld-simple nld pol por slk slv swe tsn urd yue vie zxx
 ```
