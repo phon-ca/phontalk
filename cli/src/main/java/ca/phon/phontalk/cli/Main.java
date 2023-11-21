@@ -21,13 +21,10 @@ package ca.phon.phontalk.cli;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stax.StAXResult;
@@ -249,10 +246,17 @@ public class Main {
 						String gra = cmdLine.getOptionValue("gra", "");
 						String trn = cmdLine.getOptionValue("trn", "");
 						String grt = cmdLine.getOptionValue("grt", "");
-						outputUtteranceFramgent(utterance, mod, pho, syllabifier,
+						outputUtteranceFragment(utterance, mod, pho, syllabifier,
 								mor, gra, trn, grt, outputFile, outputFormat, includeNamespace, formattedOutput);
 					} catch (IOException e) {
+						System.err.println(e.getMessage());
 						e.printStackTrace(new PrintWriter(System.err));
+						System.err.flush();
+						System.exit(2);
+					} catch (java.text.ParseException pe) {
+						System.err.println(String.format("%s@%d", pe.getMessage(), pe.getErrorOffset()));
+						pe.printStackTrace(new PrintWriter(System.err));
+						System.err.flush();
 						System.exit(2);
 					}
 					break;
@@ -317,45 +321,66 @@ public class Main {
 	/**
 	 *
 	 */
-	private static void outputUtteranceFramgent(String utterance, String mod, String pho, Syllabifier syllabifier,
+	private static void outputUtteranceFragment(String utterance, String mod, String pho, Syllabifier syllabifier,
 												String mor, String gra, String trn, String grt, String outputFile, String outputFormat,
-												boolean includeNamespace, boolean formatted) throws IOException {
+												boolean includeNamespace, boolean formatted) throws IOException, java.text.ParseException {
 		final SessionFactory factory = SessionFactory.newFactory();
 		final Record record = factory.createRecord();
 		try {
 			record.getOrthographyTier().setText(utterance);
-			if(record.getOrthographyTier().isUnvalidated()) throw record.getOrthographyTier().getUnvalidatedValue().getParseError();
+			if(record.getOrthographyTier().isUnvalidated()) {
+				System.err.println("Error parsing -u");
+				throw record.getOrthographyTier().getUnvalidatedValue().getParseError();
+			}
 			record.getIPATargetTier().setText(mod);
-			if(record.getIPATargetTier().isUnvalidated()) throw record.getIPATargetTier().getUnvalidatedValue().getParseError();
+			if(record.getIPATargetTier().isUnvalidated()) {
+				System.err.println("Error parsing -mod");
+				throw record.getIPATargetTier().getUnvalidatedValue().getParseError();
+			}
 			if(syllabifier != null)
 				syllabifier.syllabify(record.getIPATarget().toList());
 			record.getIPAActualTier().setText(pho);
-			if(record.getIPAActualTier().isUnvalidated()) throw record.getIPAActualTier().getUnvalidatedValue().getParseError();
+			if(record.getIPAActualTier().isUnvalidated()) {
+				System.err.println("Error parsing -pho");
+				throw record.getIPAActualTier().getUnvalidatedValue().getParseError();
+			}
 			if(syllabifier != null)
 				syllabifier.syllabify(record.getIPAActual().toList());
 			if(!mor.isBlank()) {
 				final Tier<MorTierData> morTier = factory.createTier(UserTierType.Mor.getPhonTierName(), MorTierData.class, new HashMap<>(), true);
 				morTier.setText(mor);
-				if(morTier.isUnvalidated()) throw morTier.getUnvalidatedValue().getParseError();
+				if(morTier.isUnvalidated()) {
+					System.err.println("Error parsing -mor");
+					throw morTier.getUnvalidatedValue().getParseError();
+				}
 				record.putTier(morTier);
 
 				if(!gra.isBlank()) {
 					final Tier<GraspTierData> graTier = factory.createTier(UserTierType.Gra.getPhonTierName(), GraspTierData.class, new HashMap<>(), true);
 					graTier.setText(gra);
-					if(graTier.isUnvalidated()) throw graTier.getUnvalidatedValue().getParseError();
+					if(graTier.isUnvalidated()) {
+						System.err.println("Error parsing -gra");
+						throw graTier.getUnvalidatedValue().getParseError();
+					}
 					record.putTier(graTier);
 				}
 			}
 			if(!trn.isBlank()) {
 				final Tier<MorTierData> trnTier = factory.createTier(UserTierType.Trn.getPhonTierName(), MorTierData.class, new HashMap<>(), true);
 				trnTier.setText(trn);
-				if(trnTier.isUnvalidated()) throw trnTier.getUnvalidatedValue().getParseError();
+				if(trnTier.isUnvalidated()) {
+					System.err.println("Error parsing -trn");
+					throw trnTier.getUnvalidatedValue().getParseError();
+				}
 				record.putTier(trnTier);
 
 				if(!gra.isBlank()) {
 					final Tier<GraspTierData> grtTier = factory.createTier(UserTierType.Grt.getPhonTierName(), GraspTierData.class, new HashMap<>(), true);
-					grtTier.setText(gra);
-					if(grtTier.isUnvalidated()) throw grtTier.getUnvalidatedValue().getParseError();
+					grtTier.setText(grt);
+					if(grtTier.isUnvalidated()) {
+						System.err.println("Error parsing -grt");
+						throw grtTier.getUnvalidatedValue().getParseError();
+					}
 					record.putTier(grtTier);
 				}
 			}
@@ -406,7 +431,7 @@ public class Main {
 			xml = bout.toString(StandardCharsets.UTF_8);
 
 			outputData(xml, outputFile);
-		} catch (java.text.ParseException | XMLStreamException | TransformerException e) {
+		} catch (XMLStreamException | TransformerException e) {
 			throw new IOException(e);
 		}
 	}
