@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<name>PhonTalk</name>
-	<url>http://phon.ling.mun.ca</url>
+	<url>https://github.com/phon-ca/phontalk</url>
 	<description>Utility for converting files between Talkbank and Phon.  Includes a plug-in for Phon as well as a CLI.</description>
 
 	<developers>
