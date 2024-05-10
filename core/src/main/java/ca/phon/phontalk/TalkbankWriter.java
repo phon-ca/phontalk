@@ -421,7 +421,7 @@ public class TalkbankWriter {
                     writeAttribute("type", "missing CA terminator");
                 }
 
-                if(record.getSegmentTier().hasValue() && !record.getSegmentTier().getValue().isUnset())
+                if(record.getSegmentTier().hasValue() && !record.getSegmentTier().getValue().isPointAtOrigin())
                     writeMedia(record.getMediaSegment(), this);
 
                 // other user tiers
