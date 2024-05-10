@@ -6,21 +6,14 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:tb="http://www.talkbank.org/ns/talkbank" xmlns="http://www.talkbank.org/ns/talkbank"
-           targetNamespace="http://www.talkbank.org/ns/talkbank" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-           jaxb:version="2.1" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-           jaxb:extensionBindingPrefixes="xjc" xmlns:xhtml="http://www.w3.org/1999/xhtml"
-           elementFormDefault="qualified" version="2.21.0" id="Talkbank">
+           targetNamespace="http://www.talkbank.org/ns/talkbank"
+           xmlns:xhtml="http://www.w3.org/1999/xhtml"
+           elementFormDefault="qualified" version="2.20.2" id="Talkbank">
 
     <xs:import namespace="http://www.w3.org/XML/1998/namespace"
                schemaLocation="http://www.w3.org/2001/xml.xsd"/>
 
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-        <xs:appinfo>
-            <jaxb:globalBindings>
-                <xjc:simple/>
-            </jaxb:globalBindings>
-        </xs:appinfo>
-
         <xs:documentation> A full definition of the CHAT format. </xs:documentation>
         <xs:documentation> Developed by Romeo Anghelache, from the CHAT specifications, released under
             the GNU Public License, 2001. Continuing development by Franklin Chen. </xs:documentation>
@@ -3873,15 +3866,6 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#WordInternalPause_Marker">CHAT
                                         manual section on this topic...</a>
-                                </xs:documentation>
-                            </xs:annotation>
-                        </xs:enumeration>
-                        <xs:enumeration value="blocking">
-                            <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>^ at beginning</xs:documentation>
-                                <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#Blocking_Marker">CHAT manual
-                                        section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
