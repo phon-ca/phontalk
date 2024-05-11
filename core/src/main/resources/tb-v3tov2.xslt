@@ -18,7 +18,7 @@
 
     <!-- re-write Version attribute of root element, retain all other attributes -->
     <xsl:template match="tb:CHAT">
-        <xsl:element name="CHAT">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank" name="CHAT">
             <xsl:attribute name="Version">2.20.3</xsl:attribute>
             <xsl:apply-templates select="@*[not(name()='Version')]|node()" />
         </xsl:element>
@@ -26,17 +26,17 @@
 
     <!-- If a w element contains a pho or mod element, wrap the w element in a pg element and convert pho to actual -->
     <xsl:template match="tb:w[tb:pho or tb:mod]">
-        <xsl:element name="pg">
-            <xsl:element name="w">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="pg">
+            <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="w">
                 <xsl:apply-templates select="@*|node()[not(self::tb:pho or self::tb:mod)]" />
             </xsl:element>
             <xsl:if test="tb:pho">
-                <xsl:element name="actual">
+                <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="actual">
                     <xsl:apply-templates select="tb:pho/node()" />
                 </xsl:element>
             </xsl:if>
             <xsl:if test="tb:mod">
-                <xsl:element name="model">
+                <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="model">
                     <xsl:apply-templates select="tb:mod/node()" />
                 </xsl:element>
             </xsl:if>
@@ -44,17 +44,17 @@
     </xsl:template>
 
     <xsl:template match="tb:pause[tb:pho or tb:mod]">
-        <xsl:element name="pg">
-            <xsl:element name="ph">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="pg">
+            <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ph">
                 <xsl:apply-templates select="@*|node()[not(self::tb:pho or self::tb:mod)]" />
             </xsl:element>
             <xsl:if test="tb:pho">
-                <xsl:element name="actual">
+                <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="actual">
                     <xsl:apply-templates select="tb:pho/node()" />
                 </xsl:element>
             </xsl:if>
             <xsl:if test="tb:mod">
-                <xsl:element name="model">
+                <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="model">
                     <xsl:apply-templates select="tb:mod/node()" />
                 </xsl:element>
             </xsl:if>
@@ -63,48 +63,50 @@
 
     <!-- Match pho element and convert to actual -->
     <xsl:template match="tb:pho">
-        <xsl:element name="actual">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="actual">
             <xsl:apply-templates select="@*|node()" />
         </xsl:element>
     </xsl:template>
     <xsl:template match="tb:mod">
-        <xsl:element name="model">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="model">
             <xsl:apply-templates select="@*|node()" />
         </xsl:element>
     </xsl:template>
 
     <!-- turn <ph><base>xxx</base></ph> into <ph>xxx</ph> -->
     <xsl:template match="tb:ph">
-        <xsl:element name="ph">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ph">
             <xsl:attribute name="id">
                 <xsl:text>ph</xsl:text>
-                <xsl:number count="tb:ph" level="any" from="tb:pw" format="1" />
+                <xsl:number count="tb:ph" level="any" from="tb:CHAT" format="1" />
             </xsl:attribute>
             <xs:value-of select="concat(tb:prefix, tb:base, tb:combining, tb:phlen, tb:suffix, tb:toneNumber)" />
         </xsl:element>
     </xsl:template>
 
     <xsl:template match="tb:stress">
-        <xsl:element name="ss">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ss">
             <xsl:choose>
                 <xsl:when test="@type='primary'">
-                    <xsl:text>1</xsl:text>
+                    <xsl:attribute name="type">
+                        <xsl:text>1</xsl:text>
+                    </xsl:attribute>
                 </xsl:when>
                 <xsl:when test="@type='secondary'">
-                    <xsl:text>2</xsl:text>
+                    <xsl:attribute name="type">
+                        <xsl:text>2</xsl:text>
+                    </xsl:attribute>
                 </xsl:when>
-                <xsl:otherwise>
-                    <xsl:text>0</xsl:text>
-                </xsl:otherwise>
             </xsl:choose>
         </xsl:element>
     </xsl:template>
 
     <xsl:template match="tb:pp">
-        <xsl:element name="ph">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ph">
             <xsl:attribute name="id">
-                <xsl:text>pp</xsl:text>
-                <xsl:number count="tb:ph" level="any" from="tb:pw" format="1" />
+                <xsl:text>ph</xsl:text>
+                <xsl:text>02</xsl:text>
+                <xsl:number count="tb:ph" level="any" from="tb:CHAT" format="1" />
             </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="@type='syllable break'">
@@ -133,10 +135,11 @@
     </xsl:template>
 
     <xsl:template match="tb:sandhi">
-        <xsl:element name="ph">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ph">
             <xsl:attribute name="id">
-                <xsl:text>sandhi</xsl:text>
-                <xsl:number count="tb:ph" level="any" from="tb:pw" format="1" />
+                <xsl:text>ph</xsl:text>
+                <xsl:text>01</xsl:text>
+                <xsl:number count="tb:ph" level="any" from="tb:CHAT" format="1" />
             </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="@type='contraction'">
@@ -154,10 +157,11 @@
     
     <!-- compound phones are recursive elements, we need to combine the text of all children -->
     <xsl:template match="tb:cmph">
-        <xsl:element name="ph">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ph">
             <xsl:attribute name="id">
-                <xsl:text>cmph</xsl:text>
-                <xsl:number count="tb:ph" level="any" from="tb:pw" format="1" />
+                <xsl:text>ph</xsl:text>
+                <xsl:text>00</xsl:text>
+                <xsl:number count="tb:ph" level="any" from="tb:CHAT" format="1" />
             </xsl:attribute>
             <xsl:apply-templates />
         </xsl:element>
@@ -182,9 +186,9 @@
     </xsl:template>
     
     <xsl:template match="tb:pause">
-        <xsl:element name="ph">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ph">
             <xsl:attribute name="id">
-                <xsl:number count="tb:ph" level="any" from="tb:pw" format="1" />
+                <xsl:number count="tb:ph" level="any" from="tb:CHAT" format="1" />
             </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="@symbolic-length='simple'">

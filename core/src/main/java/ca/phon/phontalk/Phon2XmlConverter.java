@@ -39,7 +39,7 @@ public class Phon2XmlConverter {
 	private File sessionFile = new File("unknown.xml");
 	
 	private File outputFile = new File("unknown-xml.xml");
-	
+
 	public Phon2XmlConverter() {
 		super();
 	}
@@ -65,7 +65,6 @@ public class Phon2XmlConverter {
 	}
 
 	public void sessionToStream(Session session, OutputStream out, PhonTalkListener listener) {
-		// TODO error handling
 		final TalkbankWriter writer = new TalkbankWriter();
 		try {
 			writer.writeSession(session, out);

@@ -34,6 +34,8 @@ public class TalkbankWriter {
 
     private final static String TBNS_SCHEMA_LOCATION = "http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd";
 
+    private final static String TB_VERSION = "3.0.0";
+
     private final List<PhonTalkListener> listeners = new ArrayList<>();
 
     private String file;
@@ -85,7 +87,7 @@ public class TalkbankWriter {
         writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", TBNS_SCHEMA_LOCATION);
 
         // setup attributes
-        writer.writeAttribute("Version", "2.21.0");
+        writer.writeAttribute("Version", TB_VERSION);
 
         if(session.getDate() != null) {
             final Formatter<LocalDate> dateFormatter = FormatterFactory.createFormatter(LocalDate.class);
