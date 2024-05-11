@@ -19,7 +19,7 @@
     <!-- re-write Version attribute of root element, retain all other attributes -->
     <xsl:template match="tb:CHAT">
         <xsl:element name="CHAT">
-            <xsl:attribute name="Version">2.20.2</xsl:attribute>
+            <xsl:attribute name="Version">2.20.3</xsl:attribute>
             <xsl:apply-templates select="@*[not(name()='Version')]|node()" />
         </xsl:element>
     </xsl:template>
