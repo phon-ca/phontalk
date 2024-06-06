@@ -16,6 +16,7 @@
 			<artifactId>phon-project</artifactId>
 			<version>${ca.phon.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>xml-resolver</groupId>
 			<artifactId>xml-resolver</artifactId>
@@ -47,6 +48,18 @@
 			<groupId>ca.phon</groupId>
 			<artifactId>phon-app</artifactId>
 			<version>${ca.phon.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ca.phon</groupId>
+			<artifactId>phon-autotranscribe</artifactId>
+			<version>${ca.phon.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ca.phon</groupId>
+			<artifactId>phon-dict-data</artifactId>
+			<version>50</version>
 			<scope>test</scope>
 		</dependency>
 

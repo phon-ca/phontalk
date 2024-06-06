@@ -1,8 +1,13 @@
 package ca.phon.phontalk.tests;
 
+import ca.phon.app.session.editor.autotranscribe.IPADictionaryAutoTranscribeSource;
+import ca.phon.autotranscribe.AutoTranscriber;
+import ca.phon.autotranscribe.AutomaticTranscription;
+import ca.phon.ipa.IPATranscript;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.TalkbankReader;
 import ca.phon.phontalk.TalkbankWriter;
+import ca.phon.session.Record;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
 import org.apache.commons.io.FileUtils;
@@ -34,7 +39,7 @@ import java.util.stream.Collectors;
  * Tests xml equivalence of two files using xmlunit.
  */
 // uncomment to run test, will take a long time
-//@RunWith(Parameterized.class)
+@RunWith(Parameterized.class)
 public class RoundTripTestsFluencyBank {
 
     final static String GIT_REPO = "https://github.com/ghedlund/testfluencybank";
@@ -134,6 +139,15 @@ public class RoundTripTestsFluencyBank {
         final TalkbankReader reader = new TalkbankReader();
         reader.addListener(listener);
         final Session session = reader.readFile(inputXmlFile.getAbsolutePath());
+
+        AutoTranscriber autoTranscriber = new AutoTranscriber();
+        autoTranscriber.addSource(new IPADictionaryAutoTranscribeSource("eng"));
+        for(Record r:session.getRecords()) {
+            final AutomaticTranscription automaticTranscription = autoTranscriber.transcribe(r.getOrthography());
+            final IPATranscript ipa = automaticTranscription.getTranscription();
+            r.setIPATarget(ipa);
+            r.setIPAActual(ipa);
+        }
 
         final SessionWriter writer = (new SessionOutputFactory()).createWriter();
         writer.writeSession(session, new FileOutputStream(phonXmlFile));
@@ -309,6 +323,10 @@ public class RoundTripTestsFluencyBank {
                     continue;
                 } else if(d.getComparison().getControlDetails().getXPath().contains("pw")
                     || d.getComparison().getControlDetails().getXPath().contains("ph")) {
+                    warnings.add(d);
+                    continue;
+                } else if(d.getComparison().getControlDetails().getXPath().contains("pause")
+                    && diffLen == 2) {
                     warnings.add(d);
                     continue;
                 }

@@ -3670,7 +3670,6 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         </xs:complexType>
     </xs:element>
 
-
     <xs:element name="otherSpokenEvent">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> &amp;*WHO=word; word spoken by someone else during an utterance. </xs:documentation>

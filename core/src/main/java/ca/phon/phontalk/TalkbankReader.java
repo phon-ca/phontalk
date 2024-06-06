@@ -440,6 +440,22 @@ public class TalkbankReader {
                     .filter(ele -> ele != utd.orthography().getUtteranceMedia()).toList();
             ortho = new Orthography(filteredElements);
         }
+
+//        // change any instances of 0word to &=0word
+//        final OrthographyBuilder orthoBuilder = new OrthographyBuilder();
+//        for(OrthographyElement ele:ortho.toList()) {
+//            if(ele instanceof Word) {
+//                final Word word = (Word)ele;
+//                if(word.getPrefix() != null && word.getPrefix().getType() == WordType.OMISSION) {
+//                    orthoBuilder.append("&=" + word.toString());
+//                } else {
+//                    orthoBuilder.append(word);
+//                }
+//            } else {
+//                orthoBuilder.append(ele);
+//            }
+//        }
+//        ortho = orthoBuilder.toOrthography();
         r.setOrthography(ortho);
 
         for(Tier<IPATranscript> ipaTier:utd.ipaTiers()) {

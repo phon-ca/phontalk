@@ -8,8 +8,8 @@
                 xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:xs="http://www.w3.org/1999/XSL/Transform"
                 exclude-result-prefixes="xml">
     <xsl:output method="xml" indent="yes" encoding="UTF-8" />
-    <!-- Write everything as is if not matched -->
 
+    <!-- Write everything as is if not matched -->
     <xsl:template match="@*|node()">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()" />
@@ -30,32 +30,36 @@
             <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="w">
                 <xsl:apply-templates select="@*|node()[not(self::tb:pho or self::tb:mod)]" />
             </xsl:element>
-            <xsl:if test="tb:pho">
-                <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="actual">
-                    <xsl:apply-templates select="tb:pho/node()" />
-                </xsl:element>
-            </xsl:if>
             <xsl:if test="tb:mod">
                 <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="model">
                     <xsl:apply-templates select="tb:mod/node()" />
+                </xsl:element>
+            </xsl:if>
+            <xsl:if test="tb:pho">
+                <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="actual">
+                    <xsl:apply-templates select="tb:pho/node()" />
                 </xsl:element>
             </xsl:if>
         </xsl:element>
     </xsl:template>
 
-    <xsl:template match="tb:pause[tb:pho or tb:mod]">
+    <xsl:template match="tb:u/tb:pause[tb:pho or tb:mod]">
         <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="pg">
-            <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ph">
+            <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="pause">
                 <xsl:apply-templates select="@*|node()[not(self::tb:pho or self::tb:mod)]" />
             </xsl:element>
-            <xsl:if test="tb:pho">
-                <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="actual">
-                    <xsl:apply-templates select="tb:pho/node()" />
-                </xsl:element>
-            </xsl:if>
             <xsl:if test="tb:mod">
                 <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="model">
-                    <xsl:apply-templates select="tb:mod/node()" />
+                    <xsl:element namespace="http://www.talkbank.org/ns/talkbank" name="pw">
+                        <xsl:apply-templates select="tb:mod/node()" />
+                    </xsl:element>
+                </xsl:element>
+            </xsl:if>
+            <xsl:if test="tb:pho">
+                <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="actual">
+                    <xsl:element namespace="http://www.talkbank.org/ns/talkbank" name="pw">
+                        <xsl:apply-templates select="tb:pho/node()" />
+                    </xsl:element>
                 </xsl:element>
             </xsl:if>
         </xsl:element>
@@ -184,10 +188,36 @@
             </xsl:when>
         </xsl:choose>
     </xsl:template>
-    
-    <xsl:template match="tb:pause">
+
+    <xsl:template match="tb:mod//tb:pause">
         <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ph">
             <xsl:attribute name="id">
+                <xsl:text>ph003</xsl:text>
+                <xsl:number count="tb:ph" level="any" from="tb:CHAT" format="1" />
+            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="@symbolic-length='simple'">
+                    <xsl:text>(.)</xsl:text>
+                </xsl:when>
+                <xsl:when test="@symbolic-length='long'">
+                    <xsl:text>(..)</xsl:text>
+                </xsl:when>
+                <xsl:when test="@symbolic-length='very long'">
+                    <xsl:text>(...)</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>(</xsl:text>
+                    <xsl:value-of select="@length" />
+                    <xsl:text>)</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="tb:pho//tb:pause">
+        <xsl:element namespace="http://www.talkbank.org/ns/talkbank"  name="ph">
+            <xsl:attribute name="id">
+                <xsl:text>ph004</xsl:text>
                 <xsl:number count="tb:ph" level="any" from="tb:CHAT" format="1" />
             </xsl:attribute>
             <xsl:choose>

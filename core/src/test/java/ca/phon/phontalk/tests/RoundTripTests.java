@@ -1,8 +1,13 @@
 package ca.phon.phontalk.tests;
 
+import ca.phon.app.session.editor.autotranscribe.IPADictionaryAutoTranscribeSource;
+import ca.phon.autotranscribe.AutoTranscriber;
+import ca.phon.autotranscribe.AutomaticTranscription;
+import ca.phon.ipa.IPATranscript;
 import ca.phon.phontalk.PhonTalkListener;
 import ca.phon.phontalk.TalkbankReader;
 import ca.phon.phontalk.TalkbankWriter;
+import ca.phon.session.Record;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
 import org.apache.commons.io.FileUtils;
