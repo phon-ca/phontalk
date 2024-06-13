@@ -3,8 +3,13 @@ package ca.phon.phontalk;
 import ca.phon.formatter.Formatter;
 import ca.phon.formatter.FormatterFactory;
 import ca.phon.orthography.Orthography;
+import ca.phon.orthography.OrthographyBuilder;
+import ca.phon.orthography.Terminator;
+import ca.phon.orthography.TerminatorType;
 import ca.phon.session.*;
 import ca.phon.session.Record;
+import ca.phon.session.alignment.CrossTierAlignment;
+import ca.phon.session.alignment.TierAligner;
 import ca.phon.session.io.xml.OneToOne;
 import ca.phon.session.io.xml.SessionXMLStreamWriter;
 import ca.phon.session.io.xml.XMLFragments;
@@ -102,9 +107,18 @@ public class TalkbankWriter {
             writer.writeAttribute("Videos", session.getMetadata().get("Videos"));
         }
 
-        if(session.getMediaLocation() != null) {
-            // TODO CHAT only wants name of file without extension
-            writer.writeAttribute("Media", session.getMediaLocation());
+        if(session.getMediaLocation() != null && !session.getMediaLocation().isBlank()) {
+            final String mediaName = new File(session.getMediaLocation()).getName();
+            final String mediaWithoutExt = mediaName.lastIndexOf('.') > 0 ? mediaName.substring(0, mediaName.lastIndexOf('.')) : mediaName;
+            writer.writeAttribute("Media", mediaWithoutExt);
+
+            // get extension
+            final String ext = mediaName.lastIndexOf('.') > 0 ? mediaName.substring(mediaName.lastIndexOf('.')) : "";
+            if(ext.isBlank() || ".wav".equalsIgnoreCase(ext) || ".mp3".equalsIgnoreCase(ext) || ".m4a".equalsIgnoreCase(ext)) {
+                writer.writeAttribute("Mediatypes", "audio");
+            } else {
+                writer.writeAttribute("Mediatypes", "video");
+            }
         }
 
         if(session.getMetadata().get("Mediatypes") != null) {
@@ -183,7 +197,7 @@ public class TalkbankWriter {
             } else if(element.isGem()) {
                 writeGem(element.asGem(), writer);
             } else if(element.isRecord()) {
-                writeRecord(session, element.asRecord(), uid++, element.asRecord().getSpeaker().getId(), writer);
+                writeRecord(session, element.asRecord(), uid++, writer);
             }
         }
 
@@ -197,38 +211,38 @@ public class TalkbankWriter {
         writer.writeAttribute("id", participant.getId());
         writer.writeAttribute("role", participant.getRole().getTitle().replaceAll("\\s", "_"));
 
-        if(participant.getName() != null) {
+        if(participant.getName() != null && !participant.getName().isBlank()) {
             writer.writeAttribute("name", participant.getName());
         }
         if(participant.getAge(null) != null) {
             writer.writeAttribute("age", participant.getAge(null).toString());
         }
-        if(participant.getGroup() != null) {
+        if(participant.getGroup() != null && !participant.getGroup().isBlank()) {
             writer.writeAttribute("group", participant.getGroup());
         }
         if(participant.getSex() != Sex.UNSPECIFIED) {
             writer.writeAttribute("sex", participant.getSex().getText().toLowerCase());
         }
-        if(participant.getSES() != null) {
+        if(participant.getSES() != null && !participant.getSES().isBlank()) {
             writer.writeAttribute("SES", participant.getSES());
         }
-        if(participant.getEducation() != null) {
+        if(participant.getEducation() != null && !participant.getEducation().isBlank()) {
             writer.writeAttribute("education", participant.getEducation());
         }
         if(participant.getBirthDate() != null) {
             final Formatter<LocalDate> dateFormatter = FormatterFactory.createFormatter(LocalDate.class);
             writer.writeAttribute("birthday", dateFormatter.format(participant.getBirthDate()));
         }
-        if(participant.getLanguage() != null) {
+        if(participant.getLanguage() != null && !participant.getLanguage().isBlank()) {
             writer.writeAttribute("language", participant.getLanguage());
         }
-        if(participant.getFirstLanguage() != null) {
+        if(participant.getFirstLanguage() != null && !participant.getFirstLanguage().isBlank()) {
             writer.writeAttribute("first-language", participant.getFirstLanguage());
         }
-        if(participant.getBirthplace() != null) {
+        if(participant.getBirthplace() != null && !participant.getBirthplace().isBlank()) {
             writer.writeAttribute("birthplace", participant.getBirthplace());
         }
-        if(participant.getOther() != null) {
+        if(participant.getOther() != null && !participant.getOther().isBlank()) {
             writer.writeAttribute("custom-field", participant.getOther());
         }
     }
@@ -276,23 +290,104 @@ public class TalkbankWriter {
         writer.writeEndElement();
     }
 
-    private void writeRecord(Session session, Record record, int uid, String who, XMLStreamWriter writer) throws XMLStreamException {
-        OneToOne.annotateRecord(record);
+    private void writeRecord(Session session, Record record, int uid, XMLStreamWriter writer) throws XMLStreamException {
         try {
+            if(!checkRecord(session, record, uid, writer)) {
+                fireWarning("Skipping record #" + (uid+1), writer);
+                return;
+            }
+            OneToOne.annotateRecord(record);
             final String utteranceXml = XMLFragments.toXml(record.getOrthography(), false, false);
             final XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
             final XMLStreamReader uReader = xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(utteranceXml.getBytes(StandardCharsets.UTF_8)));
-            final XMLStreamWriter userTierWriter = new RecordXmlStreamWriter(writer, session, record, uid, who);
+            final XMLStreamWriter userTierWriter = new RecordXmlStreamWriter(writer, session, record, uid, record.getSpeaker().getId());
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer();
             StAXSource source = new StAXSource(uReader);
             StAXResult result = new StAXResult(userTierWriter);
             t.transform(source, result);
         } catch (IOException | TransformerException e) {
-            throw new XMLStreamException(e);
+            throw new XMLStreamException("Error writing record #" + (uid+1), e);
         } finally {
             OneToOne.removeAnnotations(record);
         }
+    }
+
+    private boolean checkRecord(Session session, Record record, int uid, XMLStreamWriter writer) {
+        if(record.getSpeaker() == Participant.UNKNOWN) {
+            if(session.getParticipantCount() > 0) {
+                final Participant firstParticipant = session.getParticipant(0);
+                fireWarning("Record #" + (uid + 1) + " has no speaker, setting to '"
+                        + firstParticipant.getId() + "'", writer);
+                record.setSpeaker(firstParticipant);
+            }
+        }
+
+        if(record.getOrthographyTier().isUnvalidated()) {
+            fireWarning("Record #" + (uid +1) + " has invalid orthography: " +
+                    record.getOrthographyTier().getUnvalidatedValue().getParseError().toString(), writer);
+            return false;
+        } else {
+
+            if (record.getOrthography() == null || record.getOrthography().length() == 0) {
+                fireWarning("Record #" + (uid + 1) + " has no orthography, setting to 'xxx .'", writer);
+                final OrthographyBuilder builder = new OrthographyBuilder();
+                builder.append("xxx");
+                builder.append(new Terminator(TerminatorType.PERIOD));
+                record.setOrthography(builder.toOrthography());
+            }
+
+            if (record.getOrthography().length() > 0 && record.getOrthography().elementAt(0) instanceof Terminator) {
+                fireWarning("Record #" + (uid + 1) + " has no orthography, setting to 'xxx " + record.getOrthography().toString() + "'", writer);
+                final OrthographyBuilder builder = new OrthographyBuilder();
+                builder.append("xxx");
+                builder.append(record.getOrthography());
+                record.setOrthography(builder.toOrthography());
+            }
+        }
+
+        // check for missing CA terminator
+        if(record.getOrthography().getTerminator() == null) {
+            fireWarning("Record #" + (uid +1) + " is missing a CA terminator, adding '.'", writer);
+            final OrthographyBuilder builder = new OrthographyBuilder();
+            builder.append(record.getOrthography());
+            builder.append(new Terminator(TerminatorType.PERIOD));
+            record.setOrthography(builder.toOrthography());
+        }
+
+        if(record.getIPATargetTier().isUnvalidated()) {
+            fireWarning("Record #" + (uid +1) + " has invalid IPA target: " +
+                    record.getIPATargetTier().getUnvalidatedValue().getParseError().toString(), writer);
+        }
+
+        if(record.getIPAActualTier().isUnvalidated()) {
+            fireWarning("Record #" + (uid +1) + " has invalid IPA actual: " +
+                    record.getIPAActualTier().getUnvalidatedValue().getParseError().toString(), writer);
+        }
+
+        for(Tier<?> tier:record.getUserTiers()) {
+            if(tier.isUnvalidated()) {
+                fireWarning("Record #" + (uid +1) + " has invalid tier " + tier.getName() + ": " +
+                        tier.getUnvalidatedValue().getParseError().toString(), writer);
+            }
+        }
+
+        // check x-tier alignment
+        CrossTierAlignment xTierAlignment = TierAligner.calculateCrossTierAlignment(record);
+        if(!xTierAlignment.isComplete()) {
+            fireWarning("Record #" + (uid +1) + " has incomplete cross-tier alignment", writer);
+        }
+
+        // check media
+        if(record.getMediaSegment() != null) {
+            final MediaSegment segment = record.getMediaSegment();
+            if(segment.isPoint() && !segment.isPointAtOrigin()) {
+                fireWarning("Record #" + (uid +1) + " media start and end cannot be the same, adding 1ms to end", writer);
+                segment.setEndTimeMs(segment.getEndValueMs() + 1);
+            }
+        }
+
+        return true;
     }
 
     private void writeWorTier(Orthography worData, XMLStreamWriter writer) throws XMLStreamException {
@@ -433,7 +528,7 @@ public class TalkbankWriter {
                             || userTierType == UserTierType.Gra || userTierType == UserTierType.Grt)
                         continue;
                     final Tier<?> tier = record.getTier(tierName);
-                    if (tier == null || !tier.hasValue()) continue;
+                    if (tier == null || !tier.hasValue() || tier.getValue().toString().length() == 0) continue;
                     if(userTierType == UserTierType.Wor) {
                         writeWorTier((Orthography)tier.getValue(), this);
                     } else {

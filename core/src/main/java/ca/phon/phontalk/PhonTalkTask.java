@@ -32,6 +32,8 @@ public abstract class PhonTalkTask extends PhonTask {
 	 * Message listener
 	 */
 	private PhonTalkListener listener;
+
+	private final StringBuffer outputBuffer = new StringBuffer();
 	
 	public PhonTalkTask(File inputFile, File outputFile, PhonTalkListener listener) {
 		this.inputFile = inputFile;
@@ -64,5 +66,9 @@ public abstract class PhonTalkTask extends PhonTask {
 	}
 
 	public abstract String getProcessName();
+
+	public StringBuffer getOutputBuffer() {
+		return outputBuffer;
+	}
 	
 }

@@ -9,13 +9,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.List;
 
+import ca.phon.session.io.SessionIO;
 import ca.phon.session.io.SessionInputFactory;
 import ca.phon.session.io.SessionReader;
 import ca.phon.util.OSInfo;
 import ca.phon.worker.PhonTask.TaskStatus;
 
 public class Phon2CHATTask extends PhonTalkTask {
+
+	public Phon2CHATTask(File inputFile, File outputFile) {
+		super(inputFile, outputFile, null);
+	}
 
 	public Phon2CHATTask(File inputFile, File outputFile, PhonTalkListener listener) {
 		super(inputFile, outputFile, listener);
@@ -33,19 +39,30 @@ public class Phon2CHATTask extends PhonTalkTask {
 		
 		// check to make sure the file is a valid phon session
 		final SessionInputFactory inputFactory = new SessionInputFactory();
-		final SessionReader reader = inputFactory.createReader("phonbank", "1.2");
-		try {
-			final InputStream phonStream = new FileInputStream(getInputFile());
-			reader.readSession(phonStream);
-		} catch (IOException e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-			final PhonTalkError err = new PhonTalkError(e);
+		final List<SessionIO> phonSessionIO = inputFactory.availableReaders().stream().filter(
+				(io) -> io.group().equals("ca.phon")).toList();
+		final List<SessionReader> phonSessionReaders = phonSessionIO.stream().map(inputFactory::createReader).toList();
+		boolean validSession = false;
+		for(SessionReader reader:phonSessionReaders) {
+			try {
+				if(reader.canRead(getInputFile())) {
+					final InputStream phonStream = new FileInputStream(getInputFile());
+					reader.readSession(phonStream);
+					validSession = true;
+					break;
+				}
+			} catch (IOException e) {
+				if (PhonTalkUtil.isVerbose()) e.printStackTrace();
+				super.err = e;
+			}
+		}
+		if(!validSession) {
+			final PhonTalkError err = new PhonTalkError(new IOException("Invalid phon session file"));
 			getListener().message(err);
-			super.err = e;
 			super.setStatus(TaskStatus.ERROR);
 			return;
 		}
-				
+
 		try {
 			final File tempChaFile = File.createTempFile("chatter", ".cha");
 			tempChaFile.deleteOnExit();

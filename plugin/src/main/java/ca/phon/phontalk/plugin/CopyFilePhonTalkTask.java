@@ -14,6 +14,10 @@ import ca.phon.phontalk.PhonTalkMessage.Severity;
 
 public class CopyFilePhonTalkTask extends PhonTalkTask {
 
+	public CopyFilePhonTalkTask(File inputFile, File outputFile) {
+		super(inputFile, outputFile, null);
+	}
+
 	public CopyFilePhonTalkTask(File inputFile, File outputFile, PhonTalkListener listener) {
 		super(inputFile, outputFile, listener);
 	}

@@ -67,6 +67,7 @@ public class Phon2XmlConverter {
 	public void sessionToStream(Session session, OutputStream out, PhonTalkListener listener) {
 		final TalkbankWriter writer = new TalkbankWriter();
 		try {
+			writer.addListener(listener);
 			writer.writeSession(session, out);
 		} catch (XMLStreamException e) {
 			listener.message(new PhonTalkMessage(e.getLocalizedMessage(), PhonTalkMessage.Severity.SEVERE));
@@ -133,6 +134,7 @@ public class Phon2XmlConverter {
 		
 		try(FileOutputStream fout = new FileOutputStream(outputFile)) {
 			final TalkbankWriter writer = new TalkbankWriter();
+			writer.addListener(msgListener);
 			writer.writeSession(session, fout);
 		} catch (IOException e) {
 			if(PhonTalkUtil.isVerbose()) e.printStackTrace();

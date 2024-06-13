@@ -19,6 +19,7 @@
 package ca.phon.phontalk;
 
 import java.io.*;
+import java.util.List;
 
 import ca.phon.session.io.*;
 
@@ -28,6 +29,10 @@ import ca.phon.session.io.*;
  *
  */
 public class Phon2XmlTask extends PhonTalkTask {
+
+	public Phon2XmlTask(File inFile, File outFile) {
+		super(inFile, outFile, null);
+	}
 	
 	public Phon2XmlTask(File inFile, File outFile, PhonTalkListener listener) {
 		super(inFile, outFile, listener);
@@ -42,18 +47,29 @@ public class Phon2XmlTask extends PhonTalkTask {
 	public void performTask() {
 		// convert transcript
 		super.setStatus(TaskStatus.RUNNING);
-		
+
 		// check to make sure the file is a valid phon session
 		final SessionInputFactory inputFactory = new SessionInputFactory();
-		final SessionReader reader = inputFactory.createReader("phonbank", "1.2");
-		try {
-			final InputStream phonStream = new FileInputStream(getInputFile());
-			reader.readSession(phonStream);
-		} catch (IOException e) {
-			if(PhonTalkUtil.isVerbose()) e.printStackTrace();
-			final PhonTalkError err = new PhonTalkError(e);
+		final List<SessionIO> phonSessionIO = inputFactory.availableReaders().stream().filter(
+				(io) -> io.group().equals("ca.phon")).toList();
+		final List<SessionReader> phonSessionReaders = phonSessionIO.stream().map(inputFactory::createReader).toList();
+		boolean validSession = false;
+		for(SessionReader reader:phonSessionReaders) {
+			try {
+				if(reader.canRead(getInputFile())) {
+					final InputStream phonStream = new FileInputStream(getInputFile());
+					reader.readSession(phonStream);
+					validSession = true;
+					break;
+				}
+			} catch (IOException e) {
+				if (PhonTalkUtil.isVerbose()) e.printStackTrace();
+				super.err = e;
+			}
+		}
+		if(!validSession) {
+			final PhonTalkError err = new PhonTalkError(new IOException("Invalid phon session file"));
 			getListener().message(err);
-			super.err = e;
 			super.setStatus(TaskStatus.ERROR);
 			return;
 		}
