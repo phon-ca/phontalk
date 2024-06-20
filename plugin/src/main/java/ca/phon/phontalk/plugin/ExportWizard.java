@@ -11,7 +11,10 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +39,11 @@ import javax.swing.event.MouseInputAdapter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.TreePath;
 
+import ca.phon.app.PhonURI;
+import ca.phon.app.actions.PhonURISchemeHandler;
 import ca.phon.app.project.*;
 import ca.phon.formatter.MediaTimeFormatter;
+import ca.phon.plugin.PluginException;
 import ca.phon.ui.*;
 import ca.phon.worker.PhonWorkerGroup;
 import org.apache.commons.io.FilenameUtils;
@@ -86,7 +92,7 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 	
 	final public static String DIALOG_TITLE = "Export to CHAT/TalkBank";
 	final public static String DIALOG_MESAGE = "Export a Phon project to a folder of CHAT (.cha) or TalkBank (.xml) files";
-	
+
 	/* Step 1 */
 	private WizardStep folderStep;
 	
@@ -424,6 +430,32 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 				}
 			}
 
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
+					int row = taskTable.rowAtPoint(e.getPoint());
+					if(row > 0 && row < taskTable.getRowCount()) {
+						PhonTalkTask task = ((PhonTalkTaskTableModel)taskTable.getModel()).taskForRow(row);
+						if(task instanceof Phon2CHATTask || task instanceof Phon2XmlTask) {
+							final File f = task.getInputFile();
+							final PhonURI uri = new PhonURI(f.getParentFile().getParent(), f.getParentFile().getName(), f.getName(), 0, new ArrayList<>(), new ArrayList<>());
+							final PhonURISchemeHandler handler = new PhonURISchemeHandler();
+							try {
+								handler.openURI(uri.toURI());
+							} catch (MalformedURLException ex) {
+								throw new RuntimeException(ex);
+							} catch (FileNotFoundException ex) {
+								throw new RuntimeException(ex);
+							} catch (PluginException ex) {
+								throw new RuntimeException(ex);
+							} catch (URISyntaxException ex) {
+								throw new RuntimeException(ex);
+							}
+						}
+					}
+				}
+			}
+
 		});
 		taskTable.getSelectionModel().addListSelectionListener( (e) -> {
 			if(taskTable.getSelectedRow() >= 0) {
@@ -473,8 +505,30 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 						LogUtil.warning(e);
 					}
 				};
+
+				if(task instanceof Phon2CHATTask || task instanceof Phon2XmlTask) {
+					PhonUIAction<File> openInPhonAct = PhonUIAction.consumer((f) -> {
+						final PhonURI uri = new PhonURI(f.getParentFile().getParent(), f.getParentFile().getName(), f.getName(), 0, new ArrayList<>(), new ArrayList<>());
+						final PhonURISchemeHandler handler = new PhonURISchemeHandler();
+						try {
+							handler.openURI(uri.toURI());
+						} catch (MalformedURLException e) {
+							throw new RuntimeException(e);
+						} catch (FileNotFoundException e) {
+							throw new RuntimeException(e);
+						} catch (PluginException e) {
+							throw new RuntimeException(e);
+						} catch (URISyntaxException e) {
+							throw new RuntimeException(e);
+						}
+					}, task.getInputFile());
+					openInPhonAct.putValue(PhonUIAction.NAME, "Open in Phon");
+					openInPhonAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Open file in Phon");
+					menu.add(openInPhonAct);
+				}
+
 				PhonUIAction<File> showInputFileAct = PhonUIAction.consumer(openFile, task.getInputFile());
-				showInputFileAct.putValue(PhonUIAction.NAME, "Open input file");
+				showInputFileAct.putValue(PhonUIAction.NAME, "Open input file with system editor");
 				showInputFileAct.putValue(PhonUIAction.SHORT_DESCRIPTION, "Open input file: " + task.getInputFile().getAbsolutePath());
 				menu.add(showInputFileAct);
 				
