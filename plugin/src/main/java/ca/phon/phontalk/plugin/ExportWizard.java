@@ -425,6 +425,14 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 			}
 
 		});
+		taskTable.getSelectionModel().addListSelectionListener( (e) -> {
+			if(taskTable.getSelectedRow() >= 0) {
+				PhonTalkTask task = ((PhonTalkTaskTableModel)taskTable.getModel()).taskForRow(taskTable.getSelectedRow());
+				if(task.getBufferOffset() >= 0) {
+					bufferPanel.getLogBuffer().setCaretPosition(task.getBufferOffset());
+				}
+			}
+		});
 		
 		JScrollPane taskScroller = new JScrollPane(taskTable);
 		Dimension prefSize = taskScroller.getPreferredSize();
@@ -588,33 +596,34 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 				}
 			}
 		}
+
+		worker.setTotalTasks(worker.getTaskList().size() + 1);
+		worker.setFinalTask( () -> {
+			exportFinishedMs = System.currentTimeMillis();
+			SwingUtilities.invokeLater( () -> {
+				busyLabel.setBusy(false);
+				statusLabel.setText(String.format("%d/%d files processed",
+						numSessionsProcessed + numFilesCopied, numSessions + numFilesToCopy));
+				running = false;
+				updateBreadcrumbButtons();
+
+				exportFinishedMs = System.currentTimeMillis();
+				PhonWorker.getInstance().invokeLater( () -> {
+					printEndOfExportReport();
+					final File exportFolder = exportFolderButton.getSelection();
+					final File importFolder = projectSelectionButton.getSelection();
+					final File logFile = new File(exportFolder.getParentFile(),  importFolder.getName()+ "-export.log");
+					try {
+						final String logText = bufferPanel.getLogBuffer().getText();
+						java.nio.file.Files.write(logFile.toPath(), logText.getBytes());
+					} catch (IOException e) {
+						LogUtil.severe(e);
+					}
+				});
+			});
+		});
 		
 		SwingUtilities.invokeLater( taskTable::packAll );
-		
-//		worker.setFinalTask( () -> {
-//			running = false;
-//			SwingUtilities.invokeLater( () -> {
-//				busyLabel.setBusy(false);
-//				statusLabel.setText(String.format("%d/%d files processed",
-//						numSessionsProcessed + numFilesCopied, numSessions + numFilesToCopy));
-//				updateBreadcrumbButtons();
-//
-//				exportFinishedMs = System.currentTimeMillis();
-//				printEndOfExportReport();
-//
-//				// save log
-//				final File exportFolder = exportFolderButton.getSelection();
-//				final File importFolder = projectSelectionButton.getSelection();
-//				final File logFile = new File(exportFolder.getParentFile(),  importFolder.getName()+ "-export.log");
-//				try {
-//					final String logText = bufferPanel.getLogBuffer().getText();
-//					java.nio.file.Files.write(logFile.toPath(), logText.getBytes());
-//				} catch (IOException e) {
-//					LogUtil.severe(e);
-//				}
-//			});
-//		});
-//		worker.setFinishWhenQueueEmpty(true);
 	}
 	
 	private void beginExport() {
@@ -640,7 +649,7 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 		try {
 			// create project
 			final Project project = (new DesktopProjectFactory()).openProject(projectSelectionButton.getSelection());
-			PhonWorker.getInstance().invokeLater( () -> setupTasks(currentWorker, project) );
+			currentWorker.queueTask(() -> setupTasks(currentWorker, project) );
 		} catch (IOException | ProjectConfigurationException e) {
 			showMessage(e.getLocalizedMessage());
 		}
@@ -804,6 +813,8 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 			final String outputText = task.getOutputBuffer().toString();
 			lastFlushedRow = i;
 			SwingUtilities.invokeLater( () -> {
+				int bufferOffset = bufferPanel.getLogBuffer().getText().length();
+				task.setBufferOffset(bufferOffset);
 				bufferPanel.getLogBuffer().append(outputText);
 			});
 		}
@@ -849,18 +860,17 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 			}
 			final String outputFilename = of;
 
-			if(status == TaskStatus.RUNNING) {
-				SwingUtilities.invokeLater(() -> {
-					int taskRow = taskTableModel.rowForTask(ptTask);
-					if(taskRow >= 0) {
-						taskTableModel.fireTableCellUpdated(taskRow, PhonTalkTaskTableModel.Columns.STATUS.ordinal());
-						// scroll to current task if no selection
-						if(taskTable.getSelectedRow() < 0)
-							taskTable.scrollRowToVisible(taskRow);
-					}
+			SwingUtilities.invokeLater(() -> {
+				int taskRow = taskTableModel.rowForTask(ptTask);
+				if(taskRow >= 0) {
+					taskTableModel.fireTableCellUpdated(taskRow, PhonTalkTaskTableModel.Columns.STATUS.ordinal());
+					// scroll to current task if no selection
+					if(taskTable.getSelectedRow() < 0)
+						taskTable.scrollRowToVisible(taskRow);
+				}
 //							statusLabel.setText(filename + " (" + ptTask.getProcessName() + ")");
-				});
-
+			});
+			if(status == TaskStatus.RUNNING) {
 				String msgText = String.format("(%s) %s -> %s\n",
 						ptTask.getProcessName(), filename, outputFilename);
 				ptTask.getOutputBuffer().append(msgText);
@@ -873,33 +883,6 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 							|| task instanceof Phon2XmlTask) {
 						numSessionsProcessed++;
 					}
-
-					// if completed all tasks, shutdown export
-					if(allTasksFinished()) {
-						running = false;
-						currentWorker.shutdown();
-						SwingUtilities.invokeLater( () -> {
-							busyLabel.setBusy(false);
-							statusLabel.setText(String.format("%d/%d files processed",
-									numSessionsProcessed + numFilesCopied, numSessions + numFilesToCopy));
-							updateBreadcrumbButtons();
-
-							exportFinishedMs = System.currentTimeMillis();
-							printEndOfExportReport();
-
-							// save log
-							final File exportFolder = exportFolderButton.getSelection();
-							final File importFolder = projectSelectionButton.getSelection();
-							final File logFile = new File(exportFolder.getParentFile(),  importFolder.getName()+ "-export.log");
-							try {
-								final String logText = bufferPanel.getLogBuffer().getText();
-								java.nio.file.Files.write(logFile.toPath(), logText.getBytes());
-							} catch (IOException e) {
-								LogUtil.severe(e);
-							}
-						});
-					}
-
 				} else {
 					if(task.getException() != null) {
 						ptTask.getOutputBuffer().append("\t" + task.getException().getLocalizedMessage() + "\n");
@@ -908,6 +891,7 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 				}
 				ptTask.getOutputBuffer().append("\n");
 
+				// flush output buffers
 				PhonWorker.getInstance().invokeLater(ExportWizard.this::flushOutputBuffers);
 			}
 		}

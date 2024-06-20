@@ -34,6 +34,8 @@ public abstract class PhonTalkTask extends PhonTask {
 	private PhonTalkListener listener;
 
 	private final StringBuffer outputBuffer = new StringBuffer();
+
+	private int bufferOffset = -1;
 	
 	public PhonTalkTask(File inputFile, File outputFile, PhonTalkListener listener) {
 		this.inputFile = inputFile;
@@ -69,6 +71,14 @@ public abstract class PhonTalkTask extends PhonTask {
 
 	public StringBuffer getOutputBuffer() {
 		return outputBuffer;
+	}
+
+	public void setBufferOffset(int offset) {
+		this.bufferOffset = offset;
+	}
+
+	public int getBufferOffset() {
+		return bufferOffset;
 	}
 	
 }
