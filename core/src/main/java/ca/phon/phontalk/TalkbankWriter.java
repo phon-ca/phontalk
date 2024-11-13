@@ -39,7 +39,7 @@ public class TalkbankWriter {
 
     private final static String TBNS_SCHEMA_LOCATION = "http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd";
 
-    private final static String TB_VERSION = "3.0.0";
+    private final static String TB_VERSION = "3.0.1";
 
     private final List<PhonTalkListener> listeners = new ArrayList<>();
 
@@ -94,10 +94,11 @@ public class TalkbankWriter {
         // setup attributes
         writer.writeAttribute("Version", TB_VERSION);
 
-        if(session.getDate() != null) {
-            final Formatter<LocalDate> dateFormatter = FormatterFactory.createFormatter(LocalDate.class);
-            writer.writeAttribute("Date", dateFormatter.format(session.getDate()));
-        }
+        // talkbank 3.0.1: no longer output date in attributes
+//        if(session.getDate() != null) {
+//            final Formatter<LocalDate> dateFormatter = FormatterFactory.createFormatter(LocalDate.class);
+//            writer.writeAttribute("Date", dateFormatter.format(session.getDate()));
+//        }
 
         if(session.getCorpus() != null && !session.getCorpus().isBlank()) {
             writer.writeAttribute("Corpus", session.getCorpus());
