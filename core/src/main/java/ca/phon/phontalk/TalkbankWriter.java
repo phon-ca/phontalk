@@ -30,6 +30,7 @@ import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,6 +78,36 @@ public class TalkbankWriter {
      * @throws XMLStreamException
      */
     public void writeSession(Session session, OutputStream stream) throws XMLStreamException {
+        // check for date header
+        if(session.getDate() != null) {
+            boolean hasDateHeader = false;
+            for(Transcript.Element ele:session.getTranscript()) {
+                if(ele.isComment()) {
+                    final Comment comment = ele.asComment();
+                    if(comment.getType() == CommentType.Date) {
+                        hasDateHeader = true;
+                        break;
+                    }
+                } else if(ele.isRecord()) {
+                    break;
+                }
+            }
+            if(!hasDateHeader) {
+                // add date header to beginning of transcript
+                final Comment dateComment = SessionFactory.newFactory().createComment(CommentType.Date);
+                try {
+                    // format date as: DD-MMM-YYYY
+                    final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-LLL-yyyy");
+                    String dateStr = dtf.format(session.getDate());
+                    dateStr = dateStr.replaceAll("\\.", "");
+                    dateStr = dateStr.toUpperCase();
+
+                    dateComment.setValue(TierData.parseTierData(dateStr));
+                    session.getTranscript().addComment(0, dateComment);
+                } catch (ParseException pe) {}
+            }
+        }
+
         final XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stream, "UTF-8");
         writer = new SessionXMLStreamWriter(writer, isFormattedOutput());
@@ -94,11 +125,10 @@ public class TalkbankWriter {
         // setup attributes
         writer.writeAttribute("Version", TB_VERSION);
 
-        // talkbank 3.0.1: no longer output date in attributes
-//        if(session.getDate() != null) {
-//            final Formatter<LocalDate> dateFormatter = FormatterFactory.createFormatter(LocalDate.class);
-//            writer.writeAttribute("Date", dateFormatter.format(session.getDate()));
-//        }
+        if(session.getDate() != null) {
+            final Formatter<LocalDate> dateFormatter = FormatterFactory.createFormatter(LocalDate.class);
+            writer.writeAttribute("Date", dateFormatter.format(session.getDate()));
+        }
 
         if(session.getCorpus() != null && !session.getCorpus().isBlank()) {
             writer.writeAttribute("Corpus", session.getCorpus());

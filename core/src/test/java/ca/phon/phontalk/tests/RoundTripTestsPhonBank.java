@@ -46,7 +46,7 @@ public class RoundTripTestsPhonBank {
     final static String GIT_CLONE_FOLDER = TARGET_TEST_FOLDER + "/phonbank";
 
     // step 1 - phon -> tb xml
-    final static String IN_PHON_FOLDER = GIT_CLONE_FOLDER + "/phon-in-progress/Goad";
+    final static String IN_PHON_FOLDER = GIT_CLONE_FOLDER + "/phon-in-progress/Ota";
     final static String OUT_XML_TB_FOLDER = TARGET_TEST_FOLDER + "/xml";
 
     // step 2 - tb xml -> chat
@@ -129,7 +129,8 @@ public class RoundTripTestsPhonBank {
         AtomicReference<Integer> intRef = new AtomicReference<>(0);
         final StringBuffer sb = new StringBuffer();
         final PhonTalkListener listener = (msg) -> {
-            sb.append(msg.toString());
+            System.out.println(msg.getMessage());
+            sb.append(msg.getMessage());
             sb.append("\n");
             if(!msg.getMessage().contains("adding"))
                 intRef.set(intRef.get()+1);
@@ -179,6 +180,14 @@ public class RoundTripTestsPhonBank {
         chat2XmlConverter.convertFile(outChatFile, outChatXmlFile, listener);
 
         // check number of reported errors
+        // write log file
+        if(!sb.toString().isEmpty()) {
+            final File logFile = new File(outTbFile.getParent(), FilenameUtils.removeExtension(outTbFile.getName()) + "-log.txt");
+            try (PrintWriter logWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(logFile), StandardCharsets.UTF_8))) {
+                logWriter.write(sb.toString());
+                logWriter.flush();
+            }
+        }
         Assert.assertEquals(0, (int)intRef.get());
 
         final String tbXml = FileUtils.readFileToString(outTbFile, StandardCharsets.UTF_8);
@@ -203,15 +212,6 @@ public class RoundTripTestsPhonBank {
                 diffWriter.write("\n");
             }
             diffWriter.flush();
-        }
-
-        // write log file
-        if(!sb.toString().isEmpty()) {
-            final File logFile = new File(outTbFile.getParent(), FilenameUtils.removeExtension(outTbFile.getName()) + "-log.txt");
-            try (PrintWriter logWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(logFile), StandardCharsets.UTF_8))) {
-                logWriter.write(sb.toString());
-                logWriter.flush();
-            }
         }
 
         Assert.assertEquals(diffData.getErrorText(), 0, diffData.errors().size());
