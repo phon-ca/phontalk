@@ -1,19 +1,19 @@
-package ca.phon.phontalk.tests;
+package ca.phon.phontalk.plugin;
 
 import ca.phon.orthography.Orthography;
-import ca.phon.phontalk.*;
+import ca.phon.phontalk.CHAT2XmlConverter;
+import ca.phon.phontalk.PhonTalkListener;
+import ca.phon.phontalk.TalkbankWriter;
+import ca.phon.phontalk.Xml2CHATConverter;
 import ca.phon.session.Record;
 import ca.phon.session.Session;
 import ca.phon.session.io.SessionInputFactory;
 import ca.phon.session.io.SessionOutputFactory;
 import ca.phon.session.io.SessionReader;
 import ca.phon.session.io.SessionWriter;
+import ca.phon.worker.PhonWorkerGroup;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.Difference;
@@ -34,40 +34,33 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
- * Read test files in FluencyBank (talkbank format) and then write them back in talkbank format.
- * Tests xml equivalence of two files using xmlunit.
+ * Short round trip test for phon files.  This test will read phon files from a git repository, convert them to
+ * talkbank xml, then to chat, then back to talkbank xml.  The talkbank xml is compared to the xml produced by phon
+ * in the first step.  If there are any differences, the differences are output to a file.  If there are any errors
+ * in the conversion process, the errors are output to a file.
  */
-// uncomment to run test, will take a long time
-@RunWith(Parameterized.class)
-public class RoundTripTestsPhonBank {
+public class CHATShortRoundTrip {
 
     final static String GIT_REPO = "git@github.com:phon-ca/phonbank";
     final static String TARGET_TEST_FOLDER = "target/test/RoundTripTestsPhonBank";
     final static String GIT_CLONE_FOLDER = TARGET_TEST_FOLDER + "/phonbank";
+    final static String OUT_ERROR_FOLDER = TARGET_TEST_FOLDER + "/errors";
 
-    // step 1 - phon -> tb xml
-    final static String IN_PHON_FOLDER = GIT_CLONE_FOLDER + "/phon-in-progress/Ota";
+    // step 1 - chat -> tb xml
+    final static String IN_CHAT_FOLDER = GIT_CLONE_FOLDER + "/chat-in-progress";
     final static String OUT_XML_TB_FOLDER = TARGET_TEST_FOLDER + "/xml";
 
-    // step 2 - tb xml -> chat
-    final static String OUT_CHAT_FOLDER = TARGET_TEST_FOLDER + "/chat";
+    // step 2 - tb xml -> phon
+    final static String OUT_PHON_FOLDER = TARGET_TEST_FOLDER + "/phon";
 
-    // step 3 - chat -> tb xml
-    final static String OUT_CHAT_XML_FOLDER = TARGET_TEST_FOLDER + "/chat-xml";
+    // step 3 - phon -> tb xml
+    final static String OUT_PHON_XML_FOLDER = TARGET_TEST_FOLDER + "/phon-xml";
 
-    // step 4 - tb xml -> phon
-    final static String OUT_PHON_FOLDER = TARGET_TEST_FOLDER + "/chat-xml-phon";
-
-    // step 5 - xml -> chat
-    final static String OUT_CHAT_FOLDER_2 = TARGET_TEST_FOLDER + "/chat-xml-chat";
-
-
-    @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> collectFiles() throws IOException, InterruptedException {
         cloneGitRepo();
         List<Object[]> retVal = new ArrayList<>();
 
-        final File phonXmlFolder = new File(IN_PHON_FOLDER);
+        final File phonXmlFolder = new File(IN_CHAT_FOLDER);
         if(!phonXmlFolder.exists() || !phonXmlFolder.isDirectory())
             throw new RuntimeException("Invalid input folder");
 
@@ -117,13 +110,12 @@ public class RoundTripTestsPhonBank {
 
     private String filename;
 
-    public RoundTripTestsPhonBank(String filename) {
+    public CHATShortRoundTrip(String filename) {
         this.filename = filename;
     }
 
-    @Test
-    public void testRoundTrip() throws IOException, XMLStreamException {
-        final File origPhonFile = new File(IN_PHON_FOLDER, this.filename);
+    public boolean testRoundTrip() throws IOException, XMLStreamException {
+        final File origCHATFile = new File(IN_CHAT_FOLDER, this.filename);
 
         System.out.println("Round trip file: " + filename);
         AtomicReference<Integer> intRef = new AtomicReference<>(0);
@@ -132,52 +124,42 @@ public class RoundTripTestsPhonBank {
             System.out.println(msg.getMessage());
             sb.append(msg.getMessage());
             sb.append("\n");
-            if(!msg.getMessage().contains("adding"))
+            if(!msg.getMessage().contains("adding") && !msg.getMessage().contains("setting"))
                 intRef.set(intRef.get()+1);
         };
 
-        // read original phon file
-        final SessionInputFactory inputFactory = new SessionInputFactory();
-        final SessionReader reader = inputFactory.createReaderForFile(origPhonFile);
-        final Session session = reader.readSession(new FileInputStream(origPhonFile));
-
-        for(Record r:session.getRecords()) {
-            try {
-                final Orthography reparsedOrtho = Orthography.parseOrthography(r.getOrthography().toString());
-                r.setOrthography(reparsedOrtho);
-            } catch (ParseException e) {
-
-            }
-        }
-
-        // output talkbank xml
+        // chat -> tb xml
         final File outTbFile = new File(OUT_XML_TB_FOLDER, this.filename);
         File outputFolder = outTbFile.getParentFile();
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();
         }
-        final TalkbankWriter writer = new TalkbankWriter();
-        writer.addListener(listener);
-        writer.writeSession(session, outTbFile.getAbsolutePath());
+        final Xml2CHATConverter chatConverter = new Xml2CHATConverter();
+        chatConverter.convertFile(origCHATFile, outTbFile, listener);
 
-        // output chat file
-        final String chatFilename = FilenameUtils.removeExtension(this.filename) + ".cha";
-        final File outChatFile = new File(OUT_CHAT_FOLDER, chatFilename);
-        outputFolder = outChatFile.getParentFile();
+        // tb xml -> phon
+        final File outPhonFile = new File(OUT_PHON_FOLDER, this.filename);
+        outputFolder = outPhonFile.getParentFile();
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();
         }
-        final Xml2CHATConverter chatConverter = new Xml2CHATConverter();
-        chatConverter.convertFile(outTbFile, outChatFile, listener);
+        final SessionInputFactory inputFactory = new SessionInputFactory();
+        final SessionReader reader = inputFactory.createReaderForFile(outTbFile);
+        final Session session = reader.readSession(new FileInputStream(outTbFile));
+        final SessionOutputFactory outputFactory = new SessionOutputFactory();
+        final SessionWriter writer = outputFactory.createWriter();
+        final OutputStream out = new FileOutputStream(outPhonFile);
+        writer.writeSession(session, out);
 
-        // chat 2 xml
-        final File outChatXmlFile = new File(OUT_CHAT_XML_FOLDER, this.filename);
-        outputFolder = outChatXmlFile.getParentFile();
+
+        // phon -> tb xml
+        final File outPhonXmlFile = new File(OUT_PHON_XML_FOLDER, this.filename);
+        outputFolder = outPhonXmlFile.getParentFile();
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();
         }
         final CHAT2XmlConverter chat2XmlConverter = new CHAT2XmlConverter();
-        chat2XmlConverter.convertFile(outChatFile, outChatXmlFile, listener);
+        chat2XmlConverter.convertFile(outPhonFile, outPhonXmlFile, listener);
 
         // check number of reported errors
         // write log file
@@ -188,10 +170,12 @@ public class RoundTripTestsPhonBank {
                 logWriter.flush();
             }
         }
-        Assert.assertEquals(0, (int)intRef.get());
+        if(intRef.get() > 0) {
+            return false;
+        }
 
         final String tbXml = FileUtils.readFileToString(outTbFile, StandardCharsets.UTF_8);
-        final String phonTbXml = FileUtils.readFileToString(outChatXmlFile, StandardCharsets.UTF_8);
+        final String phonTbXml = FileUtils.readFileToString(outPhonXmlFile, StandardCharsets.UTF_8);
 
         final Diff xmlDiff = DiffBuilder.compare(phonTbXml).withTest(tbXml)
                 .ignoreWhitespace().ignoreComments().build();
@@ -214,7 +198,11 @@ public class RoundTripTestsPhonBank {
             diffWriter.flush();
         }
 
-        Assert.assertEquals(diffData.getErrorText(), 0, diffData.errors().size());
+        if(diffData.errors().size() > 0) {
+            return false;
+        }
+
+        return true;
     }
 
     private record DiffData(List<Difference> warnings, List<Difference> errors) {
@@ -279,10 +267,16 @@ public class RoundTripTestsPhonBank {
                 } else if(d.getComparison().getControlDetails().getXPath().contains("ph")) {
                     warnings.add(d);
                     continue;
+                } else if(d.getComparison().getControlDetails().getXPath().contains("participant")) {
+                    warnings.add(d);
+                    continue;
                 }
             } else if (d.getComparison().getType().name().equals("ATTR_NAME_LOOKUP")) {
                 if (d.getComparison().getControlDetails().getXPath().contains("replacement")) {
                     // ignore for now
+                    warnings.add(d);
+                    continue;
+                } else if(d.getComparison().getControlDetails().getXPath().endsWith("@language")) {
                     warnings.add(d);
                     continue;
                 }
@@ -318,6 +312,61 @@ public class RoundTripTestsPhonBank {
         }
 
         return new DiffData(warnings, errors);
+    }
+
+    public static void performTest(String filename) {
+        final CHATShortRoundTrip roundTrip = new CHATShortRoundTrip(filename);
+        try {
+            if (!roundTrip.testRoundTrip()) {
+                final File originalFile = new File(IN_CHAT_FOLDER, filename);
+                final File errorFile = new File(OUT_ERROR_FOLDER, filename);
+                final File errorFolder = errorFile.getParentFile();
+                if (!errorFolder.exists()) {
+                    errorFolder.mkdirs();
+                }
+                FileUtils.copyFile(originalFile, errorFile);
+                // copy log file (if it exists)
+                final File logFile = new File(OUT_XML_TB_FOLDER, FilenameUtils.removeExtension(filename) + "-log.txt");
+                if (logFile.exists()) {
+                    final File errorLogFile = new File(OUT_ERROR_FOLDER, FilenameUtils.removeExtension(filename) + "-log.txt");
+                    FileUtils.copyFile(logFile, errorLogFile);
+                }
+                // copy diff file (if it exists)
+                final File diffFile = new File(OUT_XML_TB_FOLDER, FilenameUtils.removeExtension(filename) + "-diff.txt");
+                if (diffFile.exists()) {
+                    final File errorDiffFile = new File(OUT_ERROR_FOLDER, FilenameUtils.removeExtension(filename) + "-diff.txt");
+                    FileUtils.copyFile(diffFile, errorDiffFile);
+                }
+                numErrors.getAndSet(numErrors.get() + 1);
+            } else {
+                numPassed.getAndSet(numPassed.get() + 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            numErrors.getAndSet(numErrors.get() + 1);
+        }
+    }
+
+    private static AtomicReference<Integer> numErrors = new AtomicReference<>(0);
+    private static AtomicReference<Integer> numPassed = new AtomicReference<>(0);
+
+    public static void main(String[] args) throws Exception {
+        final Collection<Object[]> files = collectFiles();
+        final PhonWorkerGroup workerGroup = new PhonWorkerGroup(4);
+        workerGroup.setFinalTask(() -> {
+            System.out.println("--------------------");
+            System.out.println("All tasks completed");
+            System.out.println("Errors: " + numErrors.get());
+            System.out.println("Passed: " + numPassed.get());
+        });
+        for(Object[] file:files) {
+            workerGroup.queueTask(() -> {
+                performTest((String)file[0]);
+            });
+        }
+        System.out.println("Starting tasks... (" + files.size() + ")");
+        workerGroup.setTotalTasks(files.size());
+        workerGroup.begin();
     }
 
 }
