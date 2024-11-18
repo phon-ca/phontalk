@@ -1,10 +1,7 @@
 package ca.phon.phontalk.plugin;
 
 import ca.phon.orthography.Orthography;
-import ca.phon.phontalk.CHAT2XmlConverter;
-import ca.phon.phontalk.PhonTalkListener;
-import ca.phon.phontalk.TalkbankWriter;
-import ca.phon.phontalk.Xml2CHATConverter;
+import ca.phon.phontalk.*;
 import ca.phon.session.Record;
 import ca.phon.session.Session;
 import ca.phon.session.io.SessionInputFactory;
@@ -15,8 +12,10 @@ import ca.phon.worker.PhonWorkerGroup;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.Difference;
+import org.xmlunit.diff.ElementSelectors;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.*;
@@ -55,6 +54,12 @@ public class CHATShortRoundTrip {
 
     // step 3 - phon -> tb xml
     final static String OUT_PHON_XML_FOLDER = TARGET_TEST_FOLDER + "/phon-xml";
+
+    // step 4 - tb xml -> chat
+    final static String OUT_PHON_XML_CHAT_FOLDER = TARGET_TEST_FOLDER + "/phon-xml-chat";
+
+    // step 5 - chat -> tb xml
+    final static String OUT_CHAT_TB_FOLDER = TARGET_TEST_FOLDER + "/phon-xml-chat-xml";
 
     public static Collection<Object[]> collectFiles() throws IOException, InterruptedException {
         cloneGitRepo();
@@ -100,7 +105,7 @@ public class CHATShortRoundTrip {
             for(Path path:directoryStream) {
                 if(Files.isDirectory(path)) {
                     collectFiles(baseFolder, path, xmlPaths);
-                } else if(path.getFileName().toString().endsWith(".xml") && !path.getFileName().endsWith("project.xml")) {
+                } else if(path.getFileName().toString().endsWith(".cha")) {
                     final Path relPath = baseFolder.relativize(path);
                     xmlPaths.add(relPath);
                 }
@@ -128,17 +133,18 @@ public class CHATShortRoundTrip {
                 intRef.set(intRef.get()+1);
         };
 
+        final String xmlFileName = FilenameUtils.removeExtension(this.filename) + ".xml";
         // chat -> tb xml
-        final File outTbFile = new File(OUT_XML_TB_FOLDER, this.filename);
+        final File outTbFile = new File(OUT_XML_TB_FOLDER, xmlFileName);
         File outputFolder = outTbFile.getParentFile();
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();
         }
-        final Xml2CHATConverter chatConverter = new Xml2CHATConverter();
+        final CHAT2XmlConverter chatConverter = new CHAT2XmlConverter();
         chatConverter.convertFile(origCHATFile, outTbFile, listener);
 
         // tb xml -> phon
-        final File outPhonFile = new File(OUT_PHON_FOLDER, this.filename);
+        final File outPhonFile = new File(OUT_PHON_FOLDER, xmlFileName);
         outputFolder = outPhonFile.getParentFile();
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();
@@ -151,15 +157,32 @@ public class CHATShortRoundTrip {
         final OutputStream out = new FileOutputStream(outPhonFile);
         writer.writeSession(session, out);
 
-
         // phon -> tb xml
-        final File outPhonXmlFile = new File(OUT_PHON_XML_FOLDER, this.filename);
+        final File outPhonXmlFile = new File(OUT_PHON_XML_FOLDER, xmlFileName);
         outputFolder = outPhonXmlFile.getParentFile();
         if(!outputFolder.exists()) {
             outputFolder.mkdirs();
         }
-        final CHAT2XmlConverter chat2XmlConverter = new CHAT2XmlConverter();
-        chat2XmlConverter.convertFile(outPhonFile, outPhonXmlFile, listener);
+        final Phon2XmlConverter phonConverter = new Phon2XmlConverter();
+        phonConverter.convertFile(outPhonFile, outPhonXmlFile, listener);
+
+//        // tb xml -> chat
+//        final File outPhonXmlChatFile = new File(OUT_PHON_XML_CHAT_FOLDER, this.filename);
+//        outputFolder = outPhonXmlChatFile.getParentFile();
+//        if(!outputFolder.exists()) {
+//            outputFolder.mkdirs();
+//        }
+//        final Xml2CHATConverter xml2CHATConverter = new Xml2CHATConverter();
+//        xml2CHATConverter.convertFile(outPhonXmlFile, outPhonXmlChatFile, listener);
+//
+//        // chat -> tb xml
+//        final File outChatTbFile = new File(OUT_CHAT_TB_FOLDER, xmlFileName);
+//        outputFolder = outChatTbFile.getParentFile();
+//        if(!outputFolder.exists()) {
+//            outputFolder.mkdirs();
+//        }
+//        final CHAT2XmlConverter chat2XmlConverter = new CHAT2XmlConverter();
+//        chat2XmlConverter.convertFile(outPhonXmlChatFile, outChatTbFile, listener);
 
         // check number of reported errors
         // write log file
@@ -178,11 +201,14 @@ public class CHATShortRoundTrip {
         final String phonTbXml = FileUtils.readFileToString(outPhonXmlFile, StandardCharsets.UTF_8);
 
         final Diff xmlDiff = DiffBuilder.compare(phonTbXml).withTest(tbXml)
+                .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndAllAttributes))
                 .ignoreWhitespace().ignoreComments().build();
         final DiffData diffData = sortCHATDiff(xmlDiff);
 
         if(!diffData.warnings().isEmpty())
             System.out.println(diffData.getWarningText());
+        if(!diffData.errors().isEmpty())
+            System.err.println(diffData.getErrorText());
 
         // write diff file
         final File diffFile = new File(outTbFile.getParent(), FilenameUtils.removeExtension(outTbFile.getName()) + "-diff.txt");
@@ -220,6 +246,24 @@ public class CHATShortRoundTrip {
         final List<Difference> warnings = new ArrayList<>();
 
         for (Difference d : diff.getDifferences()) {
+            if(d.getComparison().getType().name().equals("CHILD_NODELIST_SEQUENCE")) {
+                warnings.add(d);
+                continue;
+            }
+            if(d.getComparison().getType().name().equals("CHILD_LOOKUP") &&
+                    d.getComparison().getControlDetails().getXPath() != null &&
+                    d.getComparison().getControlDetails().getXPath().startsWith("/CHAT[1]/Participants[1]/participant") &&
+                    d.getComparison().getTestDetails().getValue() == null) {
+                warnings.add(d);
+                continue;
+            }
+            if(d.getComparison().getType().name().equals("CHILD_LOOKUP") &&
+                    d.getComparison().getControlDetails().getValue() == null &&
+                    d.getComparison().getTestDetails().getXPath() != null &&
+                    d.getComparison().getTestDetails().getXPath().startsWith("/CHAT[1]/Participants[1]/participant")) {
+                warnings.add(d);
+                continue;
+            }
             if(d.getComparison().getControlDetails().getXPath() != null && (d.getComparison().getControlDetails().getXPath().contains("model") || d.getComparison().getControlDetails().getXPath().contains("actual"))) {
                 warnings.add(d);
                 continue;
@@ -230,6 +274,11 @@ public class CHATShortRoundTrip {
             }
             if (d.getComparison().getType().name().equals("ATTR_VALUE") ||
                     d.getComparison().getType().name().equals("TEXT_VALUE")) {
+                if(d.getComparison().getControlDetails().getValue() != null && d.getComparison().getControlDetails().getValue().toString().contains("Original transcription")) {
+                    warnings.add(d);
+                    continue;
+                }
+
                 final String controlText = d.getComparison().getControlDetails().getValue().toString();
                 final String testText = d.getComparison().getTestDetails().getValue().toString();
                 if (d.getComparison().getControlDetails().getXPath().equals("/CHAT[1]/@Version")) {
@@ -352,7 +401,7 @@ public class CHATShortRoundTrip {
 
     public static void main(String[] args) throws Exception {
         final Collection<Object[]> files = collectFiles();
-        final PhonWorkerGroup workerGroup = new PhonWorkerGroup(4);
+        final PhonWorkerGroup workerGroup = new PhonWorkerGroup(8);
         workerGroup.setFinalTask(() -> {
             System.out.println("--------------------");
             System.out.println("All tasks completed");

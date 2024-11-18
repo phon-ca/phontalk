@@ -138,22 +138,26 @@ public class TalkbankWriter {
             writer.writeAttribute("Videos", session.getMetadata().get("Videos"));
         }
 
+        boolean mediaTypesSpecified = false;
+        if(session.getMetadata().get("Mediatypes") != null) {
+            writer.writeAttribute("Mediatypes", session.getMetadata().get("Mediatypes"));
+            mediaTypesSpecified = true;
+        }
+
         if(session.getMediaLocation() != null && !session.getMediaLocation().isBlank()) {
             final String mediaName = new File(session.getMediaLocation()).getName();
             final String mediaWithoutExt = mediaName.lastIndexOf('.') > 0 ? mediaName.substring(0, mediaName.lastIndexOf('.')) : mediaName;
             writer.writeAttribute("Media", mediaWithoutExt);
 
             // get extension
-            final String ext = mediaName.lastIndexOf('.') > 0 ? mediaName.substring(mediaName.lastIndexOf('.')) : "";
-            if(ext.isBlank() || ".wav".equalsIgnoreCase(ext) || ".mp3".equalsIgnoreCase(ext) || ".m4a".equalsIgnoreCase(ext)) {
-                writer.writeAttribute("Mediatypes", "audio");
-            } else {
-                writer.writeAttribute("Mediatypes", "video");
+            if(!mediaTypesSpecified) {
+                final String ext = mediaName.lastIndexOf('.') > 0 ? mediaName.substring(mediaName.lastIndexOf('.')) : "";
+                if (ext.isBlank() || ".wav".equalsIgnoreCase(ext) || ".mp3".equalsIgnoreCase(ext) || ".m4a".equalsIgnoreCase(ext)) {
+                    writer.writeAttribute("Mediatypes", "audio");
+                } else {
+                    writer.writeAttribute("Mediatypes", "video");
+                }
             }
-        }
-
-        if(session.getMetadata().get("Mediatypes") != null) {
-            writer.writeAttribute("Mediatypes", session.getMetadata().get("Mediatypes"));
         }
 
         if(!session.getLanguages().isEmpty()) {

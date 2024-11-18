@@ -101,7 +101,7 @@ public class TalkbankReader {
                 if(userTierType != null) {
                     td = factory.createTierDescription(tierName, userTierType.getType(), new HashMap<>(), !userTierType.isAlignable());
                 } else {
-                    td = factory.createTierDescription(tierName, TierData.class, new HashMap<>(), false);
+                    td = factory.createTierDescription(tierName, TierData.class, new HashMap<>(), true);
                 }
                 session.addUserTier(td);
             }
