@@ -2,10 +2,7 @@ package ca.phon.phontalk;
 
 import ca.phon.formatter.Formatter;
 import ca.phon.formatter.FormatterFactory;
-import ca.phon.orthography.Orthography;
-import ca.phon.orthography.OrthographyBuilder;
-import ca.phon.orthography.Terminator;
-import ca.phon.orthography.TerminatorType;
+import ca.phon.orthography.*;
 import ca.phon.session.*;
 import ca.phon.session.Record;
 import ca.phon.session.alignment.CrossTierAlignment;
@@ -247,7 +244,8 @@ public class TalkbankWriter {
         writer.writeAttribute("role", participant.getRole().getTitle().replaceAll("\\s", "_"));
 
         if(participant.getName() != null && !participant.getName().isBlank()) {
-            writer.writeAttribute("name", participant.getName());
+            // replace spaces with _
+            writer.writeAttribute("name", participant.getName().replaceAll("\\s", "_"));
         }
         if(participant.getAge(null) != null) {
             writer.writeAttribute("age", participant.getAge(null).toString());

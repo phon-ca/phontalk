@@ -47,7 +47,7 @@ public class ShortRoundTrip {
     final static String OUT_ERROR_FOLDER = TARGET_TEST_FOLDER + "/errors";
 
     // step 1 - phon -> tb xml
-    final static String IN_PHON_FOLDER = GIT_CLONE_FOLDER + "/phon-in-progress";
+    final static String IN_PHON_FOLDER = GIT_CLONE_FOLDER + "/phon-todo";
     final static String OUT_XML_TB_FOLDER = TARGET_TEST_FOLDER + "/xml";
 
     // step 2 - tb xml -> chat

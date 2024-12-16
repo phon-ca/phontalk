@@ -46,7 +46,7 @@ public class CHATShortRoundTrip {
     final static String OUT_ERROR_FOLDER = TARGET_TEST_FOLDER + "/errors";
 
     // step 1 - chat -> tb xml
-    final static String IN_CHAT_FOLDER = GIT_CLONE_FOLDER + "/chat-in-progress";
+    final static String IN_CHAT_FOLDER = GIT_CLONE_FOLDER + "/chat-todo";
     final static String OUT_XML_TB_FOLDER = TARGET_TEST_FOLDER + "/xml";
 
     // step 2 - tb xml -> phon
