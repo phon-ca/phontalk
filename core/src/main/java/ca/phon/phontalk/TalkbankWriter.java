@@ -2,6 +2,7 @@ package ca.phon.phontalk;
 
 import ca.phon.formatter.Formatter;
 import ca.phon.formatter.FormatterFactory;
+import ca.phon.ipa.alignment.PhoneMap;
 import ca.phon.orthography.*;
 import ca.phon.session.*;
 import ca.phon.session.Record;
@@ -586,6 +587,59 @@ public class TalkbankWriter {
                     }
                 }
 
+                // IPA syllabification and alignment
+                boolean hasTargetSyllabification = false;
+                if(record.getIPATargetTier().hasValue() && record.getIPATargetTier().getValue().length() > 0
+                    && record.getIPATarget().hasSyllableInformation()) {
+                    writeStartElement("a");
+                    writeAttribute("type", "extension");
+                    writeAttribute("flavor", SystemTierType.TargetSyllables.getChatTierName().substring(2));
+                    try {
+                        final TierData syllTierData = TierData.parseTierData(record.getIPATarget().toString(true));
+                        writeTierData(syllTierData, this);
+                    } catch (ParseException e) {
+                        fireWarning("Error parsing IPA target syllabification", this);
+                    }
+                    writeEndElement();
+                    hasTargetSyllabification = true;
+                }
+
+                // IPA Actual syllabification and alignment
+                boolean hasActualSyllabification = false;
+                if(record.getIPAActualTier().hasValue() && record.getIPAActualTier().getValue().length() > 0
+                    && record.getIPAActual().hasSyllableInformation()) {
+                    writeStartElement("a");
+                    writeAttribute("type", "extension");
+                    writeAttribute("flavor", SystemTierType.ActualSyllables.getChatTierName().substring(2));
+                    try {
+                        final TierData syllTierData = TierData.parseTierData(record.getIPAActual().toString(true));
+                        writeTierData(syllTierData, this);
+                    } catch (ParseException e) {
+                        fireWarning("Error parsing IPA actual syllabification", this);
+                    }
+                    writeEndElement();
+                    hasActualSyllabification = true;
+                }
+
+                if(hasTargetSyllabification && hasActualSyllabification && record.getPhoneAlignment().getAlignments().size() > 0) {
+                    writeStartElement("a");
+                    writeAttribute("type", "extension");
+                    writeAttribute("flavor", SystemTierType.PhoneAlignment.getChatTierName().substring(2));
+                    final StringBuilder alignmentData = new StringBuilder();
+                    for(PhoneMap pm:record.getPhoneAlignment().getAlignments()) {
+                        if(alignmentData.length() > 0)
+                            alignmentData.append(" ");
+                        alignmentData.append(pm.toString());
+                    }
+                    try {
+                        final TierData alignTierData = TierData.parseTierData(alignmentData.toString());
+                        writeTierData(alignTierData, this);
+                    } catch (ParseException e) {
+                        fireWarning("Error parsing phone alignment", this);
+                    }
+                    writeEndElement();
+                }
+
                 if(record.getNotesTier().hasValue() && record.getNotesTier().getValue().length() > 0) {
                     writeStartElement("a");
                     writeAttribute("type", "extension");
@@ -593,7 +647,6 @@ public class TalkbankWriter {
                     writeTierData(record.getNotes(), this);
                     writeEndElement();
                 }
-                // TODO IPA syllabification and alignment
             } else if("pos".equals(eleName)) {
                 inPos = false;
             }
