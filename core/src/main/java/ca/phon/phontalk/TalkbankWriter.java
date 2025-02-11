@@ -589,7 +589,7 @@ public class TalkbankWriter {
 
                 // IPA syllabification and alignment
                 boolean hasTargetSyllabification = false;
-                if(record.getIPATargetTier().hasValue() && record.getIPATargetTier().getValue().length() > 0
+                if(record.getIPATargetTier().hasValue() && record.getIPATarget().length() > 0
                     && record.getIPATarget().hasSyllableInformation()) {
                     writeStartElement("a");
                     writeAttribute("type", "extension");
@@ -606,7 +606,7 @@ public class TalkbankWriter {
 
                 // IPA Actual syllabification and alignment
                 boolean hasActualSyllabification = false;
-                if(record.getIPAActualTier().hasValue() && record.getIPAActualTier().getValue().length() > 0
+                if(record.getIPAActualTier().hasValue() && record.getIPAActual().length() > 0
                     && record.getIPAActual().hasSyllableInformation()) {
                     writeStartElement("a");
                     writeAttribute("type", "extension");

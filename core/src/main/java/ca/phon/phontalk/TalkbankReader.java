@@ -7,6 +7,7 @@ import ca.phon.ipa.CompoundWordMarker;
 import ca.phon.ipa.IPATranscript;
 import ca.phon.ipa.IPATranscriptBuilder;
 import ca.phon.ipa.StressType;
+import ca.phon.ipa.alignment.PhoneMap;
 import ca.phon.orthography.*;
 import ca.phon.orthography.Error;
 import ca.phon.orthography.mor.Grasp;
@@ -38,6 +39,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -440,22 +442,6 @@ public class TalkbankReader {
                     .filter(ele -> ele != utd.orthography().getUtteranceMedia()).toList();
             ortho = new Orthography(filteredElements);
         }
-
-//        // change any instances of 0word to &=0word
-//        final OrthographyBuilder orthoBuilder = new OrthographyBuilder();
-//        for(OrthographyElement ele:ortho.toList()) {
-//            if(ele instanceof Word) {
-//                final Word word = (Word)ele;
-//                if(word.getPrefix() != null && word.getPrefix().getType() == WordType.OMISSION) {
-//                    orthoBuilder.append("&=" + word.toString());
-//                } else {
-//                    orthoBuilder.append(word);
-//                }
-//            } else {
-//                orthoBuilder.append(ele);
-//            }
-//        }
-//        ortho = orthoBuilder.toOrthography();
         r.setOrthography(ortho);
 
         for(Tier<IPATranscript> ipaTier:utd.ipaTiers()) {
@@ -471,6 +457,27 @@ public class TalkbankReader {
         for(Tier<?> depTier:utd.depTiers()) {
             if(SystemTierType.Notes.getName().equals(depTier.getName())) {
                 r.setNotes((TierData) depTier.getValue());
+            } else if((SystemTierType.PhoneAlignment.getName() + " Text").equals(depTier.getName())) {
+                final IPATranscript ipaT = r.getIPATarget();
+                final IPATranscript ipaA = r.getIPAActual();
+                final List<IPATranscript> targetWords = ipaT.words();
+                final List<IPATranscript> actualWords = ipaA.words();
+                final int numAlignments = Math.max(targetWords.size(), actualWords.size());
+                final List<PhoneMap> phoneMaps = new ArrayList<>();
+
+                final TierData alignmentData = (TierData)depTier.getValue();
+                for(int i = 0; i < numAlignments; i++) {
+                    final IPATranscript target = (i < targetWords.size() ? targetWords.get(i) : new IPATranscript());
+                    final IPATranscript actual = (i < actualWords.size() ? actualWords.get(i) : new IPATranscript());
+                    final String phoneAlignmentText = alignmentData.getElements().size() > i ? alignmentData.getElements().get(i).toString() : null;
+                    if(phoneAlignmentText != null) {
+                        final PhoneMap phoneMap = PhoneMap.fromString(target, actual, phoneAlignmentText);
+                        phoneMaps.add(phoneMap);
+                    } else {
+                        break;
+                    }
+                }
+                r.setPhoneAlignment(new PhoneAlignment(phoneMaps));
             } else {
                 r.putTier(depTier);
             }
@@ -591,7 +598,19 @@ public class TalkbankReader {
         if(type != null) {
             String tierName = "undefined";
             if("extension".equals(type)) {
-                tierName = tierNameMap.getOrDefault(flavor, flavor);
+                // check syllabification and alignment tiers
+                if(SystemTierType.TargetSyllables.getChatTierName().substring(2).equals(flavor)) {
+                    // read in IPA target syllabification
+                    tierName = SystemTierType.TargetSyllables.getName();
+                } else if(SystemTierType.ActualSyllables.getChatTierName().substring(2).equals(flavor)) {
+                    // read in IPA actual syllabification
+                    tierName = SystemTierType.ActualSyllables.getName();
+                } else if(SystemTierType.PhoneAlignment.getChatTierName().substring(2).equals(flavor)) {
+                    // read in phone alignment
+                    tierName = SystemTierType.PhoneAlignment.getName() + " Text";
+                } else {
+                    tierName = tierNameMap.getOrDefault(flavor, flavor);
+                }
             } else {
                 final UserTierType userTierType = UserTierType.fromTalkbankTierType(type);
                 if(userTierType == null) throw new XMLStreamException("Unknown tier 'type' " + type);
@@ -824,7 +843,39 @@ public class TalkbankReader {
 
                     case "a":
                         Tier<TierData> depTier = readDepTier(reader);
-                        depTierList.add(depTier);
+                        if(SystemTierType.TargetSyllables.getName().equals(depTier.getName())) {
+                            // update IPATarget with syllabification
+                            final String tierString = depTier.toString();
+                            try {
+                                final IPATranscript syllabifiedIPA = IPATranscript.parseIPATranscript(tierString);
+                                final String currentTarget =
+                                        ipaTierBuilders.containsKey(SystemTierType.IPAActual.getName())
+                                            ? ipaTierBuilders.get(SystemTierType.IPATarget.getName()).toString()
+                                            : "";
+                                if(syllabifiedIPA.toString().equals(currentTarget)) {
+                                    ipaTierBuilders.put(SystemTierType.IPATarget.getName(), new IPATranscriptBuilder().append(syllabifiedIPA));
+                                }
+                            } catch (ParseException e) {
+                                fireWarning(e.getMessage(), reader);
+                            }
+                        } else if(SystemTierType.ActualSyllables.getName().equals(depTier.getName())) {
+                            // update IPAActual with syllabification
+                            final String tierString = depTier.toString();
+                            try {
+                                final IPATranscript syllabifiedIPA = IPATranscript.parseIPATranscript(tierString);
+                                final String currentActual =
+                                        ipaTierBuilders.containsKey(SystemTierType.IPAActual.getName())
+                                            ? ipaTierBuilders.get(SystemTierType.IPAActual.getName()).toString()
+                                            : "";
+                                if(syllabifiedIPA.toString().equals(currentActual)) {
+                                    ipaTierBuilders.put(SystemTierType.IPAActual.getName(), new IPATranscriptBuilder().append(syllabifiedIPA));
+                                }
+                            } catch (ParseException e) {
+                                fireWarning(e.getMessage(), reader);
+                            }
+                        } else {
+                            depTierList.add(depTier);
+                        }
                         break;
 
                     case "wor":
