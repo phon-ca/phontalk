@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 xmlns:xml="http://www.w3.org/XML/1998/namespace"
 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tb="http://www.talkbank.org/ns/talkbank" xmlns="http://www.talkbank.org/ns/talkbank" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://www.talkbank.org/ns/talkbank" elementFormDefault="qualified" version="3.0.1" id="Talkbank">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tb="http://www.talkbank.org/ns/talkbank" xmlns="http://www.talkbank.org/ns/talkbank" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://www.talkbank.org/ns/talkbank" elementFormDefault="qualified" version="3.0.0" id="Talkbank">
+
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+               schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
         <xs:documentation> A full definition of the CHAT format. </xs:documentation>
         <xs:documentation> Developed by Romeo Anghelache, from the CHAT specifications, released under
@@ -14,6 +18,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 topic...</a>
         </xs:documentation>
     </xs:annotation>
+
     <xs:element name="CHAT">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> A single CHAT transcript. </xs:documentation>
@@ -22,6 +27,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:complexType mixed="false">
             <xs:sequence>
                 <xs:element name="Participants">
@@ -36,7 +42,9 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:annotation>
                     <xs:complexType mixed="false">
                         <xs:sequence>
-                            <xs:element name="participant" type="participantType" maxOccurs="unbounded">
+                            <xs:element name="participant"
+                                        type="participantType"
+                                        maxOccurs="unbounded">
                                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                     <xs:documentation> Information about a participant </xs:documentation>
                                     <xs:documentation>
@@ -48,9 +56,11 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
+
                 <!-- MUN: Added 'minOccurs="0"' -->
                 <xs:choice maxOccurs="unbounded" minOccurs="0">
                     <xs:element ref="comment"/>
+
                     <!--
                     TODO need constraints on all the gems in order
                     to validate matching of begin and end
@@ -75,6 +85,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             </xs:attribute>
                         </xs:complexType>
                     </xs:element>
+
                     <xs:element name="end-gem">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation> End a gem (requires earlier begin of gem). </xs:documentation>
@@ -95,6 +106,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             </xs:attribute>
                         </xs:complexType>
                     </xs:element>
+
                     <xs:element name="lazy-gem">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation> Begin a lazy gem; does not require a matching end gem, but its
@@ -117,9 +129,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             </xs:attribute>
                         </xs:complexType>
                     </xs:element>
+
                     <xs:element ref="u"/>
                 </xs:choice>
+
             </xs:sequence>
+
             <xs:attribute name="Version" type="nonemptyStringType" use="required">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Version of the XML Schema this transcript was created for. </xs:documentation>
@@ -129,6 +144,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Date" type="xs:date" use="optional">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Date of transcription. Note that there can only be one date. A session
@@ -139,6 +155,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Corpus" type="nonemptyStringType" use="required">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Every transcript must be part of a corpus. </xs:documentation>
@@ -148,6 +165,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Videos" type="videosType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> The transcript may be associated with at most one media file. </xs:documentation>
@@ -157,6 +175,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Media" type="mediaRefType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> The transcript may be associated with at most one media URI. </xs:documentation>
@@ -166,6 +185,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Mediatypes" type="mediaTypesType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> The transcript may be associated with at most one media file. </xs:documentation>
@@ -175,6 +195,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Lang" type="languagesType" use="required">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> The main languages used in the transcript. (Other languages used only
@@ -189,7 +210,9 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Options" type="optionsType"/>
+
             <xs:attribute name="DesignType" type="nonemptyStringType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Design type </xs:documentation>
@@ -199,6 +222,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="ActivityType" type="nonemptyStringType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Activity type </xs:documentation>
@@ -208,6 +232,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="GroupType" type="nonemptyStringType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Group type </xs:documentation>
@@ -217,6 +242,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Colorwords" type="nonemptyStringType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Information about text color mappings for use by the CLAN editor. </xs:documentation>
@@ -226,6 +252,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Window" type="nonemptyStringType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Information about window size and placement for use by the CLAN editor. </xs:documentation>
@@ -235,6 +262,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="PID" type="nonemptyStringType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> The PID for the document. </xs:documentation>
@@ -244,6 +272,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="Font" type="nonemptyStringType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> The font to be used for display in the CLAN editor. </xs:documentation>
@@ -254,6 +283,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:annotation>
             </xs:attribute>
         </xs:complexType>
+
         <xs:unique name="uIDKey">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Key to ensure uniqueness among u elements. These IDs are used externally
@@ -262,6 +292,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:selector xpath="tb:u"/>
             <xs:field xpath="@uID"/>
         </xs:unique>
+
         <xs:unique name="partIDKey">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Key to ensure all participants have unique ids. </xs:documentation>
@@ -273,6 +304,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:selector xpath="tb:Participants/tb:participant"/>
             <xs:field xpath="@id"/>
         </xs:unique>
+
         <xs:keyref refer="partIDKey" name="partIDKeyRef">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> KeyRef to ensure that utterances refer to an actual participant. </xs:documentation>
@@ -284,7 +316,9 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:selector xpath="tb:u"/>
             <xs:field xpath="@who"/>
         </xs:keyref>
+
     </xs:element>
+
     <xs:element name="freecode">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Unscoped complex local events in the middle of an utterance. </xs:documentation>
@@ -299,6 +333,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="postcode">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Code that can only occur at the end of an utterance. Currently arbitrary
@@ -322,6 +357,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="comment">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> A comment header. </xs:documentation>
@@ -339,6 +375,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="type" type="commentTypeType"/>
         </xs:complexType>
     </xs:element>
+
     <xs:simpleType name="commentTypeType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> The allowable types of comment headers. </xs:documentation>
@@ -357,6 +394,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Bck">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Bck. </xs:documentation>
@@ -366,6 +404,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Date">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Date of transcription. </xs:documentation>
@@ -375,6 +414,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Number">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Number. </xs:documentation>
@@ -384,6 +424,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Recording Quality">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Recording quality. </xs:documentation>
@@ -393,6 +434,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Transcription">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Transcription. </xs:documentation>
@@ -402,6 +444,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Types">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Types. </xs:documentation>
@@ -411,6 +454,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Blank">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Blank. </xs:documentation>
@@ -420,6 +464,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="T">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Thumbnail. </xs:documentation>
@@ -429,6 +474,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Generic">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Comment. </xs:documentation>
@@ -438,6 +484,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Location">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Location. </xs:documentation>
@@ -447,6 +494,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="New Episode">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> New episode. </xs:documentation>
@@ -456,6 +504,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Room Layout">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Room layout. </xs:documentation>
@@ -465,6 +514,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Situation">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Situation. </xs:documentation>
@@ -474,6 +524,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Tape Location">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Tape location. </xs:documentation>
@@ -483,6 +534,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Time Duration">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Time duration. </xs:documentation>
@@ -492,6 +544,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Time Start">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Time start. </xs:documentation>
@@ -501,6 +554,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Transcriber">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Transcriber for this transcript. </xs:documentation>
@@ -510,6 +564,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Warning">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Warning. </xs:documentation>
@@ -519,6 +574,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="Page">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Page. </xs:documentation>
@@ -528,8 +584,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
         </xs:restriction>
     </xs:simpleType>
+
+
+
     <xs:element name="tagMarker">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Tag marker, used in both main line and %mor.</xs:documentation>
@@ -542,6 +602,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:complexType mixed="false">
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="mor"/>
@@ -560,24 +621,27 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="tag">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>â€ž</xs:documentation>
+                                <xs:documentation>&#x201E;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#Tag_Satellite_Marker">CHAT
                                         manual section on this topic...</a>
                                 </xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/MOR.html#MorphologicalTagMarker_Tag">MOR manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/MOR.html#MorphologicalTagMarker_Tag"
+                                    >MOR manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
                         <xs:enumeration value="vocative">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>â€¡</xs:documentation>
+                                <xs:documentation>&#x2021;</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#Vocative_Satellite_Marker">CHAT manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#Vocative_Satellite_Marker"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/MOR.html#MorphologicalTagMarker_Vocative">MOR manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/MOR.html#MorphologicalTagMarker_Vocative"
+                                    >MOR manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
@@ -586,6 +650,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:attribute>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="e">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Nonverbal event. </xs:documentation>
@@ -594,13 +659,16 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:complexType mixed="false">
+
             <xs:sequence>
                 <xs:choice>
                     <xs:element ref="action"/>
                     <xs:element ref="happening"/>
                     <xs:element ref="otherSpokenEvent"/>
                 </xs:choice>
+
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element ref="k"/>
                     <xs:element ref="error"/>
@@ -609,8 +677,10 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="duration"/>
                 </xs:choice>
             </xs:sequence>
+
         </xs:complexType>
     </xs:element>
+
     <xs:element name="action">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>0</xs:documentation>
@@ -619,8 +689,10 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:complexType mixed="false"/>
     </xs:element>
+
     <xs:element name="happening" type="nonemptyStringType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>&amp;=; happening, such as sneeze</xs:documentation>
@@ -630,6 +702,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:simpleType name="nonemptyStringType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> A nonempty string. </xs:documentation>
@@ -638,6 +711,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:minLength value="1"/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="mediaRefType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Allowable media name. </xs:documentation>
@@ -649,6 +723,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         <xs:restriction base="xs:anyURI">
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="languagesType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> A list of languages, using the official ISO codes. </xs:documentation>
@@ -659,6 +734,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         </xs:annotation>
         <xs:list itemType="languageType"/>
     </xs:simpleType>
+
+
     <xs:complexType name="morphemicBaseType" mixed="false">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> %mor unit of one-to-one correspondence with main line. A single word or a compound word or a terminator. </xs:documentation>
@@ -677,6 +754,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:element ref="gra" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
+
     <xs:element name="mor-pre" type="morphemicBaseType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>mor preclitic</xs:documentation>
@@ -686,6 +764,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:element name="mor-post" type="morphemicBaseType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>mor postclitic</xs:documentation>
@@ -695,6 +774,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:element name="langs">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> What language(s) a word is in (if not the one in default scope). </xs:documentation>
@@ -703,44 +783,44 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     section on this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:complexType mixed="false">
             <xs:choice>
                 <xs:element name="single" type="languageType">
                     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                         <xs:documentation> Word is to be interpreted in a single language. </xs:documentation>
                         <xs:documentation>
-                            <a href="https://talkbank.org/manuals/CHAT.html#SecondLanguage_Marker_Single">CHAT manual section on this topic...</a>
+                            <a href="https://talkbank.org/manuals/CHAT.html#SecondLanguage_Marker_Single"
+                            >CHAT manual section on this topic...</a>
                         </xs:documentation>
                     </xs:annotation>
                 </xs:element>
+
                 <xs:element name="multiple" type="languagesType">
                     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                         <xs:documentation> Word is a combination of many languages. </xs:documentation>
                         <xs:documentation>
-                            <a href="https://talkbank.org/manuals/CHAT.html#SecondLanguage_Marker_Multiple">CHAT manual section on this topic...</a>
+                            <a href="https://talkbank.org/manuals/CHAT.html#SecondLanguage_Marker_Multiple"
+                            >CHAT manual section on this topic...</a>
                         </xs:documentation>
                     </xs:annotation>
                 </xs:element>
+
                 <xs:element name="ambiguous" type="languagesType">
                     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                         <xs:documentation> Word can be interpreted as one of many languages. </xs:documentation>
                         <xs:documentation>
-                            <a href="https://talkbank.org/manuals/CHAT.html#SecondLanguage_Marker_Ambiguous">CHAT manual section on this topic...</a>
+                            <a href="https://talkbank.org/manuals/CHAT.html#SecondLanguage_Marker_Ambiguous"
+                            >CHAT manual section on this topic...</a>
                         </xs:documentation>
                     </xs:annotation>
                 </xs:element>
             </xs:choice>
-            <xs:attribute name="hebrew" type="xs:boolean">
-                <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation> Whether @s or ×€×¡ was used </xs:documentation>
-                    <xs:documentation>
-                        <a href="https://talkbank.org/manuals/CHAT.html#TODO">CHAT manual
-                            section on this topic...</a>
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:attribute>
         </xs:complexType>
     </xs:element>
+
+
+
     <xs:element name="linker">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Utterance initiators or linkers; they indicate the way to fit the current
@@ -756,7 +836,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="quoted utterance next">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>+"</xs:documentation>
+                                <xs:documentation>+&quot;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#QuotedUtterance_Linker">CHAT
                                         manual section on this topic...</a>
@@ -801,7 +881,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="technical break TCU completion">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>+â‰‹</xs:documentation>
+                                <xs:documentation>+&#x224B;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#TechnicalBreakTCUCompletion_Linker">CHAT
                                         manual section on this topic...</a>
@@ -810,7 +890,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="no break TCU completion">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>+â‰ˆ</xs:documentation>
+                                <xs:documentation>+&#x2248;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#NoBreakTCUCompletion_Linker">CHAT
                                         manual section on this topic...</a>
@@ -822,15 +902,16 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:attribute>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="internal-media" type="mediaType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Media bullet used only before a terminator. </xs:documentation>
             <xs:documentation>
                 <a href="https://talkbank.org/manuals/CHAT.html#Internal_Media">CHAT manual section
                     on this topic...</a>
-            </xs:documentation>
-        </xs:annotation>
+            </xs:documentation>    </xs:annotation>
     </xs:element>
+
     <xs:element name="media" type="mediaType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Media bullet is allowed at the end of an utterance only if after a
@@ -841,6 +922,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:complexType name="mediaType" mixed="false">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> A pointer to a selection in the single video/audio file associated with the
@@ -854,6 +936,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     section on this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:attribute name="start" type="xs:decimal" use="required">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> The start time for the selection. </xs:documentation>
@@ -863,6 +946,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="end" type="xs:decimal" use="required">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> The end time for the selection. </xs:documentation>
@@ -872,6 +956,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="unit" type="mediaUnitType" use="required">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> The unit of time used for the selection. </xs:documentation>
@@ -881,6 +966,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="skip" type="xs:boolean">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Whether the CLAN editor should skip upon playback. </xs:documentation>
@@ -891,6 +977,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
+
     <xs:simpleType name="mediaTypeType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Type of external media referenced. </xs:documentation>
@@ -948,6 +1035,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="mediaUnitType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> The time unit. </xs:documentation>
@@ -981,6 +1069,9 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
+
+
     <xs:complexType name="participantType" mixed="false">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Information about a participant </xs:documentation>
@@ -989,6 +1080,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:attribute name="id" type="speakerID" use="required">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's id. </xs:documentation>
@@ -998,6 +1090,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="role" type="roleType" use="required">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's role. </xs:documentation>
@@ -1011,6 +1104,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="name" type="nonemptyStringType" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's name. </xs:documentation>
@@ -1020,6 +1114,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="age" type="xs:duration" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's age, start of range during transcript. </xs:documentation>
@@ -1029,6 +1124,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="group" type="nonemptyStringType" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's group. </xs:documentation>
@@ -1038,6 +1134,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="sex" type="sexType" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's sex. </xs:documentation>
@@ -1047,6 +1144,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="SES" type="nonemptyStringType" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's SES. </xs:documentation>
@@ -1056,6 +1154,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="education" type="nonemptyStringType" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's education. </xs:documentation>
@@ -1065,6 +1164,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="custom-field" type="nonemptyStringType" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Custom field for additional information about speaker. </xs:documentation>
@@ -1074,6 +1174,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="birthday" type="xs:date" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's birth date. </xs:documentation>
@@ -1083,6 +1184,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="language" type="languagesType" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's list of languages. Actually redundant because duplicated from
@@ -1093,6 +1195,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="first-language" type="languageType" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's first language (note that this does not need to be listed in
@@ -1103,6 +1206,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
         <xs:attribute name="birthplace" type="nonemptyStringType" use="optional">
             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                 <xs:documentation> Speaker's birthplace. </xs:documentation>
@@ -1113,6 +1217,9 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
+
+
+
     <xs:complexType name="baseTerminatorType" mixed="false">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Terminator for an utterance. </xs:documentation>
@@ -1121,6 +1228,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:attribute name="type" use="required">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
@@ -1133,6 +1241,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="q">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation> Question mark. </xs:documentation>
@@ -1142,23 +1251,28 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="e">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation> Exclamation point. </xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#ExclamationMark_Terminator">CHAT manual section on this topic...</a>
+                                <a href="https://talkbank.org/manuals/CHAT.html#ExclamationMark_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <!-- sterminator -->
                     <xs:enumeration value="broken for coding">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>+.</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#TranscriptionBreak_Terminator">CHAT manual section on this topic...</a>
+                                <a href="https://talkbank.org/manuals/CHAT.html#TranscriptionBreak_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="trail off">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>+...</xs:documentation>
@@ -1168,22 +1282,29 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="trail off question">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>+..?</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#TrailingOffQuestion_Terminator">CHAT manual section on this topic...</a>
+                                <a
+                                        href="https://talkbank.org/manuals/CHAT.html#TrailingOffQuestion_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="question exclamation">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>+!?</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#QuestionExclamation_Terminator">CHAT manual section on this topic...</a>
+                                <a
+                                        href="https://talkbank.org/manuals/CHAT.html#QuestionExclamation_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="interruption">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>+/.</xs:documentation>
@@ -1193,46 +1314,59 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="interruption question">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>+/?</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#QuestionInterruption_Terminator">CHAT manual section on this topic...</a>
+                                <a
+                                        href="https://talkbank.org/manuals/CHAT.html#QuestionInterruption_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="self interruption">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>+//.</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#SelfInterruption_Terminator">CHAT manual section on this topic...</a>
+                                <a href="https://talkbank.org/manuals/CHAT.html#SelfInterruption_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="self interruption question">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>+//?</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#SelfInterruptedQuestion_Terminator">CHAT manual section on this topic...</a>
+                                <a
+                                        href="https://talkbank.org/manuals/CHAT.html#SelfInterruptedQuestion_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="quotation next line">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                            <xs:documentation>+"/.</xs:documentation>
+                            <xs:documentation>+&quot;/.</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#QuotationFollows_Terminator">CHAT manual section on this topic...</a>
+                                <a href="https://talkbank.org/manuals/CHAT.html#QuotationFollows_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="quotation precedes">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                            <xs:documentation>+".</xs:documentation>
+                            <xs:documentation>+&quot;.</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#QuotationPrecedes_Terminator">CHAT manual section on this topic...</a>
+                                <a href="https://talkbank.org/manuals/CHAT.html#QuotationPrecedes_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="missing CA terminator">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                             <xs:documentation>For heritage only</xs:documentation>
@@ -1242,19 +1376,24 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="technical break TCU continuation">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                            <xs:documentation>â‰‹</xs:documentation>
+                            <xs:documentation>&#x224B;</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#TechnicalBreakTCUContinuation_Terminator">CHAT manual section on this topic...</a>
+                                <a href="https://talkbank.org/manuals/CHAT.html#TechnicalBreakTCUContinuation_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+
                     <xs:enumeration value="no break TCU continuation">
                         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                            <xs:documentation>â‰ˆ</xs:documentation>
+                            <xs:documentation>&#x2248;</xs:documentation>
                             <xs:documentation>
-                                <a href="https://talkbank.org/manuals/CHAT.html#NoBreakTCUContinuation_Terminator">CHAT manual section on this topic...</a>
+                                <a
+                                        href="https://talkbank.org/manuals/CHAT.html#NoBreakTCUContinuation_Terminator"
+                                >CHAT manual section on this topic...</a>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
@@ -1262,6 +1401,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:simpleType>
         </xs:attribute>
     </xs:complexType>
+
     <xs:element name="t">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Main line terminator with optional %mor information. </xs:documentation>
@@ -1284,6 +1424,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:complexContent>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="mt" type="baseTerminatorType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Terminator on %mor line, important for %gra.</xs:documentation>
@@ -1293,6 +1434,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:element name="pg">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Group purely for phonetic annotation purposes. Note that there are no main
@@ -1309,6 +1451,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="g"/>
                     <xs:element ref="quotation"/>
                     <xs:element ref="pause"/>
+
                     <xs:element ref="internal-media"/>
                     <xs:element ref="freecode"/>
                     <xs:element ref="e"/>
@@ -1325,14 +1468,16 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="sg">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-            <xs:documentation>Group purely for sign annotation purposes. Note that there are no main line annotations allowed for the group. Grouping brackets ã€” and ã€• may be used.</xs:documentation>
+            <xs:documentation>Group purely for sign annotation purposes. Note that there are no main line annotations allowed for the group. Grouping brackets &#x3014; and &#x3015; may be used.</xs:documentation>
             <xs:documentation>
                 <a href="https://talkbank.org/manuals/CHAT.html#Sign_Group">CHAT manual
                     section on this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:complexType mixed="false">
             <xs:sequence>
                 <xs:choice maxOccurs="unbounded">
@@ -1340,6 +1485,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="g"/>
                     <xs:element ref="quotation"/>
                     <xs:element ref="pause"/>
+
                     <xs:element ref="internal-media"/>
                     <xs:element ref="freecode"/>
                     <xs:element ref="e"/>
@@ -1351,10 +1497,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="underline"/>
                     <xs:element ref="italic"/>
                 </xs:choice>
+
                 <xs:element ref="sw" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="sw">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Atomic unit on the %sin tier.</xs:documentation>
@@ -1363,29 +1511,31 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 <a href="https://talkbank.org/manuals/CHAT.html#Sign_Word">CHAT manual section on this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:complexType mixed="false">
             <xs:simpleContent>
                 <xs:extension base="nonemptyStringType"/>
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+
     <!-- Phon types -->
     <xs:element name="mod" type="phoneticTranscriptionType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>%mod</xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:element name="pho" type="phoneticTranscriptionType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>%pho</xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:complexType name="phoneticTranscriptionType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>An IPA transcription</xs:documentation>
-            <xs:documentation>
-                <a href="https://www.phon.ca/phon-manual/transcription/ipa_transcription.html">Phon manual section on this topic...</a>
-            </xs:documentation>
+            <xs:documentation><a href="https://www.phon.ca/phon-manual/transcription/ipa_transcription.html">Phon manual section on this topic...</a></xs:documentation>
         </xs:annotation>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element ref="pw"/>
@@ -1393,6 +1543,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:element ref="phog"/>
         </xs:choice>
     </xs:complexType>
+
     <xs:element name="pw" type="phoneticWord"/>
     <xs:complexType name="phoneticWord">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -1406,10 +1557,11 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:element ref="sandhi"/>
         </xs:choice>
     </xs:complexType>
+
     <xs:element name="phog" type="phoGroupType"/>
     <xs:complexType name="phoGroupType" mixed="false">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-            <xs:documentation>A collection of phonetic words enclosed by â€¹ and â€º. Used for one to many
+            <xs:documentation>A collection of phonetic words enclosed by &#x2039; and &#x203a;. Used for one to many
                 alignment between the main line and ipa.</xs:documentation>
         </xs:annotation>
         <xs:choice minOccurs="1" maxOccurs="unbounded">
@@ -1417,15 +1569,15 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:element ref="pause"/>
         </xs:choice>
     </xs:complexType>
+
     <xs:complexType name="stressType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Syllable stress</xs:documentation>
-            <xs:documentation>
-                <a href="https://www.phon.ca/phon-manual/transcription/ipa_transcription.html#stress_marker">Phon manual section on this topic...</a>
-            </xs:documentation>
+            <xs:documentation><a href="https://www.phon.ca/phon-manual/transcription/ipa_transcription.html#stress_marker">Phon manual section on this topic...</a></xs:documentation>
         </xs:annotation>
         <xs:attribute name="type" type="stressTypeType" use="required"/>
     </xs:complexType>
+
     <xs:element name="stress" type="stressType"/>
     <xs:simpleType name="stressTypeType">
         <xs:restriction base="xs:string">
@@ -1441,6 +1593,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="pp" type="phoneticProsodyType"/>
     <xs:complexType name="phoneticProsodyType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -1448,6 +1601,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         </xs:annotation>
         <xs:attribute name="type" type="phoneticProsodyTypeType" use="required"/>
     </xs:complexType>
+
     <xs:simpleType name="phoneticProsodyTypeType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="syllable break">
@@ -1500,6 +1654,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="sandhi" type="sandhiType"/>
     <xs:complexType name="sandhiType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -1509,6 +1664,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         </xs:annotation>
         <xs:attribute name="type" type="sandhiTypeType" use="required"/>
     </xs:complexType>
+
     <xs:simpleType name="sandhiTypeType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="contraction">
@@ -1523,6 +1679,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="toneNumber" type="toneNumberType"/>
     <xs:simpleType name="toneNumberType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -1535,9 +1692,10 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="[â°Â¹Â²Â³â´âµâ¶â·â¸â¹]+"/>
+            <xs:pattern value="[⁰¹²³⁴⁵⁶⁷⁸⁹]+"/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="vowelType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>
@@ -1545,9 +1703,10 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="[Ê„Ê…iÄ±yÉ¨Ê‰É¯uÉªÉ©ÊÊŠÉ·Ê®eÃ¸É˜ÉµÉ¤oÉ™É›Å“ÉœÊšÉžÊŒÉ”ÉšÉÃ¦aÉ¶ÉÎ±É‘É’]"/>
+            <xs:pattern value="[ʄʅiıyɨʉɯuɪɩʏʊɷʮeøɘɵɤoəɛœɜʚɞʌɔɚɝæaɶɐαɑɒ]"/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="consonantType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>
@@ -1555,9 +1714,10 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="[pbÊ¬Æ€Æ¥É“tdÊ­Æ«È¶ÊˆÊ‡Æ­É–É—á¶‘cÉŸÆˆkgÉ¡Æ™ÊžÉ qÉ¢Ê Ê›Ê¡Ê”Ê–Ê—Ï€Ê˜Ç€ÇƒÂ¡ÇÇ‚É¸Î²fÆ’vÎ¸Ã°Î´szÊ‘ÊªÊ«É¬É®ÊƒÊ†Ê’Ê“ÆªÊ‚ÊÃ§É•ÊÆºxÉ£É§Ï‡Ä§Ê•Æ¹ÊœÊ¢hÉ¦Ê©Ê¦Ê£Ê¨Ê¥Ê§Ê¤Æ›Î»mÉ±ÆžnÉ³É²ÈµÅ‹É´lÉ«É­È´ÊŽÊŸâ±±Ê™É¾É¿rÉºÉ¼É¹É»É½Ê€ÊÊÊ‹wjÉ¥É°&gt;]"/>
+            <xs:pattern value="[pbʬƀƥɓtdʭƫȶʈʇƭɖɗᶑcɟƈkgɡƙʞɠqɢʠʛʡʔʖʗπʘǀǃ¡ǁǂɸβfƒvθðδszʑʪʫɬɮʃʆʒʓƪʂʐçɕʝƺxɣɧχħʕƹʜʢhɦʩʦʣʨʥʧʤƛλmɱƞnɳɲȵŋɴlɫɭȴʎʟⱱʙɾɿrɺɼɹɻɽʀʁʍʋwjɥɰ>]"/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="coverSymbol">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>
@@ -1568,10 +1728,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:pattern value="[ABCDEFGHIJKLMNOPQRSTUVWXYZ*]"/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="base" type="baseType"/>
     <xs:simpleType name="baseType">
         <xs:union memberTypes="consonantType vowelType coverSymbol"/>
     </xs:simpleType>
+
     <xs:simpleType name="prefixDiacriticType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>
@@ -1579,27 +1741,29 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="[áµá¶¬â¿á¶¯á¶®áµ‘á¶°][Ë¸ÌƒÌŠÌ¥ÍªÌ£Ì¤Ì‡ÌˆÍ­Í©Í¨Í®Í¯Í«Í¬Í¥Í§Í¤Í¦Í£ÍÍ Ì½Ë¹ËºË»Ë¼Ìšêœ›êœœá·„á·…á·†á·‡á·ˆá·‰Ë†Ë‡Ë‰ËŠË‹ËµË¶Ì€ÌÌ‚Ì‹ÌŒÌË”Ë•ÍžÍŸË½Ë¾Ë¿Ì‰Ì„Ì†Ì‘Ì’Ì”Ì–Ì˜Ì™ÌœÌÌžÌŸÌ Ì¡Ì¢ÌÌ©ÌªÌ«Ì¬Ì®Ì¯Ì°Ì±Ì²Ì³Ì´Ì¹ÌºÌ»Ì¼Ì¾Ì¿Í†Í‡ÍˆÍ‰ÍŠÍ‹ÍŒÍÍŽÍÍ‘Í’Í“Í”Í•Í–Í—]*">
+            <xs:pattern value="[ᵐᶬⁿᶯᶮᵑᶰ][˸̥̣̤̃̊ͪ̇̈ͭͩͨͮͯͫͬͥͧͤͦͣ̽͝͠˹˺˻˼̚ꜛꜜ᷄᷅᷆᷇᷈᷉ˆˇˉˊˋ˵˶̀́̂̋̌̏˔˕͟͞˽˾˿̴̡̢̖̘̙̜̝̞̟̠̩̪̫̬̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎͓͔͕͖̉̄̆̑̒̔̐̾̿͆͊͋͌͐͑͒͗]*">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>Prefix diacritic + combining diacritics</xs:documentation>
                 </xs:annotation>
             </xs:pattern>
-            <xs:pattern value="[Î‡Ë€ËËžÊ°Ê±Ê»Ê¼Ê½áµ–áµ‡áµ—áµˆáµáµá¶¿Ë¢á¶»á¶´á¶¾Ë£Ë Ë¤Ë¡Ê³Ê´ÊµÊ¶Ê·Ê²Ê¸á¶¦á¶·áµŠâ¼Ê¾Ê¿Ë­êœêœžË¥Ë¦Ë§Ë¨Ë©Ë‚ËƒË„Ë…Ë¬Ë¯Ë°Ë±Ë²Ë–Ë—Ëœ]Ìµ[Ë¸ÌƒÌŠÌ¥ÍªÌ£Ì¤Ì‡ÌˆÍ­Í©Í¨Í®Í¯Í«Í¬Í¥Í§Í¤Í¦Í£ÍÍ Ì½Ë¹ËºË»Ë¼Ìšêœ›êœœá·„á·…á·†á·‡á·ˆá·‰Ë†Ë‡Ë‰ËŠË‹ËµË¶Ì€ÌÌ‚Ì‹ÌŒÌË”Ë•ÍžÍŸË½Ë¾Ë¿Ì‰Ì„Ì†Ì‘Ì’Ì”Ì–Ì˜Ì™ÌœÌÌžÌŸÌ Ì¡Ì¢ÌÌ©ÌªÌ«Ì¬Ì®Ì¯Ì°Ì±Ì²Ì³Ì´Ì¹ÌºÌ»Ì¼Ì¾Ì¿Í†Í‡ÍˆÍ‰ÍŠÍ‹ÍŒÍÍŽÍÍ‘Í’Í“Í”Í•Í–Í—]*">
+            <xs:pattern value="[·ˀˁ˞ʰʱʻʼʽᵖᵇᵗᵈᵏᵍᶿˢᶻᶴᶾˣˠˤˡʳʴʵʶʷʲʸᶦᶷᵊ⁼ʾʿ˭ꜝꜞ˥˦˧˨˩˂˃˄˅ˬ˯˰˱˲˖˗˜]̵[˸̥̣̤̃̊ͪ̇̈ͭͩͨͮͯͫͬͥͧͤͦͣ̽͝͠˹˺˻˼̚ꜛꜜ᷄᷅᷆᷇᷈᷉ˆˇˉˊˋ˵˶̀́̂̋̌̏˔˕͟͞˽˾˿̴̡̢̖̘̙̜̝̞̟̠̩̪̫̬̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎͓͔͕͖̉̄̆̑̒̔̐̾̿͆͊͋͌͐͑͒͗]*">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>Suffix diacritic + role reversal diacritic + combining diacritics</xs:documentation>
                 </xs:annotation>
             </xs:pattern>
-            <xs:pattern value="[Î‡Ë€ËËžÊ°Ê±Ê»Ê¼Ê½áµ–áµ‡áµ—áµˆáµáµá¶¿Ë¢á¶»á¶´á¶¾Ë£Ë Ë¤Ë¡Ê³Ê´ÊµÊ¶Ê·Ê²Ê¸á¶¦á¶·áµŠâ¼Ê¾Ê¿Ë­êœêœžË¥Ë¦Ë§Ë¨Ë©Ë‚ËƒË„Ë…Ë¬Ë¯Ë°Ë±Ë²Ë–Ë—Ëœ][Ë¸ÌƒÌŠÌ¥ÍªÌ£Ì¤Ì‡ÌˆÍ­Í©Í¨Í®Í¯Í«Í¬Í¥Í§Í¤Í¦Í£ÍÍ Ì½Ë¹ËºË»Ë¼Ìšêœ›êœœá·„á·…á·†á·‡á·ˆá·‰Ë†Ë‡Ë‰ËŠË‹ËµË¶Ì€ÌÌ‚Ì‹ÌŒÌË”Ë•ÍžÍŸË½Ë¾Ë¿Ì‰Ì„Ì†Ì‘Ì’Ì”Ì–Ì˜Ì™ÌœÌÌžÌŸÌ Ì¡Ì¢ÌÌ©ÌªÌ«Ì¬Ì®Ì¯Ì°Ì±Ì²Ì³Ì´Ì¹ÌºÌ»Ì¼Ì¾Ì¿Í†Í‡ÍˆÍ‰ÍŠÍ‹ÍŒÍÍŽÍÍ‘Í’Í“Í”Í•Í–Í—]*[ÍœÍ¡Í¢]">
+            <xs:pattern value="[·ˀˁ˞ʰʱʻʼʽᵖᵇᵗᵈᵏᵍᶿˢᶻᶴᶾˣˠˤˡʳʴʵʶʷʲʸᶦᶷᵊ⁼ʾʿ˭ꜝꜞ˥˦˧˨˩˂˃˄˅ˬ˯˰˱˲˖˗˜][˸̥̣̤̃̊ͪ̇̈ͭͩͨͮͯͫͬͥͧͤͦͣ̽͝͠˹˺˻˼̚ꜛꜜ᷄᷅᷆᷇᷈᷉ˆˇˉˊˋ˵˶̀́̂̋̌̏˔˕͟͞˽˾˿̴̡̢̖̘̙̜̝̞̟̠̩̪̫̬̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎͓͔͕͖̉̄̆̑̒̔̐̾̿͆͊͋͌͐͑͒͗]*[͜͢͡]">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>Suffix diacritic + combining diacritics + ligature</xs:documentation>
                 </xs:annotation>
             </xs:pattern>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="prefix" type="prefixDiacriticsType"/>
     <xs:simpleType name="prefixDiacriticsType">
         <xs:list itemType="prefixDiacriticType"/>
     </xs:simpleType>
+
     <xs:simpleType name="combiningDiacriticType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>
@@ -1607,13 +1771,15 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="[Ë¸ÌƒÌŠÌ¥ÍªÌ£Ì¤Ì‡ÌˆÍ­Í©Í¨Í®Í¯Í«Í¬Í¥Í§Í¤Í¦Í£ÍÍ Ì½Ë¹ËºË»Ë¼Ìšêœ›êœœá·„á·…á·†á·‡á·ˆá·‰Ë†Ë‡Ë‰ËŠË‹ËµË¶Ì€ÌÌ‚Ì‹ÌŒÌË”Ë•ÍžÍŸË½Ë¾Ë¿Ì‰Ì„Ì†Ì‘Ì’Ì”Ì–Ì˜Ì™ÌœÌÌžÌŸÌ Ì¡Ì¢ÌÌ©ÌªÌ«Ì¬Ì®Ì¯Ì°Ì±Ì²Ì³Ì´Ì¹ÌºÌ»Ì¼Ì¾Ì¿Í†Í‡ÍˆÍ‰ÍŠÍ‹ÍŒÍÍŽÍÍ‘Í’Í“Í”Í•Í–Í—]"/>
+            <xs:pattern value="[˸̥̣̤̃̊ͪ̇̈ͭͩͨͮͯͫͬͥͧͤͦͣ̽͝͠˹˺˻˼̚ꜛꜜ᷄᷅᷆᷇᷈᷉ˆˇˉˊˋ˵˶̀́̂̋̌̏˔˕͟͞˽˾˿̴̡̢̖̘̙̜̝̞̟̠̩̪̫̬̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎͓͔͕͖̉̄̆̑̒̔̐̾̿͆͊͋͌͐͑͒͗]"/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="combining" type="combiningDiacriticsType"/>
     <xs:simpleType name="combiningDiacriticsType">
         <xs:list itemType="combiningDiacriticType"/>
     </xs:simpleType>
+
     <xs:simpleType name="suffixDiacriticType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>
@@ -1621,27 +1787,29 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="[Î‡Ë€ËËžÊ°Ê±Ê»Ê¼Ê½áµ–áµ‡áµ—áµˆáµáµá¶¿Ë¢á¶»á¶´á¶¾Ë£Ë Ë¤Ë¡Ê³Ê´ÊµÊ¶Ê·Ê²Ê¸á¶¦á¶·áµŠâ¼Ê¾Ê¿Ë­êœêœžË¥Ë¦Ë§Ë¨Ë©Ë‚ËƒË„Ë…Ë¬Ë¯Ë°Ë±Ë²Ë–Ë—Ëœ][Ë¸ÌƒÌŠÌ¥ÍªÌ£Ì¤Ì‡ÌˆÍ­Í©Í¨Í®Í¯Í«Í¬Í¥Í§Í¤Í¦Í£ÍÍ Ì½Ë¹ËºË»Ë¼Ìšêœ›êœœá·„á·…á·†á·‡á·ˆá·‰Ë†Ë‡Ë‰ËŠË‹ËµË¶Ì€ÌÌ‚Ì‹ÌŒÌË”Ë•ÍžÍŸË½Ë¾Ë¿Ì‰Ì„Ì†Ì‘Ì’Ì”Ì–Ì˜Ì™ÌœÌÌžÌŸÌ Ì¡Ì¢ÌÌ©ÌªÌ«Ì¬Ì®Ì¯Ì°Ì±Ì²Ì³Ì´Ì¹ÌºÌ»Ì¼Ì¾Ì¿Í†Í‡ÍˆÍ‰ÍŠÍ‹ÍŒÍÍŽÍÍ‘Í’Í“Í”Í•Í–Í—]*">
+            <xs:pattern value="[·ˀˁ˞ʰʱʻʼʽᵖᵇᵗᵈᵏᵍᶿˢᶻᶴᶾˣˠˤˡʳʴʵʶʷʲʸᶦᶷᵊ⁼ʾʿ˭ꜝꜞ˥˦˧˨˩˂˃˄˅ˬ˯˰˱˲˖˗˜][˸̥̣̤̃̊ͪ̇̈ͭͩͨͮͯͫͬͥͧͤͦͣ̽͝͠˹˺˻˼̚ꜛꜜ᷄᷅᷆᷇᷈᷉ˆˇˉˊˋ˵˶̀́̂̋̌̏˔˕͟͞˽˾˿̴̡̢̖̘̙̜̝̞̟̠̩̪̫̬̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎͓͔͕͖̉̄̆̑̒̔̐̾̿͆͊͋͌͐͑͒͗]*">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>Suffix diacritic + combining diacritics</xs:documentation>
                 </xs:annotation>
             </xs:pattern>
-            <xs:pattern value="[áµá¶¬â¿á¶¯á¶®áµ‘á¶°]Ìµ[Ë¸ÌƒÌŠÌ¥ÍªÌ£Ì¤Ì‡ÌˆÍ­Í©Í¨Í®Í¯Í«Í¬Í¥Í§Í¤Í¦Í£ÍÍ Ì½Ë¹ËºË»Ë¼Ìšêœ›êœœá·„á·…á·†á·‡á·ˆá·‰Ë†Ë‡Ë‰ËŠË‹ËµË¶Ì€ÌÌ‚Ì‹ÌŒÌË”Ë•ÍžÍŸË½Ë¾Ë¿Ì‰Ì„Ì†Ì‘Ì’Ì”Ì–Ì˜Ì™ÌœÌÌžÌŸÌ Ì¡Ì¢ÌÌ©ÌªÌ«Ì¬Ì®Ì¯Ì°Ì±Ì²Ì³Ì´Ì¹ÌºÌ»Ì¼Ì¾Ì¿Í†Í‡ÍˆÍ‰ÍŠÍ‹ÍŒÍÍŽÍÍ‘Í’Í“Í”Í•Í–Í—]*">
+            <xs:pattern value="[ᵐᶬⁿᶯᶮᵑᶰ]̵[˸̥̣̤̃̊ͪ̇̈ͭͩͨͮͯͫͬͥͧͤͦͣ̽͝͠˹˺˻˼̚ꜛꜜ᷄᷅᷆᷇᷈᷉ˆˇˉˊˋ˵˶̀́̂̋̌̏˔˕͟͞˽˾˿̴̡̢̖̘̙̜̝̞̟̠̩̪̫̬̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎͓͔͕͖̉̄̆̑̒̔̐̾̿͆͊͋͌͐͑͒͗]*">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>Prefix diacritic + role reversal + combining diacritics</xs:documentation>
                 </xs:annotation>
             </xs:pattern>
-            <xs:pattern value="[áµá¶¬â¿á¶¯á¶®áµ‘á¶°][Ë¸ÌƒÌŠÌ¥ÍªÌ£Ì¤Ì‡ÌˆÍ­Í©Í¨Í®Í¯Í«Í¬Í¥Í§Í¤Í¦Í£ÍÍ Ì½Ë¹ËºË»Ë¼Ìšêœ›êœœá·„á·…á·†á·‡á·ˆá·‰Ë†Ë‡Ë‰ËŠË‹ËµË¶Ì€ÌÌ‚Ì‹ÌŒÌË”Ë•ÍžÍŸË½Ë¾Ë¿Ì‰Ì„Ì†Ì‘Ì’Ì”Ì–Ì˜Ì™ÌœÌÌžÌŸÌ Ì¡Ì¢ÌÌ©ÌªÌ«Ì¬Ì®Ì¯Ì°Ì±Ì²Ì³Ì´Ì¹ÌºÌ»Ì¼Ì¾Ì¿Í†Í‡ÍˆÍ‰ÍŠÍ‹ÍŒÍÍŽÍÍ‘Í’Í“Í”Í•Í–Í—]*[ÍœÍ¡Í¢]">
+            <xs:pattern value="[ᵐᶬⁿᶯᶮᵑᶰ][˸̥̣̤̃̊ͪ̇̈ͭͩͨͮͯͫͬͥͧͤͦͣ̽͝͠˹˺˻˼̚ꜛꜜ᷄᷅᷆᷇᷈᷉ˆˇˉˊˋ˵˶̀́̂̋̌̏˔˕͟͞˽˾˿̴̡̢̖̘̙̜̝̞̟̠̩̪̫̬̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎͓͔͕͖̉̄̆̑̒̔̐̾̿͆͊͋͌͐͑͒͗]*[͜͢͡]">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>Prefix diacritic + combining diacritics + ligature</xs:documentation>
                 </xs:annotation>
             </xs:pattern>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="suffix" type="suffixDiacriticsType"/>
     <xs:simpleType name="suffixDiacriticsType">
         <xs:list itemType="suffixDiacriticType"/>
     </xs:simpleType>
+
     <xs:element name="phlen" type="phoneLengthType"/>
     <xs:simpleType name="phoneLengthType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -1650,10 +1818,11 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="Ë+Ë‘?"/>
-            <xs:pattern value="Ë‘"/>
+            <xs:pattern value="ː+ˑ?"/>
+            <xs:pattern value="ˑ"/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="ph" type="phoneType"/>
     <xs:complexType name="phoneType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -1672,6 +1841,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         </xs:sequence>
         <xs:attribute name="scType" type="syllableConstituentType"/>
     </xs:complexType>
+
     <xs:element name="lig" type="ligatureType"/>
     <xs:complexType name="ligatureType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -1682,32 +1852,32 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         </xs:annotation>
         <xs:attribute name="type" type="ligatureTypeType"/>
     </xs:complexType>
+
     <xs:simpleType name="ligatureTypeType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="breve below">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>Íœ combining double breve below</xs:documentation>
+                    <xs:documentation>&#x035c; combining double breve below</xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="breve">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>Í¡ combining double inverted breve</xs:documentation>
+                    <xs:documentation>&#x0361; combining double inverted breve</xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="right arrow below">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>Åª combining double rightwards arrow below</xs:documentation>
+                    <xs:documentation>&#0362; combining double rightwards arrow below</xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="cmph" type="compoundPhoneType"/>
     <xs:complexType name="compoundPhoneType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Phone composed of one or more phones connected by ligatures.</xs:documentation>
-            <xs:documentation>
-                <a href="https://www.phon.ca/phon-manual/transcription/ipa_transcription.html#phone">Phon manual section on this topic...</a>
-            </xs:documentation>
+            <xs:documentation><a href="https://www.phon.ca/phon-manual/transcription/ipa_transcription.html#phone">Phon manual section on this topic...</a></xs:documentation>
         </xs:annotation>
         <xs:sequence>
             <xs:choice>
@@ -1718,6 +1888,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:element ref="ph" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
+
     <xs:simpleType name="syllableConstituentType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Syllable constituent type for a phone.</xs:documentation>
@@ -1769,6 +1940,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         </xs:restriction>
     </xs:simpleType>
     <!-- End of Phon types -->
+
     <xs:simpleType name="annotationTypeType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Utterance annotation type. </xs:documentation>
@@ -1974,6 +2146,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="groupAnnotationTypeType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Type of group annotation on main line. </xs:documentation>
@@ -1987,7 +2160,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>[=? text]</xs:documentation>
                     <xs:documentation>
-                        <a href="https://talkbank.org/manuals/CHAT.html#AlternativeTranscription_Scope">CHAT manual section on this topic...</a>
+                        <a href="https://talkbank.org/manuals/CHAT.html#AlternativeTranscription_Scope"
+                        >CHAT manual section on this topic...</a>
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
@@ -2020,12 +2194,14 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="sexType">
         <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="male"/>
             <xs:enumeration value="female"/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="pauseSymbolicLengthType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Length of a pause, in nonnumeric terms. </xs:documentation>
@@ -2064,6 +2240,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="pauseNumericLengthType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Pause length, in numeric terms. </xs:documentation>
@@ -2074,6 +2251,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         </xs:annotation>
         <xs:restriction base="xs:decimal"/>
     </xs:simpleType>
+
     <xs:simpleType name="beginEndType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> For use for delimited material. A workaround for lack of overlapping
@@ -2092,6 +2270,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="beginEndSimpleType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> For use for delimited material. A workaround for lack of overlapping
@@ -2115,6 +2294,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="underline">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Mark as underlined arbitrary content, for presentation purposes in CLAN. </xs:documentation>
@@ -2127,6 +2307,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="type" type="beginEndType" use="required"/>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="italic">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Mark as italicized arbitrary content, for presentation purposes in CLAN. </xs:documentation>
@@ -2139,6 +2320,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="type" type="beginEndType" use="required"/>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="long-feature">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Long event. </xs:documentation>
@@ -2155,6 +2337,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="nonvocal">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Nonvocal material. </xs:documentation>
@@ -2179,6 +2362,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="ca-delimiter">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>CA delimited material with begin/end.</xs:documentation>
@@ -2192,6 +2376,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="label" type="ca-delimiter-type" use="required"> </xs:attribute>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="ca-element">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>CA subwords that must occur inside a word.</xs:documentation>
@@ -2204,12 +2389,13 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="type" type="ca-element-type" use="required"/>
         </xs:complexType>
     </xs:element>
+
     <!-- Generated by generate-ca-elements.pl -->
     <xs:simpleType name="ca-element-type">
         <xs:restriction base="xs:string">
             <xs:enumeration value="blocked segments">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â‰ </xs:documentation>
+                    <xs:documentation>&#x2260;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Blocking_Marker">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2217,47 +2403,47 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="constriction">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>âˆ¾</xs:documentation>
+                    <xs:documentation>&#x223E;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Constriction_Element">CHAT manual section on this topic...</a>
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="hardening">
+        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+          <xs:documentation>⁑</xs:documentation>
+          <xs:documentation>
+            <a href="https://talkbank.org/manuals/chat.html#Hardening_Element">CHAT manual section on this topic...</a>
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="hurried start">
+        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+          <xs:documentation>⤇</xs:documentation>
+          <xs:documentation>
+            <a href="https://talkbank.org/manuals/chat.html#HurriedStart_Element">CHAT manual section on this topic...</a>
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="inhalation">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â‘</xs:documentation>
-                    <xs:documentation>
-                        <a href="https://talkbank.org/manuals/chat.html#Hardening_Element">CHAT manual section on this topic...</a>
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:enumeration>
-            <xs:enumeration value="hurried start">
-                <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â¤‡</xs:documentation>
-                    <xs:documentation>
-                        <a href="https://talkbank.org/manuals/chat.html#HurriedStart_Element">CHAT manual section on this topic...</a>
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:enumeration>
-            <xs:enumeration value="inhalation">
-                <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>âˆ™</xs:documentation>
+                    <xs:documentation>&#x2219;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Inhalation_Element">CHAT manual section on this topic...</a>
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="sudden stop">
+        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+          <xs:documentation>⤆</xs:documentation>
+          <xs:documentation>
+            <a href="https://talkbank.org/manuals/chat.html#SuddenStop_Element">CHAT manual section on this topic...</a>
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="laugh in word">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â¤†</xs:documentation>
-                    <xs:documentation>
-                        <a href="https://talkbank.org/manuals/chat.html#SuddenStop_Element">CHAT manual section on this topic...</a>
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:enumeration>
-            <xs:enumeration value="laugh in word">
-                <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>á¼©</xs:documentation>
+                    <xs:documentation>&#x1F29;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#LaughInWord_Element">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2265,7 +2451,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="pitch down">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â†“</xs:documentation>
+                    <xs:documentation>&#x2193;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#PitchDown_Element">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2273,7 +2459,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="pitch reset">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â†»</xs:documentation>
+                    <xs:documentation>&#x21BB;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#PitchReset_Element">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2281,7 +2467,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="pitch up">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â†‘</xs:documentation>
+                    <xs:documentation>&#x2191;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#PitchUp_Element">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2289,7 +2475,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="primary stress">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>Ëˆ</xs:documentation>
+                    <xs:documentation>&#x02C8;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#PrimaryStress_Element">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2297,7 +2483,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="secondary stress">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>ËŒ</xs:documentation>
+                    <xs:documentation>&#x02CC;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#SecondaryStress_Element">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2305,12 +2491,14 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
+
     <!-- Generated by generate-ca-delimiters.pl for talkbank.xsd -->
     <xs:simpleType name="ca-delimiter-type">
         <xs:restriction base="xs:string">
             <xs:enumeration value="breathy voice">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â™‹</xs:documentation>
+                    <xs:documentation>&#x264B;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#BreathyVoice_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2318,7 +2506,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="creaky">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>âŽ</xs:documentation>
+                    <xs:documentation>&#x204E;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Creaky_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2326,7 +2514,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="faster">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>âˆ†</xs:documentation>
+                    <xs:documentation>&#x2206;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Faster_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2334,7 +2522,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="high-pitch">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â–”</xs:documentation>
+                    <xs:documentation>&#x2594;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#HighPitch_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2342,7 +2530,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="louder">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â—‰</xs:documentation>
+                    <xs:documentation>&#x25C9;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Louder_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2350,7 +2538,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="low-pitch">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â–</xs:documentation>
+                    <xs:documentation>&#x2581;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#LowPitch_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2358,7 +2546,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="precise">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>Â§</xs:documentation>
+                    <xs:documentation>&#x00A7;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Precise_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2366,7 +2554,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="repeated-segment">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â†«</xs:documentation>
+                    <xs:documentation>&#x21AB;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#RepeatedSegment_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2374,7 +2562,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="singing">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>âˆ®</xs:documentation>
+                    <xs:documentation>&#x222E;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Singing_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2382,7 +2570,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="slower">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>âˆ‡</xs:documentation>
+                    <xs:documentation>&#x2207;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Slower_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2390,7 +2578,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="smile voice">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â˜º</xs:documentation>
+                    <xs:documentation>&#x263A;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#SmileVoice_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2398,7 +2586,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="softer">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>Â°</xs:documentation>
+                    <xs:documentation>&#x00B0;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Softer_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2406,7 +2594,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="unsure">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>â‡</xs:documentation>
+                    <xs:documentation>&#x2047;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Unsure_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2414,7 +2602,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="whisper">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>âˆ¬</xs:documentation>
+                    <xs:documentation>&#x222C;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Whisper_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2422,7 +2610,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
             <xs:enumeration value="yawn">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation>Î«</xs:documentation>
+                    <xs:documentation>&#x03AB;</xs:documentation>
                     <xs:documentation>
                         <a href="https://talkbank.org/manuals/CHAT.html#Yawn_Delimiter">CHAT manual section on this topic...</a>
                     </xs:documentation>
@@ -2430,12 +2618,14 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
+
     <!-- From XML Schema book -->
     <xs:simpleType name="empty">
         <xs:restriction base="xs:string">
             <xs:enumeration value=""/>
         </xs:restriction>
     </xs:simpleType>
+
     <xs:element name="pause">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Pause at a point in an utterance. </xs:documentation>
@@ -2453,6 +2643,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="length" type="pauseNumericLengthType" use="optional"/>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="overlap">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Mark a scope for overlaps. </xs:documentation>
@@ -2471,6 +2662,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="type" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
@@ -2497,6 +2689,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:attribute>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="overlap-point">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>CA-style overlap</xs:documentation>
@@ -2515,6 +2708,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="start-end" use="required">
                 <xs:simpleType>
                     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -2588,6 +2782,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:attribute>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="w">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> A word. Note that there are lexical restrictions on what characters are
@@ -2626,11 +2822,15 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="italic"/>
                     <xs:element ref="shortening"/>
                     <xs:element ref="p"/>
+
                     <xs:element ref="long-feature"/>
+
                     <!-- For CA -->
                     <xs:element ref="ca-delimiter"/>
                     <xs:element ref="ca-element"/>
+
                     <xs:element ref="wk"/>
+
                     <xs:element ref="pos"/>
                     <xs:element ref="replacement"/>
                     <xs:element ref="mor"/>
@@ -2638,6 +2838,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 <xs:element ref="mod" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="pho" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
+
             <xs:attribute name="separated-prefix" type="xs:boolean">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>word# indicates the word is a separated prefix</xs:documentation>
@@ -2647,15 +2848,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
-            <xs:attribute name="hebrew" type="xs:boolean">
-                <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                    <xs:documentation> Whether @ or ×€ was used </xs:documentation>
-                    <xs:documentation>
-                        <a href="https://talkbank.org/manuals/CHAT.html#TODO">CHAT manual
-                            section on this topic...</a>
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:attribute>
+
             <xs:attribute name="user-special-form" type="xs:string">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>@z:code user-specified code</xs:documentation>
@@ -2665,6 +2858,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="formSuffix" type="xs:string">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>-s and similar after a form marker</xs:documentation>
@@ -2674,6 +2868,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="formType">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Form marker: an attribute for a word. </xs:documentation>
@@ -2684,6 +2879,15 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:annotation>
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
+                        <xs:enumeration value="addition">
+                            <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+                                <xs:documentation>@a</xs:documentation>
+                                <xs:documentation>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#Addition_Marker">CHAT manual
+                                        section on this topic...</a>
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
                         <xs:enumeration value="babbling">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>@b</xs:documentation>
@@ -2711,11 +2915,21 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
+                        <xs:enumeration value="echolalia">
+                            <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+                                <xs:documentation>@e</xs:documentation>
+                                <xs:documentation>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#EcholaliaForm_Marker">CHAT
+                                        manual section on this topic...</a>
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
                         <xs:enumeration value="family-specific">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>@f</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#FamilySpecificForm_Marker">CHAT manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#FamilySpecificForm_Marker"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
@@ -2732,7 +2946,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>@g</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#GeneralSpecialForm_Marker">CHAT manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#GeneralSpecialForm_Marker"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
@@ -2772,6 +2987,15 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
+                        <xs:enumeration value="no voice">
+                            <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
+                                <xs:documentation>@nv</xs:documentation>
+                                <xs:documentation>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#NonvoicedForm_Marker">CHAT
+                                        manual section on this topic...</a>
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
                         <xs:enumeration value="onomatopoeia">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>@o</xs:documentation>
@@ -2794,7 +3018,9 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>@q</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#MetalinguisticReference_Marker">CHAT manual section on this topic...</a>
+                                    <a
+                                            href="https://talkbank.org/manuals/CHAT.html#MetalinguisticReference_Marker"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
@@ -2864,10 +3090,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+
             <xs:attribute name="type">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Optional attribute for a word. </xs:documentation>
                 </xs:annotation>
+
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="omission">
@@ -2883,7 +3111,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>&amp;~; nonword</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#Nonword">CHAT manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#Nonword"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
@@ -2891,7 +3120,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>&amp;-; filler</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#Filler_Code">CHAT manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#Filler_Code"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
@@ -2899,13 +3129,15 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>&amp;+; incomplete</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#PhonologicalFragment_Code">CHAT manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#PhonologicalFragment_Code"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+
             <xs:attribute name="untranscribed">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>Mark as untranscribed non-word.</xs:documentation>
@@ -2916,7 +3148,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>xxx</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#UnintelligibleSpeech_Code">CHAT manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#UnintelligibleSpeech_Code"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
@@ -2933,15 +3166,18 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>www</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#UntranscribedMaterial_Code">CHAT manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#UntranscribedMaterial_Code"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+
         </xs:complexType>
     </xs:element>
+
     <xs:element name="g">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> A group of material that is annotated. May be nested, i.e., a group may
@@ -2960,17 +3196,20 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="sg"/>
                     <xs:element ref="quotation"/>
                     <xs:element ref="pause"/>
+
                     <xs:element ref="internal-media"/>
                     <xs:element ref="freecode"/>
                     <xs:element ref="e"/>
                     <xs:element ref="s"/>
                     <xs:element ref="tagMarker"/>
+
                     <xs:element ref="long-feature"/>
                     <xs:element ref="nonvocal"/>
                     <xs:element ref="overlap-point"/>
                     <xs:element ref="underline"/>
                     <xs:element ref="italic"/>
                 </xs:choice>
+
                 <!-- optional -->
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element ref="k"/>
@@ -2979,9 +3218,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="ga"/>
                     <xs:element ref="overlap"/>
                 </xs:choice>
+
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="replacement">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> [: word1 ...]; indicate replacement of a word by one or more words instead. [:: word1 ...] to indicate that the word is a real word</xs:documentation>
@@ -3006,6 +3248,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:sequence>
                 <xs:element ref="w" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
+
             <xs:attribute name="real" type="xs:boolean">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation>[:: word1 ...] indicates that the word was real and MOR should analyze it</xs:documentation>
@@ -3015,8 +3258,10 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
         </xs:complexType>
     </xs:element>
+
     <xs:element name="mor">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> A group of words in %mor or %trn or %umor. </xs:documentation>
@@ -3042,6 +3287,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:complexContent>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="gra">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>GRASP data for a single word in %gra or %grt or %ugra</xs:documentation>
@@ -3061,10 +3307,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="head" type="xs:int" use="required"/>
             <xs:attribute name="relation" type="nonemptyStringType" use="required"/>
         </xs:complexType>
+
     </xs:element>
+
     <xs:element name="quotation">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-            <xs:documentation>Begin or end quoted material; â€œ and â€</xs:documentation>
+            <xs:documentation>Begin or end quoted material; &#x201C; and &#x201D;</xs:documentation>
             <xs:documentation>
                 <a href="https://talkbank.org/manuals/CHAT.html#Quotation">CHAT manual section
                     on this topic...</a>
@@ -3077,6 +3325,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="type" type="beginEndType" use="required"/>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="k">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Retracing and other markers. </xs:documentation>
@@ -3102,7 +3351,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                 <xs:documentation>[!!]</xs:documentation>
                                 <xs:documentation>
-                                    <a href="https://talkbank.org/manuals/CHAT.html#ContrastiveStressing_Scope">CHAT manual section on this topic...</a>
+                                    <a href="https://talkbank.org/manuals/CHAT.html#ContrastiveStressing_Scope"
+                                    >CHAT manual section on this topic...</a>
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:enumeration>
@@ -3173,7 +3423,9 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 </xs:simpleType>
             </xs:attribute>
         </xs:complexType>
+
     </xs:element>
+
     <xs:element name="duration" type="pauseNumericLengthType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>[# ...] duration annotation</xs:documentation>
@@ -3183,6 +3435,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:element name="s">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Separator or tone direction marker. </xs:documentation>
@@ -3228,7 +3481,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="rising to high">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>â‡—</xs:documentation>
+                                <xs:documentation>&#x21D7;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#RisingToHigh">CHAT manual
                                         section on this topic...</a>
@@ -3237,7 +3490,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="rising to mid">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>â†—</xs:documentation>
+                                <xs:documentation>&#x2197;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#RisingToMid">CHAT manual
                                         section on this topic...</a>
@@ -3246,7 +3499,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="level">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>â†’</xs:documentation>
+                                <xs:documentation>&#x2192;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#Level">CHAT manual section on
                                         this topic...</a>
@@ -3255,7 +3508,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="falling to mid">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>â†˜</xs:documentation>
+                                <xs:documentation>&#x2198;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#FallingToMid">CHAT manual
                                         section on this topic...</a>
@@ -3264,7 +3517,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="falling to low">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>â‡˜</xs:documentation>
+                                <xs:documentation>&#x21D8;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#FallingToLow">CHAT manual
                                         section on this topic...</a>
@@ -3273,7 +3526,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="unmarked ending">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>âˆž</xs:documentation>
+                                <xs:documentation>&#x221E;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#UnmarkedEnding">CHAT manual
                                         section on this topic...</a>
@@ -3282,7 +3535,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                         </xs:enumeration>
                         <xs:enumeration value="uptake">
                             <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-                                <xs:documentation>â‰¡</xs:documentation>
+                                <xs:documentation>&#x2261;</xs:documentation>
                                 <xs:documentation>
                                     <a href="https://talkbank.org/manuals/CHAT.html#Uptake">CHAT manual section
                                         on this topic...</a>
@@ -3294,12 +3547,16 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:attribute>
         </xs:complexType>
     </xs:element>
+
+
     <xs:simpleType name="mediaTypesType">
         <xs:list itemType="mediaTypeType"/>
     </xs:simpleType>
+
     <xs:simpleType name="videosType">
         <xs:list itemType="mediaRefType"/>
     </xs:simpleType>
+
     <xs:simpleType name="speakerID">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Legal speaker ID for identifying utterances. </xs:documentation>
@@ -3310,6 +3567,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         </xs:annotation>
         <xs:restriction base="nonemptyStringType"> </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="optionType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Transcript-scoped option that affects the interpretation of the transcript. </xs:documentation>
@@ -3318,6 +3576,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:restriction base="xs:string">
             <xs:enumeration value="CA">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -3328,6 +3587,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="CA-Unicode">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Allows CA features and restriction relaxations, but does not automatically open CAFont. </xs:documentation>
@@ -3337,6 +3597,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="bullets">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Turns off checking of time sequence of bullets. </xs:documentation>
@@ -3346,6 +3607,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="heritage">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Allows a transcript to be accepted even though it is not properly
@@ -3356,6 +3618,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="multi">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Purely for the display purposes of CLAN, in order to have CLAN handle
@@ -3366,6 +3629,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="IPA">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> IPA. </xs:documentation>
@@ -3375,6 +3639,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
             <xs:enumeration value="dummy">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Mark file as dummy for CLAN CHECK. </xs:documentation>
@@ -3384,11 +3649,14 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
+
         </xs:restriction>
     </xs:simpleType>
+
     <xs:simpleType name="optionsType">
         <xs:list itemType="optionType"/>
     </xs:simpleType>
+
     <xs:element name="mediaPic">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>A reference to a graphics file.</xs:documentation>
@@ -3401,6 +3669,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="href" type="xs:anyURI"/>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="otherSpokenEvent">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> &amp;*WHO=word; word spoken by someone else during an utterance. </xs:documentation>
@@ -3414,6 +3683,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:attribute name="said" type="nonemptyStringType" use="required"/>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="mk">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>morphemes</xs:documentation>
@@ -3441,7 +3711,9 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                                     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                                         <xs:documentation> suffix fusion marker, CHAT equivalent is &amp;suffix </xs:documentation>
                                         <xs:documentation>
-                                            <a href="https://talkbank.org/manuals/MOR.html#Mor_Markers_Suffix_Fusional">MOR manual section on this topic...</a>
+                                            <a
+                                                    href="https://talkbank.org/manuals/MOR.html#Mor_Markers_Suffix_Fusional"
+                                            >MOR manual section on this topic...</a>
                                         </xs:documentation>
                                     </xs:annotation>
                                 </xs:enumeration>
@@ -3461,6 +3733,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="menx">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Morphemic translation: =word</xs:documentation>
@@ -3475,6 +3749,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="mpfx">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Morphemix prefix: word#</xs:documentation>
@@ -3489,6 +3765,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="pos">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>%mor part of speech</xs:documentation>
@@ -3513,6 +3791,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="mw">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Morphemic "word": the unit of a %mor line corresponding to a single non-compound word on the
@@ -3525,13 +3805,18 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         <xs:complexType mixed="false">
             <xs:sequence>
                 <xs:element ref="mpfx" minOccurs="0" maxOccurs="unbounded"/>
+
                 <xs:element ref="pos"/>
+
                 <xs:element ref="stem"/>
+
                 <!-- TODO suffix-->
                 <xs:element ref="mk" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="mwc">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Morphemic "compound word" using +</xs:documentation>
@@ -3544,10 +3829,14 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:sequence>
                 <xs:element ref="mpfx" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="pos"/>
+
                 <xs:element ref="mw" minOccurs="2" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+
+
     <xs:element name="shortening">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Unspoken segment in a word, coded in CHAT
@@ -3567,6 +3856,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="p">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Prosody inside a word: stress, blocking etc.</xs:documentation>
@@ -3575,6 +3865,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:complexType mixed="false">
             <xs:attribute name="type">
                 <xs:simpleType>
@@ -3602,6 +3893,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:attribute>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="wk">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Clitic or compound marker inside a word. </xs:documentation>
@@ -3637,6 +3930,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:attribute>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="c" type="nonemptyStringType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Morphological category</xs:documentation>
@@ -3646,6 +3941,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:element name="stem" type="nonemptyStringType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>Morphological stem, alphanumeric</xs:documentation>
@@ -3655,6 +3951,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
     </xs:element>
+
     <xs:element name="error">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation>[*] or [* text]</xs:documentation>
@@ -3667,6 +3964,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             <xs:restriction base="xs:string"/>
         </xs:simpleType>
     </xs:element>
+
+
     <xs:element name="a">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Dependent tier: scoped annotation that applies to a whole utterance. </xs:documentation>
@@ -3675,11 +3974,13 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:complexType mixed="true">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="media"/>
                 <xs:element ref="mediaPic"/>
             </xs:choice>
+
             <xs:attribute name="flavor" type="nonemptyStringType" use="optional">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> Open-ended user-specifiable annotation subtype. </xs:documentation>
@@ -3689,7 +3990,9 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="type" type="annotationTypeType"/>
+
             <!-- MUN (4 Mar 2005): Added an optional 'who' attribute -->
             <xs:attribute name="who" type="nonemptyStringType" use="optional">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -3699,6 +4002,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:attribute>
         </xs:complexType>
     </xs:element>
+
     <xs:element name="ga">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Inlined dependent tier: scoped annotation that applies to a group. </xs:documentation>
@@ -3708,9 +4012,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:documentation>
         </xs:annotation>
         <xs:complexType mixed="true">
+
             <xs:attribute name="type" type="groupAnnotationTypeType"/>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="u">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> A single utterance, along with all dependent information. </xs:documentation>
@@ -3722,6 +4029,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         <xs:complexType mixed="false">
             <xs:sequence>
                 <xs:element ref="linker" minOccurs="0" maxOccurs="unbounded"/>
+
                 <xs:choice maxOccurs="unbounded">
                     <xs:element ref="w"/>
                     <xs:element ref="g"/>
@@ -3729,6 +4037,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="sg"/>
                     <xs:element ref="quotation"/>
                     <xs:element ref="pause"/>
+
                     <xs:element ref="internal-media" minOccurs="0"/>
                     <xs:element ref="freecode"/>
                     <xs:element ref="e"/>
@@ -3740,9 +4049,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="long-feature"/>
                     <xs:element ref="nonvocal"/>
                 </xs:choice>
+
                 <xs:element ref="t"/>
                 <xs:element ref="postcode" minOccurs="0" maxOccurs="unbounded"/>
+
                 <xs:element ref="media" minOccurs="0"/>
+
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element ref="k"/>
                     <xs:element ref="error"/>
@@ -3750,6 +4062,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="wor"/>
                 </xs:choice>
             </xs:sequence>
+
             <xs:attribute ref="xml:lang">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> The language the entire utterance is in (unless individual words'
@@ -3760,6 +4073,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <xs:attribute name="who" type="speakerID" use="required">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> The speaker of the utterance. </xs:documentation>
@@ -3769,10 +4083,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
             <!-- GJH 2010-12-20
              * Removed attribute 'type'
              <xs:attribute name="type" type="utteranceTypeType" use="optional"/>
         -->
+
             <xs:attribute name="uID" type="xs:ID" use="required">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> A unique ID is provided for each utterance in a transcript, for use by
@@ -3786,6 +4102,8 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
             </xs:attribute>
         </xs:complexType>
     </xs:element>
+
+
     <xs:element name="wor">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> %wor dependent tier, similar to main tier. </xs:documentation>
@@ -3797,6 +4115,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         <xs:complexType mixed="false">
             <xs:sequence>
                 <xs:element ref="linker" minOccurs="0" maxOccurs="unbounded"/>
+
                 <xs:choice maxOccurs="unbounded">
                     <xs:element ref="w"/>
                     <xs:element ref="g"/>
@@ -3804,6 +4123,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="sg"/>
                     <xs:element ref="quotation"/>
                     <xs:element ref="pause"/>
+
                     <xs:element ref="internal-media" minOccurs="0"/>
                     <xs:element ref="freecode"/>
                     <xs:element ref="e"/>
@@ -3815,15 +4135,19 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     <xs:element ref="long-feature"/>
                     <xs:element ref="nonvocal"/>
                 </xs:choice>
+
                 <xs:element ref="t"/>
                 <xs:element ref="postcode" minOccurs="0" maxOccurs="unbounded"/>
+
                 <xs:element ref="media" minOccurs="0"/>
+
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element ref="k"/>
                     <xs:element ref="error"/>
                     <xs:element ref="a"/>
                 </xs:choice>
             </xs:sequence>
+
             <xs:attribute ref="xml:lang">
                 <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
                     <xs:documentation> The language the entire utterance is in (unless individual words'
@@ -3834,8 +4158,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+
         </xs:complexType>
     </xs:element>
+
+
+
     <xs:simpleType name="languageType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
             <xs:documentation> Language code restricted to only three instead of one to eight characters. </xs:documentation>
@@ -3844,10 +4172,12 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                     on this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:restriction base="xs:language">
             <xs:pattern value="[a-zA-Z]{3}(-[a-zA-Z0-9]{1,8})*"/>
         </xs:restriction>
     </xs:simpleType>
+
     <!-- Generated by get-participant-roles.pl for schema -->
     <xs:simpleType name="roleType">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -3858,6 +4188,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
                 <a href="https://talkbank.org/manuals/CHAT.html#Role">CHAT manual section on this topic...</a>
             </xs:documentation>
         </xs:annotation>
+
         <xs:restriction base="xs:string">
             <xs:enumeration value="Target_Child"/>
             <xs:enumeration value="Target_Adult"/>
