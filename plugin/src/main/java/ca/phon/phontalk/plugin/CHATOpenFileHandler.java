@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.*;
 
 import ca.phon.app.session.editor.SessionEditorWindow;
+import ca.phon.project.ProjectPaths;
 import org.apache.commons.io.FilenameUtils;
 
 import ca.phon.app.actions.OpenFileHandler;
@@ -66,8 +67,10 @@ public class CHATOpenFileHandler implements OpenFileHandler, IPluginExtensionPoi
 		for(CommonModuleFrame cmf:CommonModuleFrame.getOpenWindows()) {
 			if(cmf instanceof SessionEditorWindow editor) {
 				Project project = editor.getProject();
+				final ProjectPaths projectPaths = project.getExtension(ProjectPaths.class);
+				if(projectPaths == null) continue;
 				Session session = editor.getSession();
-				String sessionPath = project.getSessionPath(session);
+				String sessionPath = projectPaths.getSessionPath(session);
 				File sessionFile = new File(sessionPath);
 				
 				if(sessionFile.equals(file)) {
@@ -114,7 +117,9 @@ public class CHATOpenFileHandler implements OpenFileHandler, IPluginExtensionPoi
 		for(CommonModuleFrame cmf:CommonModuleFrame.getOpenWindows()) {
 			Project windowProj = cmf.getExtension(Project.class);
 			if(windowProj != null) {
-				File windowProjFolder = new File(windowProj.getLocation());
+				final ProjectPaths projectPaths = windowProj.getExtension(ProjectPaths.class);
+				if(projectPaths == null) continue;
+				File windowProjFolder = new File(projectPaths.getLocation());
 				if(windowProjFolder.equals(projectFolder)) {
 					return windowProj;
 				}
@@ -122,7 +127,7 @@ public class CHATOpenFileHandler implements OpenFileHandler, IPluginExtensionPoi
 		}
 		
 		try {
-			return (new DesktopProjectFactory()).openProject(projectFolder);
+			return (new DesktopProjectFactory()).openProject(projectFolder.getAbsolutePath());
 		} catch (IOException | ProjectConfigurationException e) {
 			return null;
 		}

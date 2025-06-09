@@ -44,6 +44,7 @@ import ca.phon.app.actions.PhonURISchemeHandler;
 import ca.phon.app.project.*;
 import ca.phon.formatter.MediaTimeFormatter;
 import ca.phon.plugin.PluginException;
+import ca.phon.project.ProjectPaths;
 import ca.phon.ui.*;
 import ca.phon.worker.PhonWorkerGroup;
 import org.apache.commons.io.FilenameUtils;
@@ -337,9 +338,12 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 			}
 		});
 		if(getProject() != null) {
-			SwingUtilities.invokeLater( () -> {
-				projectSelectionButton.setSelection(new File(getProject().getLocation()));
-			});
+			final ProjectPaths projectPaths = getProject().getExtension(ProjectPaths.class);
+			if(projectPaths != null) {
+				SwingUtilities.invokeLater( () -> {
+					projectSelectionButton.setSelection(new File(projectPaths.getLocation()));
+				});
+			}
 		}
 		projectSelectionButton.setBorder(BorderFactory.createTitledBorder("Project"));
 		
@@ -702,7 +706,7 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 		
 		try {
 			// create project
-			final Project project = (new DesktopProjectFactory()).openProject(projectSelectionButton.getSelection());
+			final Project project = (new DesktopProjectFactory()).openProject(projectSelectionButton.getSelection().getAbsolutePath());
 			currentWorker.queueTask(() -> setupTasks(currentWorker, project) );
 		} catch (IOException | ProjectConfigurationException e) {
 			showMessage(e.getLocalizedMessage());

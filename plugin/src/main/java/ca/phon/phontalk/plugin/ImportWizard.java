@@ -7,7 +7,6 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.*;
@@ -22,14 +21,12 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.TreePath;
 
 import ca.phon.app.project.*;
 import ca.phon.formatter.MediaTimeFormatter;
-import ca.phon.project.LocalProject;
+import ca.phon.project.*;
 import ca.phon.ui.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.WordUtils;
@@ -50,8 +47,6 @@ import ca.phon.phontalk.PhonTalkTask;
 import ca.phon.phontalk.Xml2PhonTask;
 import ca.phon.plugin.PluginEntryPointRunner;
 import ca.phon.plugin.PluginException;
-import ca.phon.project.Project;
-import ca.phon.project.ProjectFactory;
 import ca.phon.project.exceptions.ProjectConfigurationException;
 import ca.phon.ui.action.PhonUIAction;
 import ca.phon.ui.decorations.DialogHeader;
@@ -312,7 +307,10 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 
 		// setup project location if we have an open project
 		if(getProject() != null) {
-			projectButton.setSelection(new File(getProject().getLocation()));
+			final ProjectPaths projectPaths = getProject().getExtension(ProjectPaths.class);
+			if(projectPaths != null) {
+				projectButton.setSelection(new File(projectPaths.getLocation()));
+			}
 		}
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -669,7 +667,7 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 				projectRef.set(createProject());
 			} else {
 				bufferPanel.getLogBuffer().append("Opening project at " + outputFolder.getAbsolutePath() + "\n\n");
-				projectRef.set((new DesktopProjectFactory()).openProject(outputFolder));
+				projectRef.set((new DesktopProjectFactory()).openProject(outputFolder.getAbsolutePath()));
 			}
 			PhonWorker.getInstance().invokeLater( () -> setupTasks(currentWorker, projectRef.get()) );
 		} catch (IOException | ProjectConfigurationException e) {
@@ -697,8 +695,11 @@ public class ImportWizard extends BreadcrumbWizardFrame {
 
 		bufferPanel.getLogBuffer().append("Creating project at " + projectFolder.getAbsolutePath() + "\n\n");
 
-		Project retVal = projectFactory.createProject(projectFolder);
-		retVal.setName(importFolderButton.getSelection().getName());
+		final Project retVal = projectFactory.createProject(projectFolder.getAbsolutePath());
+		final MutableProject mutableProject = retVal.getExtension(MutableProject.class);
+		if(mutableProject != null) {
+			mutableProject.setName(importFolderButton.getSelection().getName());
+		}
 		return retVal;
 	}
 	
