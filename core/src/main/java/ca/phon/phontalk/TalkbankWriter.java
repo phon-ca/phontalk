@@ -621,7 +621,7 @@ public class TalkbankWriter {
                     hasActualSyllabification = true;
                 }
 
-                if(hasTargetSyllabification && hasActualSyllabification && record.getPhoneAlignment().getAlignments().size() > 0) {
+                if(hasTargetSyllabification && hasActualSyllabification && record.getPhoneAlignment().getFullAlignment().getAlignmentLength() > 0) {
                     writeStartElement("a");
                     writeAttribute("type", "extension");
                     writeAttribute("flavor", SystemTierType.PhoneAlignment.getChatTierName().substring(2));
