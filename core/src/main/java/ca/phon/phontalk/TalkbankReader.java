@@ -7,6 +7,7 @@ import ca.phon.ipa.CompoundWordMarker;
 import ca.phon.ipa.IPATranscript;
 import ca.phon.ipa.IPATranscriptBuilder;
 import ca.phon.ipa.StressType;
+import ca.phon.ipa.alignment.PhoneAligner;
 import ca.phon.ipa.alignment.PhoneMap;
 import ca.phon.orthography.*;
 import ca.phon.orthography.Error;
@@ -471,8 +472,16 @@ public class TalkbankReader {
                     final IPATranscript actual = (i < actualWords.size() ? actualWords.get(i) : new IPATranscript());
                     final String phoneAlignmentText = alignmentData.getElements().size() > i ? alignmentData.getElements().get(i).toString() : null;
                     if(phoneAlignmentText != null) {
-                        final PhoneMap phoneMap = PhoneMap.fromString(target, actual, phoneAlignmentText);
-                        phoneMaps.add(phoneMap);
+                        try {
+                            final PhoneMap phoneMap = PhoneMap.fromString(target, actual, phoneAlignmentText);
+                            phoneMaps.add(phoneMap);
+                        } catch (IllegalArgumentException e) {
+                            fireWarning("Unable to parse phone alignment '" + phoneAlignmentText + "' at index " + i + ": " + e.getLocalizedMessage(), reader);
+                            // reset manuall
+                            final PhoneAligner phoneAligner = new PhoneAligner();
+                            final PhoneMap phoneMap = phoneAligner.calculatePhoneAlignment(target, actual);
+                            phoneMaps.add(phoneMap);
+                        }
                     } else {
                         break;
                     }
