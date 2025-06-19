@@ -477,12 +477,15 @@ public class TalkbankReader {
                             phoneMaps.add(phoneMap);
                         } catch (IllegalArgumentException e) {
                             fireWarning("Unable to parse phone alignment '" + phoneAlignmentText + "' at index " + i + ": " + e.getLocalizedMessage(), reader);
-                            // reset manuall
+                            // reset manually
                             final PhoneAligner phoneAligner = new PhoneAligner();
                             final PhoneMap phoneMap = phoneAligner.calculatePhoneAlignment(target, actual);
                             phoneMaps.add(phoneMap);
                         }
                     } else {
+                        final PhoneAligner phoneAligner = new PhoneAligner();
+                        final PhoneMap phoneMap = phoneAligner.calculatePhoneAlignment(target, actual);
+                        phoneMaps.add(phoneMap);
                         break;
                     }
                 }
