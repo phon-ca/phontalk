@@ -47,6 +47,12 @@ public class TalkbankWriter {
     public final static boolean DEFAULT_FORMATTED_OUTPUT = true;
     private boolean formattedOutput  = DEFAULT_FORMATTED_OUTPUT;
 
+    private final static boolean DEFAULT_WRITE_SYLLABIFICATION = true;
+    private boolean writeSyllabification = DEFAULT_WRITE_SYLLABIFICATION;
+
+    private final static boolean DEFAULT_WRITE_ALIGNMENT = true;
+    private boolean writeAlignment = DEFAULT_WRITE_ALIGNMENT;
+
     public boolean isFormattedOutput() {
         return formattedOutput;
     }
@@ -589,7 +595,7 @@ public class TalkbankWriter {
 
                 // IPA syllabification and alignment
                 boolean hasTargetSyllabification = false;
-                if(record.getIPATargetTier().hasValue() && record.getIPATarget().length() > 0
+                if(writeSyllabification && record.getIPATargetTier().hasValue() && record.getIPATarget().length() > 0
                     && record.getIPATarget().hasSyllableInformation()) {
                     writeStartElement("a");
                     writeAttribute("type", "extension");
@@ -606,7 +612,7 @@ public class TalkbankWriter {
 
                 // IPA Actual syllabification and alignment
                 boolean hasActualSyllabification = false;
-                if(record.getIPAActualTier().hasValue() && record.getIPAActual().length() > 0
+                if(writeSyllabification && record.getIPAActualTier().hasValue() && record.getIPAActual().length() > 0
                     && record.getIPAActual().hasSyllableInformation()) {
                     writeStartElement("a");
                     writeAttribute("type", "extension");
@@ -621,7 +627,7 @@ public class TalkbankWriter {
                     hasActualSyllabification = true;
                 }
 
-                if(hasTargetSyllabification && hasActualSyllabification && record.getPhoneAlignment().getFullAlignment().getAlignmentLength() > 0) {
+                if(writeAlignment && hasTargetSyllabification && hasActualSyllabification && record.getPhoneAlignment().getFullAlignment().getAlignmentLength() > 0) {
                     writeStartElement("a");
                     writeAttribute("type", "extension");
                     writeAttribute("flavor", SystemTierType.PhoneAlignment.getChatTierName().substring(2));
