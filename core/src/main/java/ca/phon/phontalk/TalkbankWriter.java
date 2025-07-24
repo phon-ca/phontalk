@@ -38,7 +38,7 @@ public class TalkbankWriter {
 
     private final static String TBNS_SCHEMA_LOCATION = "http://www.talkbank.org/ns/talkbank https://talkbank.org/software/talkbank.xsd";
 
-    private final static String TB_VERSION = "3.0.1";
+    private final static String TB_VERSION = "3.2.1";
 
     private final List<PhonTalkListener> listeners = new ArrayList<>();
 

@@ -3,7 +3,7 @@
 xmlns:xml="http://www.w3.org/XML/1998/namespace"
 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tb="http://www.talkbank.org/ns/talkbank" xmlns="http://www.talkbank.org/ns/talkbank" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://www.talkbank.org/ns/talkbank" elementFormDefault="qualified" version="3.0.1" id="Talkbank">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tb="http://www.talkbank.org/ns/talkbank" xmlns="http://www.talkbank.org/ns/talkbank" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://www.talkbank.org/ns/talkbank" elementFormDefault="qualified" version="3.2.1" id="Talkbank">
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
   <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
     <xs:documentation> A full definition of the CHAT format. </xs:documentation>
@@ -730,15 +730,6 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
           </xs:annotation>
         </xs:element>
       </xs:choice>
-    <xs:attribute name="hebrew" type="xs:boolean">
-      <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-        <xs:documentation> Whether @s or ׀ס was used </xs:documentation>
-        <xs:documentation>
-          <a href="https://talkbank.org/manuals/CHAT.html#TODO">CHAT manual
-                        section on this topic...</a>
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="linker">
@@ -1717,6 +1708,7 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
       <xs:element ref="lig" minOccurs="1" maxOccurs="1"/>
       <xs:element ref="ph" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
+    <xs:attribute name="scType" type="syllableConstituentType"/>
   </xs:complexType>
   <xs:simpleType name="syllableConstituentType">
     <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
@@ -2638,24 +2630,6 @@ xmlns:xml="http://www.w3.org/XML/1998/namespace"
         <xs:element ref="mod" minOccurs="0" maxOccurs="1"/>
         <xs:element ref="pho" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
-      <xs:attribute name="separated-prefix" type="xs:boolean">
-        <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-          <xs:documentation>word# indicates the word is a separated prefix</xs:documentation>
-          <xs:documentation>
-            <a href="https://talkbank.org/manuals/CHAT.html#Separated_Prefix">CHAT manual
-                            section on this topic...</a>
-          </xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
-    <xs:attribute name="hebrew" type="xs:boolean">
-      <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
-        <xs:documentation> Whether @ or ׀ was used </xs:documentation>
-        <xs:documentation>
-          <a href="https://talkbank.org/manuals/CHAT.html#TODO">CHAT manual
-                        section on this topic...</a>
-        </xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
       <xs:attribute name="user-special-form" type="xs:string">
         <xs:annotation xmlns="http://www.w3.org/1999/xhtml">
           <xs:documentation>@z:code user-specified code</xs:documentation>
