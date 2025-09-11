@@ -10,11 +10,10 @@ import ca.phon.session.alignment.CrossTierAlignment;
 import ca.phon.session.alignment.TierAligner;
 import ca.phon.session.io.xml.OneToOne;
 import ca.phon.session.io.xml.SessionXMLStreamWriter;
-import ca.phon.session.io.xml.XMLFragments;
+import ca.phon.session.io.xml.v2_1.XMLFragments;
 import ca.phon.session.tierdata.*;
 import ca.phon.util.Language;
 import ca.phon.xml.DelegatingXMLStreamWriter;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.xml.stream.*;
 import javax.xml.transform.Transformer;

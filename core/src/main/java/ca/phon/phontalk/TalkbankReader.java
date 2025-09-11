@@ -3,10 +3,8 @@ package ca.phon.phontalk;
 import ca.phon.extensions.UnvalidatedValue;
 import ca.phon.formatter.Formatter;
 import ca.phon.formatter.FormatterFactory;
+import ca.phon.ipa.*;
 import ca.phon.ipa.CompoundWordMarker;
-import ca.phon.ipa.IPATranscript;
-import ca.phon.ipa.IPATranscriptBuilder;
-import ca.phon.ipa.StressType;
 import ca.phon.ipa.alignment.PhoneAligner;
 import ca.phon.ipa.alignment.PhoneMap;
 import ca.phon.orthography.*;
@@ -16,11 +14,9 @@ import ca.phon.orthography.mor.GraspTierData;
 import ca.phon.orthography.mor.MorTierData;
 import ca.phon.session.*;
 import ca.phon.session.Record;
-import ca.phon.session.io.xml.XMLFragments;
+import ca.phon.session.io.xml.v2_1.XMLFragments;
 import ca.phon.session.tierdata.TierData;
 import ca.phon.session.tierdata.TierLink;
-import ca.phon.syllable.SyllabificationInfo;
-import ca.phon.syllable.SyllableConstituentType;
 import ca.phon.util.Language;
 import ca.phon.xml.DelegatingXMLStreamWriter;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -87,8 +83,6 @@ public class TalkbankReader {
         }
         return null;
     }
-
-    // region Session utils
 
     /**
      * Read session records and create tier descriptions for user-defined tiers
@@ -1022,14 +1016,10 @@ public class TalkbankReader {
                         final String eleTxt = reader.getElementText();
                         if(eleTxt.isBlank())
                             throw new XMLStreamException("ph must not be empty", reader.getLocation());
-                        builder.append(eleTxt);
-                        // setup sc info
-                        if(scType != null && scType != SyllableConstituentType.UNKNOWN) {
-                            final SyllabificationInfo info = builder.last().getExtension(SyllabificationInfo.class);
-                            info.setConstituentType(scType);
-                            if(scType == SyllableConstituentType.NUCLEUS)
-                                info.setDiphthongMember(!isHiatus);
-                        }
+                        final var scIdentifier = scType != null && scType != SyllableConstituentType.UNKNOWN
+                                ? (scType == SyllableConstituentType.NUCLEUS && !isHiatus ? 'D' : scType.getIdChar())
+                                : null;
+                        builder.append(eleTxt + (scIdentifier != null ? ":" + scIdentifier : ""));
                         break;
 
                     default:
