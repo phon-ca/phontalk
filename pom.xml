@@ -1,89 +1,90 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>ca.phon</groupId>
-	<artifactId>phontalk</artifactId>
-	<version>4.0.0-3.1.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <groupId>ca.phon</groupId>
+    <artifactId>phontalk</artifactId>
+    <version>4.0.0-3.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<name>PhonTalk</name>
-	<url>https://github.com/phon-ca/phontalk</url>
-	<description>Utility for converting files between Talkbank and Phon.  Includes a plug-in for Phon as well as a CLI.</description>
+    <name>PhonTalk</name>
+    <url>https://github.com/phon-ca/phontalk</url>
+    <description>Utility for converting files between Talkbank and Phon. Includes a plug-in for Phon as well as a CLI.
+    </description>
 
-	<developers>
-		<developer>
-			<id>ghedlund</id>
-			<name>Greg Hedlund</name>
-			<email>greg.hedlund@gmail.com</email>
-			<timezone>-3.5</timezone>
-		</developer>
-		<developer>
-			<id>yrose</id>
-			<name>Yvan Rose</name>
-			<email>yrose@mun.ca</email>
-			<timezone>-3.5</timezone>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>ghedlund</id>
+            <name>Greg Hedlund</name>
+            <email>greg.hedlund@gmail.com</email>
+            <timezone>-3.5</timezone>
+        </developer>
+        <developer>
+            <id>yrose</id>
+            <name>Yvan Rose</name>
+            <email>yrose@mun.ca</email>
+            <timezone>-3.5</timezone>
+        </developer>
+    </developers>
 
-	<distributionManagement>
-		<repository>
-			<id>github</id>
-			<name>GitHub phon-ca Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/phon-ca/phontalk</url>
-		</repository>
-	</distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub phon-ca Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/phon-ca/phontalk</url>
+        </repository>
+    </distributionManagement>
 
-	<properties>
-		<ca.phon.version>4.0.0-SNAPSHOT</ca.phon.version>
-		<org.talkbank.chatter.version>3.1.0</org.talkbank.chatter.version>
-		<junit.junit.version>4.13.1</junit.junit.version>
+    <properties>
+        <ca.phon.version>4.0.0-SNAPSHOT</ca.phon.version>
+        <org.talkbank.chatter.version>3.1.0</org.talkbank.chatter.version>
+        <junit.junit.version>4.13.1</junit.junit.version>
 
-		<!-- Project settings -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.sourceVersion>21</project.build.sourceVersion>
-		<project.build.targetVersion>21</project.build.targetVersion>
-	</properties>
+        <!-- Project settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceVersion>21</project.build.sourceVersion>
+        <project.build.targetVersion>21</project.build.targetVersion>
+    </properties>
 
-	<modules>
-		<module>core</module>
-		<module>cli</module>
-		<module>plugin</module>
-	</modules>
+    <modules>
+        <module>core</module>
+        <module>cli</module>
+        <module>plugin</module>
+    </modules>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.0</version>
-				</plugin>
-			</plugins>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                </plugin>
+            </plugins>
 
-		</pluginManagement>
+        </pluginManagement>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>${project.build.sourceVersion}</source>
-					<target>${project.build.targetVersion}</target>
-					<release>${project.build.targetVersion}</release>
-				</configuration>
-			</plugin>
-		</plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${project.build.sourceVersion}</source>
+                    <target>${project.build.targetVersion}</target>
+                    <release>${project.build.targetVersion}</release>
+                </configuration>
+            </plugin>
+        </plugins>
 
-	</build>
+    </build>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

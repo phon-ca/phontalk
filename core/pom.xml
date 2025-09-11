@@ -10,6 +10,20 @@
 	</parent>
 	<artifactId>phontalk-core</artifactId>
 
+    <repositories>
+        <repository>
+            <id>talkbank</id>
+            <name>GitHub TalkBank Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/talkbank/talkbank-xml-schema</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>ca.phon</groupId>
@@ -21,6 +35,11 @@
 			<artifactId>xml-resolver</artifactId>
 			<version>1.2</version>
 		</dependency>
+        <dependency>
+            <groupId>org.talkbank.chatter</groupId>
+            <artifactId>talkbank-xml-schema</artifactId>
+            <version>2.20.2</version>
+        </dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
