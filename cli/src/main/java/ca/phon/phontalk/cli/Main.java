@@ -41,7 +41,7 @@ import ca.phon.session.io.SessionOutputFactory;
 import ca.phon.session.io.SessionReader;
 import ca.phon.session.io.SessionWriter;
 import ca.phon.session.io.xml.OneToOne;
-import ca.phon.session.io.xml.XMLFragments;
+import ca.phon.session.io.xml.v2_1.XMLFragments;
 import ca.phon.syllabifier.Syllabifier;
 import ca.phon.syllabifier.SyllabifierLibrary;
 import ca.phon.util.Language;
@@ -337,15 +337,19 @@ public class Main {
 				System.err.println("Error parsing -mod");
 				throw record.getIPATargetTier().getUnvalidatedValue().getParseError();
 			}
-			if(syllabifier != null)
-				syllabifier.syllabify(record.getIPATarget().toList());
+			if(syllabifier != null) {
+                var ipa = syllabifier.syllabify(record.getIPATarget());
+                record.setIPATarget(ipa);
+            }
 			record.getIPAActualTier().setText(pho);
 			if(record.getIPAActualTier().isUnvalidated()) {
 				System.err.println("Error parsing -pho");
 				throw record.getIPAActualTier().getUnvalidatedValue().getParseError();
 			}
-			if(syllabifier != null)
-				syllabifier.syllabify(record.getIPAActual().toList());
+			if(syllabifier != null) {
+                var ipa = syllabifier.syllabify(record.getIPAActual());
+                record.setIPAActual(ipa);
+            }
 			if(!mor.isBlank()) {
 				final Tier<MorTierData> morTier = factory.createTier(UserTierType.Mor.getPhonTierName(), MorTierData.class, new HashMap<>(), true);
 				morTier.setText(mor);
