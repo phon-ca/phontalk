@@ -412,7 +412,7 @@ public class TalkbankWriter {
         }
 
         // check x-tier alignment
-        CrossTierAlignment xTierAlignment = TierAligner.calculateCrossTierAlignment(record);
+        CrossTierAlignment xTierAlignment = TierAligner.calculateCrossTierAlignment(record, Transcriber.VALIDATOR);
         if(!xTierAlignment.isComplete()) {
             fireWarning("Record #" + (uid +1) + " has incomplete cross-tier alignment", writer);
         }
