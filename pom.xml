@@ -37,7 +37,7 @@
     </distributionManagement>
 
     <properties>
-        <ca.phon.version>4.0.0-SNAPSHOT</ca.phon.version>
+        <ca.phon.version>4.0.0-alpha.54</ca.phon.version>
         <org.talkbank.chatter.version>3.2.4</org.talkbank.chatter.version>
         <junit.junit.version>4.13.1</junit.junit.version>
 

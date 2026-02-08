@@ -12,3 +12,4 @@ external-resources
 bin/
 .run/
 core/old-src
+.claude/
