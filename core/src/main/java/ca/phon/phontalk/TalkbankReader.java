@@ -17,7 +17,7 @@ import ca.phon.session.Record;
 import ca.phon.session.io.xml.v2_1.XMLFragments;
 import ca.phon.session.tierdata.TierData;
 import ca.phon.session.tierdata.TierLink;
-import ca.phon.util.Language;
+import ca.phon.language.Language;
 import ca.phon.xml.DelegatingXMLStreamWriter;
 import org.apache.commons.lang3.StringEscapeUtils;
 

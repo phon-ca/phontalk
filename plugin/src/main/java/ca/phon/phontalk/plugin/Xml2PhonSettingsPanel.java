@@ -11,7 +11,7 @@ import org.jdesktop.swingx.VerticalLayout;
 
 import ca.phon.phontalk.Xml2PhonSettings;
 import ca.phon.syllabifier.*;
-import ca.phon.util.Language;
+import ca.phon.language.Language;
 
 /**
  * Settings UI for phontalk

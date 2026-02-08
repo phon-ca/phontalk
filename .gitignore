@@ -2,9 +2,7 @@
 *.depen
 .classpath
 .project
-target/
 .settings/
-dependency-reduced-pom.xml
 *.*\~
 external-resources
 .idea/
@@ -13,3 +11,11 @@ bin/
 .run/
 core/old-src
 .claude/
+
+# Maven
+target/
+dependency-reduced-pom.xml
+
+# Gradle
+build/
+.gradle/

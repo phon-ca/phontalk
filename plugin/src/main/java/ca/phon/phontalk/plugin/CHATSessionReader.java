@@ -9,7 +9,7 @@ import ca.phon.plugin.IPluginExtensionFactory;
 import ca.phon.plugin.IPluginExtensionPoint;
 import ca.phon.session.Session;
 import ca.phon.session.io.*;
-import ca.phon.ui.nativedialogs.OSInfo;
+import ca.phon.util.OSInfo;
 
 @SessionIO(
 		group="org.talkbank",
