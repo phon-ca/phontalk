@@ -4,25 +4,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PhonTalk converts between [Phon](https://www.phon.ca) session XML and [TalkBank](http://www.talkbank.org) CHAT XML formats. It is distributed with Phon and also provides a standalone CLI. Licensed under GPLv3.
+PhonTalk converts between [Phon](https://www.phon.ca) session XML and [TalkBank](http://www.talkbank.org) CHAT XML formats. It is distributed with Phon as a plug-in. Licensed under GPLv3.
 
 ## Build Commands
 
 ```bash
-mvn package                          # Build all modules
-mvn test                             # Run all tests
-mvn test -pl core                    # Run core module tests only
-mvn test -pl core -Dtest=RoundTripTests  # Run a specific test class
+./gradlew build                          # Build all modules
+./gradlew test                           # Run all tests
+./gradlew :core:test                     # Run core module tests only
+./gradlew :core:test --tests RoundTripTests  # Run a specific test class
+./gradlew publishToMavenLocal            # Install to local Maven repo
 ```
 
-Requires Java 21 and Maven. Dependencies from GitHub Packages (TalkBank schema, Phon libraries) require a configured `~/.m2/settings.xml` with GitHub token access.
+Requires Java 24 and Gradle 9.3.1 (wrapper included). Dependencies from GitHub Packages (TalkBank schema, Phon libraries) require GitHub token credentials in `~/.gradle/gradle.properties` (`gpr.user`/`gpr.key`) or environment variables (`GITHUB_ACTOR`/`GITHUB_TOKEN`).
 
 ## Architecture
 
 ### Module Structure
 
 - **core** (`phontalk-core`) — Conversion engine. All format reading/writing lives here.
-- **cli** (`phontalk-cli`) — Command-line interface. Entry point: `ca.phon.phontalk.cli.Main`.
 - **plugin** (`phontalk-plugin`) — Phon application plug-in. Registers `SessionReader`/`SessionWriter` implementations via `@SessionIO` annotations and Phon's `IPluginExtensionPoint` SPI.
 
 ### Core Conversion Pipeline

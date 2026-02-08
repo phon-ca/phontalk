@@ -1,0 +1,36 @@
+[versions]
+phon = "4.0.0-alpha.54"
+chatter = "3.2.4"
+talkbank-schema = "3.2.3"
+junit = "4.13.1"
+xmlunit = "2.2.1"
+xml-resolver = "1.2"
+ipadicts = "2.0.0"
+swingx = "1.6.5-1"
+jbreadcrumb = "7"
+native-dialogs = "22"
+commons-io = "2.16.1"
+commons-lang = "2.4"
+jsr305 = "3.0.2"
+
+[libraries]
+phon-project = { module = "ca.phon:project", version.ref = "phon" }
+phon-app = { module = "ca.phon:app", version.ref = "phon" }
+phon-autotranscribe = { module = "ca.phon:autotranscribe", version.ref = "phon" }
+phon-ipadicts = { module = "ca.phon:ipadicts", version.ref = "ipadicts" }
+talkbank-schema = { module = "org.talkbank.chatter:talkbank-xml-schema", version.ref = "talkbank-schema" }
+talkbank-chatter = { module = "org.talkbank:chatter", version.ref = "chatter" }
+xml-resolver = { module = "xml-resolver:xml-resolver", version.ref = "xml-resolver" }
+swingx-all = { module = "org.swinglabs.swingx:swingx-all", version.ref = "swingx" }
+jbreadcrumb = { module = "ca.phon:jbreadcrumb", version.ref = "jbreadcrumb" }
+native-dialogs = { module = "ca.phon:native-dialogs", version.ref = "native-dialogs" }
+commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
+commons-lang = { module = "commons-lang:commons-lang", version.ref = "commons-lang" }
+jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+xmlunit-core = { module = "org.xmlunit:xmlunit-core", version.ref = "xmlunit" }
+xmlunit-matchers = { module = "org.xmlunit:xmlunit-matchers", version.ref = "xmlunit" }
+
+[bundles]
+xmlunit = ["xmlunit-core", "xmlunit-matchers"]
