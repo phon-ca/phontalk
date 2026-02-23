@@ -1,5 +1,5 @@
 [versions]
-phon = "4.0.0-alpha.54"
+phon = "4.0.0-alpha.59"
 chatter = "3.2.4"
 talkbank-schema = "3.2.3"
 junit = "4.13.1"

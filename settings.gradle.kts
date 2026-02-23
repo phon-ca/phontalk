@@ -33,12 +33,15 @@ dependencyResolutionManagement {
         }
         maven {
             name = "SpeechMetrics"
-            url = uri("https://maven.pkg.github.com/speechmetrics/speechmetrics")
+            url = uri("https://maven.pkg.github.com/speechmetrics/*")
             credentials {
                 username = providers.gradleProperty("gpr.user")
                     .orElse(providers.environmentVariable("GITHUB_ACTOR")).orNull
                 password = providers.gradleProperty("gpr.key")
                     .orElse(providers.environmentVariable("GITHUB_TOKEN")).orNull
+            }
+            content {
+                excludeModule("org.talkbank", "chatter")
             }
         }
         maven {
@@ -49,6 +52,27 @@ dependencyResolutionManagement {
                     .orElse(providers.environmentVariable("GITHUB_ACTOR")).orNull
                 password = providers.gradleProperty("gpr.key")
                     .orElse(providers.environmentVariable("GITHUB_TOKEN")).orNull
+            }
+            content {
+                excludeModule("org.talkbank", "chatter")
+            }
+        }
+        // Chatter's published POM has incorrect coordinates (declares jakarta.xml.bind-api),
+        // so fetch jar only and skip metadata validation.
+        maven {
+            name = "TalkBankChatter"
+            url = uri("https://maven.pkg.github.com/speechmetrics/*")
+            credentials {
+                username = providers.gradleProperty("gpr.user")
+                    .orElse(providers.environmentVariable("GITHUB_ACTOR")).orNull
+                password = providers.gradleProperty("gpr.key")
+                    .orElse(providers.environmentVariable("GITHUB_TOKEN")).orNull
+            }
+            metadataSources {
+                artifact()
+            }
+            content {
+                includeModule("org.talkbank", "chatter")
             }
         }
     }

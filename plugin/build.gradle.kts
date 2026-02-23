@@ -22,4 +22,6 @@ dependencies {
     implementation(libs.commons.io)
     implementation(libs.commons.lang)
     implementation(libs.jsr305)
+
+    testImplementation(libs.junit)
 }

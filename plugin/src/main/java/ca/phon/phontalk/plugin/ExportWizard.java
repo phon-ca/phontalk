@@ -1010,11 +1010,9 @@ public class ExportWizard extends BreadcrumbWizardFrame {
 						}
 					}
 					
-					ImageIcon fileIcn = 
-							IconManager.getInstance().getSystemIconForPath(childFile.getAbsolutePath(), IconSize.SMALL);
-					if(fileIcn != null) {
-						retVal.getLabel().setIcon(fileIcn);
-					}
+					ImageIcon fileIcn =
+							IconManager.getInstance().getFontIcon(childFile.isDirectory() ? "folder" : "description", IconSize.SMALL, Color.darkGray);
+					retVal.getLabel().setIcon(fileIcn);
 				}
 			}
 			
