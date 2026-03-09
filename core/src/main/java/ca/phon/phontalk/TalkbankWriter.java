@@ -169,8 +169,16 @@ public class TalkbankWriter {
                     .collect(Collectors.joining(" "));
             writer.writeAttribute("Lang", langTxt);
         } else {
-            final String lang = Locale.getDefault().getISO3Country();
-            writer.writeAttribute("Lang",  lang);
+            Set<String> langs = new LinkedHashSet<>();
+            for(Participant participant:session.getParticipants()) {
+                if(participant.getLanguage() != null && !participant.getLanguage().isBlank()) {
+                    langs.addAll(List.of(participant.getLanguage().split(" ")));
+                }
+            }
+            if(langs.size() > 0) {
+                final String langTxt = langs.stream().collect(Collectors.joining(" "));
+                writer.writeAttribute("Lang", langTxt);
+            }
         }
 
         if(session.getMetadata().containsKey("Options")) {
