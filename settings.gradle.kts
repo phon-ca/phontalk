@@ -10,6 +10,7 @@ project(":plugin").name = "phontalk-plugin"
 dependencyResolutionManagement {
     repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     repositories {
+        mavenLocal()
         mavenCentral()
         maven {
             name = "TalkBank"

@@ -8,7 +8,7 @@ import ca.phon.session.*;
 import ca.phon.session.Record;
 import ca.phon.session.alignment.CrossTierAlignment;
 import ca.phon.session.alignment.TierAligner;
-import ca.phon.session.io.xml.OneToOne;
+import ca.phon.session.OneToOne;
 import ca.phon.session.io.xml.SessionXMLStreamWriter;
 import ca.phon.session.io.xml.v2_1.XMLFragments;
 import ca.phon.session.tierdata.*;

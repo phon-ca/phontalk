@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -80,7 +81,8 @@ public class PhonTalkDropPanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		int width = getWidth();
 		int height = getHeight();
-		g.setColor(Color.white);
+		final Color panelBg = UIManager.getColor("Panel.background");
+		g.setColor(panelBg != null ? panelBg : Color.white);
 		g.fillRect(0, 0, width, height);
 		if(dropImg != null) {
 			int x = 0;
@@ -101,7 +103,8 @@ public class PhonTalkDropPanel extends JPanel {
 			int x = (width / 2) - (int)(messageRect.getWidth() / 2);
 			int y =  height - (int)messageRect.getHeight() - 5;
 			
-			g.setColor(Color.black);
+			final Color textFg = UIManager.getColor("Label.foreground");
+			g.setColor(textFg != null ? textFg : Color.black);
 			g.drawString(message, x, y);
 		}
 	}
